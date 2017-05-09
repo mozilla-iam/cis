@@ -4,6 +4,7 @@ python:
 before_install:
   - "pip install flake8"
   - "flake8 cis"
+  - "flake8 tests"
 install:
   - "pip install -r requirements.txt"
   - "python setup.py build"
