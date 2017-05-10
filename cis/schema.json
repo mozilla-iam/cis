@@ -1,0 +1,193 @@
+{
+    "title": "CIS schema",
+    "type": "object",
+    "additionalProperties": false,
+    "properties": {
+        "user_id": {
+            "type": "string"
+        },
+        "timezone": {
+            "type": "string"
+        },
+        "active": {
+            "type": "boolean"
+        },
+        "lastModified": {
+            "type": "string"
+        },
+        "created": {
+            "type": "string"
+        },
+        "userName": {
+            "type": "string"
+        },
+        "displayName": {
+            "type": "string"
+        },
+        "firstName": {
+            "type": "string"
+        },
+        "preferredLanguage": {
+            "type": "string"
+        },
+        "primaryEmail": {
+            "type": "string"
+        },
+        "emails": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "primary": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "phonenumbers": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "uris": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "primary": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "nicknames": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "primary": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "SSHFingerprints": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "primary": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "PGPFingerprints": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "value": {
+                        "type": "string"
+                    },
+                    "verified": {
+                        "type": "boolean"
+                    },
+                    "primary": {
+                        "type": "boolean"
+                    },
+                    "name": {
+                        "type": "string"
+                    }
+                }
+            }
+        },
+        "picture": {
+            "type": "string"
+        },
+        "shirtSize": {
+            "type": "string"
+        },
+        "membership": {
+            "type": "object",
+            "patternProperties": {
+                "^(Mozillians\\.org|LDAP|Workday|Service)$": {
+                    "value": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "created": {
+                                    "type": "string"
+                                },
+                                "lastUsed": {
+                                    "type": "string"
+                                },
+                                "name": {
+                                    "type": "string"
+                                },
+                                "uuid": {
+                                    "type": "string"
+                                },
+                                "roles": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
