@@ -39,7 +39,7 @@ class EncryptionTest(unittest.TestCase):
         mock_kms.generate_data_key.assert_called_once_with(
             KeyId=self.test_artifacts['dummy_kms_arn'],
             KeySpec='AES_256',
-            EncryptionContext=None
+            EncryptionContext={}
         )
 
     @patch('cis.encryption.kms')
@@ -63,5 +63,5 @@ class EncryptionTest(unittest.TestCase):
         self.assertEqual(decrypt(**kwargs), b'foobar')
         mock_kms.decrypt.assert_called_once_with(
             CiphertextBlob=test_kms_data['CiphertextBlob'],
-            EncryptionContext=None
+            EncryptionContext={}
         )
