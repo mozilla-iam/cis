@@ -3,7 +3,7 @@ import json
 import os
 import unittest
 
-from unittest.mock import patch
+from unittest.mock import Mock, patch
 
 
 class ValidationTest(unittest.TestCase):
@@ -16,6 +16,7 @@ class ValidationTest(unittest.TestCase):
         # Setup env vars with dummy AWS credentials
         os.environ['CIS_ARN_MASTER_KEY'] = self.test_artifacts['dummy_kms_arn']
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
+        os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
 
         # Test json schema to validate test payload
         self.test_json_schema = {
@@ -87,3 +88,63 @@ class ValidationTest(unittest.TestCase):
             from cis.validation import validate
             is_valid_payload = validate(**payload)
         self.assertFalse(is_valid_payload)
+
+
+class DatabaseTest(unittest.TestCase):
+    def setUp(self):
+        # Load json with test data
+        fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
+        with open(fixtures) as artifacts:
+            self.test_artifacts = json.load(artifacts)
+
+        # Setup env vars with dummy AWS credentials
+        os.environ['CIS_ARN_MASTER_KEY'] = self.test_artifacts['dummy_kms_arn']
+        os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
+        os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
+
+    @patch('cis.validation.boto3')
+    def test_store_success(self, mock_boto):
+        dynamodb_mock = Mock()
+        dynamodb_table = Mock()
+        dynamodb_table.put_item.return_value = {
+            'ResponseMetadata': {
+                'HTTPStatusCode': 200,
+            }
+        }
+
+        dynamodb_mock.Table.return_value = dynamodb_table
+        mock_boto.resource.return_value = dynamodb_mock
+
+        data = {
+            'foo': 'bar',
+            'foobar': 42
+        }
+
+        from cis.validation import store_to_vault
+        response = store_to_vault(data)
+
+        mock_boto.resource.assert_called_with('dynamodb')
+        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
+        dynamodb_table.put_item.assert_called_with(Item=data)
+        self.assertEqual(response, dynamodb_table.put_item.return_value)
+
+    @patch('cis.validation.boto3')
+    def test_store_failure(self, mock_boto):
+        dynamodb_mock = Mock()
+        dynamodb_table = Mock()
+        dynamodb_table.put_item.side_effect = Exception('DynamoDB exception')
+        dynamodb_mock.Table.return_value = dynamodb_table
+        mock_boto.resource.return_value = dynamodb_mock
+
+        data = {
+            'foo': 'bar',
+            'foobar': 42
+        }
+
+        from cis.validation import store_to_vault
+        response = store_to_vault(data)
+
+        mock_boto.resource.assert_called_with('dynamodb')
+        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
+        dynamodb_table.put_item.assert_called_with(Item=data)
+        self.assertEqual(response, None)

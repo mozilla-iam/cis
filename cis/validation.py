@@ -1,3 +1,4 @@
+import boto3
 import json
 import logging
 import os
@@ -5,6 +6,7 @@ import os
 from jsonschema import validate as jsonschema_validate
 
 from cis.encryption import decrypt
+from cis.settings import DYNAMODB_TABLE
 
 
 CIS_SCHEMA_JSON = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'schema.json')
@@ -42,3 +44,24 @@ def validate(**payload):
         return False
 
     return True
+
+
+def store_to_vault(data):
+    """
+    Store data to DynamoDB.
+
+    :data: Data to store in the database
+    """
+
+    dynamodb = boto3.resource('dynamodb')
+    table = dynamodb.Table(DYNAMODB_TABLE)
+
+    # Put data to DynamoDB
+    try:
+        response = table.put_item(
+            Item=data
+        )
+    except Exception:
+        logger.exception('DynamoDB PUT failed')
+        return None
+    return response
