@@ -1,0 +1,24 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Allows users in parsys or infosec prod to call assumeRole for CISDeveloper in infosec-dev."
+Resources:
+  CISDeveloper:
+    Type: "AWS::IAM::Group"
+    Properties:
+      GroupName: CISDeveloper
+      Path: /
+  CISDeveloperAssumeRole:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: Allow members of the CISDeveloper Group to Assume the cross account role.
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action: sts:AssumeRole
+            Resource:
+              - arn:aws:iam::656532927350:role/CISDeveloper
+      Groups:
+        -
+          Ref: "CISDeveloper"

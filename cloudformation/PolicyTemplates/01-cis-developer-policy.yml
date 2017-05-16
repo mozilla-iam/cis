@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Creates developer policy for CIS Resources.  Grants admin over kinesis, lambda, and DynamoDb when appropriately tagged."
+Resources:
+  CISDeveloper:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: Allows developers working on change integration admin level access to resources with specific tags.
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action: lambda:*
+            Resource: "arn:aws:lambda:*:*:function:cis_functions*"
+          -
+            Effect: Allow
+            Action: kinesis:*
+            Resource: "arn:aws:kinesis:*:*:stream/*CISInputStream*"
+          -
+            Effect: Allow
+            Action: dynamodb:*
+            Resource: "arn:aws:dynamodb:*:*:table/*IdentityVault*"
+          -
+            Effect: Allow
+            Action:
+              - dynamodb:*
+            Resource: "arn:aws:dynamodb:*:*:table/*IdentityVault*"
+      ManagedPolicyName: AdminMozCISResources
