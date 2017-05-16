@@ -19,6 +19,8 @@ aws_secret_access_key = YOUR_LONGTERM_ACCESS_KEY
 
 I set up a bash alias for convenience after this that looks like:
 
-alias cisaws="/Users/akrug/Library/Python/2.7/bin/aws-mfa --device {YOUR_MFA_ARN} --assume-role arn:aws:iam::656532927350:role/CISDeveloper --role-session-name "cis-developer-session""
+alias cisaws="aws-mfa --device {YOUR_MFA_ARN} --assume-role arn:aws:iam::656532927350:role/CISDeveloper --role-session-name "cis-developer-session""
+
+> Note you still need to put in your MFA DEVICE ARN
 
 My creds generated in this manner are good for 60-minutes. I could set up additional aliases for additional profiles if necessary.
