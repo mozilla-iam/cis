@@ -1,0 +1,33 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Allows infosec team members to assume CIS Developer role."
+Resources:
+  AssumeCISDeveloper:
+    Type: "AWS::IAM::Role"
+    Properties:
+      RoleName: CISDeveloper
+      AssumeRolePolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::371522382791:root
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:PrincipalType: User
+              Bool:
+                aws:MultiFactorAuthPresent: 'true'
+          -
+            Effect: Allow
+            Principal:
+              AWS: arn:aws:iam::484535289196:root
+            Action: sts:AssumeRole
+            Condition:
+              StringEquals:
+                aws:PrincipalType: User
+              Bool:
+                aws:MultiFactorAuthPresent: 'true'
+      Path: "/"
+      ManagedPolicyArns:
+        - arn:aws:iam::656532927350:policy/AdminMozCISResources 
