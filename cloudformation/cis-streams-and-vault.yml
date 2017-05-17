@@ -17,11 +17,11 @@ Resources:
     Properties:
       AttributeDefinitions:
       -
-        AttributeName: "UserId"
+        AttributeName: "user_id"
         AttributeType: "S"
       KeySchema:
       -
-        AttributeName: "UserId"
+        AttributeName: "user_id"
         KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: "1"
@@ -34,11 +34,11 @@ Resources:
     Properties:
       AttributeDefinitions:
       -
-        AttributeName: "GroupId"
+        AttributeName: "group_id"
         AttributeType: "S"
       KeySchema:
       -
-        AttributeName: "GroupId"
+        AttributeName: "group_id"
         KeyType: "HASH"
       ProvisionedThroughput:
         ReadCapacityUnits: "1"
