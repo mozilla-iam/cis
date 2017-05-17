@@ -23,4 +23,4 @@ alias cisaws="aws-mfa --device {YOUR_MFA_ARN} --assume-role arn:aws:iam::6565329
 
 > Note you still need to put in your MFA DEVICE ARN
 
-My creds generated in this manner are good for 60-minutes. I could set up additional aliases for additional profiles if necessary.
+Creds generated in this manner are good for 60-minutes. Feel free to setup additional profiles if necessary.
