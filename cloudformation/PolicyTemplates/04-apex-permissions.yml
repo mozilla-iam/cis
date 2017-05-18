@@ -1,0 +1,35 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: "Creates minimum permissions for developers to use Apex."
+Resources:
+  CISDeveloper:
+    Type: "AWS::IAM::ManagedPolicy"
+    Properties:
+      Description: Allows permissions to manage functions via the Apex framework.
+      Path: /
+      PolicyDocument:
+        Version: "2012-10-17"
+        Statement:
+          -
+            Effect: Allow
+            Action:
+              - "lambda:GetFunction"
+              - "lambda:ListFunctions"
+              - "lambda:CreateFunction"
+              - "lambda:DeleteFunction"
+              - "lambda:InvokeFunction"
+              - "lambda:GetFunctionConfiguration"
+              - "lambda:UpdateFunctionConfiguration"
+              - "lambda:UpdateFunctionCode"
+              - "lambda:CreateAlias"
+              - "lambda:UpdateAlias"
+              - "lambda:GetAlias"
+              - "lambda:ListAliases"
+              - "lambda:ListVersionsByFunction"
+            Resource: "arn:aws:lambda:*:*:function:cis_functions*"
+          -
+            Effect: Allow
+            Action:
+              - "logs:FilterLogEvents"
+              - "cloudwatch:GetMetricStatistics"
+            Resource: "*"
+      ManagedPolicyName: ApexDeploymentCIS
