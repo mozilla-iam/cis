@@ -2,6 +2,13 @@
     "title": "CIS schema",
     "type": "object",
     "additionalProperties": false,
+    "required": [
+        "user_id", "timezone", "active", "lastModified",
+        "created", "userName", "displayName", "firstName", "lastName",
+        "preferredLanguage", "primaryEmail", "emails", "phonenumbers",
+        "uris", "nicknames", "SSHFingerprints", "PGPFingerprints",
+        "picture", "shirtSize", "membership"
+    ],
     "properties": {
         "user_id": {
             "type": "string"
@@ -25,6 +32,9 @@
             "type": "string"
         },
         "firstName": {
+            "type": "string"
+        },
+        "lastName": {
             "type": "string"
         },
         "preferredLanguage": {
