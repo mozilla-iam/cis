@@ -1,0 +1,10 @@
+{
+    "name": "cis-data-faker",
+    "description": "Data faker script for Mozilla-IAM CIS development",
+    "dependencies": {
+        "json-schema-faker": "^0.5.0-rc3"
+    },
+    "bin": {
+        "cis-data-faker": "fake-cis-data.js"
+    }
+}
