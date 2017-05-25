@@ -5,5 +5,6 @@ setup(
     version='0.1dev',
     packages=['cis'],
     license='MPL 2.0',
-    long_description='Mozilla IAM change integration service'
+    long_description='Mozilla IAM change integration service',
+    include_package_data=True
 )
