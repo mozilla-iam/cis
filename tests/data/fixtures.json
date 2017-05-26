@@ -4,6 +4,7 @@
     "IV": "UENTo926zKiJDlqP",
     "expected_ciphertext": "ovANn6bq",
     "expected_tag": "A+Cy/tYTvXxngJk1Gt1Ctw==",
+    "dummy_kinesis_arn": "arn:aws:kms:us-east-1:1234:key/4a3206e1-276a-420d-9449-bd4dccfc3f98",
     "dummy_kms_arn": "arn:aws:kms:us-east-1:1234:key/1bab2bb1-d448-4890-b250-45010afec5ec",
     "dummy_aws_region": "us-east-1",
     "dummy_dynamodb_table": "test_dynamodb_table"
