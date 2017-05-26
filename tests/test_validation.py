@@ -89,6 +89,24 @@ class ValidationTest(unittest.TestCase):
             is_valid_payload = validate(**payload)
         self.assertFalse(is_valid_payload)
 
+    def test_valid_json_payload_schema(self):
+
+        # Generate valid json string
+        json_str = '{"foo": "bar"}'
+
+        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+            from cis.validation import validate_json
+            self.assertTrue(validate_json(json_str))
+
+    def test_invalid_json_payload_schema(self):
+
+        # Generate invalid json string
+        json_str = '{"foo": 42}'
+
+        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+            from cis.validation import validate_json
+            self.assertFalse(validate_json(json_str))
+
 
 class DatabaseTest(unittest.TestCase):
     def setUp(self):

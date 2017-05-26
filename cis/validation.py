@@ -46,6 +46,23 @@ def validate(**payload):
     return True
 
 
+def validate_json(json_str):
+    """
+    Validates a json given a json schema
+
+    :json_str: JSON string to be validated
+    """
+
+    try:
+        obj = json.loads(json_str)
+        jsonschema_validate(obj, CIS_SCHEMA)
+    except Exception:
+        logger.exception('Jsonschema validation failed')
+        return False
+
+    return True
+
+
 def store_to_vault(data):
     """
     Store data to DynamoDB.
