@@ -3,11 +3,27 @@
     "type": "object",
     "additionalProperties": false,
     "required": [
-        "user_id", "timezone", "active", "lastModified",
-        "created", "userName", "displayName", "firstName", "lastName",
-        "preferredLanguage", "primaryEmail", "emails", "phonenumbers",
-        "uris", "nicknames", "SSHFingerprints", "PGPFingerprints",
-        "picture", "shirtSize", "membership"
+        "user_id",
+        "timezone",
+        "active",
+        "lastModified",
+        "created",
+        "userName",
+        "displayName",
+        "firstName",
+        "lastName",
+        "preferredLanguage",
+        "primaryEmail",
+        "emails",
+        "phoneNumbers",
+        "uris",
+        "nicknames",
+        "SSHFingerprints",
+        "PGPFingerprints",
+        "picture",
+        "shirtSize",
+        "groups",
+        "authoritativeGroups"
     ],
     "properties": {
         "user_id": {
@@ -63,7 +79,7 @@
                 }
             }
         },
-        "phonenumbers": {
+        "phoneNumbers": {
             "type": "array",
             "items": {
                 "type": "object",
@@ -166,35 +182,28 @@
         "shirtSize": {
             "type": "string"
         },
-        "membership": {
-            "type": "object",
-            "patternProperties": {
-                "^(Mozillians\\.org|LDAP|Workday|Service)$": {
-                    "value": {
-                        "type": "array",
-                        "items": {
-                            "type": "object",
-                            "properties": {
-                                "created": {
-                                    "type": "string"
-                                },
-                                "lastUsed": {
-                                    "type": "string"
-                                },
-                                "name": {
-                                    "type": "string"
-                                },
-                                "uuid": {
-                                    "type": "string"
-                                },
-                                "roles": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string"
-                                    }
-                                }
-                            }
-                        }
+        "groups": {
+		"type": "array",
+		"items": {
+			"type": "string"
+		}
+	},
+        "authoritativeGroups": {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "created": {
+                        "type": "string"
+                    },
+                    "lastUsed": {
+                        "type": "string"
+                        },
+                    "name": {
+                        "type": "string"
+                        },
+                    "uuid": {
+                        "type": "string"
                     }
                 }
             }
