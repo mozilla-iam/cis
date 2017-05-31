@@ -39,8 +39,8 @@ class KinesisPublisherTest(unittest.TestCase):
         from cis.streams import publish_to_cis
         response = publish_to_cis(test_dict, test_partition_key)
 
-        self.assertEqual(mock_kinesis.put_record.call_args[1]['StreamARN'],
-                         self.test_artifacts['dummy_kinesis_arn'])
+        self.assertEqual(mock_kinesis.put_record.call_args[1]['StreamName'],
+                         self.test_artifacts['dummy_kinesis_arn'].split('/')[1])
         self.assertEqual(mock_kinesis.put_record.call_args[1]['PartitionKey'],
                          test_partition_key)
         self.assertEqual(json.loads(mock_kinesis.put_record.call_args[1]['Data'].decode('utf-8')),
