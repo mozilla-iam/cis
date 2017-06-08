@@ -5,7 +5,7 @@ import unittest
 from unittest.mock import patch
 
 
-class KinesisPublisherTest(unittest.TestCase):
+class PublisherTest(unittest.TestCase):
 
     def setUp(self):
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
@@ -13,10 +13,11 @@ class KinesisPublisherTest(unittest.TestCase):
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
         os.environ['CIS_KINESIS_STREAM_ARN'] = self.test_artifacts['dummy_kinesis_arn']
+        os.environ['CIS_LAMBDA_VALIDATOR_ARN'] = self.test_artifacts['dummy_lambda_validator_arn']
 
     @patch('cis.streams.kinesis')
     @patch('cis.streams.encrypt')
-    def test_publish_to_cis(self, mock_encrypt, mock_kinesis):
+    def test_publish_to_cis_kinesis(self, mock_encrypt, mock_kinesis):
         mock_encrypt.side_effect = [{
             'ciphertext': b'ciphertext',
             'ciphertext_key': b'ciphertext_key',
@@ -46,3 +47,38 @@ class KinesisPublisherTest(unittest.TestCase):
         self.assertEqual(json.loads(mock_kinesis.put_record.call_args[1]['Data'].decode('utf-8')),
                          test_encrypted_json)
         self.assertEqual(response, mock_kinesis.put_record.return_value)
+
+    @patch('cis.streams.lambda_client')
+    @patch('cis.streams.encrypt')
+    def test_invoke_validator_lambda(self, mock_encrypt, mock_lambda):
+        mock_encrypt.side_effect = [{
+            'ciphertext': b'ciphertext',
+            'ciphertext_key': b'ciphertext_key',
+            'iv': b'iv',
+            'tag': b'tag'
+        }]
+        mock_lambda.invoke.return_value = {
+            'StatusCode': 123,
+            'ResponseMetadata': {
+                'foo': 'bar',
+            },
+        }
+
+        test_dict = {'foo': 'bar'}
+        test_encrypted_json = {
+            'ciphertext': 'Y2lwaGVydGV4dA==',
+            'iv': 'aXY=',
+            'tag': 'dGFn',
+            'ciphertext_key': 'Y2lwaGVydGV4dF9rZXk='
+        }
+
+        from cis.streams import invoke_cis_lambda
+        response = invoke_cis_lambda(test_dict)
+
+        self.assertEqual(mock_lambda.invoke.call_args[1]['FunctionName'],
+                         self.test_artifacts['dummy_lambda_validator_arn'])
+        self.assertEqual(mock_lambda.invoke.call_args[1]['InvocationType'],
+                         'RequestResponse')
+        self.assertEqual(json.loads(mock_lambda.invoke.call_args[1]['Payload'].decode('utf-8')),
+                         test_encrypted_json)
+        self.assertEqual(response, mock_lambda.invoke.return_value)
