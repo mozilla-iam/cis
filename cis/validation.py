@@ -6,7 +6,7 @@ import os
 from jsonschema import validate as jsonschema_validate
 
 from cis.encryption import decrypt
-from cis.settings import DYNAMODB_TABLE
+from cis.settings import get_config
 
 
 CIS_SCHEMA_JSON = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'schema.json')
@@ -71,7 +71,9 @@ def store_to_vault(data):
     """
 
     dynamodb = boto3.resource('dynamodb')
-    table = dynamodb.Table(DYNAMODB_TABLE)
+    config = get_config()
+    dynamodb_table = config('dynamodb_table', namespace='cis')
+    table = dynamodb.Table(dynamodb_table)
 
     # Put data to DynamoDB
     try:

@@ -1,7 +1,20 @@
-from decouple import config
+"""
+:mod:`cis.settings` -- CIS configuration
+
+* Environment variables used
+  * CIS_ARN_MASTER_KEY
+  * CIS_DYNAMODB_TABLE
+  * CIS_KINESIS_STREAM_ARN
+  * CIS_LAMBDA_VALIDATOR_ARN
+
+"""
+
+from everett.manager import ConfigManager, ConfigOSEnv
 
 
-ARN_MASTER_KEY = config('CIS_ARN_MASTER_KEY')
-DYNAMODB_TABLE = config('CIS_DYNAMODB_TABLE')
-KINESIS_STREAM_ARN = config('CIS_KINESIS_STREAM_ARN')
-LAMBDA_VALIDATOR_ARN = config('CIS_LAMBDA_VALIDATOR_ARN')
+def get_config():
+    return ConfigManager(
+        [
+            ConfigOSEnv()
+        ]
+    )

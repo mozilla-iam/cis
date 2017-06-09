@@ -4,7 +4,7 @@ import os
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
-from cis import settings
+from cis.settings import get_config
 
 
 kms = boto3.client('kms')
@@ -17,8 +17,10 @@ def encrypt(plaintext, encryption_context={}):
     :plaintext: Payload to be encrypted
     """
 
+    config = get_config()
+    ams_key_id = config('arn_master_key', namespace='cis')
     data_key = kms.generate_data_key(
-        KeyId=settings.ARN_MASTER_KEY,
+        KeyId=ams_key_id,
         KeySpec='AES_256',
         EncryptionContext=encryption_context
     )
