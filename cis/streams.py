@@ -3,18 +3,18 @@ import boto3
 import json
 
 from cis.encryption import encrypt
-from cis.settings import KINESIS_STREAM_ARN
+from cis.settings import KINESIS_STREAM_ARN, LAMBDA_VALIDATOR_ARN
 
 
 kinesis = boto3.client('kinesis')
+lambda_client = boto3.client('lambda')
 
 
-def publish_to_cis(data, partition_key):
+def prepare_payload(data):
     """
-    Publish data to CIS kinesis stream given a partition key.
+    Encrypt data, base64 encode encrypted fields, prepare binary json
 
-    :data: Data to be published to kinesis (dict)
-    :partition_key: Kinesis partition key used to publish data to
+    :data: Data to be published to CIS
     """
 
     binary_payload = encrypt(data)
@@ -26,10 +26,41 @@ def publish_to_cis(data, partition_key):
 
     json_payload = json.dumps(base64_payload).encode('utf-8')
 
+    return json_payload
+
+
+def publish_to_cis(data, partition_key):
+    """
+    Publish data to CIS kinesis stream given a partition key.
+
+    :data: Data to be published to kinesis (dict)
+    :partition_key: Kinesis partition key used to publish data to
+    """
+
+    payload = prepare_payload(data)
+
     response = kinesis.put_record(
         StreamName=KINESIS_STREAM_ARN.split('/')[1],
-        Data=json_payload,
+        Data=payload,
         PartitionKey=partition_key
+    )
+
+    return response
+
+
+def invoke_cis_lambda(data):
+    """
+    Invoke lambda function in front of the CIS pipeline with data to be pushed to CIS
+
+    :data: Data to be published to CIS (dict)
+    """
+
+    payload = prepare_payload(data)
+
+    response = lambda_client.invoke(
+        FunctionName=LAMBDA_VALIDATOR_ARN,
+        InvocationType='RequestResponse',
+        Payload=payload
     )
 
     return response
