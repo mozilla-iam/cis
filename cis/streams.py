@@ -3,7 +3,7 @@ import boto3
 import json
 
 from cis.encryption import encrypt
-from cis.settings import KINESIS_STREAM_ARN, LAMBDA_VALIDATOR_ARN
+from cis.settings import get_config
 
 
 kinesis = boto3.client('kinesis')
@@ -38,9 +38,11 @@ def publish_to_cis(data, partition_key):
     """
 
     payload = prepare_payload(data)
-
+    config = get_config()
+    stream_arn = config('kinesis_stream_arn', namespace='cis')
+    stream_name = stream_arn.split('/')[1]
     response = kinesis.put_record(
-        StreamName=KINESIS_STREAM_ARN.split('/')[1],
+        StreamName=stream_name,
         Data=payload,
         PartitionKey=partition_key
     )
@@ -56,9 +58,10 @@ def invoke_cis_lambda(data):
     """
 
     payload = prepare_payload(data)
-
+    config = get_config()
+    function_name = config('lambda_validator_arn', namespace='cis')
     response = lambda_client.invoke(
-        FunctionName=LAMBDA_VALIDATOR_ARN,
+        FunctionName=function_name,
         InvocationType='RequestResponse',
         Payload=payload
     )

@@ -13,11 +13,6 @@ class ValidationTest(unittest.TestCase):
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
 
-        # Setup env vars with dummy AWS credentials
-        os.environ['CIS_ARN_MASTER_KEY'] = self.test_artifacts['dummy_kms_arn']
-        os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
-        os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
-
         # Test json schema to validate test payload
         self.test_json_schema = {
             'title': 'Test CIS schema',
@@ -116,8 +111,6 @@ class DatabaseTest(unittest.TestCase):
             self.test_artifacts = json.load(artifacts)
 
         # Setup env vars with dummy AWS credentials
-        os.environ['CIS_ARN_MASTER_KEY'] = self.test_artifacts['dummy_kms_arn']
-        os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
 
     @patch('cis.validation.boto3')
