@@ -25,6 +25,7 @@ SOFTWARE.
 
 """
 
+
 class StructuredLogger(object):
     def __init__(self, name, level):
         self.name = name
