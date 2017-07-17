@@ -3,4 +3,5 @@ __all__ = [
     'settings',
     'streams',
     'validation',
+    'utils'
 ]
