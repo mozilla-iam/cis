@@ -14,10 +14,7 @@ with open(cis_schema_json, 'r') as schema_data:
     cis_schema = json.load(schema_data)
 
 
-def run(publisher, decrypted_payload):
-    # Encode binary decrypted payload to unicode string
-    # Load json as dictionary object
+def run(publisher, user, profile_json):
     # Check for content validity against jsonschema
-    json_object = json.loads(decrypted_payload.decode('utf-8'))
-    jsonschema_validate(json_object, cis_schema)
+    jsonschema_validate(profile_json, cis_schema)
     return True

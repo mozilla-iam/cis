@@ -1,6 +1,7 @@
 import boto3
 import logging
 import os
+import json
 
 from pluginbase import PluginBase
 from cis.encryption import decrypt_payload
@@ -15,7 +16,7 @@ plugin_source = plugin_base.make_plugin_source(
         )
 
 # List of plugins to load, in order
-plugin_load = ['json_schema_plugin']
+plugin_load = ['json_schema_plugin', 'mozilliansorg_publisher_plugin']
 
 
 dynamodb = boto3.resource('dynamodb')
@@ -42,16 +43,21 @@ def validate(publisher, **payload):
     try:
         # Decrypt payload coming from CIS using KMS key
         # This ensures that publisher is trusted by CIS
-        decrypted_payload = decrypt_payload(**payload)
+        profile_json = json.loads(decrypt_payload(**payload).decode('utf-8'))
     except Exception:
         logger.exception('Decryption failed')
+        return False
+    try:
+        user = retrieve_from_vault(profile_json.get('user_id'))
+    except Exception:
+        logger.exception('Retrieving user from vault failed')
         return False
 
     with plugin_source:
         for plugin in plugin_load:
             cur_plugin = plugin_source.load_plugin(plugin)
             try:
-                cur_plugin.run(publisher, decrypted_payload)
+                cur_plugin.run(publisher, user, profile_json)
             except Exception:
                 logger.exception('Validation plugin {} failed'.format(cur_plugin.__name__))
                 return False
