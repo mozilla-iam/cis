@@ -18,12 +18,18 @@ with open(CIS_SCHEMA_JSON, 'r') as schema_data:
 logger = logging.getLogger(__name__)
 
 
-def validate(**payload):
+def validate(publisher, **payload):
     """
     Validates the payload passed to CIS.
 
     :payload: Encrypted payload based on the output of `cis.encryption.encrypt` method
     """
+
+    logger.info("Attempting payload validation for publisher {}".format(publisher))
+
+    if not publisher:
+        logger.exception('No publisher provided')
+        return False
 
     try:
         # Decrypt payload coming from CIS using KMS key

@@ -40,6 +40,7 @@ class ValidationTest(unittest.TestCase):
             'iv': self.test_iv,
             'tag': base64.b64decode(self.test_artifacts['expected_tag'])
         }
+        self.publisher = str(base64.b64decode(self.test_artifacts['dummy_publisher']))
 
     @patch('cis.encryption.kms')
     def test_valid_payload_schema(self, mock_kms):
@@ -50,10 +51,11 @@ class ValidationTest(unittest.TestCase):
 
         # Generate valid encrypted payload
         payload = encrypt(b'{"foo": "bar"}')
+        publisher = "foo"
 
         with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
-            self.assertTrue(validate(**payload))
+            self.assertTrue(validate(publisher, **payload))
 
     @patch('cis.encryption.kms')
     def test_invalid_payload_schema(self, mock_kms):
@@ -64,10 +66,26 @@ class ValidationTest(unittest.TestCase):
 
         # Generate invalid encrypted payload
         payload = encrypt(b'{"foo": 42}')
+        publisher = "foo"
 
         with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
-            self.assertFalse(validate(**payload))
+            self.assertFalse(validate(publisher, **payload))
+
+    @patch('cis.encryption.kms')
+    def test_missing_publisher_schema(self, mock_kms):
+        mock_kms.generate_data_key.return_value = self.test_kms_data
+        mock_kms.decrypt.return_value = self.test_kms_data
+
+        from cis.encryption import encrypt
+
+        # Generate invalid encrypted payload
+        payload = encrypt(b'{"foo": "bar"}')
+        publisher = None
+
+        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+            from cis.validation import validate
+            self.assertFalse(validate(publisher, **payload))
 
     @patch('cis.encryption.kms')
     def test_invalid_kms_key(self, mock_kms):
@@ -78,10 +96,11 @@ class ValidationTest(unittest.TestCase):
 
         # Generate invalid encrypted payload
         payload = encrypt(b'{"foo": "bar"}')
+        publisher = "foo"
 
         with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
-            is_valid_payload = validate(**payload)
+            is_valid_payload = validate(publisher, **payload)
         self.assertFalse(is_valid_payload)
 
     def test_valid_json_payload_schema(self):
