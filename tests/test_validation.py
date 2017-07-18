@@ -3,15 +3,19 @@ import json
 import os
 import unittest
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 
 class ValidationTest(unittest.TestCase):
     def setUp(self):
         # Load json with test data
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
-        profile_good_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json')
-        profile_bad_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json')
+        profile_good_file = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json'
+                )
+        profile_bad_file = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json'
+                )
 
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
@@ -109,9 +113,6 @@ class DatabaseTest(unittest.TestCase):
         }
         from cis.validation import retrieve_from_vault
         user = 'cis|testuser'
-        user_key = {
-                'user_id': user
-        }
         response = retrieve_from_vault(user)
         self.assertEqual(response, mock_table.get_item.return_value)
 
@@ -121,9 +122,6 @@ class DatabaseTest(unittest.TestCase):
         mock_table.get_item.side_effect = Exception('DynamoDB exception')
         from cis.validation import retrieve_from_vault
         user = 'cis|testuser'
-        user_key = {
-                'user_id': user
-        }
         response = retrieve_from_vault(user)
         self.assertEqual(response, None)
 
