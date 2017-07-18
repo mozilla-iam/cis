@@ -31,7 +31,7 @@ class ValidationTest(unittest.TestCase):
             'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
         }
 
-        # Precomputed AES IV vector
+        # Precomputed AES IV
         self.test_iv = base64.b64decode(self.test_artifacts['IV'])
 
         self.payload = {
@@ -53,7 +53,7 @@ class ValidationTest(unittest.TestCase):
         payload = encrypt(b'{"foo": "bar"}')
         publisher = "foo"
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+        with patch('cis.plugins.validation.json_schema_plugin.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
             self.assertTrue(validate(publisher, **payload))
 
@@ -68,7 +68,7 @@ class ValidationTest(unittest.TestCase):
         payload = encrypt(b'{"foo": 42}')
         publisher = "foo"
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+        with patch('cis.plugins.validation.json_schema_plugin.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
             self.assertFalse(validate(publisher, **payload))
 
@@ -83,7 +83,7 @@ class ValidationTest(unittest.TestCase):
         payload = encrypt(b'{"foo": "bar"}')
         publisher = None
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+        with patch('cis.plugins.validation.json_schema_plugin.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
             self.assertFalse(validate(publisher, **payload))
 
@@ -98,28 +98,10 @@ class ValidationTest(unittest.TestCase):
         payload = encrypt(b'{"foo": "bar"}')
         publisher = "foo"
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
+        with patch('cis.plugins.validation.json_schema_plugin.CIS_SCHEMA', self.test_json_schema):
             from cis.validation import validate
             is_valid_payload = validate(publisher, **payload)
         self.assertFalse(is_valid_payload)
-
-    def test_valid_json_payload_schema(self):
-
-        # Generate valid json string
-        json_str = '{"foo": "bar"}'
-
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate_json
-            self.assertTrue(validate_json(json_str))
-
-    def test_invalid_json_payload_schema(self):
-
-        # Generate invalid json string
-        json_str = '{"foo": 42}'
-
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate_json
-            self.assertFalse(validate_json(json_str))
 
 
 class DatabaseTest(unittest.TestCase):
@@ -131,6 +113,51 @@ class DatabaseTest(unittest.TestCase):
 
         # Setup env vars with dummy AWS credentials
         os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
+
+    @patch('cis.validation.boto3')
+    def test_retrieve_success(self, mock_boto):
+        dynamodb_mock = Mock()
+        dynamodb_table = Mock()
+        dynamodb_table.get_item.return_value = {
+            'ResponseMetadata': {
+                'HTTPStatusCode': 200,
+            }
+        }
+
+        dynamodb_mock.Table.return_value = dynamodb_table
+        mock_boto.resource.return_value = dynamodb_mock
+
+        data = {
+            'userid': 'cis|test'
+        }
+
+        from cis.validation import retrieve_from_vault
+        response = retrieve_from_vault(data)
+
+        mock_boto.resource.assert_called_with('dynamodb')
+        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
+        dynamodb_table.get_item.assert_called_with(Item=data)
+        self.assertEqual(response, dynamodb_table.get_item.return_value)
+
+    @patch('cis.validation.boto3')
+    def test_retrieve_failure(self, mock_boto):
+        dynamodb_mock = Mock()
+        dynamodb_table = Mock()
+        dynamodb_table.get_item.side_effect = Exception('DynamoDB exception')
+        dynamodb_mock.Table.return_value = dynamodb_table
+        mock_boto.resource.return_value = dynamodb_mock
+
+        data = {
+            'userid': 'cis|test',
+        }
+
+        from cis.validation import retrieve_from_vault
+        response = retrieve_from_vault(data)
+
+        mock_boto.resource.assert_called_with('dynamodb')
+        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
+        dynamodb_table.get_item.assert_called_with(Item=data)
+        self.assertEqual(response, None)
 
     @patch('cis.validation.boto3')
     def test_store_success(self, mock_boto):
