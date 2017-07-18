@@ -2,7 +2,7 @@ import base64
 import boto3
 import json
 
-from cis.encryption import encrypt
+from cis.encryption import encrypt_payload
 from cis.settings import get_config
 
 
@@ -17,7 +17,7 @@ def prepare_payload(data):
     :data: Data to be published to CIS
     """
 
-    binary_payload = encrypt(data)
+    binary_payload = encrypt_payload(data)
 
     # Encode to base64 all payload fields
     base64_payload = dict()

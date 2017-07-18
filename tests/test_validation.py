@@ -10,8 +10,8 @@ class ValidationTest(unittest.TestCase):
     def setUp(self):
         # Load json with test data
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
-        profile_good_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
-        profile_bad_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
+        profile_good_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json')
+        profile_bad_file = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json')
 
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
@@ -41,9 +41,10 @@ class ValidationTest(unittest.TestCase):
     @patch('cis.encryption.kms')
     def test_valid_payload_schema(self, mock_kms):
         mock_kms.generate_data_key.return_value = self.test_kms_data
+        mock_kms.decrypt.return_value = self.test_kms_data
 
         import cis.encryption
-        payload = cis.encryption.encrypt(json.dumps(self.test_profile_good).encode())
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_good).encode())
         publisher = "foo"
 
         from cis.validation import validate
@@ -55,7 +56,7 @@ class ValidationTest(unittest.TestCase):
         mock_kms.decrypt.return_value = self.test_kms_data
 
         import cis.encryption
-        payload = cis.encryption.encrypt(json.dumps(self.test_profile_bad).encode())
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_bad).encode())
         publisher = "foo"
 
         from cis.validation import validate
@@ -67,7 +68,7 @@ class ValidationTest(unittest.TestCase):
         mock_kms.decrypt.return_value = self.test_kms_data
 
         import cis.encryption
-        payload = cis.encryption.encrypt(json.dumps(self.test_profile_good).encode())
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_good).encode())
         publisher = None
 
         from cis.validation import validate
@@ -75,13 +76,12 @@ class ValidationTest(unittest.TestCase):
 
     @patch('cis.encryption.kms')
     def test_invalid_kms_key(self, mock_kms):
-        return True
         mock_kms.generate_data_key.return_value = self.test_kms_data
         mock_kms.decrypt.side_effect = Exception('KMS exception')
 
-        from cis.encryption import encrypt
+        from cis.encryption import encrypt_payload
 
-        payload = encrypt(json.dumps(self.test_profile_bad).encode())
+        payload = encrypt_payload(json.dumps(self.test_profile_bad).encode())
         publisher = "foo"
 
         from cis.validation import validate

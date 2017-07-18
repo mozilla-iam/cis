@@ -3,7 +3,7 @@ import logging
 import os
 
 from pluginbase import PluginBase
-from cis.encryption import decrypt
+from cis.encryption import decrypt_payload
 from cis.settings import get_config
 
 
@@ -28,7 +28,7 @@ def validate(publisher, **payload):
     """
     Validates the payload passed to CIS.
 
-    :payload: Encrypted payload based on the output of `cis.encryption.encrypt` method
+    :payload: Encrypted payload based on the output of `cis.encryption.encrypt_payload` method
     """
 
     logger.info("Attempting payload validation for publisher {}".format(publisher))
@@ -40,7 +40,7 @@ def validate(publisher, **payload):
     try:
         # Decrypt payload coming from CIS using KMS key
         # This ensures that publisher is trusted by CIS
-        decrypted_payload = decrypt(**payload)
+        decrypted_payload = decrypt_payload(**payload)
     except Exception:
         logger.exception('Decryption failed')
         return False

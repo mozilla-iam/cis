@@ -16,7 +16,7 @@ class PublisherTest(unittest.TestCase):
         os.environ['CIS_LAMBDA_VALIDATOR_ARN'] = self.test_artifacts['dummy_lambda_validator_arn']
 
     @patch('cis.streams.kinesis')
-    @patch('cis.streams.encrypt')
+    @patch('cis.streams.encrypt_payload')
     def test_publish_to_cis_kinesis(self, mock_encrypt, mock_kinesis):
         mock_encrypt.side_effect = [{
             'ciphertext': b'ciphertext',
@@ -49,7 +49,7 @@ class PublisherTest(unittest.TestCase):
         self.assertEqual(response, mock_kinesis.put_record.return_value)
 
     @patch('cis.streams.lambda_client')
-    @patch('cis.streams.encrypt')
+    @patch('cis.streams.encrypt_payload')
     def test_invoke_validator_lambda(self, mock_encrypt, mock_lambda):
         mock_encrypt.side_effect = [{
             'ciphertext': b'ciphertext',
