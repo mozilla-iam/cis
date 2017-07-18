@@ -17,7 +17,7 @@ class EncryptionTest(unittest.TestCase):
 
     @patch('cis.encryption.kms')
     @patch('cis.encryption.os')
-    def test_encrypt(self, mock_os, mock_kms):
+    def test_encrypt_payload(self, mock_os, mock_kms):
         test_kms_data = {
             'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
             'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
@@ -34,8 +34,8 @@ class EncryptionTest(unittest.TestCase):
             'tag': base64.b64decode(self.test_artifacts['expected_tag'])
         }
 
-        from cis.encryption import encrypt
-        self.assertEqual(expected_result, encrypt(b'foobar'))
+        from cis.encryption import encrypt_payload
+        self.assertEqual(expected_result, encrypt_payload(b'foobar'))
         mock_kms.generate_data_key.assert_called_once_with(
             KeyId=self.test_artifacts['dummy_kms_arn'],
             KeySpec='AES_256',
@@ -43,7 +43,7 @@ class EncryptionTest(unittest.TestCase):
         )
 
     @patch('cis.encryption.kms')
-    def test_decrypt(self, mock_kms):
+    def test_decrypt_payload(self, mock_kms):
         test_kms_data = {
             'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
             'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
@@ -59,8 +59,8 @@ class EncryptionTest(unittest.TestCase):
             'tag': base64.b64decode(self.test_artifacts['expected_tag'])
         }
 
-        from cis.encryption import decrypt
-        self.assertEqual(decrypt(**kwargs), b'foobar')
+        from cis.encryption import decrypt_payload
+        self.assertEqual(decrypt_payload(**kwargs), b'foobar')
         mock_kms.decrypt.assert_called_once_with(
             CiphertextBlob=test_kms_data['CiphertextBlob'],
             EncryptionContext={}

@@ -3,27 +3,26 @@ import json
 import os
 import unittest
 
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 
 
 class ValidationTest(unittest.TestCase):
     def setUp(self):
         # Load json with test data
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
+        profile_good_file = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json'
+                )
+        profile_bad_file = os.path.join(
+                os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json'
+                )
+
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
-
-        # Test json schema to validate test payload
-        self.test_json_schema = {
-            'title': 'Test CIS schema',
-            'type': 'object',
-            'additionalProperties': False,
-            'properties': {
-                'foo': {
-                    'type': 'string'
-                }
-            }
-        }
+        with open(profile_good_file) as profile_good:
+            self.test_profile_good = json.load(profile_good)
+        with open(profile_bad_file) as profile_bad:
+            self.test_profile_bad = json.load(profile_bad)
 
         # Precomputed test KMS derived keys
         self.test_kms_data = {
@@ -31,7 +30,7 @@ class ValidationTest(unittest.TestCase):
             'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
         }
 
-        # Precomputed AES IV vector
+        # Precomputed AES IV
         self.test_iv = base64.b64decode(self.test_artifacts['IV'])
 
         self.payload = {
@@ -41,66 +40,57 @@ class ValidationTest(unittest.TestCase):
             'tag': base64.b64decode(self.test_artifacts['expected_tag'])
         }
 
+        self.publisher = str(base64.b64decode(self.test_artifacts['dummy_publisher']))
+
     @patch('cis.encryption.kms')
     def test_valid_payload_schema(self, mock_kms):
         mock_kms.generate_data_key.return_value = self.test_kms_data
         mock_kms.decrypt.return_value = self.test_kms_data
 
-        from cis.encryption import encrypt
+        import cis.encryption
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_good).encode())
+        publisher = "foo"
 
-        # Generate valid encrypted payload
-        payload = encrypt(b'{"foo": "bar"}')
-
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate
-            self.assertTrue(validate(**payload))
+        from cis.validation import validate
+        self.assertTrue(validate(publisher, **payload))
 
     @patch('cis.encryption.kms')
     def test_invalid_payload_schema(self, mock_kms):
         mock_kms.generate_data_key.return_value = self.test_kms_data
         mock_kms.decrypt.return_value = self.test_kms_data
 
-        from cis.encryption import encrypt
+        import cis.encryption
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_bad).encode())
+        publisher = "foo"
 
-        # Generate invalid encrypted payload
-        payload = encrypt(b'{"foo": 42}')
+        from cis.validation import validate
+        self.assertFalse(validate(publisher, **payload))
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate
-            self.assertFalse(validate(**payload))
+    @patch('cis.encryption.kms')
+    def test_missing_publisher_schema(self, mock_kms):
+        mock_kms.generate_data_key.return_value = self.test_kms_data
+        mock_kms.decrypt.return_value = self.test_kms_data
+
+        import cis.encryption
+        payload = cis.encryption.encrypt_payload(json.dumps(self.test_profile_good).encode())
+        publisher = None
+
+        from cis.validation import validate
+        self.assertFalse(validate(publisher, **payload))
 
     @patch('cis.encryption.kms')
     def test_invalid_kms_key(self, mock_kms):
         mock_kms.generate_data_key.return_value = self.test_kms_data
         mock_kms.decrypt.side_effect = Exception('KMS exception')
 
-        from cis.encryption import encrypt
+        from cis.encryption import encrypt_payload
 
-        # Generate invalid encrypted payload
-        payload = encrypt(b'{"foo": "bar"}')
+        payload = encrypt_payload(json.dumps(self.test_profile_bad).encode())
+        publisher = "foo"
 
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate
-            is_valid_payload = validate(**payload)
+        from cis.validation import validate
+        is_valid_payload = validate(publisher, **payload)
         self.assertFalse(is_valid_payload)
-
-    def test_valid_json_payload_schema(self):
-
-        # Generate valid json string
-        json_str = '{"foo": "bar"}'
-
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate_json
-            self.assertTrue(validate_json(json_str))
-
-    def test_invalid_json_payload_schema(self):
-
-        # Generate invalid json string
-        json_str = '{"foo": 42}'
-
-        with patch('cis.validation.CIS_SCHEMA', self.test_json_schema):
-            from cis.validation import validate_json
-            self.assertFalse(validate_json(json_str))
 
 
 class DatabaseTest(unittest.TestCase):
@@ -113,18 +103,50 @@ class DatabaseTest(unittest.TestCase):
         # Setup env vars with dummy AWS credentials
         os.environ['CIS_DYNAMODB_TABLE'] = self.test_artifacts['dummy_dynamodb_table']
 
-    @patch('cis.validation.boto3')
-    def test_store_success(self, mock_boto):
-        dynamodb_mock = Mock()
-        dynamodb_table = Mock()
-        dynamodb_table.put_item.return_value = {
+    @patch('cis.validation.table')
+    @patch('cis.validation.dynamodb')
+    def test_retrieve_success(self, mock_dynamodb, mock_table):
+        mock_table.get_item.return_value = {
+            'ResponseMetadata': {
+                'HTTPStatusCode': 200,
+            }
+        }
+        from cis.validation import retrieve_from_vault
+        user = 'cis|testuser'
+        response = retrieve_from_vault(user)
+        self.assertEqual(response, mock_table.get_item.return_value)
+
+    @patch('cis.validation.table')
+    @patch('cis.validation.dynamodb')
+    def test_retrieve_failure(self, mock_dynamodb, mock_table):
+        mock_table.get_item.side_effect = Exception('DynamoDB exception')
+        from cis.validation import retrieve_from_vault
+        user = 'cis|testuser'
+        response = retrieve_from_vault(user)
+        self.assertEqual(response, None)
+
+    @patch('cis.validation.table')
+    @patch('cis.validation.dynamodb')
+    def test_store_success(self, mock_dynamodb, mock_table):
+        mock_table.put_item.return_value = {
             'ResponseMetadata': {
                 'HTTPStatusCode': 200,
             }
         }
 
-        dynamodb_mock.Table.return_value = dynamodb_table
-        mock_boto.resource.return_value = dynamodb_mock
+        data = {
+            'foo': 'bar',
+            'foobar': 42
+        }
+
+        from cis.validation import store_to_vault
+        response = store_to_vault(data)
+        self.assertEqual(response, mock_table.put_item.return_value)
+
+    @patch('cis.validation.table')
+    @patch('cis.validation.dynamodb')
+    def test_store_failure(self, mock_dynamodb, mock_table):
+        mock_table.put_item.side_effect = Exception('DynamoDB exception')
 
         data = {
             'foo': 'bar',
@@ -133,29 +155,4 @@ class DatabaseTest(unittest.TestCase):
 
         from cis.validation import store_to_vault
         response = store_to_vault(data)
-
-        mock_boto.resource.assert_called_with('dynamodb')
-        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
-        dynamodb_table.put_item.assert_called_with(Item=data)
-        self.assertEqual(response, dynamodb_table.put_item.return_value)
-
-    @patch('cis.validation.boto3')
-    def test_store_failure(self, mock_boto):
-        dynamodb_mock = Mock()
-        dynamodb_table = Mock()
-        dynamodb_table.put_item.side_effect = Exception('DynamoDB exception')
-        dynamodb_mock.Table.return_value = dynamodb_table
-        mock_boto.resource.return_value = dynamodb_mock
-
-        data = {
-            'foo': 'bar',
-            'foobar': 42
-        }
-
-        from cis.validation import store_to_vault
-        response = store_to_vault(data)
-
-        mock_boto.resource.assert_called_with('dynamodb')
-        dynamodb_mock.Table.assert_called_with('test_dynamodb_table')
-        dynamodb_table.put_item.assert_called_with(Item=data)
         self.assertEqual(response, None)

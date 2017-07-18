@@ -10,7 +10,7 @@ from cis.settings import get_config
 kms = boto3.client('kms')
 
 
-def encrypt(plaintext, encryption_context={}):
+def encrypt_payload(plaintext, encryption_context={}):
     """
     Encrypt CIS payload using keys derived from KMS.
 
@@ -44,7 +44,7 @@ def encrypt(plaintext, encryption_context={}):
     }
 
 
-def decrypt(ciphertext, ciphertext_key, iv, tag, encryption_context={}):
+def decrypt_payload(ciphertext, ciphertext_key, iv, tag, encryption_context={}):
     """
     Decrypt CIS payload using KMS encrypted key.
 

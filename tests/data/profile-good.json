@@ -1,0 +1,70 @@
+{
+	"user_id": "ad|Mozilla-LDAP-Dev|lmcardle",
+	"timezone": "Europe/London",
+	"active": true,
+	"lastModified": "2017-03-09T21:28:51.851Z",
+	"created": "2017-03-09T21:28:51.851Z",
+	"userName": "lmcardle@mozilla.com",
+	"displayName": "Leo McArdle",
+	"firstName": "Leo",
+	"lastName": "McArdle",
+	"preferredLanguage": "en_US",
+	"primaryEmail": "lmcardle@mozilla.com",
+	"emails": [
+		{
+			"value": "lmcardle@mozilla.com",
+			"verified": true,
+			"primary": true,
+			"name": "work"
+		},
+		{
+			"value": "leomcardle@gmail.com",
+			"verified": true,
+			"name": "personal"
+		}
+	],
+	"phoneNumbers": [
+	],
+	"uris": [
+	],
+	"nicknames": [
+	],
+	"SSHFingerprints": [
+	],
+	"PGPFingerprints": [
+	],
+	"picture": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png",
+	"shirtSize": "M",
+	"groups": [
+		"ldapGroup1",
+		"mozillian_MozGroup1",
+		"workday_EIS1",
+		"mozillian_iam_project"
+	],
+	"authoritativeGroups": [
+			{
+				"created": "2010-01-23T04:56:22Z",
+				"lastUsed": "2010-01-23T04:56:22Z",
+				"name": "moco",
+				"uuid": "reserved_mozilla_1"
+			},
+			{
+				"created": "2010-01-23T04:56:22Z",
+				"lastUsed": "2010-01-23T04:56:22Z",
+				"name": "mofo",
+				"uuid": "reserved_mozilla_2"
+			},
+			{
+				"created": "2010-01-23T04:56:22Z",
+				"lastUsed": "2010-01-23T04:56:22Z",
+				"name": "nda",
+				"uuid": "reserved_mozilla_3"
+			},
+			{
+				"created": "2010-01-23T04:56:22Z",
+				"lastUsed": "2010-01-23T04:56:22Z",
+				"name": "mozdef1.private.scl3.gmail",
+				"uuid": "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
+			}
+		]
+}
