@@ -7,13 +7,13 @@ from cis.encryption import decrypt
 from cis.settings import get_config
 
 
-PLUGIN_BASE = PluginBase(package='cis.plugins.validation')
-PLUGIN_SOURCE = PLUGIN_BASE.make_plugin_source(searchpath=[
+plugin_base = PluginBase(package='cis.plugins.validation')
+plugin_source = plugin_base.make_plugin_source(searchpath=[
     os.path.join(os.path.abspath(os.path.dirname(__file__)),
     'plugins/validation/')])
 
 # List of plugins to load, in order
-PLUGIN_LOAD = ['json_schema_plugin']
+plugin_load = ['json_schema_plugin']
 
 
 dynamodb = boto3.resource('dynamodb')
@@ -45,9 +45,9 @@ def validate(publisher, **payload):
         logger.exception('Decryption failed')
         return False
 
-    with PLUGIN_SOURCE:
-        for plugin in PLUGIN_LOAD:
-            cur_plugin = PLUGIN_SOURCE.load_plugin(plugin)
+    with plugin_source:
+        for plugin in plugin_load:
+            cur_plugin = plugin_source.load_plugin(plugin)
             try:
                 cur_plugin.run(publisher, decrypted_payload)
             except Exception:
