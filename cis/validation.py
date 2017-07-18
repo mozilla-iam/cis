@@ -16,6 +16,11 @@ PLUGIN_SOURCE = PLUGIN_BASE.make_plugin_source(searchpath=[
 PLUGIN_LOAD = ['json_schema_plugin']
 
 
+dynamodb = boto3.resource('dynamodb')
+config = get_config()
+dynamodb_table = config('dynamodb_table', namespace='cis')
+table = dynamodb.Table(dynamodb_table)
+
 logger = logging.getLogger(__name__)
 
 
@@ -59,17 +64,14 @@ def retrieve_from_vault(user):
     :user: User's id
     """
 
-    dynamodb = boto3.resource('dynamodb')
-    config = get_config()
-    dynamodb_table = config('dynamodb_table', namespace='cis')
-    table = dynamodb.Table(dynamodb_table)
+    user_key = {'user_id': user}
 
     try:
-        response = table.get_item(Item='userid')
+        response = table.get_item(Key=user_key)
     except Exception:
         logger.exception('DynamoDB GET failed')
         return None
-    return True
+    return response
 
 
 def store_to_vault(data):
@@ -78,11 +80,6 @@ def store_to_vault(data):
 
     :data: Data to store in the database
     """
-
-    dynamodb = boto3.resource('dynamodb')
-    config = get_config()
-    dynamodb_table = config('dynamodb_table', namespace='cis')
-    table = dynamodb.Table(dynamodb_table)
 
     # Put data to DynamoDB
     try:
