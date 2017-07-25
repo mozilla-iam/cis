@@ -27,7 +27,7 @@ triggers updates to Auth0, LDAP, etc.
 See also https://github.com/mozilla-iam/cis_functions/ to find the serverless
 code of the stream publishers/identity drivers.
 
-## Diagram of functionment
+## Change Integration Service : Workflow Diagram
 
 ![Publisher=>CIS Vault=>ID Driver](/docs/images/CIS-AWS-Stencils.png?raw=true
 "CIS Diagram")
