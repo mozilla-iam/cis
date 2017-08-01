@@ -50,5 +50,5 @@ change.
 
 All user profiles submitted to CIS must be signed with your unique and private
 publisher key.
-Signing uses https://github.com/mozilla-iam/pykmssig/ and the signature is sent
+Signing uses [pykmssig](https://github.com/mozilla-iam/pykmssig) and the signature is sent
 in a separate JSON document.
