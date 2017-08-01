@@ -38,7 +38,7 @@ validating the payload or profile has not been tampered with in transit.  This s
 
 ## JSON user profile ('user identity')
 
-- [Profile schema](/scripts/js/schema.json)
+- [Profile schema](/cis/schema.json)
 
 The entire profile must be sent to CIS. It is either created from scratch for
 new users, or fetched from an identity provider such as Auth0, then modified
