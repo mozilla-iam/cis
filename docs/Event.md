@@ -34,7 +34,7 @@ event : {
 * The profile contains the user-profile change.
 * Publisher uniquely identifies the publisher.  Example: mozillians.org
 * Signature is a KMS encrypted payload for
-validating the payload or profile has not been tampered with in transit.  This signature is generated and validated using pykmssig available in the Mozilla-IAM github org.
+validating the payload or profile has not been tampered with in transit.  This signature is generated and validated using [pykmssig](https://github.com/mozilla-iam/pykmssig/)
 
 ## JSON user profile ('user identity')
 
