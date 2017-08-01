@@ -11,11 +11,9 @@ class ValidationTest(unittest.TestCase):
         # Load json with test data
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
         profile_good_file = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json'
-                )
+            os.path.abspath(os.path.dirname(__file__)), 'data/profile-good.json')
         profile_bad_file = os.path.join(
-                os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json'
-                )
+            os.path.abspath(os.path.dirname(__file__)), 'data/profile-bad.json')
 
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
