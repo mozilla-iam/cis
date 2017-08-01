@@ -37,9 +37,9 @@
 	"shirtSize": "M",
 	"groups": [
 		"ldapGroup1",
-		"mozillian_MozGroup1",
+		"mozilliansorg_MozGroup1",
 		"workday_EIS1",
-		"mozillian_iam_project"
+		"mozilliansorg_iam_project"
 	],
 	"authoritativeGroups": [
 			{

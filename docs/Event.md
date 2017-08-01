@@ -39,6 +39,7 @@ validating the payload or profile has not been tampered with in transit.  This s
 ## JSON user profile ('user identity')
 
 - [Profile schema](/cis/schema.json)
+- [Sample test profile](/tests/data/profile-good.json)
 
 The entire profile must be sent to CIS. It is either created from scratch for
 new users, or fetched from an identity provider such as Auth0, then modified
@@ -50,5 +51,5 @@ change.
 
 All user profiles submitted to CIS must be signed with your unique and private
 publisher key.
-Signing uses https://github.com/mozilla-iam/pykmssig/ and the signature is sent
+Signing uses [pykmssig](https://github.com/mozilla-iam/pykmssig) and the signature is sent
 in a separate JSON document.
