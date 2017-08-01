@@ -10,10 +10,8 @@ from cis.settings import get_config
 
 plugin_base = PluginBase(package='cis.plugins.validation')
 plugin_source = plugin_base.make_plugin_source(
-        searchpath=[os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                    'plugins/validation/')
-                    ]
-        )
+    searchpath=[os.path.join(os.path.abspath(os.path.dirname(__file__)),
+                'plugins/validation/')])
 
 # List of plugins to load, in order
 plugin_load = ['json_schema_plugin', 'mozilliansorg_publisher_plugin']
