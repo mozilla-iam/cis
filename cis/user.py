@@ -1,7 +1,5 @@
 """First class object to represent a user and data about that user."""
 import logging
-
-
 from cis.settings import get_config
 
 
@@ -45,13 +43,14 @@ class Profile(object):
         except Exception:
             logger.exception('DynamoDB GET failed')
             return None
+
         return response
 
     def _store_in_vault(self):
         # Put data to DynamoDB
         try:
             response = self.dyanmodb_table.put_item(
-                Item=data
+                Item=self.profile_data
             )
         except Exception:
             logger.exception('DynamoDB PUT failed')
