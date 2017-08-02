@@ -1,105 +1,64 @@
-import json
-import logging
 import os
-
-import boto3
+import logging
 from pluginbase import PluginBase
 
-from cis.libs.encryption import decrypt_payload
-from cis.settings import get_config
-
-plugin_base = PluginBase(package='cis.plugins.validation')
-plugin_source = plugin_base.make_plugin_source(
-        searchpath=[
-            os.path.join(
-                os.path.abspath(
-                    os.path.dirname(__file__)
-                ),
-                '../plugins/validation/'
-            )
-        ]
-    )
-
-# List of plugins to load, in order
-plugin_load = ['json_schema_plugin', 'mozilliansorg_publisher_plugin']
-
-dynamodb = boto3.resource('dynamodb')
-config = get_config()
-dynamodb_table = config('dynamodb_table', namespace='cis')
-table = dynamodb.Table(dynamodb_table)
 
 logger = logging.getLogger(__name__)
 
-def validate(publisher, **payload):
-    """
-    Validates the payload passed to CIS.
 
-    :payload: Encrypted payload based on the output of `cis.encryption.encrypt_payload` method
-    """
+class Operation(object):
+    """Guaranteed object for performing validation steps."""
+    def __init__(self, publisher, profile_data, user=None):
+        self.publisher = publisher
+        self.profile_data = profile_data
+        self.user = user
 
-    logger.info("Attempting payload validation for publisher {}".format(publisher))
+    def is_valid(self):
+        """Source of truth for all validation options."""
+        s = Schema(self.publisher, self.profile_data, self.user)
+        if s.validate() is True:
+            return True
+        else:
+            return False
 
-    if not publisher:
-        logger.exception('No publisher provided')
-        return False
+class Schema(object):
+    def __init__(self, publisher, profile_data, user = None):
+        """Validates a user profile against the JSON schema using a predefined set of plugins."""
+        # List of plugins to load, in order
+        self.plugin_load = ['json_schema_plugin', 'mozilliansorg_publisher_plugin']
+        self.plugin_source = self._initialize_plugin_source()
+        self.profile_data = profile_data
+        self.publisher = publisher
+        self.user = user
 
-    try:
-        # Decrypt payload coming from CIS using KMS key
-        # This ensures that publisher is trusted by CIS
-        profile_json = json.loads(decrypt_payload(**payload).decode('utf-8'))
-    except Exception:
-        logger.exception('Decryption failed')
-        return False
-    try:
-        user = retrieve_from_vault(profile_json.get('user_id'))
-    except Exception:
-        logger.exception('Retrieving user from vault failed')
-        return False
+    def validate(self):
+        with self.plugin_source:
+            for plugin in self.plugin_load:
+                cur_plugin = self.plugin_source.load_plugin(plugin)
+                try:
+                    if cur_plugin.run(self.publisher, self.user, self.profile_data) is False:
+                        return False
+                except Exception as e:
+                    print(e)
+                    logger.exception('Validation plugin {name} failed : {error}'.format(
+                            name=cur_plugin.__name__,
+                            error=e
+                        )
+                    )
+                    return False
+            return True
 
-    with plugin_source:
-        for plugin in plugin_load:
-            cur_plugin = plugin_source.load_plugin(plugin)
-            try:
-                cur_plugin.run(publisher, user, profile_json)
-            except Exception:
-                logger.exception('Validation plugin {} failed'.format(cur_plugin.__name__))
-                return False
+    def _initialize_plugin_source(self):
+        plugin_base = PluginBase(package='cis.plugins.validation')
+        plugin_source = plugin_base.make_plugin_source(
+                searchpath=[
+                    os.path.join(
+                        os.path.abspath(
+                            os.path.dirname(__file__)
+                        ),
+                        '../plugins/validation/'
+                    )
+                ]
+            )
 
-    return True
-
-
-def retrieve_from_vault(user):
-    """
-    Check if a user exist in dynamodb
-
-    :user: User's id
-    """
-
-    print(user)
-
-    user_key = {'user_id': user}
-
-    try:
-        response = table.get_item(Key=user_key)
-    except Exception:
-        logger.exception('DynamoDB GET failed')
-        return None
-    return response
-
-
-def store_to_vault(data):
-    """
-    Store data to DynamoDB.
-
-    :data: Data to store in the database
-    """
-
-    # Put data to DynamoDB
-    try:
-        response = table.put_item(
-            Item=data
-        )
-    except Exception:
-        logger.exception('DynamoDB PUT failed')
-        return None
-    return response
+        return plugin_source

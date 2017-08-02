@@ -36,8 +36,12 @@ def run(publisher, user, profile_json):
         'groups'
     ]
 
-    # Check for any non-whitelisted attribute modification
-    # Note that no extra attribute may be added at this stage as we already performed schema validation
+    # Check the easiest case.  None type.
+    if user == None:
+        logger.exception('permission denied: publisher {} attempted to modify user that does not exist'
+                         ' in the identity vault'.format(publisher))
+        return False
+
     for attr in user:
         if attr not in whitelist:
             if profile_json.get(attr) != user.get(attr):
