@@ -3,9 +3,10 @@ import json
 import os
 import unittest
 
+from unittest.mock import patch
 
-class ValidationTest(unittest.TestCase):
 
+class UserTest(unittest.TestCase):
     def setUp(self):
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
         with open(fixtures) as artifacts:
@@ -40,61 +41,28 @@ class ValidationTest(unittest.TestCase):
         self.publisher = str(base64.b64decode(self.test_artifacts['dummy_publisher']))
 
     def test_object_init(self):
+        from cis import user
 
-        from cis.libs import validation
-
-        o = validation.Operation(
-            self.publisher,
-            self.test_profile_good
+        u = user.Profile(
+            boto_session=None,
+            profile_data=self.test_profile_good
         )
 
-        assert o is not None
+        assert u is not None
 
-    def test_schema_validation(self):
+    @patch('cis.user.Profile')
+    def test_user_exists(self, mock_table):
+        mock_table.dynamodb_table.get_item.return_value = {
+            'ResponseMetadata': {
+                'HTTPStatusCode': 200,
+            }
+        }
 
-        from cis.libs import validation
+        from cis.user import Profile
 
-        o_1 = validation.Operation(
-            'foo',
-            self.test_profile_good
+        p = Profile(
+            boto_session=None,
+            profile_data=self.test_profile_good
         )
 
-        good_result = o_1.is_valid()
-
-        o_2 = validation.Operation(
-            self.publisher,
-            self.test_profile_bad
-        )
-
-        print(good_result)
-
-        bad_result = o_2.is_valid()
-        assert good_result is True
-        assert bad_result is False
-
-    def test_mozillians_org_plugin(self):
-
-        from cis.libs import validation
-
-        o_1 = validation.Operation(
-            'mozillians.org',
-            self.test_profile_good
-        )
-
-        o_1.user = self.test_profile_good
-
-        good_result = o_1.is_valid()
-
-        from cis.libs import validation
-
-        o_1 = validation.Operation(
-            'mozillians.org',
-            self.test_profile_good
-        )
-
-        o_1.user = None
-
-        bad_result = o_1.is_valid()
-
-        assert bad_result is False
-
+        assert p.exists
