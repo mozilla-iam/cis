@@ -3,9 +3,10 @@ import json
 import os
 import unittest
 
+from unittest.mock import patch
 
-class ValidationTest(unittest.TestCase):
 
+class ProcessorTest(unittest.TestCase):
     def setUp(self):
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
         with open(fixtures) as artifacts:
@@ -36,65 +37,51 @@ class ValidationTest(unittest.TestCase):
         os.environ["CIS_DYNAMODB_TABLE"] = self.test_artifacts['dummy_dynamodb_table']
         os.environ["CIS_KINESIS_STREAM_ARN"] = self.test_artifacts['dummy_kinesis_arn']
         os.environ["CIS_LAMBDA_VALIDATOR_ARN"] = self.test_artifacts['dummy_lambda_validator_arn']
+        os.environ["AWS_LAMBDA_FUNCTION_NAME"] = "foo_bar_bat_validator"
+
 
         self.publisher = str(base64.b64decode(self.test_artifacts['dummy_publisher']))
 
     def test_object_init(self):
+        from cis import processor
+        p = processor.Operation()
 
-        from cis.libs import validation
 
-        o = validation.Operation(
-            self.publisher,
-            self.test_profile_good
+    def test_processor_decrypt(self):
+        from cis.libs import encryption
+
+        o = encryption.Operation(
+            boto_session = None
         )
 
-        assert o is not None
+        test_kms_data = {
+            'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
+            'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
+        }
 
-    def test_schema_validation(self):
+        test_iv = base64.b64decode(self.test_artifacts['IV'])
 
-        from cis.libs import validation
+        # Set attrs on object to test data.  Not patching boto3 now!
+        o.data_key = test_kms_data
+        o.iv = test_iv
+        o.plaintext_key = base64.b64decode(self.test_artifacts['Plaintext'])
 
-        o_1 = validation.Operation(
-            'foo',
-            self.test_profile_good
+        encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
+
+        publisher = 'mozillians.org'
+
+        from cis import processor
+
+        p = processor.Operation(
+            boto_session=None,
+            publisher=publisher,
+            signature={},
+            encrypted_profile_data=encrypted_profile
         )
 
-        good_result = o_1.is_valid()
+        p.decryptor = o
 
-        o_2 = validation.Operation(
-            self.publisher,
-            self.test_profile_bad
-        )
+        p.run()
 
-        print(good_result)
-
-        bad_result = o_2.is_valid()
-        assert good_result is True
-        assert bad_result is False
-
-    def test_mozillians_org_plugin(self):
-
-        from cis.libs import validation
-
-        o_1 = validation.Operation(
-            'mozillians.org',
-            self.test_profile_good
-        )
-
-        o_1.user = self.test_profile_good
-
-        good_result = o_1.is_valid()
-
-        from cis.libs import validation
-
-        o_1 = validation.Operation(
-            'mozillians.org',
-            self.test_profile_good
-        )
-
-        o_1.user = None
-
-        bad_result = o_1.is_valid()
-
-        assert bad_result is False
+        assert json.dumps(p.decrytped_profile) == json.dumps(self.test_profile_good)
 

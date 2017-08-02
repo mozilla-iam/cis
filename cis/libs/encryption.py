@@ -72,12 +72,12 @@ class Operation(object):
     def _get_initialization_vector(self):
         return os.urandom(12)
 
-    def _get_data_key_from_kms(self):
+    def _get_data_key_from_kms(self, encryption_context={}):
         """
         
         :return: Amazon KMS Data key for use with envelope encryption.
         """
-        data_key = kms.generate_data_key(
+        data_key = self.kms.generate_data_key(
             KeyId=self.kms_key_arn,
             KeySpec='AES_256',
             EncryptionContext=encryption_context
