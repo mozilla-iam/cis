@@ -16,6 +16,7 @@ class Operation(object):
     def is_valid(self):
         """Source of truth for all validation options."""
         s = Schema(self.publisher, self.profile_data, self.user)
+
         if s.validate() is True:
             return True
         else:
@@ -38,6 +39,8 @@ class Schema(object):
                 try:
                     if cur_plugin.run(self.publisher, self.user, self.profile_data) is False:
                         return False
+                    else:
+                        pass
                 except Exception as e:
                     print(e)
                     logger.exception('Validation plugin {name} failed : {error}'.format(
@@ -46,7 +49,7 @@ class Schema(object):
                         )
                     )
                     return False
-            return True
+        return True
 
     def _initialize_plugin_source(self):
         plugin_base = PluginBase(package='cis.plugins.validation')

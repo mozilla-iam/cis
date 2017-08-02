@@ -1,9 +1,12 @@
 import base64
+import boto3
 import json
 import os
 import unittest
 
 from unittest.mock import patch
+
+from moto import mock_kinesis
 
 
 class ProcessorTest(unittest.TestCase):
@@ -79,9 +82,102 @@ class ProcessorTest(unittest.TestCase):
             encrypted_profile_data=encrypted_profile
         )
 
+        p.user = self.test_profile_good
+
+
         p.decryptor = o
 
         p.run()
 
         assert json.dumps(p.decrytped_profile) == json.dumps(self.test_profile_good)
 
+    def test_processor_validator(self):
+        from cis.libs import encryption
+
+        o = encryption.Operation(
+            boto_session = None
+        )
+
+        test_kms_data = {
+            'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
+            'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
+        }
+
+        test_iv = base64.b64decode(self.test_artifacts['IV'])
+
+        # Set attrs on object to test data.  Not patching boto3 now!
+        o.data_key = test_kms_data
+        o.iv = test_iv
+        o.plaintext_key = base64.b64decode(self.test_artifacts['Plaintext'])
+
+        encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
+
+        publisher = 'mozillians.org'
+
+        from cis import processor
+
+        p = processor.Operation(
+            boto_session=None,
+            publisher=publisher,
+            signature={},
+            encrypted_profile_data=encrypted_profile
+        )
+
+        # Fake like the user returned from dynamo by returning same profile.
+        p.user = self.test_profile_good
+
+        # Decrypt with fake key material.
+        p.decryptor = o
+
+        res = p.run()
+
+        assert res == True
+
+    @mock_kinesis
+    def test_processor_kinesis(self):
+        from cis.libs import encryption
+
+
+
+        o = encryption.Operation(
+            boto_session = None
+        )
+
+        test_kms_data = {
+            'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
+            'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
+        }
+
+        test_iv = base64.b64decode(self.test_artifacts['IV'])
+
+        # Set attrs on object to test data.  Not patching boto3 now!
+        o.data_key = test_kms_data
+        o.iv = test_iv
+        o.plaintext_key = base64.b64decode(self.test_artifacts['Plaintext'])
+
+        encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
+
+        publisher = 'mozillians.org'
+
+        from cis import processor
+
+        p = processor.Operation(
+            boto_session=None,
+            publisher=publisher,
+            signature={},
+            encrypted_profile_data=encrypted_profile
+        )
+
+        # Fake like the user returned from dynamo by returning same profile.
+        p.user = self.test_profile_good
+
+        p.dry_run = False
+
+        p.kinesis_client = boto3.client('kinesis')
+
+        # Decrypt with fake key material.
+        p.decryptor = o
+
+        res = p.run()
+
+        assert res == True
