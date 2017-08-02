@@ -1,10 +1,10 @@
 import base64
-import boto3
 import json
 
-from cis.encryption import encrypt_payload
-from cis.settings import get_config
+import boto3
 
+from cis.libs.encryption import encrypt_payload
+from cis.settings import get_config
 
 kinesis = boto3.client('kinesis')
 lambda_client = boto3.client('lambda')
