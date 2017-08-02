@@ -1,21 +1,27 @@
-import boto3
+import json
 import logging
 import os
-import json
 
+import boto3
 from pluginbase import PluginBase
-from cis.encryption import decrypt_payload
-from cis.settings import get_config
 
+from cis.libs.encryption import decrypt_payload
+from cis.settings import get_config
 
 plugin_base = PluginBase(package='cis.plugins.validation')
 plugin_source = plugin_base.make_plugin_source(
-    searchpath=[os.path.join(os.path.abspath(os.path.dirname(__file__)),
-                'plugins/validation/')])
+        searchpath=[
+            os.path.join(
+                os.path.abspath(
+                    os.path.dirname(__file__)
+                ),
+                '../plugins/validation/'
+            )
+        ]
+    )
 
 # List of plugins to load, in order
 plugin_load = ['json_schema_plugin', 'mozilliansorg_publisher_plugin']
-
 
 dynamodb = boto3.resource('dynamodb')
 config = get_config()
@@ -23,7 +29,6 @@ dynamodb_table = config('dynamodb_table', namespace='cis')
 table = dynamodb.Table(dynamodb_table)
 
 logger = logging.getLogger(__name__)
-
 
 def validate(publisher, **payload):
     """
@@ -69,6 +74,8 @@ def retrieve_from_vault(user):
 
     :user: User's id
     """
+
+    print(user)
 
     user_key = {'user_id': user}
 

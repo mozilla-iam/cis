@@ -12,11 +12,22 @@ class PublisherTest(unittest.TestCase):
 
         with open(fixtures) as artifacts:
             self.test_artifacts = json.load(artifacts)
-        os.environ['CIS_KINESIS_STREAM_ARN'] = self.test_artifacts['dummy_kinesis_arn']
-        os.environ['CIS_LAMBDA_VALIDATOR_ARN'] = self.test_artifacts['dummy_lambda_validator_arn']
+        # Set environment variables
+        """
+        * Environment variables used
+          * CIS_ARN_MASTER_KEY
+          * CIS_DYNAMODB_TABLE
+          * CIS_KINESIS_STREAM_ARN
+          * CIS_LAMBDA_VALIDATOR_ARN
 
-    @patch('cis.streams.kinesis')
-    @patch('cis.streams.encrypt_payload')
+        """
+        os.environ["CIS_ARN_MASTER_KEY"] = self.test_artifacts['dummy_kms_arn']
+        os.environ["CIS_DYNAMODB_TABLE"] = self.test_artifacts['dummy_dynamodb_table']
+        os.environ["CIS_KINESIS_STREAM_ARN"] = self.test_artifacts['dummy_kinesis_arn']
+        os.environ["CIS_LAMBDA_VALIDATOR_ARN"] = self.test_artifacts['dummy_lambda_validator_arn']
+
+    @patch('cis.libs.streams.kinesis')
+    @patch('cis.libs.streams.encrypt_payload')
     def test_publish_to_cis_kinesis(self, mock_encrypt, mock_kinesis):
         mock_encrypt.side_effect = [{
             'ciphertext': b'ciphertext',
@@ -37,7 +48,7 @@ class PublisherTest(unittest.TestCase):
             'ciphertext_key': 'Y2lwaGVydGV4dF9rZXk='
         }
 
-        from cis.streams import publish_to_cis
+        from cis.libs.streams import publish_to_cis
         response = publish_to_cis(test_dict, test_partition_key)
 
         self.assertEqual(mock_kinesis.put_record.call_args[1]['StreamName'],
@@ -48,8 +59,8 @@ class PublisherTest(unittest.TestCase):
                          test_encrypted_json)
         self.assertEqual(response, mock_kinesis.put_record.return_value)
 
-    @patch('cis.streams.lambda_client')
-    @patch('cis.streams.encrypt_payload')
+    @patch('cis.libs.streams.lambda_client')
+    @patch('cis.libs.streams.encrypt_payload')
     def test_invoke_validator_lambda(self, mock_encrypt, mock_lambda):
         mock_encrypt.side_effect = [{
             'ciphertext': b'ciphertext',
@@ -72,7 +83,7 @@ class PublisherTest(unittest.TestCase):
             'ciphertext_key': 'Y2lwaGVydGV4dF9rZXk='
         }
 
-        from cis.streams import invoke_cis_lambda
+        from cis.libs.streams import invoke_cis_lambda
         response = invoke_cis_lambda(test_dict)
 
         self.assertEqual(mock_lambda.invoke.call_args[1]['FunctionName'],
