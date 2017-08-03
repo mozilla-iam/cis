@@ -17,7 +17,7 @@ def run(publisher, user, profile_json):
     if publisher != 'mozillians.org':
         return True
 
-    ## Validate only whitelisted fields for this publisher are in use
+    # Validate only whitelisted fields for this publisher are in use
     whitelist = [
         'timezone',
         'displayName',
@@ -37,7 +37,7 @@ def run(publisher, user, profile_json):
     ]
 
     # Check the easiest case.  None type.
-    if user == None:
+    if user is None:
         logger.exception('permission denied: publisher {} attempted to modify user that does not exist'
                          ' in the identity vault'.format(publisher))
         return False
@@ -49,7 +49,7 @@ def run(publisher, user, profile_json):
                                  'authority over'.format(publisher))
                 return False
 
-    ## Validate namespaced groups only come from Mozillians.org
+    # Validate namespaced groups only come from Mozillians.org
     # This is the whitelisted group prefix for this publisher:
     # group sub structure looks like: user.groups = [ 'group_from_ldap1', 'moziliansorg_mytestgroup', ...]
     prefix = 'mozilliansorg_'

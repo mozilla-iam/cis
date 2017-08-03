@@ -9,7 +9,8 @@
 
 """
 
-from everett.manager import ConfigManager, ConfigOSEnv
+from everett.manager import ConfigManager
+from everett.manager import ConfigOSEnv
 
 
 def get_config():

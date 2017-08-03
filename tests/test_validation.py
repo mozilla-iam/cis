@@ -83,8 +83,6 @@ class ValidationTest(unittest.TestCase):
 
         o_1.user = self.test_profile_good
 
-        good_result = o_1.is_valid()
-
         from cis.libs import validation
 
         o_1 = validation.Operation(
@@ -97,4 +95,3 @@ class ValidationTest(unittest.TestCase):
         bad_result = o_1.is_valid()
 
         assert bad_result is False
-
