@@ -1,32 +1,29 @@
-"""Centralized handling of sessions for change integration."""
+"""Centralized handling of AWS Boto sessions for change integration."""
 
 import boto3
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class Connect(object):
-    def __init__(self, type, service=None, region='us-west-2', profile='default'):
+    def __init__(self, connection_type, service=None, region='us-west-2', profile='default'):
         """
-        :param type: session|client|resource
+        :param connection_type: session|client|resource
         :param service: kms|dynamodb|other
         :param region: us-east-1|us-west-2
         :param profile: default but supports others
         """
         self.service = service
         self.region = region
-        self.connection_type = type
+        self.connection_type = connection_type
         self.profile = profile
 
-        try:
-            # Attempt to init default boto session and raise if fails
-            boto3.setup_default_session(profile_name=self.profile)
-        except Exception as e:
-            raise(e)
+        boto3.setup_default_session(profile_name=self.profile)
 
     def connect(self):
-        if self.connection_type is None:
-            raise AttributeError(
-                "Could not determine connect type.  Set client or resource."
-            )
-        elif self.connection_type == "client":
+        if self.connection_type == "client":
             client = boto3.client(
                 self.service,
                 region_name=self.region
@@ -49,4 +46,4 @@ class Connect(object):
         else:
             raise AttributeError(
                 "Connection type is not supported."
-)
+            )

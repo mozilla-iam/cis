@@ -15,5 +15,3 @@ with open(cis_schema_json, 'r') as schema_data:
 def run(publisher, user, profile_json):
     # Check for content validity against jsonschema
     jsonschema_validate(profile_json, cis_schema)
-
-

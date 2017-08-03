@@ -1,9 +1,15 @@
+import logging
 import os
 
+from botocore.exceptions import ClientError
 from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
 
 from cis.settings import get_config
+
+
+logger = logging.getLogger(__name__)
+
 
 class Operation(object):
     def __init__(self, boto_session):
@@ -13,7 +19,11 @@ class Operation(object):
 
         try:
             self.kms = boto_session.client(service_name='kms')
-        except Exception as e:
+        except ClientError as e:
+            logger.info('Boto initialization error : {e}'.format(e=e))
+            self.kms = None
+        except AttributeError as e:
+            logger.info('Boto initialization error : {e}'.format(e=e))
             self.kms = None
 
         self.kms_key_arn = self.config('arn_master_key', namespace='cis')
@@ -22,7 +32,7 @@ class Operation(object):
     def encrypt(self, plaintext, encryption_context={}):
         """
         Encrypt CIS payload using keys derived from KMS.
-    
+
         :plaintext: Payload to be encrypted
         """
         if self.data_key is None:
@@ -50,9 +60,8 @@ class Operation(object):
         }
 
     def decrypt(self, ciphertext, ciphertext_key, iv, tag, encryption_context={}):
-        """
-        Decrypt CIS payload using KMS encrypted key.
-    
+        """Decrypt CIS payload using KMS encrypted key.
+
         :ciphertext: encrypted payload
         :ciphertext_key: encrypted KMS derived key
         :iv: AES initialization vector used to encrypt payload
@@ -74,7 +83,6 @@ class Operation(object):
 
     def _get_data_key_from_kms(self, encryption_context={}):
         """
-        
         :return: Amazon KMS Data key for use with envelope encryption.
         """
         data_key = self.kms.generate_data_key(
@@ -84,12 +92,13 @@ class Operation(object):
         )
         return data_key
 
-    def _decrypt_envelope_with_kms(self, ciphertext_key, encryption_context = {}):
+    def _decrypt_envelope_with_kms(self, ciphertext_key, encryption_context={}):
         """
-        
         :param ciphertext_key: The cipher text key to use to perform the decryption
         :param encryption_context: Usually an empty dict.  Future proofing for auth encryption.
+
         :return: A plaintext form of the AES key.
+
         """
         plaintext_key = self.kms.decrypt(
             CiphertextBlob=ciphertext_key, EncryptionContext=encryption_context

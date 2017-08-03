@@ -1,1 +1,1 @@
-include cis/schema.json
+include cis/plugins/validation/schema.json

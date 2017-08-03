@@ -1,17 +1,19 @@
 import base64
-import json
 import io
+import json
 import os
 import unittest
 import zipfile
 
 from unittest.mock import patch
 
+
 class PublisherTest(unittest.TestCase):
     def get_test_zip_file(self):
         zip_output = io.BytesIO()
         zip_file = zipfile.ZipFile(zip_output, 'w')
-        zip_file.writestr('lambda_function.py', b'''\
+        zip_file.writestr(
+            'lambda_function.py', b'''\
             def handler(event, context):
                 return True
             '''
@@ -75,12 +77,13 @@ class PublisherTest(unittest.TestCase):
         assert p.profile_data is None
 
     from cis.publisher import Change
+
     @patch.object(Change, "_invoke_validator")
     def test_publishing_profile(self, mock_validator, Change=Change):
 
         from cis.libs import encryption
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -94,7 +97,6 @@ class PublisherTest(unittest.TestCase):
         o.data_key = test_kms_data
         o.iv = test_iv
 
-
         mock_validator.return_value = {
             'StatusCode': 200
         }
@@ -102,15 +104,13 @@ class PublisherTest(unittest.TestCase):
         p = Change(
             publisher={'id': 'mozillians.org'},
             signature={},
-            profile_data = self.test_profile_good
+            profile_data=self.test_profile_good
         )
 
         p.encryptor = o
 
         p.boto_session = "I am a real session I swear"
 
-
         result = p.send()
 
         assert result is True
-
