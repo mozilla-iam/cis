@@ -4,12 +4,11 @@ import json
 import os
 import unittest
 
-from unittest.mock import patch
-
 from moto import mock_kinesis
 
 
 class ProcessorTest(unittest.TestCase):
+    @mock_kinesis
     def setUp(self):
         fixtures = os.path.join(os.path.abspath(os.path.dirname(__file__)), 'data/fixtures.json')
         with open(fixtures) as artifacts:
@@ -41,20 +40,35 @@ class ProcessorTest(unittest.TestCase):
         os.environ["CIS_KINESIS_STREAM_ARN"] = self.test_artifacts['dummy_kinesis_arn']
         os.environ["CIS_LAMBDA_VALIDATOR_ARN"] = self.test_artifacts['dummy_lambda_validator_arn']
         os.environ["AWS_LAMBDA_FUNCTION_NAME"] = "foo_bar_bat_validator"
-
+        os.environ["APEX_FUNCTION_NAME"] = "validator"
 
         self.publisher = str(base64.b64decode(self.test_artifacts['dummy_publisher']))
 
     def test_object_init(self):
         from cis import processor
         p = processor.Operation()
+        assert p is not None
 
-
+    @mock_kinesis
     def test_processor_decrypt(self):
+        kc = boto3.client('kinesis')
+
+        self.dummy_stream = kc.create_stream(
+            StreamName='dummy_cis_stream',
+            ShardCount=1
+        )
+
+        self.dummy_stream = kc.describe_stream(
+            StreamName='dummy_cis_stream',
+        )
+
+        os.environ["CIS_KINESIS_STREAM_ARN"] = self.dummy_stream['StreamDescription']['StreamARN'] + \
+            '/dummy_cis_stream'
+
         from cis.libs import encryption
 
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -71,7 +85,13 @@ class ProcessorTest(unittest.TestCase):
 
         encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
 
-        publisher = 'mozillians.org'
+        base64_payload = dict()
+        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
+            base64_payload[key] = base64.b64encode(encrypted_profile[key])
+
+        encrypted_profile = base64_payload
+
+        publisher = {'id': 'mozillians.org'}
 
         from cis import processor
 
@@ -82,8 +102,9 @@ class ProcessorTest(unittest.TestCase):
             encrypted_profile_data=encrypted_profile
         )
 
-        p.user = self.test_profile_good
+        p.kinesis_client = boto3.client('kinesis')
 
+        p.user = self.test_profile_good
 
         p.decryptor = o
 
@@ -91,11 +112,26 @@ class ProcessorTest(unittest.TestCase):
 
         assert json.dumps(p.decrytped_profile) == json.dumps(self.test_profile_good)
 
+    @mock_kinesis
     def test_processor_validator(self):
+        kc = boto3.client('kinesis')
+
+        self.dummy_stream = kc.create_stream(
+            StreamName='dummy_cis_stream',
+            ShardCount=1
+        )
+
+        self.dummy_stream = kc.describe_stream(
+            StreamName='dummy_cis_stream',
+        )
+
+        os.environ["CIS_KINESIS_STREAM_ARN"] = self.dummy_stream['StreamDescription']['StreamARN'] + \
+            '/dummy_cis_stream'
+
         from cis.libs import encryption
 
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -112,7 +148,13 @@ class ProcessorTest(unittest.TestCase):
 
         encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
 
-        publisher = 'mozillians.org'
+        base64_payload = dict()
+        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
+            base64_payload[key] = base64.b64encode(encrypted_profile[key])
+
+        encrypted_profile = base64_payload
+
+        publisher = {'id': 'mozillians.org'}
 
         from cis import processor
 
@@ -122,6 +164,8 @@ class ProcessorTest(unittest.TestCase):
             signature={},
             encrypted_profile_data=encrypted_profile
         )
+
+        p.kinesis_client = boto3.client('kinesis')
 
         # Fake like the user returned from dynamo by returning same profile.
         p.user = self.test_profile_good
@@ -131,16 +175,28 @@ class ProcessorTest(unittest.TestCase):
 
         res = p.run()
 
-        assert res == True
+        assert res is True
 
     @mock_kinesis
     def test_processor_kinesis(self):
+        kc = boto3.client('kinesis')
+
+        self.dummy_stream = kc.create_stream(
+            StreamName='dummy_cis_stream',
+            ShardCount=1
+        )
+
+        self.dummy_stream = kc.describe_stream(
+            StreamName='dummy_cis_stream',
+        )
+
+        os.environ["CIS_KINESIS_STREAM_ARN"] = self.dummy_stream['StreamDescription']['StreamARN'] + \
+            '/dummy_cis_stream'
+
         from cis.libs import encryption
 
-
-
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -157,7 +213,13 @@ class ProcessorTest(unittest.TestCase):
 
         encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
 
-        publisher = 'mozillians.org'
+        base64_payload = dict()
+        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
+            base64_payload[key] = base64.b64encode(encrypted_profile[key])
+
+        encrypted_profile = base64_payload
+
+        publisher = {'id': 'mozillians.org'}
 
         from cis import processor
 
@@ -180,4 +242,4 @@ class ProcessorTest(unittest.TestCase):
 
         res = p.run()
 
-        assert res == True
+        assert res is True

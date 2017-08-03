@@ -1,20 +1,22 @@
 """First class object for publishing messages to Mozilla Change Integration Service."""
 import base64
 import json
+import logging
 
 from cis.libs import connection
 from cis.libs import encryption
 from cis.libs import validation
 
 from cis.settings import get_config
-from cis import user
+
+
+logger = logging.getLogger(__name__)
 
 
 class ChangeNull(object):
     """Null Object to return if constructor failure."""
     def __init__(self):
         """
-
         :param publisher: Dictionary of information about publisher only required attr is id:
         :param signature: A pykmssig signature.  For now this is optional.
         :param profile_data: The complete user profile as json.
@@ -30,7 +32,6 @@ class ChangeNull(object):
 class ChangeDelegate(object):
     def __init__(self, publisher, signature, profile_data):
         """
-        
         :param publisher: Dictionary of information about publisher only required attr is id:
         :param signature: A pykmssig signature.  For now this is optional.
         :param profile_data: The complete user profile as json.
@@ -54,7 +55,6 @@ class ChangeDelegate(object):
 
     def send(self):
         """
-        
         :return: True or False based on exception.
         """
 
@@ -64,7 +64,7 @@ class ChangeDelegate(object):
         v = validation.Operation(
             publisher=self.publisher.get('id', None),
             profile_data=self.profile_data,
-            user = self.user
+            user=self.user
         )
 
         if v.is_valid:
@@ -78,6 +78,7 @@ class ChangeDelegate(object):
             }
 
             result = self._invoke_validator(json.dumps(event).encode())
+            logger.info('Invocation result is {result}'.format(result=result))
 
             return True
         else:
@@ -124,6 +125,7 @@ class ChangeDelegate(object):
         )
 
         return response
+
 
 class Change(ChangeDelegate):
     """Guaranteed change object."""

@@ -31,7 +31,7 @@ class EncryptionTest(unittest.TestCase):
         from cis.libs import encryption
 
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         assert o is not None
@@ -41,7 +41,7 @@ class EncryptionTest(unittest.TestCase):
         from cis.libs import encryption
 
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -71,7 +71,7 @@ class EncryptionTest(unittest.TestCase):
         from cis.libs import encryption
 
         o = encryption.Operation(
-            boto_session = None
+            boto_session=None
         )
 
         test_kms_data = {
@@ -94,12 +94,5 @@ class EncryptionTest(unittest.TestCase):
         }
 
         operation_result = o.decrypt(**kwargs)
-
-        expected_result = {
-            'ciphertext': base64.b64decode(self.test_artifacts['expected_ciphertext']),
-            'ciphertext_key': test_kms_data['CiphertextBlob'],
-            'iv': test_iv,
-            'tag': base64.b64decode(self.test_artifacts['expected_tag'])
-        }
 
         self.assertEqual(operation_result, b'foobar')
