@@ -27,7 +27,6 @@ class Schema(object):
                     else:
                         pass
                 except Exception as e:
-                    print(e)
                     logger.exception(
                         'Validation plugin {name} failed : {error}'.format(
                             name=cur_plugin.__name__,
