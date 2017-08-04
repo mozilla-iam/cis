@@ -97,9 +97,7 @@ class PublisherTest(unittest.TestCase):
         o.data_key = test_kms_data
         o.iv = test_iv
 
-        mock_validator.return_value = {
-            'StatusCode': 200
-        }
+        mock_validator.return_value = True
 
         p = Change(
             publisher={'id': 'mozillians.org'},
@@ -112,5 +110,7 @@ class PublisherTest(unittest.TestCase):
         p.boto_session = "I am a real session I swear"
 
         result = p.send()
+
+        print(result)
 
         assert result is True

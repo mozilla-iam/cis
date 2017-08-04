@@ -28,40 +28,7 @@ class OperationDelegate(object):
 
     def run(self):
         # Determine what stage of processing we are in and call the corresponding functions.
-
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
-
-        if self.stage == 'validator':
-            logger.info('Validator logic activated.')
-            res = self._validator_stage()
-
-            if res is True:
-                logger.info('Payload valid sending to kinesis.')
-                stream_operation = streams.Operation(
-                    boto_session=self.boto_session,
-                    publisher=self.publisher,
-                    signature=self.signature,
-                    encrypted_profile_data=self.encrypted_profile_data
-                )
-
-                if self.kinesis_client is not None:
-                    stream_operation.kinesis_client = self.kinesis_client
-
-                kinesis_result = stream_operation.to_kinesis()
-
-                if kinesis_result['ResponseMetadata']['HTTPStatusCode'] == 200:
-                    res = True
-        elif self.stage == 'streamtoidv':
-            res = self._vault_stage()
-        elif self.stage == 'idvtoauth0':
-            # TBD fold in the authzero logic from idvtoauth0 in cis_functions
-            pass
-        else:
-            # Unhandled pass for anything not handled in block.  Basically yield to block.
-            res = None
-
-        logger.info('The result of the change was {r}'.format(r=res))
-        return res
 
     def _decode_profile_packet(self):
         for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
@@ -81,6 +48,20 @@ class OperationDelegate(object):
         stage = os.environ.get('APEX_FUNCTION_NAME', None)
         return stage
 
+    def _auth_zero_stage(self):
+        # TBD in next sprint.
+        pass
+
+
+class ValidatorOperation(OperationDelegate):
+    def __init__(self, boto_session, publisher, signature, encrypted_profile_data):
+        OperationDelegate.__init__(self, boto_session, publisher, signature, encrypted_profile_data)
+
+    def run(self):
+        logger.info('Attempting to load stage processor logic: {}'.format(self.stage))
+        self.decrytped_profile = json.loads(self._decrypt_profile_packet())
+        return(self._publish_to_stream(self._validator_stage()))
+
     def _validator_stage(self, kinesis_client=None):
         if self.user is None:
             self.user = user.Profile(
@@ -94,32 +75,44 @@ class OperationDelegate(object):
             user=self.user
         ).is_valid()
 
-        if result is True and self.dry_run is not True:
-            # Send to kinesis
-            s = streams.Operation(
+        return result
+
+    def _publish_to_stream(self, validation_status=False):
+        if validation_status:
+            stream_operation = streams.Operation(
                 boto_session=self.boto_session,
                 publisher=self.publisher,
                 signature=self.signature,
                 encrypted_profile_data=self.encrypted_profile_data
             )
 
-            logger.info('Result sent to kinesis status is {s}'.format(s=s))
+            if self.kinesis_client is not None:
+                stream_operation.kinesis_client = self.kinesis_client
 
-        return result
+            kinesis_result = stream_operation.to_kinesis()
 
-    def _vault_stage(self):
-        if self.user is None:
-            u = user.Profile(
-                boto_session=self.boto_session,
-                profile_data=self.decrytped_profile
-            )
-            return u.store_in_vault()
+            return(kinesis_result['ResponseMetadata']['HTTPStatusCode'] is 200)
         else:
             return False
 
-    def _auth_zero_stage(self):
-        # TBD in next sprint.
-        pass
+
+class StreamtoVaultOperation(OperationDelegate):
+    def __init__(self, boto_session, publisher, signature, encrypted_profile_data):
+        OperationDelegate.__init__(self, boto_session, publisher, signature, encrypted_profile_data)
+
+    def run(self):
+        logger.info('Attempting to load stage processor logic: {}'.format(self.stage))
+        self.decrytped_profile = json.loads(self._decrypt_profile_packet())
+        return(self._vault_stage())
+
+    def _vault_stage(self):
+        if not self.user:
+            self.user = user.Profile(
+                boto_session=self.boto_session,
+                profile_data=self.decrytped_profile
+            )
+
+        return self.user.store_in_vault()
 
 
 class OperationNull(object):
