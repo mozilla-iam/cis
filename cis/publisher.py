@@ -58,37 +58,32 @@ class ChangeDelegate(object):
         :return: True or False based on exception.
         """
 
-        if self.boto_session is None:
+        if not self.boto_session:
             self._connect_aws()
 
-        v = validation.Operation(
-            publisher=self.publisher.get('id', None),
-            profile_data=self.profile_data,
-            user=self.user
-        )
-
-        if v.is_valid:
-            encrypted_profile = str(base64.b64encode(self._prepare_profile_data()))
-            signature = self._generate_signature()
-
-            event = {
-                'publisher': self.publisher,
-                'profile': encrypted_profile,
-                'signature': signature
-            }
-
-            result = self._invoke_validator(json.dumps(event).encode())
+        if self._validate_profile_data():
+            result = self._invoke_validator(json.dumps(self._get_event_dict()).encode())
             logger.info('Invocation result is {result}'.format(result=result))
+            return result
 
-            return True
-        else:
-            return False
+    def _get_event_dict(self):
+
+        encrypted_profile = str(base64.b64encode(self._prepare_profile_data()))
+        signature = self._generate_signature()
+
+        return {
+            'publisher': self.publisher,
+            'profile': encrypted_profile,
+            'signature': signature
+        }
 
     def _prepare_profile_data(self):
         # Performing encryption and encoding on the user data and set on the object
         # Encode to base64 all payload fields
-        if self.encryptor is None:
+        if not self.encryptor:
             self.encryptor = encryption.Operation(boto_session=self.boto_session)
+
+        logger.debug('Preparing profile data and encrypting profile.')
 
         encrypted_profile = self.encryptor.encrypt(json.dumps(self.profile_data).encode('utf-8'))
 
@@ -97,12 +92,12 @@ class ChangeDelegate(object):
             base64_payload[key] = base64.b64encode(encrypted_profile[key]).decode('utf-8')
 
         encrypted_profile = json.dumps(base64_payload).encode('utf-8')
+        logger.debug('Encryption process complete.')
         return encrypted_profile
 
     def _validate_profile_data(self):
         # Validate data prior to sending to CIS
-        v = validation.Operation(self.publisher, self.profile_data)
-        return v.is_valid()
+        return validation.Operation(self.publisher, self.profile_data).is_valid()
 
     def _generate_signature(self):
         # If signature doesn't exist attempt to add one to the profile data.
@@ -114,8 +109,10 @@ class ChangeDelegate(object):
 
         :data: Data to be published to CIS (dict)
         """
-        if self.lambda_client is None:
+        if not self.lambda_client:
             self.lambda_client = self.boto_session.client(service_name='lambda')
+
+        logger.debug('Invoking the validator lambda function.')
 
         function_name = self.config('lambda_validator_arn', namespace='cis')
         response = self.lambda_client.invoke(
@@ -124,7 +121,9 @@ class ChangeDelegate(object):
             Payload=event
         )
 
-        return response
+        logger.debug('Status of the lambda invocation is {s}'.format(s=response))
+
+        return response['StatusCode'] is 200
 
 
 class Change(ChangeDelegate):
@@ -133,6 +132,5 @@ class Change(ChangeDelegate):
         try:
             ChangeDelegate.__init__(self, publisher, signature, profile_data)
         except Exception as e:
-            print(e)
-            print("returning null object")
+            logger.error('ChangeDelegate failed initialization returning nullObject.')
             ChangeNull.__init__(self)

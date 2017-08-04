@@ -14,6 +14,7 @@ class Profile(object):
         :param profile_data: The decrypted user profile JSON.
         """
         self.boto_session = boto_session
+        self.config = get_config()
         self.profile_data = profile_data
         self.dynamodb_table = None
 
@@ -25,37 +26,39 @@ class Profile(object):
             return False
 
     def retrieve_from_vault(self):
-        if self.dynamodb_table is None:
+        logger.info(
+            'Attempting to retrieve the following from the vault: {}'.format(
+                self.profile_data.get('user_id')
+            )
+        )
+
+        if not self.dynamodb_table:
             self._connect_dynamo_db()
 
         user_key = {'user_id': self.profile_data.get('user_id')}
-
-        try:
-            response = self.dynamodb_table.get_item(Key=user_key)
-            self.profile_data = response
-        except Exception:
-            logger.exception('DynamoDB GET failed')
-            return None
+        response = self.dynamodb_table.get_item(Key=user_key)
+        self.profile_data = response
 
         return response
 
     def store_in_vault(self):
-        if self.dynamodb_table is None:
+        logger.info(
+            'Attempting storage of the following user to the vault: {}'.format(
+                self.profile_data.get('user_id')
+            )
+        )
+
+        if not self.dynamodb_table:
             self._connect_dynamo_db()
 
-        try:
-            response = self.dynamodb_table.put_item(
-                Item=self.profile_data
-            )
-        except Exception:
-            logger.exception('DynamoDB PUT failed')
-            return None
+        response = self.dynamodb_table.put_item(
+            Item=self.profile_data
+        )
 
-        return response
+        return (response['ResponseMetadata']['HTTPStatusCode'] is 200)
 
     def _connect_dynamo_db(self):
         """New up a dynamodb resource from boto session."""
-        config = get_config()
         dynamodb = self.boto_session.resource('dynamodb')
-        dynamodb_table = config('dynamodb_table', namespace='cis')
+        dynamodb_table = self.config('dynamodb_table', namespace='cis')
         self.dynamodb_table = dynamodb.Table(dynamodb_table)

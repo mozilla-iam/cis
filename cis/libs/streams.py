@@ -21,7 +21,7 @@ class Operation(object):
         :partition_key: Kinesis partition key used to publish data to
         """
 
-        if self.kinesis_client is None:
+        if not self.kinesis_client:
             self.kinesis_client = self.boto_session.client('kinesis')
 
         event = {
@@ -30,8 +30,7 @@ class Operation(object):
             'signature': self.signature
         }
 
-        stream_arn = self.config('kinesis_stream_arn', namespace='cis')
-        stream_name = stream_arn.split('/')[1]
+        stream_name = self.config('kinesis_stream_name', namespace='cis')
 
         response = self.kinesis_client.put_record(
             StreamName=stream_name,

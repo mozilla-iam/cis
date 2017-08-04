@@ -8,7 +8,7 @@ logger = logging.getLogger(__name__)
 
 
 class Connect(object):
-    def __init__(self, connection_type, service=None, region='us-west-2', profile='default'):
+    def __init__(self, connection_type='session', service=None, region='us-west-2', profile='default'):
         """
         :param connection_type: session|client|resource
         :param service: kms|dynamodb|other
