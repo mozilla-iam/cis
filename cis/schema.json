@@ -1,6 +1,6 @@
 {
     "title": "CIS User Profile",
-    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).\n\nFields identified as authoritative can be relied on for identification and access control purposes; fields identified as informational should not be relied on for crticical operations but may be used to support interaction with the user.",
+    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -29,54 +29,54 @@
     "properties": {
         "user_id": {
             "type": "string",
-            "description": "(Authoritative) The user ID as defined by the underlying IdP. Profile consumers should not try to interpret this value in any way, but may use it as a stable identifier for this user as identified by this IDP."
+            "description": "The unique user identifier. Profile consumers should not try to interpret this value in any way."
         },
         "timezone": {
             "type": "string",
-            "description": "(Informational) Timezone name for this user's typical location, e.g., 'Europe/London'."
+            "description": "Preferred timezone name for this user's location, e.g., 'Europe/London'."
         },
         "active": {
             "type": "boolean",
-            "description": "(Authoritative) If false, all access for this user should be denied. Profile consumers MUST check this value and disregard the remainder of the profile if false."
+            "description": "If false, all access for this user should be denied. Profile consumers MUST check this value and disregard the remainder of the profile if false."
         },
         "lastModified": {
             "type": "string",
             "format": "date-time",
-            "description": "(Authoritative) Date of last profile modification"
+            "description": "Date of last profile modification"
         },
         "created": {
             "type": "string",
             "format": "date-time",
-            "description": "(Authoritative) Date of profile creation"
+            "description": "Date of profile creation"
         },
         "userName": {
             "type": "string",
-            "description": "UNKNOWN"
+            "description": "Human-readable login name or identifier for this user. For a unique identifier, use `user_id` instead."
         },
         "displayName": {
             "type": "string",
-            "description": "(Informational) Human-readable full name for this user"
+            "description": "Human-readable full name for this user"
         },
         "firstName": {
             "type": "string",
-            "description": "(Informational) Human-readable first name (surname) for this user"
+            "description": "Human-readable first name (surname) for this user"
         },
         "lastName": {
             "type": "string",
-            "description": "(Informational) Human-readable last (family) name for this user"
+            "description": "Human-readable last (family) name for this user"
         },
         "preferredLanguage": {
             "type": "string",
-            "description": "(Informational) Preferred language for this user, as a locale code such as `en_US`"
+            "description": "Preferred language for this user, as a locale code such as `en_US`"
         },
         "primaryEmail": {
             "type": "string",
             "format": "email",
-            "description": "(Informational) The primary email address at which the user may be reached.  Profile consumers may use this email to communicate with the user, but should not use it as a stable identifier for the user."
+            "description": "The primary email address at which the user may be reached.  Profile consumers may use this email to communicate with the user, but should not use it as a stable identifier for the user."
         },
         "emails": {
             "type": "array",
-            "description": "(Informational) All email addresses associated with this user's profile. Order is undefined.",
+            "description": "All email addresses associated with this user's profile. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -95,14 +95,14 @@
                     },
                     "name": {
                         "type": "string",
-                        "description": "UNKNOWN"
+                        "description": "This is a description of the email address usage, such as `GitHub` or `Personal`"
                     }
                 }
             }
         },
         "phoneNumbers": {
             "type": "array",
-            "description": "(Informational) All phone numbers associated with this user's profile.  Order is undefined.",
+            "description": "All phone numbers associated with this user's profile.  Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -116,55 +116,64 @@
                     },
                     "name": {
                         "type": "string",
-                        "description": "UNKNOWN"
+                        "description": "This is a description of the phone number usage, such as `Work` or `Mobile`"
                     }
                 }
             }
         },
         "uris": {
             "type": "array",
-            "description": "UNKNOWN",
+            "description": "All URIs associated with this user's profile such as `irc://irc.mozilla.org/infosec` or `https://blog.example.net`. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The URI. Format is undefined."
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                         "description": "If true, then there is some assurance (such as via a confirmation code) that this URI belongs to the user. Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary URI."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "This is a description of the URI usage, such as `Blog` or `IRC channel`"
                     }
                 }
             }
         },
         "nicknames": {
             "type": "array",
-            "description": "UNKNOWN -- irc??",
+            "description": "All nicknames associated with this user's profile such as `bob` or `mary`. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The nickname. Format is undefined."
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, then there is some assurance (such as via a confirmation code) that this nickname belongs to the user. Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary nickname."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "This is a description of the nickname usage, such as `IRC` or `Slack`"
                     }
                 }
             }
         },
         "SSHFingerprints": {
             "type": "array",
+            "description": "All OpenSSH fingerprints associated with this user's profile. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -185,6 +194,7 @@
         },
         "PGPFingerprints": {
             "type": "array",
+            "description": "All PGP fingerprints associated with this user's profile such as `bob` or `mary`. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -206,22 +216,22 @@
         "picture": {
             "type": "string",
             "format": "uri",
-            "description": "(Informational) The URL of an image representing this user."
+            "description": "The URL to an image representing this user."
         },
         "shirtSize": {
             "type": "string",
-            "description": "(Informational) Shirt size for this user. Format undefined."
+            "description": "Shirt size for this user. Format undefined."
         },
         "groups": {
             "type": "array",
-            "description": "(Informational) Deprecated. Use `authoritativeGroups` instead.",
+            "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect.",
             "items": {
                 "type": "string"
             }
         },
         "authoritativeGroups": {
             "type": "array",
-            "description": "(Authoritative) A list of user-groups of which this user is a member. The group names are specific to the IdP, so profile consumers should take the IdP into account when interpreting this information. Note that the identity of the IdP is not available in the profile.",
+            "description": "A highy reliable list of groups for which this user is a member. These groups are either machine generated and strongly verified to be correct through software, or follow a well-defined human process in order to be verified to be correct.\nThese groups may optionally be used by the access providers themselves to assert access and may take precedence over the RP's own group checks.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -233,15 +243,15 @@
                     "lastUsed": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "UNKNOWN"
+                        "description": "Date at which this group membership last granted access to a resource (generally, an RP) for the user. This may be used to automatically expire and deny access when the lastUsed attribute is older than 3 month, for example."
                         },
                     "name": {
                         "type": "string",
-                        "description": "Name of the group, as given by the IdP."
+                        "description": "Name of the group."
                         },
                     "uuid": {
                         "type": "string",
-                        "description": "Reserved; profile providers should not use this value."
+                        "description": "Unique identifier for the authoritative group. Profile consumers should not try to interpret this value in any way."
                     }
                 }
             }
