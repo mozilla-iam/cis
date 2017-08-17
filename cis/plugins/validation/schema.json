@@ -292,7 +292,7 @@
                     "lastUsed": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date at which this group membership last granted access to a resource (generally, an RP) for the user. This may be used to automatically expire and deny access when the lastUsed attribute is older than 3 month, for example."
+                        "description": "Date at which this group membership last granted access to a resource (generally, an RP) for the user. This may be used to automatically expire and deny access when the lastUsed attribute is older than 3 month, for example. This property is updated automatically."
                         },
                     "name": {
                         "type": "string",
