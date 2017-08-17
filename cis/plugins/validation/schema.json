@@ -29,7 +29,7 @@
     "properties": {
         "user_id": {
             "type": "string",
-            "description": "The unique user identifier. Profile consumers should not try to interpret this value in any way."
+            "description": "The unique user identifier. Profile consumers should not try to interpret this value in any way or display it to the user. The value is stable and can be used to identify a user across multiple sessions."
         },
         "timezone": {
             "type": "string",
