@@ -1,6 +1,6 @@
 {
     "title": "CIS User Profile",
-    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).",
+    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).  See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -238,7 +238,7 @@
                 "properties": {
                     "value": {
                         "type": "string",
-                        "description": "The key, as a hex string"
+                        "description": "The full fingerprint as a hex string."
                     },
                     "verified": {
                         "type": "boolean",
@@ -273,14 +273,14 @@
         },
         "groups": {
             "type": "array",
-            "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect.",
+            "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect. See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
             "items": {
                 "type": "string"
             }
         },
         "authoritativeGroups": {
             "type": "array",
-            "description": "A highy reliable list of groups for which this user is a member. These groups are either machine generated and strongly verified to be correct through software, or follow a well-defined human process in order to be verified to be correct.\nThese groups may optionally be used by the access providers themselves to assert access and may take precedence over the RP's own group checks.",
+            "description": "A highy reliable list of groups for which this user is a member. These groups are either machine generated and strongly verified to be correct through software, or follow a well-defined human process in order to be verified to be correct.\nThese groups may optionally be used by the access providers themselves to assert access and may take precedence over the RP's own group checks.  See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -292,7 +292,7 @@
                     "lastUsed": {
                         "type": "string",
                         "format": "date-time",
-                        "description": "Date at which this group membership last granted access to a resource (generally, an RP) for the user. This may be used to automatically expire and deny access when the lastUsed attribute is older than 3 month, for example. This property is updated automatically."
+                        "description": "Date at which this group membership last granted access to a resource (generally, an RP) for the user. This may be used to automatically expire and deny access when the lastUsed attribute is older than 3 month, for example."
                         },
                     "name": {
                         "type": "string",
