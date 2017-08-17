@@ -97,7 +97,14 @@
                         "type": "string",
                         "description": "This is a description of the email address usage, such as `GitHub` or `Personal`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "phoneNumbers": {
@@ -118,7 +125,13 @@
                         "type": "string",
                         "description": "This is a description of the phone number usage, such as `Work` or `Mobile`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "uris": {
@@ -143,7 +156,14 @@
                         "type": "string",
                         "description": "This is a description of the URI usage, such as `Blog` or `IRC channel`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "nicknames": {
@@ -168,7 +188,14 @@
                         "type": "string",
                         "description": "This is a description of the nickname usage, such as `IRC` or `Slack`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "SSHFingerprints": {
@@ -189,7 +216,14 @@
                     "name": {
                         "type": "string"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "PGPFingerprints": {
@@ -210,7 +244,14 @@
                     "name": {
                         "type": "string"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "picture": {
@@ -253,7 +294,14 @@
                         "type": "string",
                         "description": "Unique identifier for the authoritative group. Profile consumers should not try to interpret this value in any way."
                     }
-                }
+                },
+                "required": [
+                    "created",
+                    "lastUsed",
+                    "name",
+                    "uuid"
+                ],
+                "additionalProperties": false
             }
         }
     }
