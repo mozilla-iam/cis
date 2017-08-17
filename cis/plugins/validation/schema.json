@@ -205,16 +205,20 @@
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The SSH fingerprint. Format is undefined."
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, then there is some assurance that this key belongs to the associated user.  Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary SSH fingerprint."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The user-supplied name for this fingerprint."
                     }
                 },
                 "required": [
@@ -228,21 +232,25 @@
         },
         "PGPFingerprints": {
             "type": "array",
-            "description": "All PGP fingerprints associated with this user's profile such as `bob` or `mary`. Order is undefined.",
+            "description": "All PGP fingerprints associated with this user's profile such as `D8097934A92E4B4210368102FF8B7AC6154E3226`. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The key, as a hex string"
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, then there is some assurance that this key belongs to the associated user.  Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary PGP key."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The user-supplied name for this key."
                     }
                 },
                 "required": [
