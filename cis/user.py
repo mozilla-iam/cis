@@ -36,7 +36,12 @@ class Profile(object):
             self._connect_dynamo_db()
 
         user_key = {'user_id': self.profile_data.get('user_id')}
-        response = self.dynamodb_table.get_item(Key=user_key)
+
+        if user_key is not None:
+            response = self.dynamodb_table.get_item(Key=user_key)
+        else:
+            response = None
+
         self.profile_data = response
 
         return response
