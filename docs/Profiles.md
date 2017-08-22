@@ -9,6 +9,11 @@ available at
 A [sample test profile](/tests/data/profile-good.json) is also available,
 although it omits many optional fields.
 
+Auth0 provides [additional documented
+structure](https://auth0.com/docs/user-profile/normalized) for its profiles. Of
+course, using this additional profile information will make the solution
+specific to Auth0.
+
 ## Schema Validation
 
 Profiles are validated to comply with the
