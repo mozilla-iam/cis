@@ -3,6 +3,7 @@
 ## Additional resources
 - [CIS Security](docs/Security.md)
 - [CIS Event format for publishers](docs/Event.md)
+- [Profiles](docs/Profiles.md)
 
 ## Summary
 Home of Mozilla IAM change integration service repository.

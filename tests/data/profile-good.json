@@ -20,6 +20,7 @@
 		{
 			"value": "leomcardle@gmail.com",
 			"verified": true,
+  			"primary": false,
 			"name": "personal"
 		}
 	],

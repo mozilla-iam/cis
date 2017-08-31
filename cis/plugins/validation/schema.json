@@ -1,6 +1,6 @@
 {
     "title": "CIS User Profile",
-    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).",
+    "description": "A user profile for a user managed by CIS.  Objects of this type are generated from information provided by identity providers (IdP's).  See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
     "type": "object",
     "additionalProperties": false,
     "required": [
@@ -29,7 +29,7 @@
     "properties": {
         "user_id": {
             "type": "string",
-            "description": "The unique user identifier. Profile consumers should not try to interpret this value in any way."
+            "description": "The unique user identifier. Profile consumers should not try to interpret this value in any way or display it to the user. The value is stable and can be used to identify a user across multiple sessions."
         },
         "timezone": {
             "type": "string",
@@ -97,7 +97,14 @@
                         "type": "string",
                         "description": "This is a description of the email address usage, such as `GitHub` or `Personal`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "phoneNumbers": {
@@ -118,7 +125,13 @@
                         "type": "string",
                         "description": "This is a description of the phone number usage, such as `Work` or `Mobile`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "uris": {
@@ -143,7 +156,14 @@
                         "type": "string",
                         "description": "This is a description of the URI usage, such as `Blog` or `IRC channel`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "nicknames": {
@@ -168,7 +188,14 @@
                         "type": "string",
                         "description": "This is a description of the nickname usage, such as `IRC` or `Slack`"
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "SSHFingerprints": {
@@ -178,39 +205,61 @@
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The SSH fingerprint. Format is undefined."
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, then there is some assurance that this key belongs to the associated user.  Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary SSH fingerprint."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The user-supplied name for this fingerprint."
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "PGPFingerprints": {
             "type": "array",
-            "description": "All PGP fingerprints associated with this user's profile such as `bob` or `mary`. Order is undefined.",
+            "description": "All PGP fingerprints associated with this user's profile such as `D8097934A92E4B4210368102FF8B7AC6154E3226`. Order is undefined.",
             "items": {
                 "type": "object",
                 "properties": {
                     "value": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The full fingerprint as a hex string."
                     },
                     "verified": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, then there is some assurance that this key belongs to the associated user.  Otherwise, the value is entirely user-supplied."
                     },
                     "primary": {
-                        "type": "boolean"
+                        "type": "boolean",
+                        "description": "If true, this is the user's primary PGP key."
                     },
                     "name": {
-                        "type": "string"
+                        "type": "string",
+                        "description": "The user-supplied name for this key."
                     }
-                }
+                },
+                "required": [
+                    "value",
+                    "verified",
+                    "primary",
+                    "name"
+                ],
+                "additionalProperties": false
             }
         },
         "picture": {
@@ -224,14 +273,14 @@
         },
         "groups": {
             "type": "array",
-            "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect.",
+            "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect. See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
             "items": {
                 "type": "string"
             }
         },
         "authoritativeGroups": {
             "type": "array",
-            "description": "A highy reliable list of groups for which this user is a member. These groups are either machine generated and strongly verified to be correct through software, or follow a well-defined human process in order to be verified to be correct.\nThese groups may optionally be used by the access providers themselves to assert access and may take precedence over the RP's own group checks.",
+            "description": "A highy reliable list of groups for which this user is a member. These groups are either machine generated and strongly verified to be correct through software, or follow a well-defined human process in order to be verified to be correct.\nThese groups may optionally be used by the access providers themselves to assert access and may take precedence over the RP's own group checks.  See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
             "items": {
                 "type": "object",
                 "properties": {
@@ -253,7 +302,14 @@
                         "type": "string",
                         "description": "Unique identifier for the authoritative group. Profile consumers should not try to interpret this value in any way."
                     }
-                }
+                },
+                "required": [
+                    "created",
+                    "lastUsed",
+                    "name",
+                    "uuid"
+                ],
+                "additionalProperties": false
             }
         }
     }
