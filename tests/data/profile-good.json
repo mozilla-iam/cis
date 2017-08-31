@@ -10,7 +10,7 @@
 	"lastName": "McArdle",
 	"preferredLanguage": "en_US",
 	"primaryEmail": "lmcardle@mozilla.com",
-		"emails": [
+	"emails": [
 		{
 			"value": "lmcardle@mozilla.com",
 			"verified": true,
