@@ -36,7 +36,14 @@ def run(publisher, user, profile_json):
         'groups'
     ]
 
-    # Check the easiest case.  None type.
+    # Validate that only whitelisted accounts/profiles issued from vetted IdPs (generally, the ones enforcing MFA)
+    # can get groups assigned as these are used for access control
+    whitelist_idp_with_enforced_mfa = [
+            'github|',  # GitHub has a rule in Auth0 to enforce MFA
+            'ad|'       # = LDAP which enforces Duo MFA in Auth0
+    ]
+
+    # Check the easiest case. None type.
     if user is None:
         logger.exception('permission denied: publisher {} attempted to modify user that does not exist'
                          ' in the identity vault'.format(publisher))
@@ -56,6 +63,14 @@ def run(publisher, user, profile_json):
 
     old_groups = user.get('groups')
     new_groups = profile_json.get('groups')
+
+    for profile_idp in whitelist_idp_with_enforced_mfa:
+        if profile_json.get('user_id').startswith(profile_idp):
+            if new_groups and len(new_groups) != 0:
+                logger.exception('permission denied: publisher {} attempted to set `groups` attribute values for '
+                                 'a user profile initiated by an IdP that is not allowed to use '
+                                 '`groups`'.format(publisher))
+                return False
 
     # Check is we have any non-mozilliansorg group that has been *removed*
     for g in old_groups:
