@@ -65,8 +65,8 @@ def run(publisher, user, profile_json):
     new_groups = profile_json.get('groups')
 
     for profile_idp in whitelist_idp_with_enforced_mfa:
-        if profile_json.get('user_id').startswith(profile_idp):
-            if new_groups and len(new_groups) != 0:
+        if not profile_json.get('user_id').startswith(profile_idp):
+            if new_groups:
                 logger.exception('permission denied: publisher {} attempted to set `groups` attribute values for '
                                  'a user profile initiated by an IdP that is not allowed to use '
                                  '`groups`'.format(publisher))
