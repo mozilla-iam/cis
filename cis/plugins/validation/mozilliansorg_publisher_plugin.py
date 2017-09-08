@@ -39,8 +39,8 @@ def run(publisher, user, profile_json):
     # Validate that only whitelisted accounts/profiles issued from vetted IdPs (generally, the ones enforcing MFA)
     # can get groups assigned as these are used for access control
     whitelist_idp_with_enforced_mfa = [
-            'github|',  # GitHub has a rule in Auth0 to enforce MFA
-            'ad|'       # = LDAP which enforces Duo MFA in Auth0
+        'github|',  # GitHub has a rule in Auth0 to enforce MFA
+        'ad|'       # = LDAP which enforces Duo MFA in Auth0
     ]
 
     # Check the easiest case. None type.
