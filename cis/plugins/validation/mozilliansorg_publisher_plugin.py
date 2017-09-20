@@ -33,7 +33,8 @@ def run(publisher, user, profile_json):
         'PGPFingerprints',
         'picture',
         'shirtSize',
-        'groups'
+        'groups',
+        'tags'
     ]
 
     # Validate that only whitelisted accounts/profiles issued from vetted IdPs (generally, the ones enforcing MFA)
