@@ -271,6 +271,13 @@
             "type": "string",
             "description": "Shirt size for this user. Format undefined."
         },
+        "tags": {
+            "type": "array",
+            "description": "General information about user's tags stored in mozillians.org.",
+            "items": {
+                "type": "string"
+            }
+        },
         "groups": {
             "type": "array",
             "description": "Informational group membership for the user. Non-prefixed groups are what is known as Mozilla LDAP groups. Groups prefixed by a provider name and underscore are provided by a specific group engine.\nFor example `providername_groupone` is provided by `providername`.\nThese groups are provided `as-is` and you should ensure it contains the members you expect. See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for details.",
