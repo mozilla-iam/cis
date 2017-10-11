@@ -45,6 +45,13 @@ in the future.
 - The endpoint provides the [CIS User profile](Profiles.md).
 - All endpoints are currently **read-only**.
 
+### Key use-cases
+- I want to be able to query full profile information so that my RP has up to date user information, without having the 
+user logging in. I need to be able to perform search queries.
+- I want to be able to query, from the API: director name, manager name, developer name, developer bugmail for all user profiles, where directory name is one from a list of directors.
+The resulting data is used to run bugzilla queries on needinfos and review requests.
+- I want to create an org chart from querying the API, similar to phonebook's org chart.
+
 ### Supported Scopes
 
 - The endpoint require the `profile` scope in the OAuth request.
