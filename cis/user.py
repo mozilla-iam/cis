@@ -56,8 +56,26 @@ class Profile(object):
         if not self.dynamodb_table:
             self._connect_dynamo_db()
 
+        # Workaround DynamoDB limitation
+        # Replace `None` values with empty string
+
+        def update_values(d):
+            """Recursively update None values with empty string."""
+            new = {}
+            for k in d.keys():
+                v = d[k]
+                if isinstance(v, dict):
+                    v = update_values(v)
+                if v is None:
+                    new[k] = ''
+                else:
+                    new[k] = v
+            return new
+
+        profile_data = update_values(self.profile_data)
+
         response = self.dynamodb_table.put_item(
-            Item=self.profile_data
+            Item=profile_data
         )
 
         return (response['ResponseMetadata']['HTTPStatusCode'] is 200)
