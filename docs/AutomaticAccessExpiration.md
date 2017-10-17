@@ -22,7 +22,7 @@ silent authentication), this attribute's timestamp (`lastUsed`) is updated for t
 access for the user.
 The CIS validation plugins ensure that only the access provider can modify this attribute.
 
-Simili-JSON represent of this section of the profile:
+Simili-JSON representation of this section of the profile:
 ```
 user.authorizedGroups = [
  {
@@ -43,7 +43,7 @@ example), we utilize a CIS Publisher plugin in order to update the `user.authori
 The Auth0 CIS Publisher is triggered during calls to Auth0's `/authorize` endpoint (OIDC login) with any parameter, 
 including `prompt=none` (in other word for logins and session refreshes).
 
-#### Attributes setting
+#### Attributes settings
 - `created` is set if the AuthorizedGroup uuid did not previously exist and is set to the current time.
 - `lastUsed` is set to the current time when the user `/authorize` call occurs. At creation time, this is the same value
 as `created`
