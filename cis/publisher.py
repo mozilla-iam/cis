@@ -77,6 +77,22 @@ class ChangeDelegate(object):
             'signature': signature
         }
 
+    def _nullify_empty_values(self, data):
+        """
+        Recursively update None values with empty string.
+        DynamoDB workaround
+        """
+        new = {}
+        for k in data.keys():
+            v = data[k]
+            if isinstance(v, dict):
+                v = self._nullify_empty_values(v)
+            if v is None:
+                new[k] = 'NULL'
+            else:
+                new[k] = v
+        return new
+
     def _prepare_profile_data(self):
         # Performing encryption and encoding on the user data and set on the object
         # Encode to base64 all payload fields
@@ -85,7 +101,9 @@ class ChangeDelegate(object):
 
         logger.debug('Preparing profile data and encrypting profile.')
 
-        encrypted_profile = self.encryptor.encrypt(json.dumps(self.profile_data).encode('utf-8'))
+        # DynamoDB workaround
+        data = self._nullify_empty_values(self.profile_data)
+        encrypted_profile = self.encryptor.encrypt(json.dumps(data).encode('utf-8'))
 
         base64_payload = dict()
         for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
