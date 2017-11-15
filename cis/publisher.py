@@ -88,7 +88,7 @@ class ChangeDelegate(object):
             if isinstance(v, dict):
                 v = self._nullify_empty_values(v)
             # explicitly check for None value and empty string.
-            if v is None or v == '':
+            if not v:
                 new[k] = 'NULL'
             else:
                 new[k] = v
