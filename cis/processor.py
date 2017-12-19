@@ -103,6 +103,8 @@ class StreamtoVaultOperation(OperationDelegate):
     def run(self):
         logger.info('Attempting to load stage processor logic: {}'.format(self.stage))
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
+        logger.info('Processing from publisher {pub} for profile: {p}'.format(
+            pub=self.publisher, p=self.decrytped_profile.get('user_id')))
         return(self._vault_stage())
 
     def _vault_stage(self):
