@@ -3,13 +3,16 @@ import base64
 import json
 import logging
 
+from cis.libs import api
 from cis.libs import connection
 from cis.libs import encryption
+from cis.libs import utils
 from cis.libs import validation
 
 from cis.settings import get_config
 
 
+utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
@@ -117,6 +120,42 @@ class ChangeDelegate(object):
     def _validate_profile_data(self):
         # Validate data prior to sending to CIS
         return validation.Operation(self.publisher, self.profile_data).is_valid()
+
+    def _reintegrate_profile_with_api(self):
+        person = api.Person(
+            person_api_config={
+                'audience': self.config('person_api_audience', namespace='cis'),
+                'client_id': self.config('oidc_client_id', namespace='cis'),
+                'client_secret': self.config('oidc_client_secret', namespace='cis'),
+                'oidc_domain': self.config('oidc_domain', namespace='cis'),
+                'person_api_url': self.config('person_api_url', namespace='cis')
+            }
+        )
+
+        # Retrieve the profile from the CIS API
+        vault_profile = p.get_userinfo(self.profile_data.get('user_id'))
+
+        if vault_profile is not None:
+
+            logger.debug('Vault profile retreived for existing vault user: {}'.format(vault_profile.get('user_id')))
+            publisher_groups = self.profile.get('groups')
+            vault_groups = vault_profile.get('groups')
+
+            reintegrated_groups = []
+
+            for group in publisher_groups:
+                # Publishers are only allowed to publish groups prefixed with their id.
+                if group.split('_')[0] == self.publisher.get('id'):
+                    reintegrated_groups.append(group)
+
+            for group in vault_groups:
+                # Trust the data in the vault for all other group prefixes.
+                if group.split('_')[0] != self.publisher.get('id'):
+                    reintegrated_groups.append(group)
+
+            logger.debug('Groups successfully reintegrated. Replacing group list in proposed profile.')
+            # Replace the data in the profile with our reintegrated group list.
+            self.profile['groups'] = reintegrated_groups
 
     def _generate_signature(self):
         # If signature doesn't exist attempt to add one to the profile data.

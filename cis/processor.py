@@ -8,9 +8,11 @@ from cis import user
 
 from cis.libs import encryption
 from cis.libs import streams
+from cis.libs import utils
 from cis.libs import validation
 
 
+utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
