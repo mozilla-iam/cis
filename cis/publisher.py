@@ -5,11 +5,13 @@ import logging
 
 from cis.libs import connection
 from cis.libs import encryption
+from cis.libs import utils
 from cis.libs import validation
 
 from cis.settings import get_config
 
 
+utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
 
