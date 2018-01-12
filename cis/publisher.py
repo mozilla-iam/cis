@@ -105,6 +105,9 @@ class ChangeDelegate(object):
 
         logger.debug('Preparing profile data and encrypting profile.')
 
+        # Reintegrate groups this publisher is not authoritative for.
+        self._reintegrate_profile_with_api()
+
         # DynamoDB workaround
         data = self._nullify_empty_values(self.profile_data)
         encrypted_profile = self.encryptor.encrypt(json.dumps(data).encode('utf-8'))
@@ -133,7 +136,7 @@ class ChangeDelegate(object):
         )
 
         # Retrieve the profile from the CIS API
-        vault_profile = p.get_userinfo(self.profile_data.get('user_id'))
+        vault_profile = person.get_userinfo(self.profile_data.get('user_id'))
 
         if vault_profile is not None:
 
