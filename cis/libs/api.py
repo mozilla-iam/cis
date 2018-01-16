@@ -4,7 +4,7 @@ import urllib
 
 
 class Person(object):
-    """Retrieve data from person api as needed.  Will eventually replace Mozillians API"""
+    """Retrieve data from person api as needed."""
     def __init__(self, person_api_config):
         """
         :param person_api_config, a dictionary of configuration information about how to connect to person_api

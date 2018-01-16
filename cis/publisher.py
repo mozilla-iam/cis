@@ -141,7 +141,7 @@ class ChangeDelegate(object):
         if vault_profile is not None:
 
             logger.debug('Vault profile retreived for existing vault user: {}'.format(vault_profile.get('user_id')))
-            publisher_groups = self.profile.get('groups')
+            publisher_groups = self.profile_data.get('groups')
             vault_groups = vault_profile.get('groups')
 
             reintegrated_groups = []
@@ -158,7 +158,7 @@ class ChangeDelegate(object):
 
             logger.debug('Groups successfully reintegrated. Replacing group list in proposed profile.')
             # Replace the data in the profile with our reintegrated group list.
-            self.profile['groups'] = reintegrated_groups
+            self.profile_data['groups'] = reintegrated_groups
 
     def _generate_signature(self):
         # If signature doesn't exist attempt to add one to the profile data.
