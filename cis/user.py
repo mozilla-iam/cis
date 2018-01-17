@@ -1,9 +1,8 @@
 """First class object to represent a user and data about that user."""
 import logging
 
-from cis.settings import get_config
 from cis.libs import utils
-
+from cis.settings import get_config
 
 utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)

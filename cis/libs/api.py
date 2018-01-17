@@ -1,8 +1,12 @@
 import http.client
 import json
-import urllib
 
-from exceptions import *
+from cis.libs import exceptions
+
+try:
+    from urllib import quote  # Python 2.X
+except ImportError:
+    from urllib.parse import quote  # Python 3+
 
 
 class Person(object):
@@ -34,15 +38,16 @@ class Person(object):
         headers = {'content-type': "application/json"}
         conn.request("POST", "/oauth/token", payload, headers)
 
+        res = conn.getresponse()
         if res.status == '200 OK':
-            res = conn.getresponse()
             data = res.read()
             return json.loads(data.decode('utf-8'))
         else:
-            raise AuthZeroUnavailable()
+            raise exceptions.AuthZeroUnavailable()
 
     def get_userinfo(self, auth_zero_id):
-        user_id = urllib.quote(auth_zero_id)
+        user_id = quote(auth_zero_id)
+
         conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
         token = "Bearer {}".format(self.get_bearer().get('access_token'))
 

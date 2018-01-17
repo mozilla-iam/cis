@@ -124,7 +124,7 @@ class ChangeDelegate(object):
         # Validate data prior to sending to CIS
         return validation.Operation(self.publisher, self.profile_data).is_valid()
 
-    def _reintegrate_profile_with_api(self):
+    def _retrieve_from_vault(self):
         person = api.Person(
             person_api_config={
                 'audience': self.config('person_api_audience', namespace='cis'),
@@ -138,6 +138,11 @@ class ChangeDelegate(object):
 
         # Retrieve the profile from the CIS API
         vault_profile = person.get_userinfo(self.profile_data.get('user_id'))
+
+        return vault_profile
+
+    def _reintegrate_profile_with_api(self):
+        vault_profile = self._retrieve_from_vault()
 
         if vault_profile is not None:
 
@@ -194,5 +199,5 @@ class Change(ChangeDelegate):
         try:
             ChangeDelegate.__init__(self, publisher, signature, profile_data)
         except Exception as e:
-            logger.error('ChangeDelegate failed initialization returning nullObject.')
+            logger.error('ChangeDelegate failed initialization returning nullObject: {}.'.format(e))
             ChangeNull.__init__(self)

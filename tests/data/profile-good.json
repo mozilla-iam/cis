@@ -37,10 +37,8 @@
 	"picture": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png",
 	"shirtSize": "M",
 	"groups": [
-		"ldapGroup1",
-		"mozilliansorg_MozGroup1",
-		"workday_EIS1",
-		"mozilliansorg_iam_project"
+		"mozilliansorg_bar",
+		"mozilliansorg_foo"
 	],
 	"authoritativeGroups": [
 			{

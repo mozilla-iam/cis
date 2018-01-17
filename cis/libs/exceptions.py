@@ -5,7 +5,7 @@ class CISError(Exception):
     pass
 
 
-class AuthZeroUnavailable(CISExceptions):
+class AuthZeroUnavailable(CISError):
     """
     Raised when the auth0 API fails to return a token.
     """

@@ -66,8 +66,6 @@ class ValidationTest(unittest.TestCase):
             self.test_profile_bad
         )
 
-        print(good_result)
-
         bad_result = o_2.is_valid()
         assert good_result is True
         assert bad_result is False
@@ -77,7 +75,7 @@ class ValidationTest(unittest.TestCase):
         from cis.libs import validation
 
         o_1 = validation.Operation(
-            'mozillians.org',
+            'mozilliansorg',
             self.test_profile_good
         )
 
@@ -86,7 +84,7 @@ class ValidationTest(unittest.TestCase):
         from cis.libs import validation
 
         o_1 = validation.Operation(
-            'mozillians.org',
+            'mozilliansorg',
             self.test_profile_good
         )
 
