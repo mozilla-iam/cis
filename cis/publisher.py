@@ -128,10 +128,11 @@ class ChangeDelegate(object):
         person = api.Person(
             person_api_config={
                 'audience': self.config('person_api_audience', namespace='cis'),
-                'client_id': self.config('oidc_client_id', namespace='cis'),
-                'client_secret': self.config('oidc_client_secret', namespace='cis'),
-                'oidc_domain': self.config('oidc_domain', namespace='cis'),
-                'person_api_url': self.config('person_api_url', namespace='cis')
+                'client_id': self.config('oauth2_client_id', namespace='cis'),
+                'client_secret': self.config('oauth2_client_secret', namespace='cis'),
+                'oauth2_domain': self.config('oauth2_domain', namespace='cis'),
+                'person_api_url': self.config('person_api_url', namespace='cis'),
+                'person_api_version': self.config('person_api_version', namespace='cis')
             }
         )
 

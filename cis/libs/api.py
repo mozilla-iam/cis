@@ -2,6 +2,8 @@ import http.client
 import json
 import urllib
 
+from exceptions import *
+
 
 class Person(object):
     """Retrieve data from person api as needed."""
@@ -14,11 +16,12 @@ class Person(object):
         self.audience = person_api_config.get('audience')
         self.client_id = person_api_config.get('client_id')
         self.client_secret = person_api_config.get('client_secret')
-        self.oidc_domain = person_api_config.get('oidc_domain')
+        self.oauth2_domain = person_api_config.get('oauth2_domain')
         self.person_api_url = person_api_config.get('person_api_url')
+        self.person_api_version = person_api_config.get('person_api_version')
 
     def get_bearer(self):
-        conn = http.client.HTTPSConnection(self.oidc_domain)
+        conn = http.client.HTTPSConnection(self.oauth2_domain)
         payload = json.dumps(
             {
                 'client_id': self.client_id,
@@ -29,11 +32,14 @@ class Person(object):
         )
 
         headers = {'content-type': "application/json"}
-
         conn.request("POST", "/oauth/token", payload, headers)
-        res = conn.getresponse()
-        data = res.read()
-        return json.loads(data.decode('utf-8'))
+
+        if res.status == '200 OK':
+            res = conn.getresponse()
+            data = res.read()
+            return json.loads(data.decode('utf-8'))
+        else:
+            raise AuthZeroUnavailable()
 
     def get_userinfo(self, auth_zero_id):
         user_id = urllib.quote(auth_zero_id)
@@ -42,7 +48,12 @@ class Person(object):
 
         headers = {'authorization': token}
 
-        conn.request("GET", "/prod/profile/{}".format(user_id), headers=headers)
+        api_route = "/{version}/profile/{user_id}".format(
+            version=self.person_api_version,
+            user_id=user_id
+        )
+
+        conn.request("GET", api_route, headers=headers)
 
         res = conn.getresponse()
 
