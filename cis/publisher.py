@@ -3,6 +3,7 @@ import base64
 import json
 import logging
 
+from cis.libs import api
 from cis.libs import connection
 from cis.libs import encryption
 from cis.libs import utils
@@ -104,6 +105,9 @@ class ChangeDelegate(object):
 
         logger.debug('Preparing profile data and encrypting profile.')
 
+        # Reintegrate groups this publisher is not authoritative for.
+        self._reintegrate_profile_with_api()
+
         # DynamoDB workaround
         data = self._nullify_empty_values(self.profile_data)
         encrypted_profile = self.encryptor.encrypt(json.dumps(data).encode('utf-8'))
@@ -119,6 +123,48 @@ class ChangeDelegate(object):
     def _validate_profile_data(self):
         # Validate data prior to sending to CIS
         return validation.Operation(self.publisher, self.profile_data).is_valid()
+
+    def _retrieve_from_vault(self):
+        person = api.Person(
+            person_api_config={
+                'audience': self.config('person_api_audience', namespace='cis'),
+                'client_id': self.config('oauth2_client_id', namespace='cis'),
+                'client_secret': self.config('oauth2_client_secret', namespace='cis'),
+                'oauth2_domain': self.config('oauth2_domain', namespace='cis'),
+                'person_api_url': self.config('person_api_url', namespace='cis'),
+                'person_api_version': self.config('person_api_version', namespace='cis')
+            }
+        )
+
+        # Retrieve the profile from the CIS API
+        vault_profile = person.get_userinfo(self.profile_data.get('user_id'))
+
+        return vault_profile
+
+    def _reintegrate_profile_with_api(self):
+        vault_profile = self._retrieve_from_vault()
+
+        if vault_profile is not None:
+
+            logger.debug('Vault profile retreived for existing vault user: {}'.format(vault_profile.get('user_id')))
+            publisher_groups = self.profile_data.get('groups')
+            vault_groups = vault_profile.get('groups')
+
+            reintegrated_groups = []
+
+            for group in publisher_groups:
+                # Publishers are only allowed to publish groups prefixed with their id.
+                if group.split('_')[0] == self.publisher.get('id'):
+                    reintegrated_groups.append(group)
+
+            for group in vault_groups:
+                # Trust the data in the vault for all other group prefixes.
+                if group.split('_')[0] != self.publisher.get('id'):
+                    reintegrated_groups.append(group)
+
+            logger.debug('Groups successfully reintegrated. Replacing group list in proposed profile.')
+            # Replace the data in the profile with our reintegrated group list.
+            self.profile_data['groups'] = reintegrated_groups
 
     def _generate_signature(self):
         # If signature doesn't exist attempt to add one to the profile data.
@@ -153,5 +199,5 @@ class Change(ChangeDelegate):
         try:
             ChangeDelegate.__init__(self, publisher, signature, profile_data)
         except Exception as e:
-            logger.error('ChangeDelegate failed initialization returning nullObject.')
+            logger.error('ChangeDelegate failed initialization returning nullObject: {}.'.format(e))
             ChangeNull.__init__(self)

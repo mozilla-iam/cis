@@ -17,7 +17,7 @@ def run(publisher, user, profile_json):
     """
 
     # This plugin only cares about mozillians.org publisher
-    if publisher != 'mozillians.org':
+    if publisher != 'mozilliansorg':
         return True
 
     # Validate only whitelisted fields for this publisher are in use

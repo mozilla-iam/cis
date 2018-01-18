@@ -9,5 +9,11 @@
     "dummy_lambda_validator_arn": "arn:aws:lambda:us-east-1:1234:function:Validator",
     "dummy_aws_region": "us-east-1",
     "dummy_dynamodb_table": "test_dynamodb_table",
-    "dummy_publisher": "Zm9vCg=="
+    "dummy_publisher": "Zm9vCg==",
+    "dummy_person_api_audience": "https://person-api.fake.mozilla.org",
+    "dummy_person_api_version": "v1",
+    "dummy_person_api_url": "person-api.fake.mozilla.org",
+    "dummy_oauth2_domain": "foo.bar.com",
+    "dummy_oauth2_client_id": "1287932423472323",
+    "dummy_oauth2_client_secret": "skdjfhasdfjsdfasfsdadf"
 }

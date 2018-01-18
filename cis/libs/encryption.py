@@ -2,10 +2,11 @@ import logging
 import os
 
 from botocore.exceptions import ClientError
-from cryptography.hazmat.backends import default_backend
-from cryptography.hazmat.primitives.ciphers import Cipher, algorithms, modes
-
 from cis.settings import get_config
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives.ciphers import algorithms
+from cryptography.hazmat.primitives.ciphers import Cipher
+from cryptography.hazmat.primitives.ciphers import modes
 
 
 logger = logging.getLogger(__name__)
