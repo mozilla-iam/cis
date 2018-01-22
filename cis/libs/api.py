@@ -39,10 +39,11 @@ class Person(object):
         conn.request("POST", "/oauth/token", payload, headers)
 
         res = conn.getresponse()
-        if res.status == '200 OK':
+        if res.status == '200':
             data = res.read()
             return json.loads(data.decode('utf-8'))
         else:
+            logger.error('Status of API request was: {}'.format(res.status))
             raise exceptions.AuthZeroUnavailable()
 
     def get_userinfo(self, auth_zero_id):
@@ -62,8 +63,9 @@ class Person(object):
 
         res = conn.getresponse()
 
-        if res.status == '200 OK':
+        if res.status == '200':
             data = res.read()
             return json.loads(json.loads(data.decode('utf-8')).get('body'))
         else:
+            logger.error('Status of API request was: {}'.format(res.status))
             return None
