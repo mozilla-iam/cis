@@ -1,5 +1,6 @@
 import http.client
 import json
+import logging
 
 from cis.libs import exceptions
 
@@ -7,6 +8,8 @@ try:
     from urllib import quote  # Python 2.X
 except ImportError:
     from urllib.parse import quote  # Python 3+
+
+logger = logging.getLogger(__name__)
 
 
 class Person(object):
@@ -39,10 +42,11 @@ class Person(object):
         conn.request("POST", "/oauth/token", payload, headers)
 
         res = conn.getresponse()
-        if res.status == '200 OK':
+        if res.status == '200':
             data = res.read()
             return json.loads(data.decode('utf-8'))
         else:
+            logger.error('Status of API request was: {}'.format(res.status))
             raise exceptions.AuthZeroUnavailable()
 
     def get_userinfo(self, auth_zero_id):
@@ -62,8 +66,9 @@ class Person(object):
 
         res = conn.getresponse()
 
-        if res.status == '200 OK':
+        if res.status == '200':
             data = res.read()
             return json.loads(json.loads(data.decode('utf-8')).get('body'))
         else:
+            logger.error('Status of API request was: {}'.format(res.status))
             return None
