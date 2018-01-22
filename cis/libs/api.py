@@ -42,7 +42,7 @@ class Person(object):
         conn.request("POST", "/oauth/token", payload, headers)
 
         res = conn.getresponse()
-        if res.status == '200':
+        if res.status == 200:
             data = res.read()
             return json.loads(data.decode('utf-8'))
         else:
@@ -66,7 +66,7 @@ class Person(object):
 
         res = conn.getresponse()
 
-        if res.status == '200':
+        if res.status == 200:
             data = res.read()
             return json.loads(json.loads(data.decode('utf-8')).get('body'))
         else:
