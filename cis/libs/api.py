@@ -1,5 +1,6 @@
 import http.client
 import json
+import logging
 
 from cis.libs import exceptions
 
@@ -7,6 +8,8 @@ try:
     from urllib import quote  # Python 2.X
 except ImportError:
     from urllib.parse import quote  # Python 3+
+
+logger = logging.getLogger(__name__)
 
 
 class Person(object):
