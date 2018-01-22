@@ -1,13 +1,16 @@
-import http.client
 import json
 import logging
 
 from cis.libs import exceptions
 
 try:
-    from urllib import quote  # Python 2.X
+    # Python 2.X
+    from httplib import HTTPSConnection
+    from urllib import quote
 except ImportError:
-    from urllib.parse import quote  # Python 3+
+    # Python 3+
+    from http.client import HTTPSConnection
+    from urllib.parse import quote
 
 logger = logging.getLogger(__name__)
 
@@ -28,7 +31,7 @@ class Person(object):
         self.person_api_version = person_api_config.get('person_api_version')
 
     def get_bearer(self):
-        conn = http.client.HTTPSConnection(self.oauth2_domain)
+        conn = HTTPSConnection(self.oauth2_domain)
         payload = json.dumps(
             {
                 'client_id': self.client_id,
@@ -52,7 +55,7 @@ class Person(object):
     def get_userinfo(self, auth_zero_id):
         user_id = quote(auth_zero_id)
 
-        conn = http.client.HTTPSConnection("{}".format(self.person_api_url))
+        conn = HTTPSConnection("{}".format(self.person_api_url))
         token = "Bearer {}".format(self.get_bearer().get('access_token'))
 
         headers = {'authorization': token}
