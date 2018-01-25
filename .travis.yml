@@ -3,10 +3,11 @@ python:
   - 3.6
 before_install:
   - pip install flake8
+  - pip install tox
   - flake8 .
 install:
   - pip install -r requirements-dev.txt
   - python setup.py build
   - python setup.py install
 script:
-  - python -m unittest discover tests
+  - tox
