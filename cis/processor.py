@@ -63,7 +63,7 @@ class OperationDelegate(object):
     def _decrypt_and_verify(self):
         o = crypto.Operation()
         result = o.verify(
-            ciphertext=base64.b64decode(self.signature),
+            ciphertext=base64.b64decode(self.signature).decode(),
             plaintext=json.dumps(self.decrytped_profile)
         )
 
