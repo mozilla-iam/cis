@@ -3,7 +3,10 @@ import json
 import os
 import unittest
 
-from unittest.mock import patch
+try:
+    from unittest.mock import patch  # Python 3
+except Exception as e:
+    from mock import patch
 
 
 class UserTest(unittest.TestCase):

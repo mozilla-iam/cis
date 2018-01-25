@@ -11,6 +11,8 @@ from cis.libs import streams
 from cis.libs import utils
 from cis.libs import validation
 
+from pykmssig import crypto
+
 
 utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)
@@ -32,6 +34,11 @@ class OperationDelegate(object):
         # Determine what stage of processing we are in and call the corresponding functions.
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
 
+        if self.signature == {} or self.signature is None:
+            self.signature = self.decrytped_profile.get('signature')
+
+        self._verify_signature()
+
     def _decode_profile_packet(self):
         for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
             self.encrypted_profile_data[key] = base64.b64decode(self.encrypted_profile_data[key])
@@ -44,6 +51,25 @@ class OperationDelegate(object):
             iv=self.encrypted_profile_data.get('iv'),
             tag=self.encrypted_profile_data.get('tag')
         )
+
+    def _verify_signature(self):
+        sig_result = self._decrypt_and_verify()
+
+        if sig_result.get('status') == 'valid':
+            return True
+        else:
+            return False
+
+    def _decrypt_and_verify(self):
+        o = crypto.Operation()
+        result = o.verify(
+            ciphertext=base64.b64decode(self.signature),
+            plaintext=json.dumps(self.decrytped_profile)
+        )
+
+        logger.info('The result of pykmssig operation was: {}'.format(result))
+
+        return result
 
     def _get_stage(self):
         # Let the object know what phase of operation we are running in.
@@ -62,6 +88,11 @@ class ValidatorOperation(OperationDelegate):
     def run(self):
         logger.info('Attempting to load stage processor logic: {}'.format(self.stage))
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
+
+        if self.signature == {} or self.signature is None:
+            logger.info('Signature not set on object. Retreiving from profile packet.')
+            self.signature = self.decrytped_profile.get('signature')
+
         return(self._publish_to_stream(self._validator_stage()))
 
     def _validator_stage(self, kinesis_client=None):
@@ -71,16 +102,32 @@ class ValidatorOperation(OperationDelegate):
                 profile_data=self.decrytped_profile
             ).retrieve_from_vault()
 
-        result = validation.Operation(
-            publisher=self.publisher,
-            profile_data=self.decrytped_profile,
-            user=self.user
-        ).is_valid()
+        if self._verify_signature():
+            logger.info(
+                'Signature verified successfully. Running additional validation plugins for user_id: {}'.format(
+                    self.decrytped_profile.get('user_id')
+                )
+            )
+
+            result = validation.Operation(
+                publisher=self.publisher,
+                profile_data=self.decrytped_profile,
+                user=self.user
+            ).is_valid()
+        else:
+            result = False
+
+        logger.info(
+            'Result of the validation operation for user_id: {} is {}'.format(
+                self.decrytped_profile.get('user_id'),
+                result
+            )
+        )
 
         return result
 
     def _publish_to_stream(self, validation_status=False):
-        if validation_status:
+        if validation_status is True:
             stream_operation = streams.Operation(
                 boto_session=self.boto_session,
                 publisher=self.publisher,
@@ -92,7 +139,12 @@ class ValidatorOperation(OperationDelegate):
                 stream_operation.kinesis_client = self.kinesis_client
 
             kinesis_result = stream_operation.to_kinesis()
-
+            logger.info(
+                'The profile for user_id: {} was sent to kinesis with sequenceNumber: {}'.format(
+                    self.decrytped_profile.get('user_id'),
+                    kinesis_result.get('SequenceNumber')
+                )
+            )
             return(kinesis_result['ResponseMetadata']['HTTPStatusCode'] is 200)
         else:
             return False
@@ -100,6 +152,7 @@ class ValidatorOperation(OperationDelegate):
 
 class StreamtoVaultOperation(OperationDelegate):
     def __init__(self, boto_session, publisher, signature, encrypted_profile_data):
+        logger.info('Stream to IDVault operation initialized for publisher: {}'.format(publisher))
         OperationDelegate.__init__(self, boto_session, publisher, signature, encrypted_profile_data)
 
     def run(self):
@@ -133,6 +186,7 @@ class OperationNull(object):
 class Operation(OperationDelegate):
     def __init__(self, boto_session=None, publisher=None, signature=None, encrypted_profile_data=None):
         try:
+            logger.info('Processor operation initialized for profile packet from publisher: {}.'.format(publisher))
             OperationDelegate.__init__(self, boto_session, publisher, signature, encrypted_profile_data)
 
         except Exception as e:

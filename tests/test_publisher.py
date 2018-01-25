@@ -5,7 +5,12 @@ import os
 import unittest
 import zipfile
 
-from unittest.mock import patch
+try:
+    from unittest.mock import patch  # Python 3
+except Exception as e:
+    from mock import patch
+
+from pykmssig import hashes
 
 
 class PublisherTest(unittest.TestCase):
@@ -42,6 +47,9 @@ class PublisherTest(unittest.TestCase):
             self.test_profile_bad = json.load(profile_bad)
         with open(profile_vault_file) as profile_vault:
             self.test_profile_vault = json.load(profile_vault)
+
+        self.good_signatures = base64.b64encode(json.dumps(hashes.get_digests(json.dumps(self.test_profile_good))))
+        self.bad_signatures = base64.b64encode(json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}))
 
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         # Set environment variables
@@ -88,9 +96,10 @@ class PublisherTest(unittest.TestCase):
 
     from cis.publisher import Change
 
+    @patch.object(Change, "_generate_signature")
     @patch.object(Change, "_retrieve_from_vault")
     @patch.object(Change, "_invoke_validator")
-    def test_publishing_profile(self, mock_validator, mock_vault_profile, Change=Change):
+    def test_publishing_profile(self, mock_validator, mock_vault_profile, mock_signature, Change=Change):
 
         from cis.libs import encryption
         o = encryption.Operation(
@@ -110,6 +119,7 @@ class PublisherTest(unittest.TestCase):
 
         mock_vault_profile.return_value = None
         mock_validator.return_value = True
+        mock_signature.return_value = self.good_signatures
 
         p = Change(
             publisher={'id': 'mozilliansorg'},
@@ -123,9 +133,10 @@ class PublisherTest(unittest.TestCase):
 
         assert result is True
 
+    @patch.object(Change, "_generate_signature")
     @patch.object(Change, "_retrieve_from_vault")
     @patch.object(Change, "_invoke_validator")
-    def test_group_reintegration(self, mock_validator, mock_vault_profile, Change=Change):
+    def test_group_reintegration(self, mock_validator, mock_vault_profile, mock_signature, Change=Change):
 
         from cis.libs import encryption
         o = encryption.Operation(
@@ -145,6 +156,7 @@ class PublisherTest(unittest.TestCase):
 
         mock_vault_profile.return_value = self.test_profile_vault
         mock_validator.return_value = True
+        mock_signature.return_value = self.good_signatures
 
         p = Change(
             publisher={'id': 'mozilliansorg'},
@@ -162,3 +174,45 @@ class PublisherTest(unittest.TestCase):
 
         assert result is True
         assert 'hris_foo_bar' in groups
+
+    @patch.object(Change, "_generate_signature")
+    @patch.object(Change, "_retrieve_from_vault")
+    @patch.object(Change, "_invoke_validator")
+    def test_group_reintegration_where_no_user(
+        self, mock_validator, mock_vault_profile, mock_signature, Change=Change
+    ):
+
+        from cis.libs import encryption
+        o = encryption.Operation(
+            boto_session=None
+        )
+
+        test_kms_data = {
+            'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
+            'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
+        }
+
+        test_iv = base64.b64decode(self.test_artifacts['IV'])
+
+        # Set attrs on object to test data.  Not patching boto3 now!
+        o.data_key = test_kms_data
+        o.iv = test_iv
+
+        mock_vault_profile.return_value = {}
+        mock_validator.return_value = True
+        mock_signature.return_value = self.good_signatures
+
+        p = Change(
+            publisher={'id': 'mozilliansorg'},
+            signature={},
+            profile_data=self.test_profile_good
+        )
+
+        p.encryptor = o
+        p.boto_session = "I am a real session I swear"
+
+        p._prepare_profile_data()
+
+        result = p.send()
+
+        assert result is True

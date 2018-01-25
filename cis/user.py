@@ -22,8 +22,14 @@ class Profile(object):
     @property
     def exists(self):
         if self._retrieve_from_vault() is not None:
+            logger.info(
+                'A user record already exists in the identity vault for: {}'.format(self.profile_data.get('user_id'))
+            )
             return True
         else:
+            logger.info(
+                'A user does not exist in the identity vault for: {}'.format(self.profile_data.get('user_id'))
+            )
             return False
 
     def retrieve_from_vault(self):
@@ -44,7 +50,6 @@ class Profile(object):
             response = None
 
         self.profile_data = response
-
         return response
 
     def store_in_vault(self):
