@@ -37,7 +37,9 @@ class ValidatorTest(unittest.TestCase):
             json.dumps(hashes.get_digests(json.dumps(self.test_profile_good))).encode()
         ).decode()
 
-        self.bad_signatures = base64.b64encode(json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()).decode()
+        self.bad_signatures = base64.b64encode(
+            json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()
+        ).decode()
 
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         # Set environment variables
@@ -359,7 +361,9 @@ class VaultTest(unittest.TestCase):
             json.dumps(hashes.get_digests(json.dumps(self.test_profile_good))).encode()
         ).decode()
 
-        self.bad_signatures = base64.b64encode(json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()).decode()
+        self.bad_signatures = base64.b64encode(
+            json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()
+        ).decode()
 
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         # Set environment variables
