@@ -72,8 +72,8 @@ def run(publisher, user, profile_json):
     # group sub structure looks like: user.groups = [ 'group_from_ldap1', 'moziliansorg_mytestgroup', ...]
     prefix = 'mozilliansorg_'
 
-    old_groups = user.get('groups')
-    new_groups = profile_json.get('groups')
+    old_groups = user.get('groups', [])
+    new_groups = profile_json.get('groups', [])
 
     for profile_idp in whitelist_idp_with_enforced_mfa:
         if not profile_json.get('user_id').startswith(profile_idp):
