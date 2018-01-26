@@ -32,10 +32,10 @@ class OperationDelegate(object):
 
     def run(self):
         # Determine what stage of processing we are in and call the corresponding functions.
-        self.decrytped_profile = json.loads(self._decrypt_profile_packet())
+        self.decrypted_profile = json.loads(self._decrypt_profile_packet())
 
         if self.signature == {} or self.signature is None:
-            self.signature = self.decrytped_profile.get('signature')
+            self.signature = self.decrypted_profile.get('signature')
 
         self._verify_signature()
 
@@ -90,7 +90,7 @@ class ValidatorOperation(OperationDelegate):
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
 
         if self.signature == {} or self.signature is None:
-            logger.info('Signature not set on object. Retreiving from profile packet.')
+            logger.info('Signature not set on object. Retrieving from profile packet.')
             self.signature = self.decrytped_profile.get('signature')
 
         return(self._publish_to_stream(self._validator_stage()))
@@ -115,6 +115,11 @@ class ValidatorOperation(OperationDelegate):
                 user=self.user
             ).is_valid()
         else:
+            logger.error(
+                'Signature verification failed for user_id: {}'.format(
+                    self.decrytped_profile.get('user_id')
+                )
+            )
             result = False
 
         logger.info(

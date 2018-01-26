@@ -217,7 +217,7 @@ class ChangeDelegate(object):
         # If signature doesn't exist attempt to add one to the profile data.
         o = crypto.Operation()
         sig = base64.b64encode(o.sign(plaintext=profile_data))
-        logger.info('Signature generated for user_id: {}. The sigature is {}'.format(
+        logger.info('Signature generated for user_id: {}. The signature is {}'.format(
             self.profile_data.get('user_id'), sig)
         )
         return sig

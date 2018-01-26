@@ -131,7 +131,7 @@ class ValidatorTest(unittest.TestCase):
         p.run()
 
         dump_a = json.dumps(self.test_profile_good, sort_keys=True, indent=2)
-        dump_b = json.dumps(p.decrytped_profile, sort_keys=True, indent=2)
+        dump_b = json.dumps(p.decrypted_profile, sort_keys=True, indent=2)
 
         assert dump_a == dump_b
 
