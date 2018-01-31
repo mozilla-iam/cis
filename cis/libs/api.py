@@ -71,7 +71,12 @@ class Person(object):
 
         if res.status == 200:
             data = res.read()
-            return json.loads(json.loads(data.decode('utf-8')).get('body'))
+            try:
+                profile = json.loads(json.loads(data.decode('utf-8')).get('body'))
+            except TypeError:
+                profile = {}
         else:
             logger.error('Status of API request was: {}'.format(res.status))
-            return None
+            profile = None
+
+        return profile

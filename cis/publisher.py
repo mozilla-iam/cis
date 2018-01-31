@@ -220,7 +220,7 @@ class ChangeDelegate(object):
         logger.info('Signature generated for user_id: {}. The signature is {}'.format(
             self.profile_data.get('user_id'), sig)
         )
-        return sig
+        return sig.decode()
 
     def _invoke_validator(self, event):
         """
