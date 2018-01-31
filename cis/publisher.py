@@ -77,12 +77,14 @@ class ChangeDelegate(object):
     def _get_event_dict(self):
         profile_data = self._prepare_profile_data()
         encrypted_profile = str(base64.b64encode(profile_data))
-        signature = self._generate_signature(json.dumps(self.profile_data))
+
+        if self.signature is None or self.signature == {}:
+            self.signature = self._generate_signature(json.dumps(self.profile_data))
 
         return {
             'publisher': self.publisher,
             'profile': encrypted_profile,
-            'signature': signature
+            'signature': self.signature
         }
 
     def _nullify_empty_values(self, data):
