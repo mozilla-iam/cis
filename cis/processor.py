@@ -34,11 +34,6 @@ class OperationDelegate(object):
         # Determine what stage of processing we are in and call the corresponding functions.
         self.decrypted_profile = json.loads(self._decrypt_profile_packet())
 
-        if self.signature == {} or self.signature is None:
-            self.signature = self.decrypted_profile.get('signature')
-
-        self._verify_signature()
-
     def _decode_profile_packet(self):
         for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
             self.encrypted_profile_data[key] = base64.b64decode(self.encrypted_profile_data[key])
@@ -53,17 +48,20 @@ class OperationDelegate(object):
         )
 
     def _verify_signature(self):
-        sig_result = self._decrypt_and_verify()
+        if self.signature is not {}:
+            sig_result = self._decrypt_and_verify()
 
-        if sig_result.get('status') == 'valid':
-            return True
+            if sig_result.get('status') == 'valid':
+                return True
+            else:
+                return False
         else:
             return False
 
     def _decrypt_and_verify(self):
         o = crypto.Operation()
         result = o.verify(
-            ciphertext=base64.b64decode(self.signature).decode(),
+            ciphertext=base64.b64decode(self.signature),
             plaintext=json.dumps(self.decrytped_profile)
         )
 
@@ -88,11 +86,6 @@ class ValidatorOperation(OperationDelegate):
     def run(self):
         logger.info('Attempting to load stage processor logic: {}'.format(self.stage))
         self.decrytped_profile = json.loads(self._decrypt_profile_packet())
-
-        if self.signature == {} or self.signature is None:
-            logger.info('Signature not set on object. Retrieving from profile packet.')
-            self.signature = self.decrytped_profile.get('signature')
-
         return(self._publish_to_stream(self._validator_stage()))
 
     def _validator_stage(self, kinesis_client=None):
