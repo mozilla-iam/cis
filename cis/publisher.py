@@ -76,7 +76,12 @@ class ChangeDelegate(object):
 
     def _get_event_dict(self):
         profile_data = self._prepare_profile_data()
-        encrypted_profile = str(base64.b64encode(profile_data))
+
+        # Ensure for json serialization that b64 is always string type.
+
+        encrypted_profile = base64.b64encode(
+            profile_data.encode('utf-8')  # Take our profile data to bytes type always to satisfy python 3
+        ).decode()
 
         if self.signature is None or self.signature == {}:
             self.signature = self._generate_signature(json.dumps(self.profile_data))
@@ -126,13 +131,17 @@ class ChangeDelegate(object):
 
         # DynamoDB workaround
         self.profile_data = self._nullify_empty_values(self.profile_data)
+
+        # Actually encrypt the profile
         encrypted_profile = self.encryptor.encrypt(json.dumps(self.profile_data).encode('utf-8'))
 
         base64_payload = dict()
+        # Build up our encryption envelope
         for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
             base64_payload[key] = base64.b64encode(encrypted_profile[key]).decode('utf-8')
 
-        encrypted_profile = json.dumps(base64_payload).encode('utf-8')
+        # Dump that out to a string
+        encrypted_profile = json.dumps(base64_payload)
         logger.info('Encryption process complete for change for user_id: {}.'.format(self.profile_data.get('user_id')))
         return encrypted_profile
 
