@@ -5,8 +5,12 @@ from cis.libs import utils
 utils.StructuredLogger(name=__name__, level=logging.INFO)
 logger = logging.getLogger(__name__)
 
+# Allows user creation by this publisher.
+CAN_CREATE_USER = True  # XXX TBD turn this back to false when there is another method of user provision.
+ENFORCE_ATTR_WHITELIST = False
 
-def run(publisher, user, profile_json):
+
+def run(publisher, vault_json, profile_json):
     """
     Check if a user mozillian's profile properly namespaces mozillians groups
     and whitelists which fields mozillians.org has authority over.
@@ -48,25 +52,28 @@ def run(publisher, user, profile_json):
     ]
 
     # Check the easiest case. None type.
-    if user is None:
+    if vault_json is None and CAN_CREATE_USER is False:
         logger.exception('permission denied: publisher {} attempted to modify user that does not exist'
                          ' in the identity vault'.format(publisher))
         return False
 
-    for attr in user:
-        if attr not in whitelist:
-            if profile_json.get(attr) != user.get(attr):
-                logger.exception('permission denied: publisher {} attempted to modify user attributes it has no'
-                                 'authority over'.format(publisher))
-                return False
+    # Attr whitelist is currently disabled as mozilliansorg needs to be able to create new Profiles
+    # XXX TBD This should pull back a profile from person api for this comparison
+    if ENFORCE_ATTR_WHITELIST is True:
+        for attr in vault_json:
+            if attr not in whitelist:
+                if profile_json.get(attr) != vault_json.get(attr):
+                    logger.exception('permission denied: publisher {} attempted to modify user attributes it has no'
+                                     'authority over'.format(publisher))
+                    return False
 
     # Validate namespaced groups only come from Mozillians.org
     # This is the whitelisted group prefix for this publisher:
     # group sub structure looks like: user.groups = [ 'group_from_ldap1', 'moziliansorg_mytestgroup', ...]
     prefix = 'mozilliansorg_'
 
-    old_groups = user.get('groups')
-    new_groups = profile_json.get('groups')
+    old_groups = vault_json.get('groups', [])
+    new_groups = profile_json.get('groups', [])
 
     for profile_idp in whitelist_idp_with_enforced_mfa:
         if not profile_json.get('user_id').startswith(profile_idp):

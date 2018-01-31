@@ -24,3 +24,4 @@ six==1.10.0
 watchdog==0.8.3
 pluginbase
 moto
+git+https://github.com/mozilla-iam/pykmssig.git

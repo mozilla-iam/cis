@@ -7,7 +7,12 @@ import unittest
 from moto import mock_dynamodb
 from moto import mock_kinesis
 
-from unittest.mock import patch
+try:
+    from unittest.mock import patch  # Python 3
+except Exception as e:
+    from mock import patch
+
+from pykmssig import hashes
 
 
 class ValidatorTest(unittest.TestCase):
@@ -27,6 +32,14 @@ class ValidatorTest(unittest.TestCase):
             self.test_profile_good = json.load(profile_good)
         with open(profile_bad_file) as profile_bad:
             self.test_profile_bad = json.load(profile_bad)
+
+        self.good_signatures = base64.b64encode(
+            json.dumps(hashes.get_digests(json.dumps(self.test_profile_good))).encode()
+        ).decode()
+
+        self.bad_signatures = base64.b64encode(
+            json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()
+        ).decode()
 
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         # Set environment variables
@@ -52,8 +65,12 @@ class ValidatorTest(unittest.TestCase):
         p = processor.Operation()
         assert p is not None
 
+    from cis.processor import Operation
+
     @mock_kinesis
-    def test_processor_decrypt(self):
+    @patch.object(Operation, "_verify_signature")
+    def test_processor_decrypt(self, mock_verification):
+        mock_verification.return_value = True
         kc = boto3.client('kinesis')
 
         self.dummy_stream = kc.create_stream(
@@ -94,14 +111,14 @@ class ValidatorTest(unittest.TestCase):
 
         encrypted_profile = base64_payload
 
-        publisher = {'id': 'mozillians.org'}
+        publisher = {'id': 'mozilliansorg'}
 
         from cis import processor
 
         p = processor.Operation(
             boto_session=None,
             publisher=publisher,
-            signature={},
+            signature=self.good_signatures,
             encrypted_profile_data=encrypted_profile
         )
 
@@ -113,10 +130,17 @@ class ValidatorTest(unittest.TestCase):
 
         p.run()
 
-        assert json.dumps(p.decrytped_profile) == json.dumps(self.test_profile_good)
+        dump_a = json.dumps(self.test_profile_good, sort_keys=True, indent=2)
+        dump_b = json.dumps(p.decrypted_profile, sort_keys=True, indent=2)
+
+        assert dump_a == dump_b
+
+    from cis.processor import ValidatorOperation
 
     @mock_kinesis
-    def test_processor_validator(self):
+    @patch.object(ValidatorOperation, "_verify_signature")
+    def test_processor_validator(self, mock_verification):
+        mock_verification.return_value = True
         kc = boto3.client('kinesis')
 
         self.dummy_stream = kc.create_stream(
@@ -163,7 +187,7 @@ class ValidatorTest(unittest.TestCase):
         p = processor.ValidatorOperation(
             boto_session=None,
             publisher=publisher,
-            signature={},
+            signature=self.good_signatures,
             encrypted_profile_data=encrypted_profile
         )
 
@@ -180,7 +204,9 @@ class ValidatorTest(unittest.TestCase):
         assert res is True
 
     @mock_kinesis
-    def test_processor_kinesis(self):
+    @patch.object(ValidatorOperation, "_verify_signature")
+    def test_processor_kinesis(self, mock_verification):
+        mock_verification.return_value = True
         kc = boto3.client('kinesis')
 
         self.dummy_stream = kc.create_stream(
@@ -227,7 +253,7 @@ class ValidatorTest(unittest.TestCase):
         p = processor.ValidatorOperation(
             boto_session=None,
             publisher=publisher,
-            signature={},
+            signature=self.good_signatures,
             encrypted_profile_data=encrypted_profile
         )
 
@@ -244,6 +270,72 @@ class ValidatorTest(unittest.TestCase):
         res = p.run()
 
         assert res is True
+
+    @mock_kinesis
+    @patch.object(ValidatorOperation, "_verify_signature")
+    def test_processor_validator_with_bad_sig(self, mock_verification):
+        mock_verification.return_value = False
+        kc = boto3.client('kinesis')
+
+        self.dummy_stream = kc.create_stream(
+            StreamName='dummy_cis_stream',
+            ShardCount=1
+        )
+
+        self.dummy_stream = kc.describe_stream(
+            StreamName='dummy_cis_stream',
+        )
+
+        os.environ["CIS_KINESIS_STREAM_NAME"] = 'dummy_cis_stream'
+
+        from cis.libs import encryption
+
+        o = encryption.Operation(
+            boto_session=None
+        )
+
+        test_kms_data = {
+            'Plaintext': base64.b64decode(self.test_artifacts['Plaintext']),
+            'CiphertextBlob': base64.b64decode(self.test_artifacts['CiphertextBlob'])
+        }
+
+        test_iv = base64.b64decode(self.test_artifacts['IV'])
+
+        # Set attrs on object to test data.  Not patching boto3 now!
+        o.data_key = test_kms_data
+        o.iv = test_iv
+        o.plaintext_key = base64.b64decode(self.test_artifacts['Plaintext'])
+
+        encrypted_profile = o.encrypt(json.dumps(self.test_profile_good).encode())
+
+        base64_payload = dict()
+        for key in ['ciphertext', 'ciphertext_key', 'iv', 'tag']:
+            base64_payload[key] = base64.b64encode(encrypted_profile[key])
+
+        encrypted_profile = base64_payload
+
+        publisher = {'id': 'mozillians.org'}
+
+        from cis import processor
+
+        p = processor.ValidatorOperation(
+            boto_session=None,
+            publisher=publisher,
+            signature=self.good_signatures,
+            encrypted_profile_data=encrypted_profile
+        )
+
+        p.kinesis_client = boto3.client('kinesis')
+
+        # Fake like the user returned from dynamo by returning same profile.
+        p.user = self.test_profile_good
+
+        # Decrypt with fake key material.
+        p.decryptor = o
+
+        res = p.run()
+
+        assert res is False
 
 
 class VaultTest(unittest.TestCase):
@@ -264,6 +356,14 @@ class VaultTest(unittest.TestCase):
             self.test_profile_good = json.load(profile_good)
         with open(profile_bad_file) as profile_bad:
             self.test_profile_bad = json.load(profile_bad)
+
+        self.good_signatures = base64.b64encode(
+            json.dumps(hashes.get_digests(json.dumps(self.test_profile_good))).encode()
+        ).decode()
+
+        self.bad_signatures = base64.b64encode(
+            json.dumps({'blake2': 'evilsig', 'sha256': 'evilsha'}).encode()
+        ).decode()
 
         os.environ['AWS_DEFAULT_REGION'] = self.test_artifacts['dummy_aws_region']
         # Set environment variables
@@ -318,14 +418,14 @@ class VaultTest(unittest.TestCase):
 
         encrypted_profile = base64_payload
 
-        publisher = {'id': 'mozillians.org'}
+        publisher = {'id': 'mozilliansorg'}
 
         from cis import processor
 
         p = processor.StreamtoVaultOperation(
             boto_session=None,
             publisher=publisher,
-            signature={},
+            signature=self.good_signatures,
             encrypted_profile_data=encrypted_profile
         )
 
