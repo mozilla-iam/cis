@@ -64,7 +64,7 @@ class OperationDelegate(object):
 
         boto_session = self.boto_session
 
-        o = crypto.Operation()
+        o = crypto.Operation(boto_session=boto_session)
         result = o.verify(
             ciphertext=base64.b64decode(self.signature),
             plaintext=json.dumps(self.decrytped_profile)
