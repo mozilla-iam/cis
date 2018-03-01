@@ -226,7 +226,12 @@ class ChangeDelegate(object):
 
     def _generate_signature(self, profile_data):
         # If signature doesn't exist attempt to add one to the profile data.
-        o = crypto.Operation()
+        if self.boto_session is None:
+            self._connect_aws()
+
+        boto_session = self.boto_session
+
+        o = crypto.Operation(boto_session=boto_session)
         sig = base64.b64encode(o.sign(plaintext=profile_data))
         logger.info('Signature generated for user_id: {}. The signature is {}'.format(
             self.profile_data.get('user_id'), sig)
