@@ -59,6 +59,11 @@ class OperationDelegate(object):
             return False
 
     def _decrypt_and_verify(self):
+        if self.boto_session is None:
+            self._connect_aws()
+
+        boto_session = self.boto_session
+
         o = crypto.Operation()
         result = o.verify(
             ciphertext=base64.b64decode(self.signature),
