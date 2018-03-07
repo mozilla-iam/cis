@@ -1,3 +1,4 @@
+import datetime
 import logging
 import watchtower
 
@@ -98,10 +99,12 @@ class CloudWatchLogger(object):
     def set_stream_logger(self):
         logger = logging.getLogger(self.name)
         logger.setLevel(self.level)
+        now = datetime.datetime.now()
+        stream_name = "{}/{}/{}".format(now.year, now.month, now.day)
         logger.addHandler(
             watchtower.CloudWatchLogHandler(
-                log_group='cis/{}'.format(self.log_group_name),
-                stream_name=self.name
+                log_group='/cis/{}'.format(self.log_group_name),
+                stream_name=stream_name
             )
         )
         self.logger = logger
