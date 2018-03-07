@@ -5,7 +5,7 @@
 1. Attacker able to modify CIS code or data/identity vault/stream (by owning
    serverless functions or the IAM account)
     1. Identities must be verifiable without trusting CIS
-    2. Identity's authentation data is not stored by CIS
+    2. Identity's authentication data is not stored by CIS
 
 2. Attacker able to modify publisher (f.e. "mozillians.org") user profiles
     1. CIS must validate all changes so that a publisher may only emit changes that
@@ -42,7 +42,7 @@
   publisher own a private, unique key that is trusted by CIS).
 - (1) Identity events are submitted with the entire identity (no partial
   changes, the full copy of the identity is always transmitted) As identities
-are sent in their entierety with a signature, it is possible to relying parties
+are sent in their entirety with a signature, it is possible to relying parties
 can verify signatures, i.e. changes are verifiable end-to-end)
 - (2) Each stream publisher belongs to a validation plugin which verifies only
   allowed identity fields have been modified.

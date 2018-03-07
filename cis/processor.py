@@ -1,7 +1,6 @@
 """Iterative Stream Processor plugin for handling steps during data storage."""
 import base64
 import json
-import logging
 import os
 
 from cis import user
@@ -11,11 +10,19 @@ from cis.libs import streams
 from cis.libs import utils
 from cis.libs import validation
 
+from cis.settings import get_config
 from pykmssig import crypto
 
+config = get_config()
 
-utils.StructuredLogger(name=__name__, level=logging.INFO)
-logger = logging.getLogger(__name__)
+custom_logger = utils.CISLogger(
+    name=__name__,
+    level=config('logging_level', namespace='cis', default='INFO'),
+    cis_logging_output=config('logging_output', namespace='cis', default='stream'),
+    cis_cloudwatch_log_group=config('cloudwatch_log_group', namespace='cis', default='')
+).logger()
+
+logger = custom_logger.get_logger()
 
 
 class OperationDelegate(object):
