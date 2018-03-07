@@ -14,4 +14,4 @@ class UtilsTest(unittest.TestCase):
         u = utils.StructuredLogger('foo', 2)
 
         logger = u.get_logger()
-        assert logger is None
+        assert logger is not None

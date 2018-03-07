@@ -1,7 +1,6 @@
 """First class object for publishing messages to Mozilla Change Integration Service."""
 import base64
 import json
-import logging
 
 from cis.libs import api
 from cis.libs import connection
@@ -13,8 +12,16 @@ from cis.settings import get_config
 
 from pykmssig import crypto
 
-utils.StructuredLogger(name=__name__, level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+config = get_config()
+custom_logger = utils.CISLogger(
+    name=__name__,
+    level=config('logging_level', namespace='cis', default='INFO'),
+    cis_logging_output=config('logging_output', namespace='cis', default='stream'),
+    cis_cloudwatch_log_group=config('cloudwatch_log_group', namespace='cis', default='')
+).logger()
+
+logger = custom_logger.get_logger()
 
 
 class ChangeNull(object):

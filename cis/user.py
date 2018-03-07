@@ -1,11 +1,18 @@
 """First class object to represent a user and data about that user."""
-import logging
-
 from cis.libs import utils
 from cis.settings import get_config
 
-utils.StructuredLogger(name=__name__, level=logging.INFO)
-logger = logging.getLogger(__name__)
+
+config = get_config()
+
+custom_logger = utils.CISLogger(
+    name=__name__,
+    level=config('logging_level', namespace='cis', default='INFO'),
+    cis_logging_output=config('logging_output', namespace='cis', default='stream'),
+    cis_cloudwatch_log_group=config('cloudwatch_log_group', namespace='cis', default='')
+).logger()
+
+logger = custom_logger.get_logger()
 
 
 class Profile(object):
