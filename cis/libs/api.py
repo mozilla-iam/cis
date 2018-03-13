@@ -1,5 +1,6 @@
 import json
 import logging
+import time
 
 from cis.libs import exceptions
 
@@ -29,6 +30,7 @@ class Person(object):
         self.oauth2_domain = person_api_config.get('oauth2_domain')
         self.person_api_url = person_api_config.get('person_api_url')
         self.person_api_version = person_api_config.get('person_api_version')
+        self.bearer_token = {}
 
     def get_bearer(self):
         conn = HTTPSConnection(self.oauth2_domain)
@@ -42,15 +44,38 @@ class Person(object):
         )
 
         headers = {'content-type': "application/json"}
-        conn.request("POST", "/oauth/token", payload, headers)
 
-        res = conn.getresponse()
-        if res.status == 200:
-            data = res.read()
-            return json.loads(data.decode('utf-8'))
+        if self._refresh():
+            conn.request("POST", "/oauth/token", payload, headers)
+            res = conn.getresponse()
+            if res.status == 200:
+                data = res.read()
+                self.bearer_token = {
+                    'token': json.loads(data.decode('utf-8')),
+                    'generated': int(time.time())
+                }
+            else:
+                logger.error('Status of API request was: {}'.format(res.status))
+                raise exceptions.AuthZeroUnavailable()
+
+        return self.bearer_token.get('token')
+
+    def _refresh(self):
+        """If the token was fetched more than 15-minutes ago return a new token."""
+        if self.bearer_token == {}:
+            logger.debug('Bearer token for auth0 not present returning refresh TRUE.')
+            return True
+
+        if int(time.time()) - self.bearer_token.get('generated') > 900:
+            logger.debug(
+                'Bearer token for auth0 is older than 15-minutes returning refresh TRUE.'
+            )
+            return True
         else:
-            logger.error('Status of API request was: {}'.format(res.status))
-            raise exceptions.AuthZeroUnavailable()
+            logger.debug(
+                'Bearer token for auth0 is does not need refresh returning TRUE.'
+            )
+            return False
 
     def get_userinfo(self, auth_zero_id):
         user_id = quote(auth_zero_id)
