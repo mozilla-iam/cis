@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 _No changes yet_
 
+## [0.1.2.1] - 2017-03-13
+
+### Fixed
+
+- Don't traceback if watchtower is not present.  Closes #103
+- Only get a new auth0 bearer token every fifteen minutes or when not present. Closes #104
+
 ## [0.1.2] - 2017-03-07
 
 The first release to include a changelog.
