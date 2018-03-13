@@ -1,6 +1,13 @@
 import datetime
 import logging
-import watchtower
+
+try:
+    import watchtower
+except ImportError:
+    logger = logging.getLogger(__name__)
+    logger.warn(
+        'Watchtower is not present on the system. Only stream handler supported.'
+    )
 
 """
 The MIT License (MIT)
