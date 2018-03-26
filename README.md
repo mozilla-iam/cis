@@ -1,20 +1,31 @@
 # CIS - Change Integration Service
 
-## Additional resources
+## Documentation & Resources
+
+- [CIS Person-API](https://github.com/mozilla-iam/person-api)
 - [CIS Security](docs/Security.md)
 - [CIS Event format for publishers](docs/Event.md)
-- [Profiles](docs/Profiles.md)
+- [User Profiles](docs/Profiles.md)
+
+## Draft-RFCs & Proposals (informational-only)
+- [RFCs preamble](docs/rfcs/README.md)
+- [API](docs/API.md) (Now Person-API)
+- [Automatic Access Expiration](docs/AutomaticAccessExpiration.md)
 
 ## Summary
-Home of Mozilla IAM change integration service repository.
-This is a stream-based system that validates user
-identity-{change,creation,etc} events from a set of event `publishers`, stores
-the resulting user database in what we call the `identity vault`, and provision
-or signals consumers through what we call `identity drivers`.
+
+CIS is the Mozilla IAM Change Integration Service.
+
+This is a stream-based system that validates user identity-{change,creation,etc} events from a set of event
+`publishers`, stores the resulting user database in what we call the `identity vault`, and provision or signals
+consumers through what we call `identity drivers`.
 
 Example: Mozillians.org user profile editor sends a modified t-shirt size for
 user A to CIS. CIS validates the change, stores it in the `identity vault` and
 triggers updates to Auth0, LDAP, etc.
+
+![Publisher=>CIS Vault=>ID Driver](/docs/images/CIS-AWS-Stencils.png?raw=true
+"CIS Diagram")
 
 ## Technologies
 
@@ -25,10 +36,5 @@ triggers updates to Auth0, LDAP, etc.
 - Identity Vault (source of truth for identity data): AWS DynamoDB
 - Stream itself: AWS Kinesis
 
-See also https://github.com/mozilla-iam/cis_functions/ to find the serverless
+See also <https://github.com/mozilla-iam/cis_functions/> to find the serverless
 code of the stream publishers/identity drivers.
-
-## Change Integration Service : Workflow Diagram
-
-![Publisher=>CIS Vault=>ID Driver](/docs/images/CIS-AWS-Stencils.png?raw=true
-"CIS Diagram")
