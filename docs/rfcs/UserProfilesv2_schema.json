@@ -1,5 +1,5 @@
 {
-  "$id": "https://person-api.sso.mozilla.com/profile/v2/schema",
+  "$id": "https://person-api.sso.mozilla.com/schema/v2/profile",
   "type": "object",
   "definitions": {},
   "$schema": "http://json-schema.org/draft-07/schema#",

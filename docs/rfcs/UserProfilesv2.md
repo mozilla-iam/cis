@@ -41,7 +41,7 @@ IAM Goals:
 
 ```
 {
-  "_schema": "https://person-api.sso.mozilla.com/profile/v2/schema",
+  "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
   "user_id": "ad|Mozilla-LDAP-Dev|lmcardle",
   "timezone": "Europe/London",
   "active": true,
