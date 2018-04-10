@@ -299,7 +299,8 @@
       "items": {
         "$id": "/properties/groups/items",
         "type": "string",
-        "title": "The 0th Schema ",
+        "pattern": "/^[a-zA-Z0-9\-_]+$/",
+        "title": "The GroupItems Schema",
         "description": "User group membership utilized for access control. This structure is used for compatibility and SHOULD NOT be used. Even so, there is NO plan to deprecate this structure. Use `accessInformation` instead. Non-prefixed groups are known as Mozilla LDAP-groups. Groups prefixed by a provider name and an underscore are provided by a specific group publisher, such as `mozillianorg_` and `hris_`. See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for more information.",
         "default": "0A_legacy_structure_only_please_use_accessInformation_instead",
         "examples": [
@@ -325,6 +326,7 @@
               "name": {
                 "$id": "/properties/accessInformation/properties/ldap/items/properties/name",
                 "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
                 "title": "The Name Schema ",
                 "description": "Access information for Mozilla LDAP. This list all groups in Mozilla LDAP that this user is member of.",
                 "default": "",
@@ -349,6 +351,7 @@
                 "$id": "/properties/accessInformation/properties/mozilliansorg/items/properties/name",
                 "type": "string",
                 "title": "The Name Schema ",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
                 "description": "Access information Mozillians.org (`mozilliansorg_` in `groups`). This list all access groups in Mozillians.org that this user is member of.",
                 "default": "",
                 "examples": [
@@ -371,6 +374,7 @@
               "name": {
                 "$id": "/properties/accessInformation/properties/hris/items/properties/name",
                 "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
                 "title": "The Name Schema ",
                 "description": "Access information for HRIS (Human Resources Information Systems) (`hris_` in `groups`). This lists all relevant HRIS entries for the user.",
                 "default": "",
@@ -425,6 +429,7 @@
               "name": {
                 "$id": "/properties/accessInformation/properties/accessprovider/items/properties/name",
                 "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
                 "title": "The Name Schema ",
                 "description": "The human-readable name of the relying party that the user is accessing.",
                 "default": "",
