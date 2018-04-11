@@ -39,6 +39,8 @@ IAM Goals:
 
 ### Example profile:
 
+This is all the profile data available to Mozilla IAM, though RPs may be able to see or query only parts of it.
+
 ```
 {
   "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
@@ -141,3 +143,35 @@ IAM Goals:
 ```
 
 Schema validator: [here](UserProfilesv2_schema.json)
+
+
+### Example minimum profile
+
+This is the profile that is sent for RPs that requires authentication and minimum access-control only. This is most of
+our RPs. In other words, this is what you can get with the scopes `openid profile` authenticating users.
+Note that this profile may be represented as JSON (OpenID Connect), XML (SAML), PersonAPI-like schema, or other format
+with slightly different claim or field names for compatibility purposes, though it contains the same contents/data
+otherwise. All data is also always sourced from the above profile schema.
+Finally, this minimum profile is not available from PersonAPI, as it is already passed through authenticating users.
+PersonAPI allows for additional data (scopes/authorization required) or/and different representation of the same
+information. 
+This may change in the future, if PersonAPI ever provides an OIDC endpoint.
+
+```
+{
+  "sub":"ad|Mozilla-LDAP-Dev|lmcardle",
+  "email":"lmcardle@mozilla.com",
+  "email_verified":true,
+  "name":"Leo McArdle",
+  "picture":"https://s.gravatar.com/avatar/2a206335017e99ed8b868d931b802f95?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fgd.png",
+  "updated_at":"2018-04-11T00:35:36.965Z",
+  "https://sso.mozilla.com/claim/groups":["groups here"]
+}
+```
+
+NOTE: The `https://sso.mozilla.com/claim/groups` claim contains `user.groups` information. This does NOT contain all of
+the information present in `user.accessInformation`, for example, it does NOT contain HRIS manager name, or access
+provider data. It DOES contain all LDAP groups and all Mozillians.org **access** groups (such as `mozilliansorg_nda`)
+The access provider makes use of `accessInformation` to allow or deny access (see
+https://github.com/mozilla-iam/mozilla-iam/#2-stage-access-validation ), but RPs need to make an authenticated query to
+access that data.
