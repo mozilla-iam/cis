@@ -49,8 +49,6 @@ IAM Goals:
   "created": "2017-03-09T21:28:51.851Z",
   "userName": "lmcardle@mozilla.com",
   "displayName": "Leo McArdle",
-  "firstName": "Leo",
-  "lastName": "McArdle",
   "preferredLanguage": "en_US",
   "primaryEmail": "lmcardle@mozilla.com",
   "identities": [

@@ -85,26 +85,6 @@
         "Leo McArdle"
       ]
     },
-    "firstName": {
-      "$id": "/properties/firstName",
-      "type": "string",
-      "title": "The Firstname Schema ",
-      "description": "Human-readable first name (surname) for the user.",
-      "default": "",
-      "examples": [
-        "Leo"
-      ]
-    },
-    "lastName": {
-      "$id": "/properties/lastName",
-      "type": "string",
-      "title": "The Lastname Schema ",
-      "description": "Human-readable last name (family name) for the user.",
-      "default": "",
-      "examples": [
-        "McArdle"
-      ]
-    },
     "preferredLanguage": {
       "$id": "/properties/preferredLanguage",
       "type": "string",
@@ -474,8 +454,6 @@
     "created",
     "userName",
     "displayName",
-    "firstName",
-    "lastName",
     "preferredLanguage",
     "primaryEmail",
     "identities",
