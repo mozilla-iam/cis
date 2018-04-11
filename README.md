@@ -11,6 +11,7 @@
 - [RFCs preamble](docs/rfcs/README.md)
 - [API](docs/API.md) (Now Person-API)
 - [Automatic Access Expiration](docs/AutomaticAccessExpiration.md)
+- [User profile v2](docs/rfcs/UserProfilesv2.md), [User profile schema v2](docs/rfcs/UserProfilesv2_schema.json)
 
 ## Summary
 

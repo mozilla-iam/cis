@@ -1,0 +1,470 @@
+{
+  "$id": "https://person-api.sso.mozilla.com/schema/v2/profile",
+  "type": "object",
+  "definitions": {},
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "properties": {
+    "additionalProperties": false,
+    "_schema": {
+      "$id": "/properties/_schema",
+      "type": "string",
+      "title": "The _schema Schema ",
+      "description": "Built-in reference to the schema URL itself. You can find the jsonschema.org validator at this URL.",
+      "default": "https://person-api.sso.mozilla.com/profile/v2/schema",
+      "examples": [
+        "https://person-api.sso.mozilla.com/profile/v2/schema"
+      ]
+    },
+    "user_id": {
+      "$id": "/properties/user_id",
+      "type": "string",
+      "title": "The User_id Schema ",
+      "description": "A guaranteed-unique and stable user_id. It is not to be interpreted or displayed to the users.",
+      "default": "",
+      "examples": [
+        "ad|Mozilla-LDAP-Dev|lmcardle"
+      ]
+    },
+    "timezone": {
+      "$id": "/properties/timezone",
+      "type": "string",
+      "title": "The Timezone Schema ",
+      "description": "The user's preferred timezone.",
+      "default": "Europe/London",
+      "examples": [
+        "Europe/London"
+      ]
+    },
+    "active": {
+      "$id": "/properties/active",
+      "type": "boolean",
+      "title": "The Active Schema ",
+      "description": "If true, the user is valid. If false, the user is considered de-activated and all access MUST be denied. Users MAY be re-activated. Profile consumers MUST check this value.",
+      "default": false,
+      "examples": [
+        true, false
+      ]
+    },
+    "lastModified": {
+      "$id": "/properties/lastModified",
+      "type": "string",
+      "title": "The Lastmodified Schema ",
+      "description": "Date of last user profile modification.",
+      "default": "",
+      "examples": [
+        "2017-03-09T21:28:51.851Z"
+      ]
+    },
+    "created": {
+      "$id": "/properties/created",
+      "type": "string",
+      "title": "The Created Schema ",
+      "description": "Date of user profile creation.",
+      "default": "",
+      "examples": [
+        "2017-03-09T21:28:51.851Z"
+      ]
+    },
+    "userName": {
+      "$id": "/properties/userName",
+      "type": "string",
+      "title": "The Username Schema ",
+      "description": "Human-readable login name or identifier for the user. This is not guaranteed to be unique or stable. It is generally an email address.",
+      "default": "",
+      "examples": [
+        "lmcardle@mozilla.com"
+      ]
+    },
+    "displayName": {
+      "$id": "/properties/displayName",
+      "type": "string",
+      "title": "The Displayname Schema ",
+      "description": "Human-readable full name for the user.",
+      "default": "",
+      "examples": [
+        "Leo McArdle"
+      ]
+    },
+    "preferredLanguage": {
+      "$id": "/properties/preferredLanguage",
+      "type": "string",
+      "title": "The Preferredlanguage Schema ",
+      "description": "Preferred language spoken and/or read by the user, as locale code.",
+      "default": "en_US",
+      "examples": [
+        "en_US", "fr_FR"
+      ]
+    },
+    "primaryEmail": {
+      "$id": "/properties/primaryEmail",
+      "type": "string",
+      "title": "The Primaryemail Schema ",
+      "description": "The preferred email address used to reach to the user. It is not guaranteed to be stable or unique.",
+      "default": "",
+      "examples": [
+        "lmcardle@mozilla.com"
+      ]
+    },
+    "identities": {
+      "$id": "/properties/identities",
+      "type": "array",
+      "items": {
+        "$id": "/properties/identities/items",
+        "type": "object",
+        "properties": {
+          "email": {
+            "$id": "/properties/identities/items/properties/email",
+            "type": "string",
+            "title": "The Email Schema ",
+            "description": "The email address for an identity associated to this user.",
+            "default": "",
+            "examples": [
+              "lmcardle@mozilla.com"
+            ]
+          },
+          "verified": {
+            "$id": "/properties/identities/items/properties/verified",
+            "type": "boolean",
+            "title": "The Verified Schema ",
+            "description": "If true, there is some assurance that the identity belongs to the user, done by asserting the user could login to this identity at a point in time. Otherwise, the value is user-supplied and may or may not be correct. Note that being a point in time check, there is no guaranteed that the user still own this identity when the user profile is read.",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "primary": {
+            "$id": "/properties/identities/items/properties/primary",
+            "type": "boolean",
+            "title": "The Primary Schema ",
+            "description": "If true, indicates that this is the primary identity for the user, and thus the `identity.email` field also matches `primaryEmail`.",
+            "default": false,
+            "examples": [
+              true
+            ]
+          },
+          "lastModified": {
+            "$id": "/properties/identities/items/properties/lastModified",
+            "type": "string",
+            "title": "The Lastmodified Schema ",
+            "description": "Date of last modification of this identity. If the date is recent and `identity.verified` is set to true, this provides greater assurance that the identity currently belong to the user.",
+            "default": "",
+            "examples": [
+              "2017-03-09T21:28:51.851Z"
+            ]
+          },
+          "verifier": {
+            "$id": "/properties/identities/items/properties/verifier",
+            "type": "string",
+            "title": "The Verifier Schema ",
+            "description": "A unique name representing the verifier utilized in order to set this identity as verified. If set to `user-supplied`, then `identity.verified` is necessarily set to false",
+            "default": "",
+            "examples": [
+              "ad|Mozilla LDAP", "github", "google-oauth2", "passwordless", "user-supplied"
+            ]
+          },
+          "user_id": {
+            "$id": "/properties/identities/items/properties/user_id",
+            "type": "string",
+            "title": "The User_id Schema ",
+            "description": "The unique and stable user identifier for this identity. Note that `identities.user_id` may be different from the top-level `user_id` as it's associated with a specific identity. Do not use this value in order to identify the user profile in Mozilla IAM. This value is useful in order to query the original identity provider. When no specific `user_id` is supplied by the identity provider, `identities.user_id` is equal to `identities.email`",
+            "default": "",
+            "examples": [
+              "dn=mozilla.com,cn=lmcardle", "092394", "lmcardle"
+            ]
+          }
+        },
+        "required": [
+          "email",
+          "verified",
+          "primary",
+          "lastModified",
+          "verifier",
+          "user_id"
+        ]
+      }
+    },
+    "phoneNumbers": {
+      "$id": "/properties/phoneNumbers",
+      "type": "array",
+      "items": {
+        "$id": "/properties/phoneNumbers/items",
+        "type": "string",
+        "title": "The 0th Schema ",
+        "description": "All phone numbers that are associated with the user profile. Order is undefined.",
+        "default": "",
+        "examples": [
+          "+4958339847"
+        ]
+      }
+    },
+    "uris": {
+      "$id": "/properties/uris",
+      "type": "array",
+      "items": {
+        "$id": "/properties/uris/items",
+        "type": "string",
+        "title": "The 0th Schema ",
+        "description": "All URIs that are associated with the user profile. Order is undefined.",
+        "default": "",
+        "examples": [
+          "https://blog.example.net", "irc://irc.mozilla.com/#infosec"
+        ]
+      }
+    },
+    "nicknames": {
+      "$id": "/properties/nicknames",
+      "type": "array",
+      "items": {
+        "$id": "/properties/nicknames/items",
+        "type": "string",
+        "title": "The 0th Schema ",
+        "description": "All nicknames associated with the user profile. Order is undefined.",
+        "default": "",
+        "examples": [
+          "leo"
+        ]
+      }
+    },
+    "SSHFingerprints": {
+      "$id": "/properties/SSHFingerprints",
+      "type": "array",
+      "items": {
+        "$id": "/properties/SSHFingerprints/items",
+        "type": "string",
+        "title": "The 0th Schema ",
+        "description": "All OpenSSH public-keys associated with the user profile. The public-keys are as-entered by the user and are not guaranteed to be correct.",
+        "default": "",
+        "examples": [
+          "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R"
+        ]
+      }
+    },
+    "PGPFingerprints": {
+      "$id": "/properties/PGPFingerprints",
+      "type": "array",
+      "items": {
+        "$id": "/properties/PGPFingerprints/items",
+        "type": "string",
+        "title": "The 0th Schema ",
+        "description": "All PGP public-keys in armored format that are associated with the user profile. The public-keys are as-entered by the user and are not guaranteed to be correct.",
+        "default": "",
+        "examples": [
+          "-----BEGIN PGP PUBLIC KEY BLOCK-----\nmQINBE94eWwBEADjlvvF8HERvpu1lNroGJPObJE5ZbJrIp5J / RuHNwCcMb5ZE7on\n8 Ru7Toi1RxBPTihvBg4xk8ZP5Wlp + WccFKtqiXiU6tbyfYTVoVdtQfZrf69fnp + q\nmW / n + qrltXZcfsT3zIh = A0dq\n -- - END PGP PUBLIC KEY BLOCK-- -- -\n"
+        ]
+      }
+    },
+    "picture": {
+      "$id": "/properties/picture",
+      "type": "string",
+      "title": "The Picture Schema ",
+      "description": "A URL to a picture representing the user.",
+      "default": "",
+      "examples": [
+        "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
+      ]
+    },
+    "shirtSize": {
+      "$id": "/properties/shirtSize",
+      "type": "string",
+      "title": "The Shirtsize Schema ",
+      "description": "The American shirt-size for the user.",
+      "default": "",
+      "examples": [
+        "Fitted S", "Straight-cut M", "Fitted L", "Fitted XL", "Straight-cut XXL", "Fitted XXXL"
+      ]
+    },
+    "groups": {
+      "$id": "/properties/groups",
+      "type": "array",
+      "items": {
+        "$id": "/properties/groups/items",
+        "type": "string",
+        "pattern": "/^[a-zA-Z0-9\-_]+$/",
+        "title": "The GroupItems Schema",
+        "description": "User group membership utilized for access control. This structure is used for compatibility and SHOULD NOT be used. Even so, there is NO plan to deprecate this structure. Use `accessInformation` instead. Non-prefixed groups are known as Mozilla LDAP-groups. Groups prefixed by a provider name and an underscore are provided by a specific group publisher, such as `mozillianorg_` and `hris_`. See https://github.com/mozilla-iam/cis/blob/master/docs/Profiles.md for more information.",
+        "default": "0A_legacy_structure_only_please_use_accessInformation_instead",
+        "examples": [
+          "0A_legacy_structure_only_please_use_accessInformation_instead",
+          "mozilliansorg_bar",
+          "mozilliansorg_foo",
+          "hris_foo",
+          "ldapfoo"
+        ]
+      }
+    },
+    "accessInformation": {
+      "$id": "/properties/accessInformation",
+      "type": "object",
+      "properties": {
+        "ldap": {
+          "$id": "/properties/accessInformation/properties/ldap",
+          "type": "array",
+          "items": {
+            "$id": "/properties/accessInformation/properties/ldap/items",
+            "type": "object",
+            "properties": {
+              "name": {
+                "$id": "/properties/accessInformation/properties/ldap/items/properties/name",
+                "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
+                "title": "The Name Schema ",
+                "description": "Access information for Mozilla LDAP. This list all groups in Mozilla LDAP that this user is member of.",
+                "default": "",
+                "examples": [
+                  "ldapfoo"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "mozilliansorg": {
+          "$id": "/properties/accessInformation/properties/mozilliansorg",
+          "type": "array",
+          "items": {
+            "$id": "/properties/accessInformation/properties/mozilliansorg/items",
+            "type": "object",
+            "properties": {
+              "name": {
+                "$id": "/properties/accessInformation/properties/mozilliansorg/items/properties/name",
+                "type": "string",
+                "title": "The Name Schema ",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
+                "description": "Access information Mozillians.org (`mozilliansorg_` in `groups`). This list all access groups in Mozillians.org that this user is member of.",
+                "default": "",
+                "examples": [
+                  "nda"
+                ]
+              }
+            },
+            "required": [
+              "name"
+            ]
+          }
+        },
+        "hris": {
+          "$id": "/properties/accessInformation/properties/hris",
+          "type": "array",
+          "items": {
+            "$id": "/properties/accessInformation/properties/hris/items",
+            "type": "object",
+            "properties": {
+              "name": {
+                "$id": "/properties/accessInformation/properties/hris/items/properties/name",
+                "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
+                "title": "The Name Schema ",
+                "description": "Access information for HRIS (Human Resources Information Systems) (`hris_` in `groups`). This lists all relevant HRIS entries for the user.",
+                "default": "",
+                "examples": [
+                  "is_staff", "costcenter", "department", "management_level", "workertype", "manager_name", "manager_status", "egencia"
+                ]
+              },
+              "value": {
+                "$id": "/properties/accessInformation/properties/hris/items/properties/value",
+                "type": "string",
+                "title": "The Value Schema ",
+                "description": "The corresponding value for the HRIS attribute listed in The Name Schema above.",
+                "default": "",
+                "examples": [
+                  "1420", "Bob Smith", "IT", "True", "False", "UK"
+                ]
+              }
+            },
+            "required": [
+              "name",
+              "value"
+            ]
+          }
+        },
+        "accessprovider": {
+          "$id": "/properties/accessInformation/properties/accessprovider",
+          "type": "array",
+          "items": {
+            "$id": "/properties/accessInformation/properties/accessprovider/items",
+            "type": "object",
+            "properties": {
+              "created": {
+                "$id": "/properties/accessInformation/properties/accessprovider/items/properties/created",
+                "type": "string",
+                "title": "The Created Schema ",
+                "description": "The date at which the access provider group has been first created. This is set the first time the user accesses a relying party.",
+                "default": "",
+                "examples": [
+                  "2010-01-23T04:56:22Z"
+                ]
+              },
+              "lastUsed": {
+                "$id": "/properties/accessInformation/properties/accessprovider/items/properties/lastUsed",
+                "type": "string",
+                "title": "The Lastused Schema ",
+                "description": "The most recent date at which the access provider group has been used to grant access to the user. This is updated every time the user accesses a relying party, and that access is validated by the access provider.",
+                "default": "",
+                "examples": [
+                  "2010-01-23T04:56:22Z"
+                ]
+              },
+              "name": {
+                "$id": "/properties/accessInformation/properties/accessprovider/items/properties/name",
+                "type": "string",
+                "pattern": "/^[a-zA-Z0-9\-_]+$/",
+                "title": "The Name Schema ",
+                "description": "The human-readable name of the relying party that the user is accessing.",
+                "default": "",
+                "examples": [
+                  "mozdef1.private.scl3.mozilla.com"
+                ]
+              },
+              "value": {
+                "$id": "/properties/accessInformation/properties/accessprovider/items/properties/value",
+                "type": "string",
+                "title": "The Value Schema ",
+                "description": "The guaranteed unique and stable unique identifier for the relying party that the user is accessing (often called `client_id`).",
+                "default": "",
+                "examples": [
+                  "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
+                ]
+              }
+            },
+            "required": [
+              "created",
+              "lastUsed",
+              "name",
+              "value"
+            ]
+          }
+        }
+      },
+      "required": [
+        "ldap",
+        "mozilliansorg",
+        "hris",
+        "accessprovider"
+      ]
+    }
+  },
+  "required": [
+    "_schema",
+    "user_id",
+    "timezone",
+    "active",
+    "lastModified",
+    "created",
+    "userName",
+    "displayName",
+    "preferredLanguage",
+    "primaryEmail",
+    "identities",
+    "phoneNumbers",
+    "uris",
+    "nicknames",
+    "SSHFingerprints",
+    "PGPFingerprints",
+    "picture",
+    "shirtSize",
+    "groups",
+    "accessInformation"
+  ]
+}
