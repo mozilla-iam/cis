@@ -68,7 +68,7 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
   "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
   "user_id": {
     "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "ad|Mozilla-LDAP-Dev|lmcardle",
+    "value": "ad|Mozilla-LDAP-Dev|lmcardle"
   },
   "idp": {
     "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "WORKGROUP CONFIDENTIAL" },
@@ -154,7 +154,7 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
   "picture": {
     "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
     "value": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
-  }
+  },
   "shirtSize": {
     "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
     "value": "M"
@@ -214,7 +214,7 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
                   }
                ]
     }
-  }
+  },
   "experimental": {
       "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "WORKGROUND CONFIDENTIAL" },
       "value": null
