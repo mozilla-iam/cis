@@ -53,7 +53,7 @@ IAM Goals:
    JSON documents. The metadata fields may be changed by publishers, however, note that if `user.metadata.authority` is
    changed by a publisher the change will be rejected by CIS and by the validation schema.
 6. Add new publisher, "CIS" for information that only CIS is able to provide accurately.
-7. In some cases the "Auth0" publisher provides the data even thus it's an intermediary (such as `displayName`,
+7. In some cases the "Auth0" publisher provides the data even thus it's an intermediary (such as `firstName`,
    `userName` and `primaryEmail`). This is because we otherwise would need a complex multi-publisher-per-field model.
 8. Change signature model to be per field instead of per profile, allowing for more flexibility. The signature is
    optional (at least for now) for compatibility.
