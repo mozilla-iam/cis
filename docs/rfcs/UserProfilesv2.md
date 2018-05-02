@@ -57,6 +57,7 @@ IAM Goals:
    `userName` and `primaryEmail`). This is because we otherwise would need a complex multi-publisher-per-field model.
 8. Change signature model to be per field instead of per profile, allowing for more flexibility. The signature is
    optional (at least for now) for compatibility.
+9. Add `experimental` field which is not to be consumed for important workflows.
 
 ### Example profile:
 
@@ -209,6 +210,10 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
                   }
                ]
     }
+  }
+  "experimental": {
+      "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "WORKGROUND CONFIDENTIAL" },
+      "value": null
   }
 }
 ```
