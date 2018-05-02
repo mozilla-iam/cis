@@ -94,9 +94,13 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
     "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
     "value": "lmcardle@mozilla.com"
   },
-  "displayName": {
+  "firstName": {
     "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "Leo McArdle"
+    "value": "Leo"
+  },
+  "lastName": {
+    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
+    "value": "McArdle"
   },
   "preferredLanguage": {
     "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
@@ -199,7 +203,7 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
                   }
                ]
     },
-    "cis": {
+    "auth0": {
       "metadata": { "authority": "cis", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
       "value": [
                   {
