@@ -10,67 +10,67 @@
                     "type": "string"
                 },
                 "user_id": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/SimpleStringValue"
                 },
                 "idp": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "active": {
                     "$ref": "#/definitions/Active"
                 },
                 "timezone": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "lastModified": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/DateValue"
                 },
                 "created": {
-                    "$ref": "#/definitions/Created"
+                    "$ref": "#/definitions/DateValue"
                 },
                 "userName": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "firstName": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "lastName": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "preferredLanguage": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "primaryEmail": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "identities": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "phoneNumbers": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "uris": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "nicknames": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "SSHFingerprints": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "PGPFingerprints": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/ListValue"
                 },
                 "picture": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/SimpleStringValue"
                 },
                 "shirtSize": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/SimpleStringValue"
                 },
                 "accessInformation": {
                     "$ref": "#/definitions/AccessInformation"
                 },
                 "experimental": {
-                    "$ref": "#/definitions/Nicknames"
+                    "$ref": "#/definitions/Experimental"
                 }
             },
             "required": [
@@ -80,7 +80,23 @@
             ],
             "title": "Welcome"
         },
-        "Nicknames": {
+        "Experimental": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "$ref": "#/definitions/ValueUnion"
+                }
+            },
+            "required": [
+                "metadata"
+            ],
+            "title": "Experimental"
+        },
+        "ListValue": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -95,7 +111,7 @@
                 "metadata",
                 "value"
             ],
-            "title": "Nicknames"
+            "title": "A list value"
         },
         "Metadata": {
             "type": "object",
@@ -187,7 +203,24 @@
             ],
             "title": "Active"
         },
-        "Created": {
+        "SimpleStringValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "A key:value string"
+        },
+        "DateValue": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -203,7 +236,7 @@
                 "metadata",
                 "value"
             ],
-            "title": "Created"
+            "title": "A key:value string which contains a date"
         },
         "AccessInformation": {
             "type": "object",
