@@ -31,6 +31,65 @@ IAM Goals:
 7. An RP wants to strongly verify that the profile data it's consuming has not been modified anywhere in the IAM
    pipeline and represent what the publisher initially asserted.
 
+
+## Possible corresponding API
+
+### Classification scope
+
+**Scopes**: `classification:public`, `classification:staff`, `classification:workgroup`, `classification:individual`
+
+Only returns fields which `metadata.classification` matches the corresponding scope, regardless of ANY other scopes.
+Defaults to `classification:public` regardless of the scope selection (i.e. including `classification:public` is
+optional for the API caller)
+
+### Publisher Authority scope
+
+**Scopes**: `authority:mozilliansorg`, `authority:auth0`, `authority:hris`, `authority:ldap`
+
+Only authorized for specific publishers. Generally only one type of publisher is allowed one of these scopes (i.e. LDAP
+cannot be authorized both `authority:auth0` and `authority:ldap` for example). However, a single publisher may have
+multiple, separate pieces of code accessing the API with different tokens and scopes, yet the same `authority` specific
+scope (i.e. Mozillians.org may have 3 `client_id` accessing the authorizer with the same `authority:mozilliansorg`
+scope).
+
+### Endpoints
+
+- GET,PATCH,PUT,DELETE /v2/{user_id}
+- GET,PATCH,PUT,DELETE  /v2/{primaryEmail}
+
+Equivalent endpoints returning raw profile information.
+
+**Scopes**: 
+- `read:fullprofile`: supports GET. Entire profile access (minus whatever classification scope is selected)
+- `read:profile`: supports GET. Minimal profile access (see below for a minimal profile example)
+- `write:fullprofile`: supports PUT. Can post a new, non-existing user profile. Works for all fields.
+- `write:profile`: supports PATCH. Can update an existing user profile. Note that this scope does not guarantee success,
+  if you fail `signature` verification or `authority` validation. Otherwise works for any field.
+
+Additional, role-specific `write:` and `read:` may be added in the future.
+
+Example minimal profile fields:
+
+- `user_id`
+- `primaryEmail`
+- `identities.*`
+- `firstName`
+- `lastName`
+- `picture`
+- `lastModified`
+- `accessInformation.{mozilliansorg.*, ldap.*, hris.*}` Do note again that this does not include fields that are not cleared by
+  the classification scope check.
+
+See also the rendered Auth0 OIDC minimal profile further down this document.
+
+
+- GET /v2/connection/{primaryEmail}
+
+**Scopes**: None required.
+
+Returns valid connection methods for the user.
+
+
 ## Profile proposal
 
 **Main changes**
@@ -63,174 +122,14 @@ IAM Goals:
 
 This is all the profile data available to Mozilla IAM, though RPs may be able to see or query only parts of it.
 
-```
-{
-  "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
-  "user_id": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "ad|Mozilla-LDAP-Dev|lmcardle"
-  },
-  "idp": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "WORKGROUP CONFIDENTIAL" },
-    "value": "Mozilla-LDAP-Dev"
-  },
-  "active": {
-    "metadata": { "authority": "cis", "signature": "ZOWSLXKxx..", "classification": "WORKGROUP CONFIDENTIAL" },
-    "value": true
-  },
-  "timezone": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "Europe/London"
-  },
-  "lastModified": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "2017-03-09T21:28:51.851Z"
-  },
-  "created": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "2017-03-09T21:28:51.851Z"
-  },
-  "userName": { 
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "lmcardle@mozilla.com"
-  },
-  "firstName": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "Leo"
-  },
-  "lastName": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "McArdle"
-  },
-  "preferredLanguage": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "en_US"
-  },
-  "primaryEmail": {
-    "metadata": { "authority": "auth0", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "lmcardle@mozilla.com"
-  },
-  "identities": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": [
-                {
-                  "email": "lmcardle@mozilla.com",
-                  "verified": true,
-                  "primary": true,
-                  "lastModified": "2017-03-09T21:28:51.851Z",
-                  "verifier": "MozillaLDAP",
-                  "user_id": "dn=mozilla.com,cn=lmcardle"
-                },
-                {
-                  "email": "leomcardle@gmail.com",
-                  "verified": true,
-                          "primary": false,
-                  "verifier": "github-oauth2",
-                  "lastModified": "2017-03-09T21:28:51.851Z",
-                  "user_id": "834847"
-                }
-             ]
-  },
-  "phoneNumbers": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
-    "value": [ "+4958339847" ]
-  },
-  "uris": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
-    "value": [ "https://blog.example.net" ]
-  },
-  "nicknames": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": [ "leo" ]
-  },
-  "SSHFingerprints": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": [ "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R" ]
-  },
-  "PGPFingerprints": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": [ "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n" ]
-  },
-  "picture": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-    "value": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
-  },
-  "shirtSize": {
-    "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
-    "value": "M"
-  },
-  "accessInformation": {
-    "ldap": {
-      "metadata": { "authority": "ldap", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-      "value": [
-                  {
-                    "name": "ldapfoo"
-                  },
-                  {
-                    "name": "vpn_default"
-                  }
-              ]
-    },
-    "mozilliansorg": {
-      "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "PUBLIC" },
-      "value": [
-                  {
-                    "name": "nda"
-                  },
-                  {
-                    "name": "nda"
-                  }
-               ]
-    },
-    "hris": {
-      "metadata": { "authority": "hris", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
-      "value": [
-                  {
-                    "name": "costcenter",
-                    "value": "1420"
-                  },
-                  { 
-                    "name": "workertype",
-                    "value": "employee"
-                  },
-                  {
-                    "name": "egencia",
-                    "value": "uk"
-                  },
-                  {
-                    "name": "department",
-                    "value": "IT"
-                  }
-               ]
-    },
-    "auth0": {
-      "metadata": { "authority": "cis", "signature": "ZOWSLXKxx..", "classification": "STAFF CONFIDENTIAL" },
-      "value": [
-                  {
-                    "created": "2010-01-23T04:56:22Z",
-                    "lastUsed": "2010-01-23T04:56:22Z",
-                    "name": "mozdef1.private.scl3.gmail",
-                    "value": "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
-                  }
-               ]
-    }
-  },
-  "experimental": {
-      "metadata": { "authority": "mozilliansorg", "signature": "ZOWSLXKxx..", "classification": "WORKGROUND CONFIDENTIAL" },
-      "value": null
-  }
-}
-```
-
-- Schema validator: [here](UserProfilesv2_schema.json)
-- Example JSON: [here](UserProfilesV2.json)
+- Schema Schema validator (supports draft 4-7): [here](UserProfilesv2_schema.json)
+- Example JSON profile: [here](UserProfilesV2.json)
 
 Example validation:
 ```
 pip install jsonschema
 jsonschema -i UserProfilesv2.json UserProfilesv2_schema.json
 ```
-
 
 ### Example minimum profile
 
@@ -247,15 +146,16 @@ This may change in the future, if PersonAPI ever provides an OIDC endpoint.
 
 ```
 {
-  "sub":"ad|Mozilla-LDAP-Dev|lmcardle",
-  "email":"lmcardle@mozilla.com",
-  "email_verified":true,
-  "name":"Leo McArdle",
+  "sub":"ad|Mozilla-LDAP-Dev|lmcardle", #`user_id`
+  "email":"lmcardle@mozilla.com",       #`primaryEmail`
+  "email_verified":true,                #`identities{'primary':true, 'verified': true}`
+  "name":"Leo McArdle",                 #`firstName` + `lastName` which are display names (not necessarily legal names)
   "picture":"https://s.gravatar.com/avatar/2a206335017e99ed8b868d931b802f95?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fgd.png",
-  "updated_at":"2018-04-11T00:35:36.965Z",
-  "https://sso.mozilla.com/claim/groups":["groups here"]
+  "updated_at":"2018-04-11T00:35:36.965Z", #`lastModified`
+  "https://sso.mozilla.com/claim/groups":["groups here"] #`accessInformation.*`
 }
 ```
+
 
 NOTE: The `https://sso.mozilla.com/claim/groups` claim contains some of `user.accessInformation.*` information. This
 does NOT necessarily contain all of the information present in `user.accessInformation` depending on the RP and the

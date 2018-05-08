@@ -18,7 +18,7 @@
 	},
 	"active": {
 		"metadata": {
-			"authority": "cis",
+			"authority": "ldap",
 			"signature": "ZOWSLXKxx..",
 			"classification": "WORKGROUP CONFIDENTIAL"
 		},
@@ -261,7 +261,7 @@
 		},
 		"auth0": {
 			"metadata": {
-				"authority": "cis",
+				"authority": "auth0",
 				"signature": "ZOWSLXKxx..",
 				"classification": "STAFF CONFIDENTIAL"
 			},
