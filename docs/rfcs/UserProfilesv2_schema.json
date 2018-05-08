@@ -1,0 +1,314 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/Welcome",
+    "definitions": {
+        "Welcome": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "_schema": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "idp": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "active": {
+                    "$ref": "#/definitions/Active"
+                },
+                "timezone": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "lastModified": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "created": {
+                    "$ref": "#/definitions/Created"
+                },
+                "userName": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "firstName": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "lastName": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "preferredLanguage": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "primaryEmail": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "identities": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "phoneNumbers": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "uris": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "nicknames": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "SSHFingerprints": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "PGPFingerprints": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "picture": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "shirtSize": {
+                    "$ref": "#/definitions/Nicknames"
+                },
+                "accessInformation": {
+                    "$ref": "#/definitions/AccessInformation"
+                },
+                "experimental": {
+                    "$ref": "#/definitions/Nicknames"
+                }
+            },
+            "required": [
+                "_schema",
+                "primaryEmail",
+                "user_id"
+            ],
+            "title": "Welcome"
+        },
+        "Nicknames": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "$ref": "#/definitions/ValueUnion"
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "Nicknames"
+        },
+        "Metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "authority": {
+                    "type": "string"
+                },
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "classification": {
+                    "$ref": "#/definitions/Classification"
+                }
+            },
+            "required": [
+                "authority",
+                "classification"
+            ],
+            "title": "Metadata"
+        },
+        "ValueValue": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "value": {
+                    "type": "string"
+                },
+                "name": {
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "verified": {
+                    "type": "boolean"
+                },
+                "verifier": {
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "primary": {
+                    "type": "boolean"
+                },
+                "lastModified": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "email": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "lastModified",
+                "name",
+                "primary",
+                "verified",
+                "verifier"
+            ],
+            "title": "ValueValue"
+        },
+        "Active": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "Active"
+        },
+        "Created": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "string",
+                    "format": "date-time"
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "Created"
+        },
+        "AccessInformation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ldap": {
+                    "$ref": "#/definitions/Auth0"
+                },
+                "mozilliansorg": {
+                    "$ref": "#/definitions/Auth0"
+                },
+                "hris": {
+                    "$ref": "#/definitions/Auth0"
+                },
+                "auth0": {
+                    "$ref": "#/definitions/Auth0"
+                }
+            },
+            "title": "AccessInformation"
+        },
+        "Auth0": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Auth0Value"
+                    }
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "Auth0"
+        },
+        "Auth0Value": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "lastUsed": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "name",
+                "value"
+            ],
+            "title": "Auth0Value"
+        },
+        "ValueUnion": {
+            "oneOf": [
+                {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/ValueValue"
+                    }
+                },
+                {
+                    "type": "null"
+                },
+                {
+                    "type": "string"
+                }
+            ],
+            "title": "ValueUnion"
+        },
+        "Signature": {
+            "type": "string",
+            "enum": [
+                "ZOWSLXKxx.."
+            ],
+            "title": "Signature"
+        },
+        "Classification": {
+            "type": "string",
+            "enum": [
+                "STAFF CONFIDENTIAL",
+                "PUBLIC",
+                "WORKGROUP CONFIDENTIAL",
+                "WORKGROUND CONFIDENTIAL"
+            ],
+            "title": "Classification"
+        }
+    }
+}
