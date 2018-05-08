@@ -222,7 +222,14 @@ This is all the profile data available to Mozilla IAM, though RPs may be able to
 }
 ```
 
-Schema validator: [here](UserProfilesv2_schema.json)
+- Schema validator: [here](UserProfilesv2_schema.json)
+- Example JSON: [here](UserProfilesV2.json)
+
+Example validation:
+```
+pip install jsonschema
+jsonschema -i UserProfilesv2.json UserProfilesv2_schema.json
+```
 
 
 ### Example minimum profile
