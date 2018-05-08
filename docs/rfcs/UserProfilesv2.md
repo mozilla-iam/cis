@@ -54,6 +54,8 @@ scope).
 
 ### Endpoints
 
+All parameters **must** be URL encoded.
+
 - GET,PATCH,PUT,DELETE /v2/{user_id}
 - GET,PATCH,PUT,DELETE  /v2/{primaryEmail}
 
@@ -82,6 +84,41 @@ Example minimal profile fields:
 
 See also the rendered Auth0 OIDC minimal profile further down this document.
 
+- GET,PATCH,PUT /v2/users?q=\*&offset=0&nr=100
+
+Similar to /v2/{user_id} but returns a paginated list of all users. The caller is to repeateadly call the API until all
+pages have been fetched, by moving the `offset` value for each query.
+
+**Parameters**:
+- `q` query string - allows for searching/filtering results, e.g.: `q="primaryEmail=gdestuynder@mozilla.com"`. Supports
+  [filtered expression
+syntax](https://docs.aws.amazon.com/amazondynamodb/latest/developerguide/Query.html#FilteringResults). Default: \*.
+- `offset` where the pagination starts. 0 means first page. Default: 0.
+- `nr` the number of pages to return. There is one page per user. Default: 100. Maximum value: 1000.
+-
+
+**Scopes**:
+
+Same as /v2/{user_id}
+
+**Body**:
+The reply includes a super-structure above the user profile structure, as such:
+
+```
+{
+  "total_pages": 1293, #Amount of pages
+  "pages_in_response": 100, # how many pages in this response
+  "profiles": [
+    {
+      .... actual user profile ...
+    },
+    {
+      .... actual user profile ...
+    }
+    ...
+  ]
+}
+```
 
 - GET /v2/connection/{primaryEmail}
 
