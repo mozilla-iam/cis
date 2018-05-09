@@ -159,7 +159,7 @@
                             "lastModified": "2017-03-09T21:28:51.851Z"
                 }]
 	},
-	"SSHFingerprints": {
+	"SSHPublicKey": {
 		"metadata": {
 			"authority": "mozilliansorg",
 			"signature": "ZOWSLXKxx..",
@@ -175,7 +175,7 @@
                 }]
 
 	},
-	"PGPFingerprints": {
+	"PGPPublicKey": {
 		"metadata": {
 			"authority": "mozilliansorg",
 			"signature": "ZOWSLXKxx..",

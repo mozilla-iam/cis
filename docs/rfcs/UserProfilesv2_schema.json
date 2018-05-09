@@ -54,10 +54,10 @@
                 "nicknames": {
                     "$ref": "#/definitions/ListValue"
                 },
-                "SSHFingerprints": {
+                "SSHPublicKey": {
                     "$ref": "#/definitions/ListValue"
                 },
-                "PGPFingerprints": {
+                "PGPPublicKey": {
                     "$ref": "#/definitions/ListValue"
                 },
                 "picture": {
