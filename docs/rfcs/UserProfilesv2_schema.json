@@ -1,8 +1,8 @@
 {
-    "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/Welcome",
+    "$schema": "http://json-schema.org/draft-06/schema#",
+    "$ref": "#/definitions/MozillaIAMUserProfile",
     "definitions": {
-        "Welcome": {
+        "MozillaIAMUserProfile": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -10,77 +10,120 @@
                     "type": "string"
                 },
                 "user_id": {
-                    "$ref": "#/definitions/SimpleStringValue"
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "idp": {
-                    "$ref": "#/definitions/ListValue"
+                "login_method": {
+                    "$ref": "#/definitions/SimpleField"
                 },
                 "active": {
-                    "$ref": "#/definitions/Active"
+                    "$ref": "#/definitions/SimpleBoolean"
                 },
                 "timezone": {
-                    "$ref": "#/definitions/ListValue"
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "lastModified": {
-                    "$ref": "#/definitions/DateValue"
+                "last_modified": {
+                    "$ref": "#/definitions/SimpleField"
                 },
                 "created": {
-                    "$ref": "#/definitions/DateValue"
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "userName": {
-                    "$ref": "#/definitions/ListValue"
+                "username": {
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "firstName": {
-                    "$ref": "#/definitions/ListValue"
+                "first_name": {
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "lastName": {
-                    "$ref": "#/definitions/ListValue"
+                "last_name": {
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "preferredLanguage": {
-                    "$ref": "#/definitions/ListValue"
+                "preferred_language": {
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "primaryEmail": {
-                    "$ref": "#/definitions/ListValue"
+                "primary_email": {
+                    "$ref": "#/definitions/SimpleField"
                 },
                 "identities": {
-                    "$ref": "#/definitions/ListValue"
+                    "$ref": "#/definitions/ListofList"
                 },
-                "phoneNumbers": {
-                    "$ref": "#/definitions/ListValue"
+                "phone_numbers": {
+                    "$ref": "#/definitions/ListofList"
                 },
                 "uris": {
-                    "$ref": "#/definitions/ListValue"
+                    "$ref": "#/definitions/ListofList"
                 },
                 "nicknames": {
-                    "$ref": "#/definitions/ListValue"
+                    "$ref": "#/definitions/ListofList"
                 },
-                "SSHPublicKey": {
-                    "$ref": "#/definitions/ListValue"
+                "ssh_public_keys": {
+                    "$ref": "#/definitions/ListofList"
                 },
-                "PGPPublicKey": {
-                    "$ref": "#/definitions/ListValue"
+                "pgp_public_keys": {
+                    "$ref": "#/definitions/ListofList"
                 },
                 "picture": {
-                    "$ref": "#/definitions/SimpleStringValue"
+                    "$ref": "#/definitions/SimpleField"
                 },
-                "shirtSize": {
-                    "$ref": "#/definitions/SimpleStringValue"
-                },
-                "accessInformation": {
+                "access_information": {
                     "$ref": "#/definitions/AccessInformation"
                 },
                 "experimental": {
-                    "$ref": "#/definitions/Experimental"
+                    "$ref": "#/definitions/ListofListExperimental"
                 }
             },
             "required": [
                 "_schema",
-                "primaryEmail",
+                "primary_email",
                 "user_id"
             ],
-            "title": "Welcome"
+            "title": "MozillaIAMUserProfile"
         },
-        "Experimental": {
+        "AccessInformation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ldap": {
+                    "$ref": "#/definitions/ListofList"
+                },
+                "mozilliansorg": {
+                    "$ref": "#/definitions/ListofList"
+                },
+                "hris": {
+                    "$ref": "#/definitions/ListofList"
+                },
+                "auth0": {
+                    "$ref": "#/definitions/ListofList"
+                }
+            },
+            "title": "AccessInformation"
+        },
+        "ListofList": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ValueElement"
+                            }
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
+                }
+            },
+            "required": [
+                "metadata",
+                "value"
+            ],
+            "title": "ListofList"
+        },
+        "ListofListExperimental": {
             "type": "object",
             "additionalProperties": true,
             "properties": {
@@ -88,57 +131,76 @@
                     "$ref": "#/definitions/Metadata"
                 },
                 "value": {
-                    "$ref": "#/definitions/ValueUnion"
-                }
-            },
-            "required": [
-                "metadata"
-            ],
-            "title": "Experimental"
-        },
-        "ListValue": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "value": {
-                    "$ref": "#/definitions/ValueUnion"
+                    "oneOf": [
+                        {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/ValueElement"
+                            }
+                        },
+                        {
+                            "type": "null"
+                        }
+                    ]
                 }
             },
             "required": [
                 "metadata",
                 "value"
             ],
-            "title": "A list value"
+            "title": "ListofList"
         },
         "Metadata": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "authority": {
-                    "type": "string"
+                "publisher": {
+                    "$ref": "#/definitions/Publisher"
                 },
-                "signature": {
-                    "$ref": "#/definitions/Signature"
+                "signatures": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Signature"
+                    }
                 },
                 "classification": {
                     "$ref": "#/definitions/Classification"
                 }
             },
             "required": [
-                "authority",
-                "classification"
+                "classification",
+                "publisher",
+                "signatures"
             ],
             "title": "Metadata"
         },
-        "ValueValue": {
+        "Signature": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
+                "name": {
+                    "$ref": "#/definitions/Name"
+                },
                 "value": {
-                    "type": "string"
+                    "$ref": "#/definitions/ValueEnum"
+                },
+                "type": {
+                    "$ref": "#/definitions/Type"
+                }
+            },
+            "title": "Signature"
+        },
+        "ValueElement": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "lastUsed": {
+                    "type": "string",
+                    "format": "date-time"
                 },
                 "name": {
                     "oneOf": [
@@ -149,6 +211,19 @@
                             "type": "string"
                         }
                     ]
+                },
+                "value": {
+                    "oneOf": [
+                        {
+                            "type": "null"
+                        },
+                        {
+                            "type": "string"
+                        }
+                    ]
+                },
+                "email": {
+                    "type": "string"
                 },
                 "verified": {
                     "type": "boolean"
@@ -163,30 +238,23 @@
                         }
                     ]
                 },
-                "primary": {
-                    "type": "boolean"
-                },
-                "lastModified": {
+                "last_modified": {
                     "type": "string",
                     "format": "date-time"
                 },
-                "email": {
-                    "type": "string"
+                "primary": {
+                    "type": "boolean"
                 },
                 "user_id": {
                     "type": "string"
                 }
             },
             "required": [
-                "lastModified",
-                "name",
-                "primary",
-                "verified",
-                "verifier"
+                "name"
             ],
-            "title": "ValueValue"
+            "title": "ValueElement"
         },
-        "Active": {
+        "SimpleBoolean": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -201,9 +269,9 @@
                 "metadata",
                 "value"
             ],
-            "title": "Active"
+            "title": "SimpleBoolean"
         },
-        "SimpleStringValue": {
+        "SimpleField": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -218,130 +286,44 @@
                 "metadata",
                 "value"
             ],
-            "title": "A key:value string"
-        },
-        "DateValue": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "value": {
-                    "type": "string",
-                    "format": "date-time"
-                }
-            },
-            "required": [
-                "metadata",
-                "value"
-            ],
-            "title": "A key:value string which contains a date"
-        },
-        "AccessInformation": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "ldap": {
-                    "$ref": "#/definitions/Auth0"
-                },
-                "mozilliansorg": {
-                    "$ref": "#/definitions/Auth0"
-                },
-                "hris": {
-                    "$ref": "#/definitions/Auth0"
-                },
-                "auth0": {
-                    "$ref": "#/definitions/Auth0"
-                }
-            },
-            "title": "AccessInformation"
-        },
-        "Auth0": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "value": {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/Auth0Value"
-                    }
-                }
-            },
-            "required": [
-                "metadata",
-                "value"
-            ],
-            "title": "Auth0"
-        },
-        "Auth0Value": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "created": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "lastUsed": {
-                    "type": "string",
-                    "format": "date-time"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "value": {
-                    "oneOf": [
-                        {
-                            "type": "null"
-                        },
-                        {
-                            "type": "string"
-                        }
-                    ]
-                }
-            },
-            "required": [
-                "name",
-                "value"
-            ],
-            "title": "Auth0Value"
-        },
-        "ValueUnion": {
-            "oneOf": [
-                {
-                    "type": "array",
-                    "items": {
-                        "$ref": "#/definitions/ValueValue"
-                    }
-                },
-                {
-                    "type": "null"
-                },
-                {
-                    "type": "string"
-                }
-            ],
-            "title": "ValueUnion"
-        },
-        "Signature": {
-            "type": "string",
-            "enum": [
-                "ZOWSLXKxx.."
-            ],
-            "title": "Signature"
+            "title": "SimpleField"
         },
         "Classification": {
             "type": "string",
             "enum": [
-                "STAFF CONFIDENTIAL",
                 "PUBLIC",
+                "MOZILLA CONFIDENTIAL",
+                "WORKGROUP CONFIDENTIAL: STAFF ONLY",
                 "WORKGROUP CONFIDENTIAL",
-                "WORKGROUND CONFIDENTIAL"
+                "INDIVIDUAL CONFIDENTIAL"
             ],
             "title": "Classification"
+        },
+        "Publisher": {
+            "type": "string",
+            "enum": [
+                "auth0",
+                "mozilliansorg",
+                "ldap",
+                "hris"
+            ],
+            "title": "Publisher"
+        },
+        "Name": {
+            "type": "string",
+            "title": "Name"
+        },
+        "Type": {
+            "type": "string",
+            "enum": [
+                "jwks",
+                "PGPArmored"
+            ],
+            "title": "Type"
+        },
+        "ValueEnum": {
+            "type": "string",
+            "title": "ValueEnum"
         }
     }
 }
