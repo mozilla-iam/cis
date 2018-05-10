@@ -241,7 +241,7 @@
       }
     ]
   },
-  "SSHPublicKey": {
+  "SSHPublicKeys": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
@@ -263,7 +263,7 @@
       }
     ]
   },
-  "PGPPublicKey": {
+  "PGPPublicKeys": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
