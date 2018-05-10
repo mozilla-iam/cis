@@ -1,276 +1,412 @@
-{
-	"_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
-	"user_id": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "ad|Mozilla-LDAP-Dev|lmcardle"
-	},
-	"idp": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "WORKGROUP CONFIDENTIAL"
-		},
-		"value": "Mozilla-LDAP-Dev"
-	},
-	"active": {
-		"metadata": {
-			"authority": "ldap",
-			"signature": "ZOWSLXKxx..",
-			"classification": "WORKGROUP CONFIDENTIAL"
-		},
-		"value": true
-	},
-	"timezone": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "Europe/London"
-	},
-	"lastModified": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "2017-03-09T21:28:51.851Z"
-	},
-	"created": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "2017-03-09T21:28:51.851Z"
-	},
-	"userName": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "lmcardle@mozilla.com"
-	},
-	"firstName": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "Leo"
-	},
-	"lastName": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "McArdle"
-	},
-	"preferredLanguage": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "en_US"
-	},
-	"primaryEmail": {
-		"metadata": {
-			"authority": "auth0",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "lmcardle@mozilla.com"
-	},
-	"identities": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": [{
-				"email": "lmcardle@mozilla.com",
-                                "name": null,
-				"verified": true,
-				"verifier": "Mozilla-LDAP-Dev",
-				"lastModified": "2017-03-09T21:28:51.851Z",
-				"primary": true,
-				"user_id": "dn=mozilla.com,cn=lmcardle"
-			},
-			{
-				"email": "leomcardle@gmail.com",
-                                "name": null,
-				"verified": true,
-				"verifier": "github-oauth2",
-				"primary": false,
-				"lastModified": "2017-03-09T21:28:51.851Z",
-				"user_id": "834847"
-			}
-		]
-	},
-	"phoneNumbers": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "STAFF CONFIDENTIAL"
-		},
-		"value": [{
-                            "value": "+4958339847",
-                            "name": "home",
-                            "verified": false,
-                            "verifier": null,
-                            "primary": false,
-                            "lastModified": "2017-03-09T21:28:51.851Z"
-                }]
-	},
-	"uris": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "STAFF CONFIDENTIAL"
-		},
-		"value": [{
-                            "value": "https://blog.example.net",
-                            "name": "My blog",
-                            "verified": false,
-                            "verifier": null,
-                            "primary": false,
-                            "lastModified": "2017-03-09T21:28:51.851Z"
-                }]
-	},
-	"nicknames": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": [{
-                            "value": "leo",
-                            "name": "IRC",
-                            "verified": false,
-                            "verifier": null,
-                            "primary": false,
-                            "lastModified": "2017-03-09T21:28:51.851Z"
-                }]
-	},
-	"SSHPublicKey": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": [{
-		            "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R",
-                            "name": "laptop",
-                            "verified": false,
-                            "verifier": null,
-                            "primary": false,
-                            "lastModified": "2017-03-09T21:28:51.851Z"
-                }]
-
-	},
-	"PGPPublicKey": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": [{
-		            "value": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n",
-                            "name": "moz key",
-                            "verified": false,
-                            "verifier": null,
-                            "primary": false,
-                            "lastModified": "2017-03-09T21:28:51.851Z"
-                }]
-	},
-	"picture": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "PUBLIC"
-		},
-		"value": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
-	},
-	"accessInformation": {
-		"ldap": {
-			"metadata": {
-				"authority": "ldap",
-				"signature": "ZOWSLXKxx..",
-				"classification": "PUBLIC"
-			},
-			"value": [{
-				        "created": "2010-01-23T04:56:22Z",
-				        "lastUsed": "2010-01-23T04:56:22Z",
-					"name": "vpn_default",
-                                        "value": null
-                        }]
-		},
-		"mozilliansorg": {
-			"metadata": {
-				"authority": "mozilliansorg",
-				"signature": "ZOWSLXKxx..",
-				"classification": "PUBLIC"
-			},
-			"value": [{
-				        "created": "2010-01-23T04:56:22Z",
-				        "lastUsed": "2010-01-23T04:56:22Z",
-					"name": "nda",
-                                        "value": null
-                        }]
-		},
-		"hris": {
-			"metadata": {
-				"authority": "hris",
-				"signature": "ZOWSLXKxx..",
-				"classification": "STAFF CONFIDENTIAL"
-			},
-			"value": [{
-					"name": "costcenter",
-					"value": "1420"
-				},
-				{
-					"name": "workertype",
-					"value": "employee"
-				},
-				{
-					"name": "egencia",
-					"value": "uk"
-				},
-				{
-				        "created": "2010-01-23T04:56:22Z",
-				        "lastUsed": "2010-01-23T04:56:22Z",
-					"name": "ManagerName",
-					"value": "Mark"
-				}
-			]
-		},
-		"auth0": {
-			"metadata": {
-				"authority": "auth0",
-				"signature": "ZOWSLXKxx..",
-				"classification": "STAFF CONFIDENTIAL"
-			},
-			"value": [{
-				"created": "2010-01-23T04:56:22Z",
-				"lastUsed": "2010-01-23T04:56:22Z",
-				"name": "mozdef1.private.scl3.gmail",
-				"value": "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
-			}]
-		}
-	},
-	"experimental": {
-		"metadata": {
-			"authority": "mozilliansorg",
-			"signature": "ZOWSLXKxx..",
-			"classification": "WORKGROUND CONFIDENTIAL"
-		},
-		"value": null
-	}
+﻿{
+  "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
+  "user_id": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "ad|Mozilla-LDAP-Dev|lmcardle"
+  },
+  "idp": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "WORKGROUP CONFIDENTIAL"
+    },
+    "value": "Mozilla-LDAP-Dev"
+  },
+  "active": {
+    "metadata": {
+      "publisher": "ldap",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "WORKGROUP CONFIDENTIAL"
+    },
+    "value": true
+  },
+  "timezone": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "Europe/London"
+  },
+  "lastModified": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "2017-03-09T21:28:51.851Z"
+  },
+  "created": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "2017-03-09T21:28:51.851Z"
+  },
+  "userName": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "lmcardle@mozilla.com"
+  },
+  "firstName": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "Leo"
+  },
+  "lastName": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "McArdle"
+  },
+  "preferredLanguage": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "en_US"
+  },
+  "primaryEmail": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "lmcardle@mozilla.com"
+  },
+  "identities": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": [
+      {
+        "email": "lmcardle@mozilla.com",
+        "name": null,
+        "verified": true,
+        "verifier": "Mozilla-LDAP-Dev",
+        "lastModified": "2017-03-09T21:28:51.851Z",
+        "primary": true,
+        "user_id": "dn=mozilla.com,cn=lmcardle"
+      },
+      {
+        "email": "leomcardle@gmail.com",
+        "name": null,
+        "verified": true,
+        "verifier": "github-oauth2",
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z",
+        "user_id": "834847"
+      }
+    ]
+  },
+  "phoneNumbers": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "MOZILLA CONFIDENTIAL"
+    },
+    "value": [
+      {
+        "value": "+4958339847",
+        "name": "home",
+        "verified": false,
+        "verifier": null,
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z"
+      }
+    ]
+  },
+  "uris": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "MOZILLA CONFIDENTIAL"
+    },
+    "value": [
+      {
+        "value": "https://blog.example.net",
+        "name": "My blog",
+        "verified": false,
+        "verifier": null,
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z"
+      }
+    ]
+  },
+  "nicknames": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": [
+      {
+        "value": "leo",
+        "name": "IRC",
+        "verified": false,
+        "verifier": null,
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z"
+      }
+    ]
+  },
+  "SSHPublicKey": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": [
+      {
+        "value": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R",
+        "name": "laptop",
+        "verified": false,
+        "verifier": null,
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z"
+      }
+    ]
+  },
+  "PGPPublicKey": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": [
+      {
+        "value": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n",
+        "name": "moz key",
+        "verified": false,
+        "verifier": null,
+        "primary": false,
+        "lastModified": "2017-03-09T21:28:51.851Z"
+      }
+    ]
+  },
+  "picture": {
+    "metadata": {
+      "publisher": "mozilliansorg",
+      "signatures": [
+        {
+          "name": "ZOWSLXKxx..",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "PUBLIC"
+    },
+    "value": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
+  },
+  "accessInformation": {
+    "ldap": {
+      "metadata": {
+        "publisher": "ldap",
+        "signatures": [
+          {
+            "name": "ZOWSLXKxx..",
+            "value": "LALALA..."
+          }
+        ],
+        "classification": "PUBLIC"
+      },
+      "value": [
+        {
+          "created": "2010-01-23T04:56:22Z",
+          "lastUsed": "2010-01-23T04:56:22Z",
+          "name": "vpn_default",
+          "value": null
+        }
+      ]
+    },
+    "mozilliansorg": {
+      "metadata": {
+        "publisher": "mozilliansorg",
+        "signatures": [
+          {
+            "name": "ZOWSLXKxx..",
+            "value": "LALALA..."
+          }
+        ],
+        "classification": "PUBLIC"
+      },
+      "value": [
+        {
+          "created": "2010-01-23T04:56:22Z",
+          "lastUsed": "2010-01-23T04:56:22Z",
+          "name": "nda",
+          "value": null
+        }
+      ]
+    },
+    "hris": {
+      "metadata": {
+        "publisher": "hris",
+        "signatures": [
+          {
+            "name": "ZOWSLXKxx..",
+            "value": "LALALA..."
+          }
+        ],
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY"
+      },
+      "value": [
+        {
+          "name": "costcenter",
+          "value": "1420"
+        },
+        {
+          "name": "workertype",
+          "value": "employee"
+        },
+        {
+          "name": "egencia",
+          "value": "uk"
+        },
+        {
+          "created": "2010-01-23T04:56:22Z",
+          "lastUsed": "2010-01-23T04:56:22Z",
+          "name": "ManagerName",
+          "value": "Mark"
+        }
+      ]
+    },
+    "auth0": {
+      "metadata": {
+        "publisher": "auth0",
+        "signatures": [
+          {
+            "name": "ZOWSLXKxx..",
+            "value": "LALALA..."
+          }
+        ],
+        "classification": "MOZILLA CONFIDENTIAL"
+      },
+      "value": [
+        {
+          "created": "2010-01-23T04:56:22Z",
+          "lastUsed": "2010-01-23T04:56:22Z",
+          "name": "mozdef1.private.scl3.gmail",
+          "value": "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
+        }
+      ]
+    }
+  },
+  "experimental": {
+    "metadata": {
+      "publisher": "auth0",
+      "signatures": [
+        {
+          "name": "auth0",
+          "value": "ZOWSLXKxx.."
+        },
+        {
+          "name": "ad|kang|kang@insecure.ws",
+          "value": "LALALA..."
+        }
+      ],
+      "classification": "WORKGROUP CONFIDENTIAL"
+    },
+    "value": null
+  }
 }
