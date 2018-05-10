@@ -1,4 +1,4 @@
-﻿{
+{
   "_schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
   "user_id": {
     "metadata": {
@@ -6,20 +6,22 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "ad|Mozilla-LDAP-Dev|lmcardle"
   },
-  "idp": {
+  "login_method": {
     "metadata": {
       "publisher": "auth0",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "WORKGROUP CONFIDENTIAL"
@@ -32,7 +34,8 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "WORKGROUP CONFIDENTIAL"
@@ -45,20 +48,22 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "Europe/London"
   },
-  "lastModified": {
+  "last_modified": {
     "metadata": {
       "publisher": "auth0",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -71,72 +76,78 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "2017-03-09T21:28:51.851Z"
   },
-  "userName": {
+  "username": {
     "metadata": {
       "publisher": "auth0",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "lmcardle@mozilla.com"
   },
-  "firstName": {
+  "first_name": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "Leo"
   },
-  "lastName": {
+  "last_name": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "McArdle"
   },
-  "preferredLanguage": {
+  "preferred_language": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "en_US"
   },
-  "primaryEmail": {
+  "primary_email": {
     "metadata": {
       "publisher": "auth0",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -149,7 +160,8 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -160,7 +172,7 @@
         "name": null,
         "verified": true,
         "verifier": "Mozilla-LDAP-Dev",
-        "lastModified": "2017-03-09T21:28:51.851Z",
+        "last_modified": "2017-03-09T21:28:51.851Z",
         "primary": true,
         "user_id": "dn=mozilla.com,cn=lmcardle"
       },
@@ -170,18 +182,19 @@
         "verified": true,
         "verifier": "github-oauth2",
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z",
+        "last_modified": "2017-03-09T21:28:51.851Z",
         "user_id": "834847"
       }
     ]
   },
-  "phoneNumbers": {
+  "phone_numbers": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "MOZILLA CONFIDENTIAL"
@@ -193,7 +206,7 @@
         "verified": false,
         "verifier": null,
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z"
+        "last_modified": "2017-03-09T21:28:51.851Z"
       }
     ]
   },
@@ -203,7 +216,8 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "MOZILLA CONFIDENTIAL"
@@ -215,7 +229,7 @@
         "verified": false,
         "verifier": null,
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z"
+        "last_modified": "2017-03-09T21:28:51.851Z"
       }
     ]
   },
@@ -225,7 +239,8 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -237,17 +252,18 @@
         "verified": false,
         "verifier": null,
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z"
+        "last_modified": "2017-03-09T21:28:51.851Z"
       }
     ]
   },
-  "SSHPublicKeys": {
+  "ssh_public_keys": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -259,17 +275,18 @@
         "verified": false,
         "verifier": null,
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z"
+        "last_modified": "2017-03-09T21:28:51.851Z"
       }
     ]
   },
-  "PGPPublicKeys": {
+  "pgp_public_keys": {
     "metadata": {
       "publisher": "mozilliansorg",
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
@@ -281,7 +298,7 @@
         "verified": false,
         "verifier": null,
         "primary": false,
-        "lastModified": "2017-03-09T21:28:51.851Z"
+        "last_modified": "2017-03-09T21:28:51.851Z"
       }
     ]
   },
@@ -291,21 +308,23 @@
       "signatures": [
         {
           "name": "ZOWSLXKxx..",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "PUBLIC"
     },
     "value": "https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png"
   },
-  "accessInformation": {
+  "access_information": {
     "ldap": {
       "metadata": {
         "publisher": "ldap",
         "signatures": [
           {
             "name": "ZOWSLXKxx..",
-            "value": "LALALA..."
+            "value": "LALALA...",
+            "type": "jwks"
           }
         ],
         "classification": "PUBLIC"
@@ -325,7 +344,8 @@
         "signatures": [
           {
             "name": "ZOWSLXKxx..",
-            "value": "LALALA..."
+            "value": "LALALA...",
+            "type": "jwks"
           }
         ],
         "classification": "PUBLIC"
@@ -345,7 +365,8 @@
         "signatures": [
           {
             "name": "ZOWSLXKxx..",
-            "value": "LALALA..."
+            "value": "LALALA...",
+            "type": "jwks"
           }
         ],
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY"
@@ -377,7 +398,8 @@
         "signatures": [
           {
             "name": "ZOWSLXKxx..",
-            "value": "LALALA..."
+            "value": "LALALA...",
+            "type": "jwks"
           }
         ],
         "classification": "MOZILLA CONFIDENTIAL"
@@ -402,7 +424,8 @@
         },
         {
           "name": "ad|kang|kang@insecure.ws",
-          "value": "LALALA..."
+          "value": "LALALA...",
+            "type": "jwks"
         }
       ],
       "classification": "WORKGROUP CONFIDENTIAL"
