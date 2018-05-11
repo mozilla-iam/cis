@@ -185,7 +185,7 @@
                     "$ref": "#/definitions/ValueEnum"
                 },
                 "type": {
-                    "$ref": "#/definitions/Type"
+                    "$ref": "#/definitions/SignatureType"
                 }
             },
             "title": "Signature"
@@ -313,13 +313,13 @@
             "type": "string",
             "title": "Name"
         },
-        "Type": {
+        "SignatureType": {
             "type": "string",
             "enum": [
                 "jwks",
                 "PGPArmored"
             ],
-            "title": "Type"
+            "title": "SignatureType"
         },
         "ValueEnum": {
             "type": "string",
