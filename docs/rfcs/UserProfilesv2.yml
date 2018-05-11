@@ -1,4 +1,26 @@
 ---
+
+## Schema top-level attributes quick-reference:
+# user_id (str)
+# login_method (str)
+# active (bool)
+# timezone (str)
+# last_modified (date)
+# created (date)
+# username (list)
+# first_name (str)
+# last_name (str)
+# preferred_language (str)
+# primary_email (str)
+# identities (list)
+# phone_numbers (list)
+# uris (list)
+# ssh_public_keys (list)
+# php_public_keys (list)
+# picture (str)
+# access_information (list of dicts)
+# experimental (customizable list)
+
 # Schema reference URL, where the schema validator resides
 _schema: https://person-api.sso.mozilla.com/schema/v2/profile
 # user_id: unique and stable identifier for the user
