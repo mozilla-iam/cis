@@ -198,7 +198,7 @@
                     "type": "string",
                     "format": "date-time"
                 },
-                "lastUsed": {
+                "last_used": {
                     "type": "string",
                     "format": "date-time"
                 },

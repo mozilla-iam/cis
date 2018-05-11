@@ -332,7 +332,7 @@
       "value": [
         {
           "created": "2010-01-23T04:56:22Z",
-          "lastUsed": "2010-01-23T04:56:22Z",
+          "last_used": "2010-01-23T04:56:22Z",
           "name": "vpn_default",
           "value": null
         }
@@ -353,7 +353,7 @@
       "value": [
         {
           "created": "2010-01-23T04:56:22Z",
-          "lastUsed": "2010-01-23T04:56:22Z",
+          "last_used": "2010-01-23T04:56:22Z",
           "name": "nda",
           "value": null
         }
@@ -386,7 +386,7 @@
         },
         {
           "created": "2010-01-23T04:56:22Z",
-          "lastUsed": "2010-01-23T04:56:22Z",
+          "last_used": "2010-01-23T04:56:22Z",
           "name": "ManagerName",
           "value": "Mark"
         }
@@ -407,7 +407,7 @@
       "value": [
         {
           "created": "2010-01-23T04:56:22Z",
-          "lastUsed": "2010-01-23T04:56:22Z",
+          "last_used": "2010-01-23T04:56:22Z",
           "name": "mozdef1.private.scl3.gmail",
           "value": "5a5munnfxYjqkaN0su1Kl7USxbqkILQN"
         }
