@@ -1,0 +1,352 @@
+---
+
+## Schema top-level attributes quick-reference:
+# user_id (str)
+# login_method (str)
+# active (bool)
+# timezone (str)
+# last_modified (date)
+# created (date)
+# username (list)
+# first_name (str)
+# last_name (str)
+# preferred_language (str)
+# primary_email (str)
+# identities (list)
+# phone_numbers (list)
+# uris (list)
+# ssh_public_keys (list)
+# php_public_keys (list)
+# picture (str)
+# access_information (list of dicts)
+# experimental (customizable list)
+
+# Schema reference URL, where the schema validator resides
+_schema: https://person-api.sso.mozilla.com/schema/v2/profile
+# user_id: unique and stable identifier for the user
+user_id:
+  # Metadata about this attribute value
+  # publisher: who is the publisher authority for this value (only this publisher is allowed to modify this value)
+  # signatures: cryptographic signatures of the value
+  # signatures.name: a short name or key identifier for the signer
+  # signatures.value: a string which contains some kind of armored signature data
+  # signatures.type: the format of signatures.values, usually jwks or PGPArmored
+  # classification: the Mozilla data classification for the value
+  # value: the actual value of this attribute
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: ad|Mozilla-LDAP-Dev|lmcardle
+# login_method: the connection or underlaying idp used to authenticate this user
+login_method:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: WORKGROUP CONFIDENTIAL
+  value: Mozilla-LDAP-Dev
+# active: true if the user is valid and may login, false if the user may NOT login (user is disabled if so)
+active:
+  metadata:
+    publisher: ldap
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: WORKGROUP CONFIDENTIAL
+  value: true
+# timezone: the default timezone for the user
+timezone:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: Europe/London
+# last_modified: the last time at which this profile data has been changed
+last_modified:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: '2017-03-09T21:28:51.851Z'
+# created: when the profile has been first seen/created
+created:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: '2017-03-09T21:28:51.851Z'
+# username: a convenience field which displays a short name for the user. It may be the same as primaryEmail.
+username:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: lmcardle@mozilla.com
+# first_name: the user's preferred first name. Note that first_name and last_name may be concatened to form a complete
+# "display name"
+first_name:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: Leo
+# last_name: the user's preferred last name.
+last_name:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: McArdle
+# preferred_language: the user's preferred default language
+preferred_language:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: en_US
+# primary_email: a unique, but not stable verified email for the user. this MAY be used instead of the user_id as long
+# as you are aware that this value is not guaranteed stable. It is guaranteed to belong to the user and be otherwise
+# unique.
+primary_email:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: lmcardle@mozilla.com
+# identities: the list of additional identities the user wants to link to his primary identity, such as "I log in with
+# LDAP but here is my GitHub account, should you need it". It also contain the primary identity.
+identities:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+# identities.value: an object which contains the identity information
+#
+# Subsequent array-based structure follow the same format for the object inside the array, as follow:
+# identities.value.email: the primary email tied to this identity
+# identities.value.name: the name of the identity
+# identities.value.verified: true if the associated email or name or user_id have been verified
+# identities.value.verifier: the authority which verified the identity
+# identities.value.last_modified: the date at which this identity has been last modified, and thus also last verified
+# identities.value.primary: true if this is also the user's primary identity. This means primaryEmail must match
+# the identities.value.email value for this identity
+# identities.value.user_id: a unique and stable identifier for this user, provided by the idp for this identity
+  value:
+  - email: lmcardle@mozilla.com
+    name: LDAP
+    verified: true
+    verifier: Mozilla-LDAP-Dev
+    last_modified: '2017-03-09T21:28:51.851Z'
+    primary: true
+    user_id: dn=mozilla.com,cn=lmcardle
+  - email: leomcardle@gmail.com
+    name: GitHub
+    verified: true
+    verifier: github-oauth2
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+    user_id: '834847'
+# phone_numbers: an array of phone numbers for the user
+phone_numbers:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: MOZILLA CONFIDENTIAL
+  value:
+  - value: "+4958339847"
+    name: home
+    verified: false
+    verifier: 
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+# uris: an array of URIs (ie also URLs) for the user
+uris:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: MOZILLA CONFIDENTIAL
+  value:
+  - value: https://blog.example.net
+    name: My blog
+    verified: false
+    verifier: 
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+# nicknames: an array of nicknames for the user
+nicknames:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value:
+  - value: leo
+    name: IRC
+    verified: false
+    verifier: 
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+# ssh_public_keys: an array of OpenSSH Public keys for the user
+ssh_public_keys:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value:
+  - value: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R
+    name: laptop
+    verified: false
+    verifier: 
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+# php_public_keys: an array of PGP/GPG Public keys for the user, in ASCII armored format
+pgp_public_keys:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value:
+  - value: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+      mQINBE94eWwBEADjlvvF8HERvp.....=A0dq
+      -----END PGP PUBLIC KEY BLOCK-----
+    name: moz key
+    verified: false
+    verifier: 
+    primary: false
+    last_modified: '2017-03-09T21:28:51.851Z'
+# picture: a URL point to an image associated with the user, such as their mugshot
+picture:
+  metadata:
+    publisher: mozilliansorg
+    signatures:
+    - name: ZOWSLXKxx..
+      value: LALALA...
+      type: jwks
+    classification: PUBLIC
+  value: https://s.gravatar.com/avatar/ec6e85d15f8411d32f97f5d8a4eab2d3?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Flm.png
+# access_information: a namespaced object structure which contains arrays of groups for the user. Each namespace
+# represent a group publisher, and each of them have their own list of groups.
+access_information:
+  ldap:
+    metadata:
+      publisher: ldap
+      signatures:
+      - name: ZOWSLXKxx..
+        value: LALALA...
+        type: jwks
+      classification: PUBLIC
+    value:
+    - created: '2010-01-23T04:56:22Z'
+      last_used: '2010-01-23T04:56:22Z'
+      name: vpn_default
+      value: 
+  mozilliansorg:
+    metadata:
+      publisher: mozilliansorg
+      signatures:
+      - name: ZOWSLXKxx..
+        value: LALALA...
+        type: jwks
+      classification: PUBLIC
+    value:
+    - created: '2010-01-23T04:56:22Z'
+      last_used: '2010-01-23T04:56:22Z'
+      name: nda
+      value: 
+  hris:
+    metadata:
+      publisher: hris
+      signatures:
+      - name: ZOWSLXKxx..
+        value: LALALA...
+        type: jwks
+      classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
+    value:
+    - name: costcenter
+      value: '1420'
+    - name: workertype
+      value: employee
+    - name: egencia
+      value: uk
+    - created: '2010-01-23T04:56:22Z'
+      last_used: '2010-01-23T04:56:22Z'
+      name: ManagerName
+      value: Mark
+# Note that for the auth0 access_information, the value of the group is an auth0 `client_id`
+  auth0:
+    metadata:
+      publisher: auth0
+      signatures:
+      - name: ZOWSLXKxx..
+        value: LALALA...
+        type: jwks
+      classification: MOZILLA CONFIDENTIAL
+    value:
+    - created: '2010-01-23T04:56:22Z'
+      last_used: '2010-01-23T04:56:22Z'
+      name: mozdef1.private.scl3.gmail
+      value: 5a5munnfxYjqkaN0su1Kl7USxbqkILQN
+# experimental: an additional array structure which has no other schema based limitations other than that it must have
+# it's experimental.metadata fields correctly set. The format of the value is up to the publisher of this field, and
+# there may be additional sub-fields which are not otherwise documented or validated
+experimental:
+  metadata:
+    publisher: auth0
+    signatures:
+    - name: auth0
+      value: ZOWSLXKxx..
+    - name: ad|kang|kang@insecure.ws
+      value: LALALA...
+      type: jwks
+    classification: WORKGROUP CONFIDENTIAL
+  value: 
