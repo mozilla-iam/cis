@@ -15,7 +15,6 @@ descriptions of its fields and is the primary reference for the content of a pro
 - The **Core profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/core>.
 - The **Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/extended>.
 
-
 ### Core vs Extended profiles principles
 
 - Do not duplicate data between "Core profile data" and "Extended profile data"
@@ -24,6 +23,7 @@ descriptions of its fields and is the primary reference for the content of a pro
 - Access to "Extended profile data" fields may require specific approval for privacy reasons
 - Fields are using `this_format` (all lower-case, `_` as word separator)
 - All "Extended profile data" fields are **optional**
+- Top level fields use the standard attribute structure (see below) unless otherwise noted
 
 ### Core Profile
 
@@ -44,7 +44,7 @@ identities: list of additional user identities on other IdPs, such as their alte
 ssh_public_keys: list of OpenSSH public keys for the user
 pgp_public_keys: list of PGP public keys for the user
 access_information: structure containing group data and other information used to validate if the user should be granted
-access or not
+access or not. This structure uses a list of standard attributes.
 ```
 
 ### Extended Profile
@@ -67,6 +67,43 @@ uris: list of uris (urls) that the user associate with, such as their website
 phone_numbers: telephone numbers for the user
 timezone: user's preferred timezone
 preferred_languages: user's preferred languages to write or speak
+```
+
+### Standard attribute structure
+
+This is the schema that every attribute in the profile **should** follow. Where noted, certain top level attributes may
+present a custom list or array which contain the standard attribute structure as their ultimate child(s).
+
+The top-level attribute represents the attribute name.
+
+The *signature* field is used to certify the attribute has been verified by a publisher, and potentially additional
+sources such as users (humans). This allows for performing out-of-band signatures and verifications that the IAM systems
+cannot interfer with. No automated IAM system may hold the private signing keys for `additional` signatures.
+
+The *metadata* field contains additional information about the attribute, which allows the IAM systems to understand
+whom may have access to this attribute for example.
+
+The *values* field is always a list containing attribute values. It may contain only one single value.
+
+```
+dummy_attribute: {
+  "signature": {
+    "publisher": { "alg": "HS256", "typ": "jwt", "value": "dummy signature" },
+    "additional": [
+      { "alg": "RSA", "typ": "PGP", "value": "dummy user pgp signature" }
+    ]
+  },
+  "metadata": {
+    "classification": "PUBLIC",
+    "last_modified": "2018-01-01T00:00:00",
+    "created": "2018-01-01T00:00:00",
+    "publisher_authority": "dummy publisher identifier"
+  },
+  "values": [
+    "dummy attribute value",
+    "another dummy attribute value"
+  ],
+}
 ```
 
 ## Schema Validation
