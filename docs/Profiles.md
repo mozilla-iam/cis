@@ -30,7 +30,8 @@ descriptions of its fields and is the primary reference for the content of a pro
 Top level fields for the Core profile.
 
 ```
-schema: https://person-api.sso.mozilla.com/schema/v2/profile/core
+schema: https://person-api.sso.mozilla.com/schema/v2/profile/core (this field does not follow the standard attribute
+structure)
 user_id: unique_id
 login_method: ldap, fxa, ...
 active: true
@@ -72,21 +73,36 @@ preferred_languages: user's preferred languages to write or speak
 ### Standard attribute structure
 
 This is the schema that every attribute in the profile **should** follow. Where noted, certain top level attributes may
-present a custom list or array which contain the standard attribute structure as their ultimate child(s).
+present a custom list or associative array which contain the standard attribute structure as their ultimate child(s).
 
 The top-level attribute represents the attribute name.
 
+**Rules** to follow when modifying this structure are outlined below:
+
 The *signature* field is used to certify the attribute has been verified by a publisher, and potentially additional
 sources such as users (humans). This allows for performing out-of-band signatures and verifications that the IAM systems
-cannot interfer with. No automated IAM system may hold the private signing keys for `additional` signatures.
+cannot interfere with. No automated IAM system may hold the private signing keys for `additional` signatures.
+
+- JWT and PGP are supported, with various algorithms
+- The publisher signature is always required
+- The additional signatures may be added by any publisher
+- The data that is signed are the contents of the structure the field `signature` is in, minus the `signature` structure
+  itself. E.g. below: `dummy_attribute` *minus* "signature" would be the object to sign.
+- The signed object data is serialized by alpha-numerical order.
+
 
 The *metadata* field contains additional information about the attribute, which allows the IAM systems to understand
 whom may have access to this attribute for example.
+- We follow the [Mozilla Data Classification](https://wiki.mozilla.org/Security/Data_Classification) standard for the
+  *classification* field.
+- The `publisher_authority` is the same publisher identifier as used for the signature fields.
 
-The *values* field is always a list containing attribute values. It may contain only one single value.
+**value** and **values** fields are exclusionary, only one of them may be used.
+If used, the *value* field may be of any type: string, boolean, integer, list or associative array value.
+If used, the *values* field is of type associative array and may contain any sub-value.
 
 ```
-dummy_attribute: {
+"dummy_attribute": {
   "signature": {
     "publisher": { "alg": "HS256", "typ": "jwt", "value": "dummy signature" },
     "additional": [
@@ -95,14 +111,14 @@ dummy_attribute: {
   },
   "metadata": {
     "classification": "PUBLIC",
-    "last_modified": "2018-01-01T00:00:00",
-    "created": "2018-01-01T00:00:00",
+    "last_modified": "2018-01-01T00:00:00Z",
+    "created": "2018-01-01T00:00:00Z",
     "publisher_authority": "dummy publisher identifier"
   },
-  "values": [
-    "dummy attribute value",
-    "another dummy attribute value"
-  ],
+  "values": {
+    "title": "dummy attribute value",
+    "other_title": "another dummy attribute value"
+  }
 }
 ```
 
