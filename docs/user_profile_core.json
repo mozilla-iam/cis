@@ -48,7 +48,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "CIS"
+      "publisher_authority": "cis"
     },
     "value": "2018-01-01T00:00:00Z"
   },
@@ -61,7 +61,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "CIS"
+      "publisher_authority": "cis"
     },
     "value": "2018-01-01T00:00:00Z"
   },
@@ -89,7 +89,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "HRIS"
+      "publisher_authority": "hris"
     },
     "value": "Dummy"
   },
@@ -102,7 +102,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "CIS"
+      "publisher_authority": "cis"
     },
     "value": "Dumdum"
   },
@@ -115,7 +115,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap-Dev"
+      "publisher_authority": "ldap"
     },
     "value": "dmcdummy@mozilla.com"
   },
