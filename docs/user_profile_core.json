@@ -152,9 +152,9 @@
       "created": "2018-01-01T00:00:00Z",
       "publisher_authority": "ldap"
     },
-    "values": [
+    "values": {
       "github-work": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R"
-    ]
+    }
   },
   "pgp_public_keys": {
     "signature": {
