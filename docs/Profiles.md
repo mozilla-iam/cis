@@ -12,6 +12,8 @@ live a long time before it needs to be updated to a new version.
 User profiles are represented as JSON objects that follow a [JSON schema](http://json-schema.org/). The schema contains
 descriptions of its fields and is the primary reference for the content of a profile.
 
+- The **Core+Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile>. It
+  will validate profiles that contains data from both Core and Extended profiles in the same document.
 - The **Core profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/core>.
 - The **Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/extended>.
 
@@ -19,10 +21,10 @@ descriptions of its fields and is the primary reference for the content of a pro
 
 - Do not duplicate data between "Core profile data" and "Extended profile data"
 - "Core profile data" is profile data than *any* RP needs to function with IAM
-- The "Extended profile data" may contain additional claims over time
+- The "Extended profile data" may contain additional claims over time, and is generally user-supplied data
 - Access to "Extended profile data" fields may require specific approval for privacy reasons
 - Fields are using `this_format` (all lower-case, `_` as word separator)
-- All "Extended profile data" fields are **optional**
+- All "Extended profile data" fields are **optional** and may be missing have have `null` values
 - Top level fields use the standard attribute structure (see below) unless otherwise noted
 
 ### Core Profile
@@ -56,18 +58,14 @@ Top level fields for the Extended profile. Fields that are staff-only are not us
 fun_title: a title that the user identifies with, not their official Staff title
 description: a free form text field for the user to put information about themselves in
 location_preference: where the user would like to appear to be located (such as a country, city, etc.)
+office_location: user's preferred Mozilla office location
+timezone: user's preferred timezone
+preferred_languages: user's preferred languages to write or speak
 tags: list of tags the user associates with. formerly called mozillians groups
 pronouns: prefered user pronouns
-employe_id: user's Staff id
-business_title: user's official Staff title
-manager: user's official Staff manager
-office_location: user's preferred Mozilla office location
-desk_number: user's official office desk number, if any
 picture: link to a user picture
 uris: list of uris (urls) that the user associate with, such as their website
 phone_numbers: telephone numbers for the user
-timezone: user's preferred timezone
-preferred_languages: user's preferred languages to write or speak
 ```
 
 ### Standard attribute structure
@@ -79,17 +77,22 @@ The top-level attribute represents the attribute name.
 
 **Rules** to follow when modifying this structure are outlined below:
 
+#### Signature field
+
 The *signature* field is used to certify the attribute has been verified by a publisher, and potentially additional
 sources such as users (humans). This allows for performing out-of-band signatures and verifications that the IAM systems
 cannot interfere with. No automated IAM system may hold the private signing keys for `additional` signatures.
 
-- JWT and PGP are supported, with various algorithms
-- The publisher signature is always required
-- The additional signatures may be added by any publisher
+- JWT and PGP are supported, with various algorithms (see schema for allowed algorithms).
+- The publisher signature is always required. The publisher identity is stored in `metadata.publisher_authority`.
+- The additional signatures may be added by any publisher, and is generally used for user-supplied signatures.
 - The data that is signed are the contents of the structure the field `signature` is in, minus the `signature` structure
-  itself. E.g. below: `dummy_attribute` *minus* "signature" would be the object to sign.
-- The signed object data is serialized by alpha-numerical order.
+  itself. E.g. below: `dummy_attribute.*` *minus* `dummy_attribute.signature.*` would be the object to sign.
+- The signed object data is serialized by alpha-numerical order (`javascript: JSON.stringify(x)` or `python:
+  json.dumps(x, separators=(',',':'))` for example).
 
+
+#### Metadata field
 
 The *metadata* field contains additional information about the attribute, which allows the IAM systems to understand
 whom may have access to this attribute for example.
@@ -124,7 +127,7 @@ If used, the *values* field is of type associative array and may contain any sub
 
 ## Schema Validation
 
-Profiles are validated to comply with the [schemas](https://person-api.sso.mozilla.com/schema/v2/profile/core) on
+Profiles are validated to comply with the [schemas](https://person-api.sso.mozilla.com/schema/v2/profile) on
 creation and modification. Relying parties (RP) may perform additional validation at their discretion.
 
 ## `/userinfo` endpoint and `id_token` responses
@@ -172,3 +175,12 @@ normally verified to be compatible with draft-04 at the minimum (this is because
 draft, even thus newer versions are available).
 
 A YAML-equivalent profile may be generated and verified, for example at <https://json-schema-everywhere.github.io/yaml>
+
+## Profile samples
+
+Note that profiles may be written in YAML instead of JSON, albeit **all** processing will be performed in JSON. This
+means all profiles must be converted to JSON before being submitted or used.
+
+- [Core profile (JSON)](user_profile_core.json)
+- [Core+Extended profile (JSON)](user_profile_core_plus_extended.json)
+- [Core+Extended profile (YAML, commented)](user_profile_core_plus_extended.yml)
