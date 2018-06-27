@@ -184,3 +184,14 @@ means all profiles must be converted to JSON before being submitted or used.
 - [Core profile (JSON)](user_profile_core.json)
 - [Core+Extended profile (JSON)](user_profile_core_plus_extended.json)
 - [Core+Extended profile (YAML, commented)](user_profile_core_plus_extended.yml)
+
+## Schema source
+
+Note that you should **not** get the schemas from here for production use, nor may you copy them locally. Instead, use
+the official URLs to source the schema from, which are located at the top of this document.
+
+The source schemas here are only provided for testing and informational purposes.
+
+- [Core profile schema](profile_core.schema)
+- [Extended profile schema](profile_extended.schema)
+- [Core plus extended profile schema](profile.schema)
