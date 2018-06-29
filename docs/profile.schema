@@ -80,7 +80,10 @@
                 },
                 "phone_numbers": {
                     "$ref": "#/definitions/StandardAttributeValues"
-                }
+                },
+                "alternate_name": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
             },
             "required": [
                 "access_information",

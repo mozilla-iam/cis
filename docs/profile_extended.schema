@@ -41,7 +41,11 @@
                 },
                 "phone_numbers": {
                     "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "alternative_name": {
+                    "$ref": "#/definitions/StandardAttributeString"
                 }
+
             },
             "required": [
             ],

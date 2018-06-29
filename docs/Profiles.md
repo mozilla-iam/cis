@@ -66,6 +66,8 @@ pronouns: prefered user pronouns
 picture: link to a user picture
 uris: list of uris (urls) that the user associate with, such as their website
 phone_numbers: telephone numbers for the user
+alternate_name: name in local language for spelling or display purposes in case the user prefer communicating their name in a
+different way to international users, or any other alternative name
 ```
 
 ### Standard attribute structure

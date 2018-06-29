@@ -663,5 +663,28 @@
     "values": {
       "home": 33169281122
     }
+  },
+  "alternative_name": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWT",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWT",
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg"
+    },
+    "value": "Düüm"
   }
 }

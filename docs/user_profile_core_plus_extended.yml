@@ -556,3 +556,22 @@ phone_numbers:
     publisher_authority: mozilliansorg
   values:
     home: +33169281122
+
+# `alternative_name.value` is a string representing an alternative name for the user, such as their name in their local
+# language
+alternative_name:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWT'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWT'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+  value: Düüm
