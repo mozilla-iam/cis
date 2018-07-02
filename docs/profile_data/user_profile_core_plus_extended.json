@@ -19,7 +19,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider"
+      "publisher_authority": "access_provider",
+      "verified": true
     },
     "value": "ad|Mozilla-LDAP-Dev|dummymcdummy"
   },
@@ -42,7 +43,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider"
+      "publisher_authority": "access_provider",
+      "verified": true
     },
     "value": "Mozilla-LDAP-Dev"
   },
@@ -65,7 +67,8 @@
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider"
+      "publisher_authority": "access_provider",
+      "verified": true
     },
     "value": true
   },
@@ -88,7 +91,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis"
+      "publisher_authority": "cis",
+      "verified": true
     },
     "value": "2018-01-01T00:00:00Z"
   },
@@ -111,7 +115,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis"
+      "publisher_authority": "cis",
+      "verified": true
     },
     "value": "2018-01-01T00:00:00Z"
   },
@@ -134,7 +139,8 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": {
       "posix": "mcdummy"
@@ -159,7 +165,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "hris"
+      "publisher_authority": "hris",
+      "verified": false
     },
     "value": "Dummy"
   },
@@ -182,7 +189,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis"
+      "publisher_authority": "cis",
+      "verified": false
     },
     "value": "Dumdum"
   },
@@ -205,7 +213,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap"
+      "publisher_authority": "ldap",
+      "verified": true
     },
     "value": "dmcdummy@mozilla.com"
   },
@@ -228,7 +237,8 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": true
     },
     "values": {
       "github_id_v3": "123495",
@@ -260,7 +270,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap"
+      "publisher_authority": "ldap",
+      "verified": false
     },
     "values": {
       "github-work": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R"
@@ -285,7 +296,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": {
       "personal key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n"
@@ -311,7 +323,8 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "ldap"
+        "publisher_authority": "ldap",
+        "verified": true
       },
       "values": {
         "vpn_infosec": null,
@@ -337,7 +350,8 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "mozilliansorg"
+        "publisher_authority": "mozilliansorg",
+        "verified": true
       },
       "values": {
         "nda": null,
@@ -363,7 +377,8 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "hris"
+        "publisher_authority": "hris",
+        "verified": true
       },
       "values": {
         "cost_center": "1420",
@@ -396,7 +411,8 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "access_provider"
+        "publisher_authority": "access_provider",
+        "verified": true
       },
       "values": {
         "5a5munnfxYjqkaN0su1Kl7USxbqkILQN": 7776000
@@ -422,7 +438,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "Dum own title"
   },
@@ -445,7 +462,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "I am a funny profile!"
   },
@@ -468,7 +486,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "Bahamas"
   },
@@ -491,7 +510,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "San Francisco"
   },
@@ -514,7 +534,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "UTC"
   },
@@ -537,7 +558,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": [
       "French",
@@ -564,7 +586,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": [
       "vouched summit2013 likescheese"
@@ -589,7 +612,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": null
   },
@@ -612,7 +636,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "https://example.net/dum.jpg"
   },
@@ -635,7 +660,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": {
       "my blog": "https://example.net/blog"
@@ -660,7 +686,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "values": {
       "home": 33169281122
@@ -685,7 +712,8 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg"
+      "publisher_authority": "mozilliansorg",
+      "verified": false
     },
     "value": "Düüm"
   }

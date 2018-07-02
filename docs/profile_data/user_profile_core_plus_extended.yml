@@ -41,8 +41,19 @@ user_id:
     # This is the publisher authority. It must be listed in the schema. This is the entity that has written this
     # structure and is allowed to change it's values. The `signature.publisher` is also created by this publisher.
     publisher_authority: access_provider
-  # The `user_id.value` is the actual value of the attribute. This may be a string, boolean, list, etc. depending on the
-  # attribute.
+    # If `verified` is true, this means the `publisher_authority` has strongly verified this attribute value to be correct
+    # `verified` can never be set to true if the data is user-supplied without additional verification.
+    # In general, this means the user had to prove the data is true (through authentication or other means)
+    # or that the publisher originated the data and can guarantee it's accuracy.
+    # This field is often used to grant access indirectly, and may never be depended on if not set to true.
+    # When false, it may be used for display and informational purposes only.
+    #
+    # Finally, note that for objects with multiple values, the `verified` attribute governs all child values. This means
+    # that if, for example, you strongly verify certain email addresses in a list of emails, but not all of them,
+    # `verify` MUST be set to false. You have to verify ALL child values in order to set `verify` to true.
+    verified: true
+  # The `user_id.value` is the actual value of the attribute. This may be a string, boolean, list, etc. which depends
+  # on the attribute.
   value: ad|Mozilla-LDAP-Dev|dummymcdummy
 
 # `login_method.value` is the login method for the user, which is an auth0 connection (such as "google-oauth2",
@@ -62,6 +73,7 @@ login_method:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: access_provider
+    verified: true
   value: Mozilla-LDAP-Dev
 # `active.value` represents if the user is enabled or not. If false, the user is not allowed to login or use IAM.
 active:
@@ -79,6 +91,7 @@ active:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: access_provider
+    verified: true
   value: true
 # `last_modified.value` indicates when the last attribute has been modified. Therefore, it always matches another
 # attribute's `metadata.last_modified`
@@ -97,6 +110,7 @@ last_modified:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: cis
+    verified: true
   value: '2018-01-01T00:00:00Z'
 # `created.value` indicates the first time this user profile has been seen and it's original creation time.
 created:
@@ -114,6 +128,7 @@ created:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: cis
+    verified: true
   value: '2018-01-01T00:00:00Z'
 # `usernames.values[]` is a list of known custom usernames for the user. Some username keys may be reserved and/or
 # well-known.
@@ -132,6 +147,7 @@ usernames:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: true
   values:
     posix: mcdummy
 # `first_name.value` is the preferred first name for the user. It does not have to be their legal name.
@@ -150,6 +166,7 @@ first_name:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: hris
+    verified: false
   value: Dummy
 # `last_name.value` is the preferred last name for the user. It does not have to be their legal name.
 last_name:
@@ -167,6 +184,7 @@ last_name:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: cis
+    verified: false
   value: Dumdum
 # `primary_email.value` is the primary email for the user. It may be used as login identifier, though it may not be
 # unique. Use `user_id.value` for a completely unique identifier. Do not reason about the `primary_email` to set access
@@ -186,6 +204,7 @@ primary_email:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: ldap
+    verified: true
   value: dmcdummy@mozilla.com
 # `identities.values{}` list all known identities for the user. The key values are well-known and defined in the schema.
 # This means that for example `github_id_v3` will always be the GitHub v3 user id (if present).
@@ -206,6 +225,7 @@ identities:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: true
   values:
     github_id_v3: '123495'
     github_id_v4: XDSKz==
@@ -233,6 +253,7 @@ ssh_public_keys:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: ldap
+    verified: false
   values:
     github-work: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R
 # `pgp_public_keys.values{}` are a list of PGP public keys for the user.
@@ -253,6 +274,7 @@ pgp_public_keys:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   values:
     personal key: |
       -----BEGIN PGP PUBLIC KEY BLOCK-----
@@ -282,6 +304,7 @@ access_information:
       last_modified: '2018-01-01T00:00:00Z'
       created: '2018-01-01T00:00:00Z'
       publisher_authority: ldap
+      verified: true
 # Note that the values here are null in this example and that the group name is always the key
     values:
       vpn_infosec: null
@@ -301,6 +324,7 @@ access_information:
       last_modified: '2018-01-01T00:00:00Z'
       created: '2018-01-01T00:00:00Z'
       publisher_authority: mozilliansorg
+      verified: true
 # Note that the values here are null in this example and that the group name is always the key
     values:
       nda: null
@@ -320,6 +344,7 @@ access_information:
       last_modified: '2018-01-01T00:00:00Z'
       created: '2018-01-01T00:00:00Z'
       publisher_authority: hris
+      verified: true
     values:
 # Note that certain fields from `hris` may be well-known, in particular the ones below
       cost_center: '1420'
@@ -346,6 +371,7 @@ access_information:
       last_modified: '2018-01-01T00:00:00Z'
       created: '2018-01-01T00:00:00Z'
       publisher_authority: access_provider
+      verified: true
     values:
       5a5munnfxYjqkaN0su1Kl7USxbqkILQN: 7776000
 
@@ -367,6 +393,7 @@ fun_title:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: Dum own title
 
 # `description.value` is a free-form text field for user's own description.
@@ -385,6 +412,7 @@ description:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: I am a funny profile!
 
 # `location_preference.value` is the geographical location that the user wants to appear as.
@@ -403,6 +431,7 @@ location_preference:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: Bahamas
 
 # `office_location.value` is the Mozilla Office the user wants to show they're usually at.
@@ -421,6 +450,7 @@ office_location:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: San Francisco
 
 # `timezone.value` is the timezone the user wants to appear as.
@@ -439,6 +469,7 @@ timezone:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: UTC
 
 # `preferred_languages.values[]` is a list of languages the user prefers communicating with.
@@ -457,6 +488,7 @@ preferred_languages:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   values:
     - French
     - English (US)
@@ -478,10 +510,11 @@ tags:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   values:
     - vouched
-      summit2013
-      likescheese
+    - summit2013
+    - likescheese
 
 # `pronouns.value` is a string representing how the user prefers to be addressed as.
 pronouns:
@@ -499,6 +532,7 @@ pronouns:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: null
 
 # `picture.value` is an URL to a picture representing the user.
@@ -517,6 +551,7 @@ picture:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: https://example.net/dum.jpg
 
 # `uris.values{}` are a list of URIs for the user, such as their blog, etc.
@@ -535,6 +570,7 @@ uris:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   values:
     "my blog": https://example.net/blog
 
@@ -554,6 +590,7 @@ phone_numbers:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   values:
     home: +33169281122
 
@@ -574,4 +611,5 @@ alternative_name:
     last_modified: '2018-01-01T00:00:00Z'
     created: '2018-01-01T00:00:00Z'
     publisher_authority: mozilliansorg
+    verified: false
   value: Düüm
