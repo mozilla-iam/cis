@@ -2,8 +2,8 @@
   "schema": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
   "user_id": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -16,8 +16,8 @@
   },
   "login_method": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -30,8 +30,8 @@
   },
   "active": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
@@ -44,8 +44,8 @@
   },
   "last_modified": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -58,8 +58,8 @@
   },
   "created": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -72,8 +72,8 @@
   },
   "usernames": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
@@ -88,8 +88,8 @@
   },
   "first_name": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -102,8 +102,8 @@
   },
   "last_name": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -116,8 +116,8 @@
   },
   "primary_email": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -130,8 +130,8 @@
   },
   "identities": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
@@ -153,8 +153,8 @@
   },
   "ssh_public_keys": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -169,8 +169,8 @@
   },
   "pgp_public_keys": {
     "signature": {
-      "publisher": { "alg": "", "typ": "", "value": "" },
-      "additional": [{ "alg": "", "typ": "", "value": "" }]
+      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
       "classification": "PUBLIC",
@@ -186,8 +186,8 @@
   "access_information": {
     "ldap": {
       "signature": {
-        "publisher": { "alg": "", "typ": "", "value": "" },
-        "additional": [{ "alg": "", "typ": "", "value": "" }]
+        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
@@ -203,8 +203,8 @@
     },
     "mozilliansorg": {
       "signature": {
-        "publisher": { "alg": "", "typ": "", "value": "" },
-        "additional": [{ "alg": "", "typ": "", "value": "" }]
+        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
@@ -220,8 +220,8 @@
     },
     "hris": {
       "signature": {
-        "publisher": { "alg": "", "typ": "", "value": "" },
-        "additional": [{ "alg": "", "typ": "", "value": "" }]
+        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
@@ -241,8 +241,8 @@
     },
     "access_provider": {
       "signature": {
-        "publisher": { "alg": "", "typ": "", "value": "" },
-        "additional": [{ "alg": "", "typ": "", "value": "" }]
+        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
