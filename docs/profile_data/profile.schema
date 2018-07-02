@@ -81,7 +81,7 @@
                 "phone_numbers": {
                     "$ref": "#/definitions/StandardAttributeValues"
                 },
-                "alternate_name": {
+                "alternative_name": {
                     "$ref": "#/definitions/StandardAttributeString"
                 }
             },
