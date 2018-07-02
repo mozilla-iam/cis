@@ -83,7 +83,7 @@
                 },
                 "alternate_name": {
                     "$ref": "#/definitions/StandardAttributeString"
-                },
+                }
             },
             "required": [
                 "access_information",
