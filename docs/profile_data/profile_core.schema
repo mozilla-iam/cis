@@ -295,7 +295,7 @@
                     "$ref": "#/definitions/Metadata"
                 },
                 "value": {
-                    "type": "string"
+                    "type": [ "null", "string" ]
                 }
             },
             "required": [
