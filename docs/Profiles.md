@@ -183,9 +183,9 @@ A YAML-equivalent profile may be generated and verified, for example at <https:/
 Note that profiles may be written in YAML instead of JSON, albeit **all** processing will be performed in JSON. This
 means all profiles must be converted to JSON before being submitted or used.
 
-- [Core profile (JSON)](user_profile_core.json)
-- [Core+Extended profile (JSON)](user_profile_core_plus_extended.json)
-- [Core+Extended profile (YAML, commented)](user_profile_core_plus_extended.yml)
+- [Core profile (JSON)](profile_data/user_profile_core.json)
+- [Core+Extended profile (JSON)](profile_data/user_profile_core_plus_extended.json)
+- [Core+Extended profile (YAML, commented)](profile_data/user_profile_core_plus_extended.yml)
 
 ## Schema source
 
@@ -194,6 +194,6 @@ the official URLs to source the schema from, which are located at the top of thi
 
 The source schemas here are only provided for testing and informational purposes.
 
-- [Core profile schema](profile_core.schema)
-- [Extended profile schema](profile_extended.schema)
-- [Core plus extended profile schema](profile.schema)
+- [Core profile schema](profile_data/profile_core.schema)
+- [Extended profile schema](profile_data/profile_extended.schema)
+- [Core plus extended profile schema](profile_data/profile.schema)

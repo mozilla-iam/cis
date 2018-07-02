@@ -540,7 +540,9 @@
       "publisher_authority": "mozilliansorg"
     },
     "values": [
-      "French English (US) German"
+      "French",
+      "English (US)",
+      "German"
     ]
   },
   "tags": {
