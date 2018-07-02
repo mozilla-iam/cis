@@ -166,13 +166,17 @@
                 },
                 "publisher_authority": {
                     "$ref": "#/definitions/PublisherAuthority"
+                },
+                "verified": {
+                  "type": "boolean"
                 }
             },
             "required": [
                 "classification",
                 "created",
                 "last_modified",
-                "publisher_authority"
+                "publisher_authority",
+                "verified"
             ],
             "title": "Metadata"
         },
@@ -315,54 +319,6 @@
                 }
             },
             "title": "IdentitiesValues"
-        },
-        "PGPPublicKeys": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "signature": {
-                    "$ref": "#/definitions/Signature"
-                },
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "values": {
-                    "$ref": "#/definitions/SimpleArrayValues"
-                }
-            },
-            "required": [
-                "metadata",
-                "signature",
-                "values"
-            ],
-            "title": "PGPPublicKeys"
-        },
-        "SSHPublicKeys": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "signature": {
-                    "$ref": "#/definitions/Signature"
-                },
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "values": {
-                    "$ref": "#/definitions/SimpleArrayValues"
-                }
-            },
-            "required": [
-                "metadata",
-                "signature",
-                "values"
-            ],
-            "title": "SSHPublicKeys"
-        },
-        "SimpleArrayValues": {
-            "type": "object",
-            "additionalProperties": true,
-            "properties": {},
-            "title": "SimpleArrayValues"
         },
         "StandardAttributeString": {
             "type": "object",

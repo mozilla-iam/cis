@@ -68,13 +68,17 @@
                 },
                 "publisher_authority": {
                     "$ref": "#/definitions/PublisherAuthority"
+                },
+                "verified": {
+                    "type": "boolean"
                 }
             },
             "required": [
                 "classification",
                 "created",
                 "last_modified",
-                "publisher_authority"
+                "publisher_authority",
+                "verified"
             ],
             "title": "Metadata"
         },
