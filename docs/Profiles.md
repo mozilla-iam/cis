@@ -7,6 +7,9 @@ profiles (before OIDC-Conformance was added to Auth0) and SCIM profiles.
 Profile version 2 aims to be more flexible, standardized, and support all our major use-cases. We expect this profile to
 live a long time before it needs to be updated to a new version.
 
+Note that there are few unspecified attribute values, as once they've been presented to a relying party (RP) it is no
+longer possible to retire the attribute without potentially breaking the flow for said RP(s).
+
 ## Summary
 
 User profiles are represented as JSON objects that follow a [JSON schema](http://json-schema.org/). The schema contains
@@ -16,6 +19,9 @@ descriptions of its fields and is the primary reference for the content of a pro
   will validate profiles that contains data from both Core and Extended profiles in the same document.
 - The **Core profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/core>.
 - The **Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/extended>.
+
+When using these schemas, you *should* attempt to fetch the latest version every time (it's fine to cache it for some
+period of time, but the schemas may sometimes be updated).
 
 ### Core vs Extended profiles principles
 
@@ -101,6 +107,10 @@ whom may have access to this attribute for example.
 - We follow the [Mozilla Data Classification](https://wiki.mozilla.org/Security/Data_Classification) standard for the
   *classification* field.
 - The `publisher_authority` is the same publisher identifier as used for the signature fields.
+- The `verified` field is set by the `publisher_authority` and represent the fact that **all** values in this object
+  have been strongly verified to be correct. For example, an email has been verified to belong to the owner by sending
+them an email with a link to verify that they own it. If *any* value is unverified, then the whole object shows as
+`verified: false`.
 
 **value** and **values** fields are exclusionary, only one of them may be used.
 If used, the *value* field may be of any type: string, boolean, integer, list or associative array value.
@@ -131,6 +141,9 @@ If used, the *values* field is of type associative array and may contain any sub
 
 Profiles are validated to comply with the [schemas](https://person-api.sso.mozilla.com/schema/v2/profile) on
 creation and modification. Relying parties (RP) may perform additional validation at their discretion.
+
+Note that you may manually run validation for test profiles by using the Makefile under `profile_data`:
+`make validate-core-plus-extended-test-profile` for example.
 
 ## `/userinfo` endpoint and `id_token` responses
 
