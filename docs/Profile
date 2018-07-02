@@ -1,0 +1,6 @@
+all:
+	echo hi
+
+
+validate-profile.schema: profile.schema
+
