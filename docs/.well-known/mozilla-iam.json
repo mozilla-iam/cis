@@ -19,6 +19,16 @@
   },
   "person-api": {
     "endpoint": "https://person-api.sso.mozilla.com",
+    "profile_schema_combined_uri": "https://person-api.sso.mozilla.com/schema/v2/profile",
+    "profile_core_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
+    "profile_extended_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/extended",
+    "scopes_supported": [
+      "write",
+      "read",
+      "class:public",
+      "class:mozilla_confidential",
+      "class:workgroup_confidential:staff_only"
+    ],
     "publishers_supported": {
       "mozilliansorg": {
         "jwks_keys": {

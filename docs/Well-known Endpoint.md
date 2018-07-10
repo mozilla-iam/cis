@@ -29,6 +29,9 @@ Relevant fields:
   insert data in CIS databases.
 - `person-api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
   to verify the CIS user profile signature for publishers.
+- `person-api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
+  validates with these schemas.
+- `scopes_supported`: the scopes supported by the Person-API OAuth2 authorizer.
 
 ## Security notes
 
