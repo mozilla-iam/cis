@@ -1,0 +1,105 @@
+{
+  "oidc_discovery_uri": "https://auth.mozilla.com/.well-known/openid-configuration",
+  "access_file": {
+    "endpoint": "https://cdn.sso.mozilla.com/apps.yml",
+    "jwks_keys": {
+      "0": {
+        "alg": "RS256",
+        "kty": "RSA",
+        "use": "sig",
+        "x5c": {
+          "0": "MII......."
+        },
+        "n": "v2gf-....",
+        "e": "AQAB",
+        "kid": "OEI...",
+        "x5t": "OEI..."
+      }
+    }
+  },
+  "person-api": {
+    "endpoint": "https://person-api.sso.mozilla.com",
+    "publishers_supported": {
+      "mozilliansorg": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "ldap": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "cis": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "cis": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "hris": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      }
+    }
+  }
+}
