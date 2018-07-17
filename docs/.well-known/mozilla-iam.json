@@ -1,0 +1,115 @@
+{
+  "oidc_discovery_uri": "https://auth.mozilla.com/.well-known/openid-configuration",
+  "access_file": {
+    "endpoint": "https://cdn.sso.mozilla.com/apps.yml",
+    "jwks_keys": {
+      "0": {
+        "alg": "RS256",
+        "kty": "RSA",
+        "use": "sig",
+        "x5c": {
+          "0": "MII......."
+        },
+        "n": "v2gf-....",
+        "e": "AQAB",
+        "kid": "OEI...",
+        "x5t": "OEI..."
+      }
+    }
+  },
+  "person-api": {
+    "endpoint": "https://person-api.sso.mozilla.com",
+    "profile_schema_combined_uri": "https://person-api.sso.mozilla.com/schema/v2/profile",
+    "profile_core_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
+    "profile_extended_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/extended",
+    "scopes_supported": [
+      "write",
+      "read",
+      "class:public",
+      "class:mozilla_confidential",
+      "class:workgroup_confidential:staff_only"
+    ],
+    "publishers_supported": {
+      "mozilliansorg": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "ldap": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "cis": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "auth0": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      },
+      "hris": {
+        "jwks_keys": {
+          "0": {
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "OEI...",
+            "x5t": "OEI..."
+          }
+        }
+      }
+    }
+  }
+}
