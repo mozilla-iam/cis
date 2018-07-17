@@ -14,7 +14,7 @@ In version 2 of this service, the separation of concerns requires a more loosely
 
 ## Modules in this directory
 
-**cis-common**
+**cis_common**
 
 Code that is common to all additional libs.  Configuration management, authorization layers, etc.
 
@@ -24,7 +24,7 @@ _User Stories_
 - As a processor I must exchange a `CLIENT_ID` and `CLIENT_SECRET` with the OAuth authorizer for an access token.  This grants the ability to write profiles to auth0.
 - As a developer I need a way to override standard configuration variables using a pyconfig, an environment variable, etc.
 
-**cis-aws**
+**cis_aws**
 
 Contains all the code necessary for role assumption in the target AWS account which holds CIS data, enumerating dynamodb-tables, enumerating kinesis streams, sending to kinesis, and writing to dynamodb.
 
@@ -36,11 +36,11 @@ _User stories_
 - As an API endpoint I need to publish profiles to a kinesis stream and validate the message was sent.
 - As a stream worker signing and verifying message I need to retrieve private keys from AWS parameter store.
 
-**cis-crypto**
+**cis_crypto**
 
 Contains all logic for retrieving JWKS information both public and private.  Allows abstraction of `.well-known` URLs to config parameters.  Support sign verify operations.
 
-Depends on: cis-aws for retrieval of secrets for key material.
+Depends on: cis_aws for retrieval of secrets for key material.
 
 _User Stories_
 
@@ -48,23 +48,23 @@ _User Stories_
 - As a processor I need to verify per profile signatures and raise an exception if the profile signature is not valid.
 - As a processor and publisher I need to discover public key material at configurable `.well-known` URLs.
 
-**cis-identity-vault**
+**cis_identity_vault**
 
-Contains all code for the formation of the identity vault and management there-of.  Not related to cis-aws.  This module use pynamodb as a means of describing the user profile schema and creating the table with the appropriate tags.  
+Contains all code for the formation of the identity vault and management there-of.  Not related to cis_aws.  This module use pynamodb as a means of describing the user profile schema and creating the table with the appropriate tags.  
 
 _User Stories_
 
 - As an IAM admin I can create mozilla-iam profile v2 identity vaults.
 - As an IAMdeveloper I can import the pynamodb schema into other classes for use in applications like graphql.
 
-**cis-processor**
+**cis_processor**
 
 Contains basic business logic code for working with batches of profiles entering and exiting the stream.  
 
 Depends on:
 
-* cis-aws
-* cis-crypto
+* cis_aws
+* cis_crypto
 
 _User Stories_
 
@@ -73,23 +73,23 @@ _User Stories_
 - As a processor I need to continue processing all profiles in a batch even if a single profile fails.
 - As a processor I must log any actions taken on a user profile to a consolidated logging mechanism.
 
-**cis-publisher**
+**cis_publisher**
 
 Contains all logic for web properties that publish profile changes to the change integration service stream.  Send an event, check status of event are core functions for this lib.
 
 Depends on:
 
-* cis-crypto
+* cis_crypto
 
 - As a publisher like mozillians.org I need to send a profile change and receive an ID for the change record.
 - As a publisher like mozillians.org I need to know the status of a single event and if it failed or succeeded.
 - As a publisher I need to sign individual user attributes in addition to full profiles using JWKS.
 
-**cis-logging**
+**cis_logging**
 
 Contains all code needed to support the output of logs to Cloudwatch consolidated logging.  Provides a `streamHandler` interface and centralized configuration for `DEBUG`, `INFO`, etc.
 
-**cis-fake-well-known**
+**cis_fake_well_known**
 
 Contains faking functionality and a dummy server to provide JWKS key material for testing sign/verify operations.
 
@@ -97,7 +97,7 @@ _User Stories_
 
 - As a developer I need a way to retrieve `.well-known` configurations prior to the data being available on auth.mozilla.com
 
-**cis-fake-change-service**
+**cis_fake_change_service**
 
 Contains a dummy server that provides mocked responses identical to sending a message successfully to the kinesis stream.
 
