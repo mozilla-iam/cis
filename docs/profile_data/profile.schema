@@ -6,7 +6,7 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "schema": {
+                "$schema": {
                     "type": "string"
                 },
                 "user_id": {
@@ -96,7 +96,7 @@
                 "login_method",
                 "pgp_public_keys",
                 "primary_email",
-                "schema",
+                "$schema",
                 "ssh_public_keys",
                 "user_id",
                 "usernames"

@@ -6,7 +6,7 @@
             "type": "object",
             "additionalProperties": false,
             "properties": {
-                "schema": {
+                "$schema": {
                     "type": "string"
                 },
                 "fun_title": {
@@ -47,8 +47,7 @@
                 }
 
             },
-            "required": [
-            ],
+            "required": ["$schema"],
             "title": "ExtendedProfile"
         },
         "Metadata": {
