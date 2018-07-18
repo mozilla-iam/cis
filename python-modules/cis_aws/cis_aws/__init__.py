@@ -15,4 +15,4 @@ def get_config():
         [
             ConfigOSEnv()
         ]
-)
+    )
