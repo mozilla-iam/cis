@@ -1,5 +1,4 @@
-DIR_NAME	:= cis_aws
-PROG_NAME	:= cis_aws
+MODULE_NAME	:= $(abspath $(ROOT_DIR))
 
 all:
 	@echo 'Available make targets:'
@@ -26,7 +25,7 @@ tests:
 	pip install flake8
 	flake8 setup.py
 	flake8 tests/*.py
-	flake8 $(DIR_NAME)/*.py
+	flake8 $(MODULE_NAME)/*.py
 
 clean:
 	rm -rf venv
