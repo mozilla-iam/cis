@@ -1,6 +1,7 @@
 import boto3
 import logging
 import os
+import subprocess
 
 from botocore.stub import Stubber
 from datetime import datetime, timedelta
@@ -15,6 +16,12 @@ logger = logging.getLogger(__name__)
 
 
 class TestConnect(object):
+    def setup(self):
+        dynalite_port = '34569'
+        kinesalite_port = '34567'
+        subprocess.Popen(['dynalite', '--port', dynalite_port])
+        subprocess.Popen(['kinesalite', '--port', kinesalite_port])
+
     def test_connect_object_init(self):
         from cis_aws import connect
         c = connect.AWS()
@@ -100,6 +107,7 @@ class TestConnect(object):
     def test_discover_cis_environment(self):
         from cis_aws import connect
         c = connect.AWS()
+        os.environ['CIS_ENVIRONMENT'] = 'local'
 
         # Test default fall through to local environ
         assert c._discover_cis_environment() == 'local'
@@ -315,3 +323,137 @@ class TestConnect(object):
 
         assert res.get('client') is not None
         assert res.get('arn').endswith('testing-identity-vault')
+
+    def test_dynamodb_local_with_dynalite(self):
+        name = 'local-identity-vault'
+        dynalite_port = '34569'
+        dynalite_host = '127.0.0.1'
+
+        os.environ['CIS_ENVIRONMENT'] = 'local'
+        os.environ['CIS_DYNALITE_HOST'] = dynalite_host
+        os.environ['CIS_DYNALITE_PORT'] = dynalite_port
+        ROLE_ARN = 'arn:aws:iam::123456789000:role/demo-assume-role'
+
+        dynalite_session = Stubber(
+                boto3.session.Session(
+                    region_name='us-west-2'
+                )
+        ).client.client(
+                    'dynamodb',
+                    endpoint_url='http://localhost:34569'
+                .format(
+                    dynalite_host,
+                    dynalite_port
+                )
+            )
+
+        dynalite_session.create_table(
+            TableName=name,
+            KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
+            AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+        )
+        from cis_aws import connect
+        c = connect.AWS()
+        c.session()
+
+        c.assume_role(ROLE_ARN)
+        res = c.identity_vault_client()
+
+        assert res is not None
+        assert res.get('client') is not None
+
+    @mock_kinesis
+    @mock_sts
+    def test_kinesis_client_with_mock_cloud(self):
+        os.environ['CIS_ENVIRONMENT'] = 'testing'
+        name = 'testing-stream'
+        ROLE_ARN = 'arn:aws:iam::123456789000:role/demo-assume-role'
+        conn = boto3.client('kinesis',
+                            region_name='us-east-1',
+                            aws_access_key_id="ak",
+                            aws_secret_access_key="sk")
+
+        response = conn.create_stream(
+            StreamName=name,
+            ShardCount=1
+        )
+
+        waiter = conn.get_waiter('stream_exists')
+
+        waiter.wait(
+            StreamName=name,
+            Limit=100,
+            WaiterConfig={
+                'Delay': 100,
+                'MaxAttempts': 5
+            }
+        )
+
+        tags_1 = {'cis_environment': 'testing'}
+        tags_2 = {'application': 'change-stream'}
+        conn.add_tags_to_stream(StreamName=name, Tags=tags_1)
+        conn.add_tags_to_stream(StreamName=name, Tags=tags_2)
+
+        assert response is not None
+
+        from cis_aws import connect
+        c = connect.AWS()
+        c.session(region_name='us-east-1')
+        c.assume_role(ROLE_ARN)
+
+        result = c.input_stream_client()
+        assert result is not None
+        assert result.get('arn').endswith(name)
+
+    def test_kinesis_client_with_local(self):
+        os.environ['CIS_ENVIRONMENT'] = 'local'
+        name = 'local-stream'
+        kinesalite_port = '34567'
+        kinesalite_host = '127.0.0.1'
+        ROLE_ARN = 'arn:aws:iam::123456789000:role/demo-assume-role'
+
+        os.environ['CIS_KINESALITE_HOST'] = kinesalite_host
+        os.environ['CIS_KINESALITE_PORT'] = kinesalite_port
+        conn = Stubber(
+                boto3.session.Session(
+                    region_name='us-west-2'
+                )
+        ).client.client(
+                    'kinesis',
+                    endpoint_url='http://localhost:34567'
+                .format(
+                    kinesalite_host,
+                    kinesalite_port
+                )
+            )
+
+        response = conn.create_stream(
+            StreamName=name,
+            ShardCount=1
+        )
+
+        waiter = conn.get_waiter('stream_exists')
+
+        waiter.wait(
+            StreamName=name,
+            Limit=100,
+            WaiterConfig={
+                'Delay': 100,
+                'MaxAttempts': 5
+            }
+        )
+
+        assert response is not None
+
+        from cis_aws import connect
+        c = connect.AWS()
+        c.session(region_name='us-west-2')
+        c.assume_role(ROLE_ARN)
+
+        result = c.input_stream_client()
+        assert result is not None
+        assert result.get('arn').endswith(name)
+
+    def teardown(self):
+        subprocess.Popen(['killall', 'node'])
