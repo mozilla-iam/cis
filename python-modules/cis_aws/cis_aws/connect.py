@@ -17,6 +17,7 @@ class AWS(object):
     enumerating dynamodb-tables, and enumerating kinesis streams.
     """
     def __init__(self):
+        self.config = get_config()
         self.assume_role_session = None
         self._boto_session = None
 
@@ -43,7 +44,7 @@ class AWS(object):
 
         return self._boto_session
 
-    def assume_role(self, role_arn=None):
+    def assume_role(self):
         """Use the boto session in the current account
         to assume a role passed in.
         """
@@ -66,10 +67,7 @@ class AWS(object):
         if self.assume_role_session is not None and self._assume_role_is_expired() is False:
             return self.assume_role_session
 
-        # If the role arn is none get it from the config store.
-        if role_arn is None:
-            config = get_config()
-            role_arn = config('assume_role_arn', namespace='cis').lower()
+        role_arn = self.config('assume_role_arn', namespace='cis').lower()
 
         sts = self._boto_session.client('sts')
 
@@ -85,12 +83,13 @@ class AWS(object):
     def identity_vault_client(self):
         """Discover DynamoDb table for the environment.
         Return a dictionary with a client and database arn"""
+        self.assume_role()
         self._check_sessions_exist()
         if self._discover_cis_environment() == 'local':
             # Assume we are using dynalite and setup for that
-            config = get_config()
-            dynalite_port = config('dynalite_port', namespace='cis', default='4567')
-            dynalite_host = config('dynalite_host', namespace='cis', default='localhost')
+
+            dynalite_port = self.config('dynalite_port', namespace='cis', default='4567')
+            dynalite_host = self.config('dynalite_host', namespace='cis', default='localhost')
 
             # Initialize a dynamodb client pointed at the dynalite endpoint
             dynamodb_client = self._boto_session.client(
@@ -120,12 +119,13 @@ class AWS(object):
     def input_stream_client(self):
         """Discover the input stream ARN for the cis_environment.
         Return a dictionary containing a kinesis client and the stream arn."""
+        self.assume_role()
         self._check_sessions_exist()
         if self._discover_cis_environment() == 'local':
             # Assume we are using dynalite and setup for that
-            config = get_config()
-            kinesalite_port = config('kinesalite_port', namespace='cis', default='4567')
-            kinesalite_host = config('kinesalite_host', namespace='cis', default='localhost')
+
+            kinesalite_port = self.config('kinesalite_port', namespace='cis', default='4567')
+            kinesalite_host = self.config('kinesalite_host', namespace='cis', default='localhost')
 
             # Initialize a kinesis client pointed at the kinesalite endpoint
             kinesis_client = self._boto_session.client(
@@ -179,8 +179,8 @@ class AWS(object):
 
     def _discover_cis_environment(self):
         """Use everett config manager to determine the environment we are in."""
-        config = get_config()
-        result = config('environment', namespace='cis', default='local').lower()
+
+        result = self.config('environment', namespace='cis', default='local').lower()
         return result
 
     def _discover_kinesis_stream(self, kinesis_client):
