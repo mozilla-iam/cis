@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 requirements = ['boto3', 'everett']
 
-setup_requirements = []
+setup_requirements = ['pytest-runner']
 
 test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov']
 
