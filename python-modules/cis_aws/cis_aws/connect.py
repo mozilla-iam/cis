@@ -4,6 +4,7 @@ import logging
 from botocore.stub import Stubber
 from cis_aws import get_config
 from datetime import datetime
+from datetime import timedelta
 
 
 logger = logging.getLogger(__name__)
@@ -16,6 +17,7 @@ class AWS(object):
     enumerating dynamodb-tables, and enumerating kinesis streams.
     """
     def __init__(self):
+        self.config = get_config()
         self.assume_role_session = None
         self._boto_session = None
 
@@ -42,17 +44,30 @@ class AWS(object):
 
         return self._boto_session
 
-    def assume_role(self, role_arn=None):
+    def assume_role(self):
         """Use the boto session in the current account
         to assume a role passed in.
         """
+        if self._discover_cis_environment() == 'local':
+            self.assume_role_session = {
+                'Credentials': {
+                    'AccessKeyId': 'FAKEAKIA',
+                    'SecretAccessKey': 'FAKEACCESSKEY',
+                    'SessionToken': 'FAKESESSIONTOKEN',
+                    'Expiration': (datetime.utcnow() + timedelta(hours=1)).replace(tzinfo=None)
+                },
+                'AssumedRoleUser': {
+                    'AssumedRoleId': 'FAKEID',
+                    'Arn': 'arn:aws:iam::123456789000:role/demo-assume-role'
+                },
+                'PackedPolicySize': 123
+            }
+            return self.assume_role_session
+
         if self.assume_role_session is not None and self._assume_role_is_expired() is False:
             return self.assume_role_session
 
-        # If the role arn is none get it from the config store.
-        if role_arn is None:
-            config = get_config()
-            role_arn = config('assume_role_arn', namespace='cis').lower()
+        role_arn = self.config('assume_role_arn', namespace='cis').lower()
 
         sts = self._boto_session.client('sts')
 
@@ -68,16 +83,17 @@ class AWS(object):
     def identity_vault_client(self):
         """Discover DynamoDb table for the environment.
         Return a dictionary with a client and database arn"""
+        self.assume_role()
         self._check_sessions_exist()
         if self._discover_cis_environment() == 'local':
             # Assume we are using dynalite and setup for that
-            config = get_config()
-            dynalite_port = config('dynalite_port', namespace='cis', default='4567')
-            dynalie_host = config('dynalite_host', namespace='cis', default='localhost')
+
+            dynalite_port = self.config('dynalite_port', namespace='cis', default='4567')
+            dynalite_host = self.config('dynalite_host', namespace='cis', default='localhost')
 
             # Initialize a dynamodb client pointed at the dynalite endpoint
             dynamodb_client = self._boto_session.client(
-                'dynamodb', endpoint_url='http://{}:{}'.format(dynalie_host, dynalite_port)
+                'dynamodb', endpoint_url='http://{}:{}'.format(dynalite_host, dynalite_port)
             )
 
             # Construct a dictionary of standard information.
@@ -85,16 +101,14 @@ class AWS(object):
                 'client': dynamodb_client,
                 'arn': self._discover_dynamo_table(dynamodb_client)
             }
-
-            return identity_vault_info
         else:
+            # Assume we are using an assumeRole because not local.
             dynamodb_client = self._boto_session.client(
                 'dynamodb',
                 aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
                 aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
                 aws_session_token=self.assume_role_session['Credentials']['SessionToken']
             )
-
             identity_vault_info = {
                 'client': dynamodb_client,
                 'arn': self._discover_dynamo_table(dynamodb_client)
@@ -105,16 +119,45 @@ class AWS(object):
     def input_stream_client(self):
         """Discover the input stream ARN for the cis_environment.
         Return a dictionary containing a kinesis client and the stream arn."""
-        pass
+        self.assume_role()
+        self._check_sessions_exist()
+        if self._discover_cis_environment() == 'local':
+            # Assume we are using dynalite and setup for that
+
+            kinesalite_port = self.config('kinesalite_port', namespace='cis', default='4567')
+            kinesalite_host = self.config('kinesalite_host', namespace='cis', default='localhost')
+
+            # Initialize a kinesis client pointed at the kinesalite endpoint
+            kinesis_client = self._boto_session.client(
+                'kinesis', endpoint_url='http://{}:{}'.format(kinesalite_host, kinesalite_port)
+            )
+
+            # Construct a dictionary of standard information.
+            stream_info = {
+                'client': kinesis_client,
+                'arn': self._discover_kinesis_stream(kinesis_client)
+            }
+        else:
+            # Assume we are using an assumeRole because not local.
+            kinesis_client = self._boto_session.client(
+                'kinesis',
+                aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
+                aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
+                aws_session_token=self.assume_role_session['Credentials']['SessionToken']
+            )
+
+            stream_info = {
+                'client': kinesis_client,
+                'arn': self._discover_kinesis_stream(kinesis_client)
+            }
+
+        return stream_info
 
     def _check_sessions_exist(self):
         if self._discover_cis_environment() == 'local':
             logger.info('CIS Local environment detected skipping cloud based validations.')
-            return True
-
         if self._boto_session is not None and self.assume_role_session is not None:
             logger.info('Boto3 session object and assumeRole exists proceeding to next check.')
-            return True
         else:
             logger.error('You must initialize an assumeRole and boto session.')
             raise ValueError('AssumeRole or Boto3 Session not initialized.  Refusing operation.')
@@ -136,8 +179,8 @@ class AWS(object):
 
     def _discover_cis_environment(self):
         """Use everett config manager to determine the environment we are in."""
-        config = get_config()
-        result = config('environment', namespace='cis', default='local').lower()
+
+        result = self.config('environment', namespace='cis', default='local').lower()
         return result
 
     def _discover_kinesis_stream(self, kinesis_client):
