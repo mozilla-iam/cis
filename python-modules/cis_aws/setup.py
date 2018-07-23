@@ -19,7 +19,6 @@ setup(
     author_email="akrug@mozilla.com",
     description="Interop layer for mozilla-iam and AWS use of DynamoDb, Kinesis, and SSM Parameter Store.",
     long_description=long_description,
-    long_description_content_type="text/markdown",
     url="https://github.com/mozilla-iam/cis",
     classifiers=(
         "Programming Language :: Python :: 3",
