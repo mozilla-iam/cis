@@ -1,0 +1,384 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/CorePlusExtendedProfile",
+    "definitions": {
+        "CorePlusExtendedProfile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "schema": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "login_method": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "active": {
+                    "$ref": "#/definitions/StandardAttributeBoolean"
+                },
+                "last_modified": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "created": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "usernames": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "first_name": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "last_name": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "primary_email": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "identities": {
+                    "$ref": "#/definitions/Identities"
+                },
+                "ssh_public_keys": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "pgp_public_keys": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "access_information": {
+                    "$ref": "#/definitions/AccessInformation"
+                },
+                "fun_title": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "description": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "location_preference": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "office_location": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "timezone": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "preferred_languages": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "tags": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "pronouns": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "picture": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "uris": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "phone_numbers": {
+                    "$ref": "#/definitions/StandardAttributeValues"
+                },
+                "alternative_name": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                }
+            },
+            "required": [
+                "access_information",
+                "active",
+                "created",
+                "first_name",
+                "identities",
+                "last_modified",
+                "last_name",
+                "login_method",
+                "pgp_public_keys",
+                "primary_email",
+                "schema",
+                "ssh_public_keys",
+                "user_id",
+                "usernames"
+            ],
+            "title": "CorePlusExtendedProfile"
+        },
+        "AccessInformation": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ldap": {
+                    "$ref": "#/definitions/AccessInformationProviderSubObject"
+                },
+                "mozilliansorg": {
+                    "$ref": "#/definitions/AccessInformationProviderSubObject"
+                },
+                "hris": {
+                    "$ref": "#/definitions/AccessInformationProviderSubObject"
+                },
+                "access_provider": {
+                    "$ref": "#/definitions/AccessInformationProviderSubObject"
+                }
+            },
+            "required": [
+                "access_provider",
+                "hris",
+                "ldap",
+                "mozilliansorg"
+            ],
+            "title": "AccessInformation"
+        },
+        "AccessInformationProviderSubObject": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "values": {
+                    "$ref": "#/definitions/AccessInformationValues"
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "values"
+            ],
+            "title": "AccessInformationProviderSubObject"
+        },
+        "Metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "classification": {
+                    "$ref": "#/definitions/Classification"
+                },
+                "last_modified": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "publisher_authority": {
+                    "$ref": "#/definitions/PublisherAuthority"
+                },
+                "verified": {
+                  "type": "boolean"
+                }
+            },
+            "required": [
+                "classification",
+                "created",
+                "last_modified",
+                "publisher_authority",
+                "verified"
+            ],
+            "title": "Metadata"
+        },
+        "Signature": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "publisher": {
+                    "$ref": "#/definitions/Publisher"
+                },
+                "additional": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/Publisher"
+                    }
+                }
+            },
+            "required": [
+                "additional",
+                "publisher"
+            ],
+            "title": "Signature"
+        },
+        "Publisher": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "alg": {
+                    "$ref": "#/definitions/Alg"
+                },
+                "typ": {
+                    "$ref": "#/definitions/Typ"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "alg",
+                "typ",
+                "value"
+            ],
+            "title": "Publisher"
+        },
+        "AccessInformationValues": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {},
+            "title": "AccessInformationValues"
+        },
+        "StandardAttributeBoolean": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "value"
+            ],
+            "title": "Active"
+        },
+        "StandardAttributeValues": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "values": {
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "values"
+            ],
+            "title": "StandardAttributeValues"
+        },
+        "Identities": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "values": {
+                    "$ref": "#/definitions/IdentitiesValues"
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "values"
+            ],
+            "title": "Identities"
+        },
+        "IdentitiesValues": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {
+                "github_id_v3": {
+                    "type": "string"
+                },
+                "github_id_v4": {
+                    "type": "string"
+                },
+                "LDAP": {
+                    "type": "string"
+                },
+                "bugzilla.mozilla.org": {
+                    "type": "string"
+                },
+                "email_1": {
+                    "type": "string"
+                },
+                "email_2": {
+                    "type": "string"
+                },
+                "google-oauth2": {
+                    "type": "string"
+                },
+                "firefoxaccounts": {
+                    "type": "string"
+                }
+            },
+            "title": "IdentitiesValues"
+        },
+        "StandardAttributeString": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": [ "null", "string" ]
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "value"
+            ],
+            "title": "StandardAttributeString"
+        },
+        "Classification": {
+            "type": "string",
+            "enum": [
+                "MOZILLA CONFIDENTIAL",
+                "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "PUBLIC",
+                "INDIVIDUAL CONFIDENTIAL"
+            ],
+            "title": "Classification"
+        },
+        "PublisherAuthority": {
+            "type": "string",
+            "enum": [
+                "ldap",
+                "mozilliansorg",
+                "hris",
+                "cis",
+                "access_provider"
+            ],
+            "title": "PublisherAuthority"
+        },
+        "Alg": {
+            "type": "string",
+            "enum": [
+                "HS256",
+                "RS256",
+                "RSA",
+                "ED25519"
+            ],
+            "title": "Alg"
+        },
+        "Typ": {
+            "type": "string",
+            "enum": [
+                "JWT",
+                "PGP"
+            ],
+            "title": "Typ"
+        }
+    }
+}

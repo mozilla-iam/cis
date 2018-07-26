@@ -90,3 +90,7 @@ ENV/
 
 # npm
 node_modules
+
+# Docs/.DSStore
+
+docs/.DS_Store
