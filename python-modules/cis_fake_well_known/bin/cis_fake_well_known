@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+from cis_fake_well_known.app import app
+
+if __name__== "__main__":
+  app.run()

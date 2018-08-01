@@ -12,3 +12,13 @@ assume_role_arn=arn:aws:iam::123456789000:role/demo-assume-role
 # dynalite_port=4567
 # kinesalite_host=localhost
 # kinesalite_port=4568
+
+# Fake Well Known Endpoint Options
+
+oidc_discovery_uri='https://auth.mozilla.com/.well-known/openid-configuration'
+person_api_endpoint='https://person-api.sso.mozilla.com'
+profile_schema_combined_uri='https://person-api.sso.mozilla.com/schema/v2/profile'
+profile_core_schema_uri='https://person-api.sso.mozilla.com/schema/v2/profile/core'
+profile_extended_schema_uri='https://person-api.sso.mozilla.com/schema/v2/profile/extended'
+access_file_endpoint='https://cdn.sso.mozilla.com/apps.yml'
+fake_jwks_key_path='/tmp/keys'
