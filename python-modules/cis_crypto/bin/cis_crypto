@@ -1,0 +1,10 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+from cis_crypto import cli
+
+c = cli.cli()
+c.run()

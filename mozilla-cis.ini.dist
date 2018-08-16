@@ -14,7 +14,6 @@ assume_role_arn=arn:aws:iam::123456789000:role/demo-assume-role
 # kinesalite_port=4568
 
 # Fake Well Known Endpoint Options
-
 oidc_discovery_uri='https://auth.mozilla.com/.well-known/openid-configuration'
 person_api_endpoint='https://person-api.sso.mozilla.com'
 profile_schema_combined_uri='https://person-api.sso.mozilla.com/schema/v2/profile'
@@ -22,3 +21,16 @@ profile_core_schema_uri='https://person-api.sso.mozilla.com/schema/v2/profile/co
 profile_extended_schema_uri='https://person-api.sso.mozilla.com/schema/v2/profile/extended'
 access_file_endpoint='https://cdn.sso.mozilla.com/apps.yml'
 fake_jwks_key_path='/tmp/keys'
+
+# Cryptography Settings for sign-verify operations
+secret_manager=file # Can be file or aws-ssm
+secret_manager_file_path=/etc/mozilla-iam/keys/ # required if secret manager is file must be absolute path
+cis_well_known_mode=file # Can also be http if you want to use the well known endpoint above.
+cis_public_key_name=fake-access-file-key # Optional for use with file mode only.
+
+## AWS Specific Secret Manager Settings
+secret_manager_ssm_path=/iam
+secret_manager_ssm_region=us-west-2
+
+# give the name of the key without file extension that you would like to sign assertions with
+signing_key_name=fake-access-file-key
