@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for iam-profile-faker."""
+"""Top-level package for cis_aws."""
 
 __author__ = """Andrew Krug"""
 __email__ = 'akrug@mozilla.com'
