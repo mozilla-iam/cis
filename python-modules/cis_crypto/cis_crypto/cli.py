@@ -58,6 +58,8 @@ class cli():
             o.load(file_content)
             jws = o.jws()
             common.write_file(jws, '{}.jws'.format(self.config.file))
+            logger.info('File signed.  Your signed file is now: {}.jws'.format(self.config.file))
+            logger.info('To verify this file use cis_crypto verify --file {}.jws'.format(self.config.file))
         elif self.config.func == 'verify_operation':
             logger.info('Attempting verification of signature for file: {}'.format(self.config.file))
             everett_config = get_config()

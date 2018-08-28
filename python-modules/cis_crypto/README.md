@@ -50,4 +50,13 @@ signing_key_name=access-file-key
 
 Assume a role in the AWS account that has access to the key material.  At the time of writing apps.yml key material is in infosec-dev for auth0-staging and infosec-prod for auth0-production.
 
-3. Sign the file. 
+3. Sign the file.
+
+```bash
+
+cis_crypto sign --file apps.yml
+2018-08-28T09:21:57 - cis_crypto - INFO - Attempting to sign file: apps.yml
+2018-08-28T09:21:57 - cis_crypto - INFO - File signed.  Your signed file is now: apps.yml.jws
+2018-08-28T09:21:57 - cis_crypto - INFO - To verify this file use cis_crypto verify --file apps.yml.jws
+
+```
