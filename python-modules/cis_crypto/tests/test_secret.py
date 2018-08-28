@@ -6,6 +6,7 @@ import pytest
 from jose import jwk
 from moto import mock_ssm
 
+
 class TestSecretManager(object):
     def test_file_provider(self):
         from cis_crypto import secret
@@ -34,11 +35,11 @@ class TestSecretManager(object):
         deserialized_key_dict = json.dumps(key_dict)
         client = boto3.client('ssm', region_name='us-west-2')
         client.put_parameter(
-                Name='/baz/{}'.format(key_name),
-                Description='A secure test parameter',
-                Value=deserialized_key_dict,
-                Type='SecureString',
-                KeyId='alias/aws/ssm'
+            Name='/baz/{}'.format(key_name),
+            Description='A secure test parameter',
+            Value=deserialized_key_dict,
+            Type='SecureString',
+            KeyId='alias/aws/ssm'
         )
         manager = secret.Manager(provider_type='aws-ssm')
         key_material = manager.get_key('fake-access-file-key')
@@ -48,6 +49,6 @@ class TestSecretManager(object):
     @pytest.mark.xfail
     def test_ssm_provider_fail(self):
         from cis_crypto import secret
-        client = boto3.client('ssm', region_name='us-west-2')
         manager = secret.Manager(provider_type='aws-ssm')
         key_material = manager.get_key('this-key-doesnt-exist')
+        assert key_material is not None

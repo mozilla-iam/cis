@@ -1,8 +1,10 @@
 import json
+import mock
 import os
 import pytest
 
-from cis_fake_well_known import app
+from cis_fake_well_known import well_known
+
 
 class TestOperation(object):
     def test_sign_operation(self):
@@ -47,33 +49,33 @@ class TestOperation(object):
         # Assumption : we only want to sign values and not metadata.
         sample_payload = {
             'metadata': {
-              'classification': 'PUBLIC',
-              'last_modified': '2018-01-01T00:00:00Z',
-              'created': '2018-01-01T00:00:00Z',
-              'publisher_authority': 'mozilliansorg',
-              'verified': 'false'
+                'classification': 'PUBLIC',
+                'last_modified': '2018-01-01T00:00:00Z',
+                'created': '2018-01-01T00:00:00Z',
+                'publisher_authority': 'mozilliansorg',
+                'verified': 'false'
             },
             'values': {
-              'my blog': 'https://example.net/blog'
+                'my blog': 'https://example.net/blog'
             }
         }
 
         o = operation.Sign()
         assert o is not None
 
-        test_valid_payload =  o.load(sample_payload)
+        test_valid_payload = o.load(sample_payload)
 
         assert test_valid_payload is not None
         assert isinstance(test_valid_payload, dict) is True
         assert isinstance(o.payload, dict) is True
 
-        test_str_payload =  o.load(json.dumps(sample_payload))
+        test_str_payload = o.load(json.dumps(sample_payload))
+        assert test_str_payload is not None
         assert isinstance(test_valid_payload, dict) is True
         assert isinstance(o.payload, dict) is True
 
         signature = o.jws()
         assert isinstance(signature, str) is True
-
 
     def test_verify_operation_without_dict(self):
         from cis_crypto import operation
@@ -82,8 +84,6 @@ class TestOperation(object):
         os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
         os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
         os.environ['CIS_WELL_KNOWN_MODE'] = 'file'
-
-
 
         fh = open('tests/fixture/good-signature')
         fixture_signature = fh.read().rstrip('\n').encode('utf-8')
@@ -108,20 +108,21 @@ class TestOperation(object):
         # Assumption : we only want to sign values and not metadata.
         sample_payload = {
             'metadata': {
-              'classification': 'PUBLIC',
-              'last_modified': '2018-01-01T00:00:00Z',
-              'created': '2018-01-01T00:00:00Z',
-              'publisher_authority': 'mozilliansorg',
-              'verified': 'false'
+                'classification': 'PUBLIC',
+                'last_modified': '2018-01-01T00:00:00Z',
+                'created': '2018-01-01T00:00:00Z',
+                'publisher_authority': 'mozilliansorg',
+                'verified': 'false'
             },
             'values': {
-              'my blog': 'https://example.net/blog'
+                'my blog': 'https://example.net/blog'
             }
         }
 
         s = operation.Sign()
         assert s is not None
-        test_valid_payload =  s.load(sample_payload)
+        test_valid_payload = s.load(sample_payload)
+        assert test_valid_payload is not None
         sig = s.jws()
 
         o = operation.Verify()
@@ -131,4 +132,68 @@ class TestOperation(object):
 
         # Expect verification to fail
         with pytest.raises(JWSError):
-            res = o.jws()
+            o.jws()
+
+    def _mock_response(
+            self,
+            status=200,
+            content="CONTENT",
+            json_data=None,
+            raise_for_status=None):
+        """
+        since we typically test a bunch of different
+        requests calls for a service, we are going to do
+        a lot of mock responses, so its usually a good idea
+        to have a helper function that builds these things
+        """
+        mock_resp = mock.Mock()
+        # mock raise_for_status call w/optional error
+        mock_resp.raise_for_status = mock.Mock()
+        if raise_for_status:
+            mock_resp.raise_for_status.side_effect = raise_for_status
+        # set status code and content
+        mock_resp.status_code = status
+        mock_resp.content = content
+        # add json data if provided
+        if json_data:
+            mock_resp.json = mock.Mock(
+                return_value=json_data
+            )
+        return mock_resp
+
+    @mock.patch('requests.get')
+    def test_verify_with_http_retrieval(self, mock_get):
+        from cis_crypto import operation
+        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
+        os.environ['CIS_SECRET_MANAGER'] = 'file'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_WELL_KNOWN_MODE'] = 'http'
+        os.environ['CIS_WELL_KNOWN_URL'] = 'http://127.0.0.1:5000/.well-known/mozilla-iam'
+
+        # Assumption : we only want to sign values and not metadata.
+        sample_payload = {
+            'metadata': {
+                'classification': 'PUBLIC',
+                'last_modified': '2018-01-01T00:00:00Z',
+                'created': '2018-01-01T00:00:00Z',
+                'publisher_authority': 'mozilliansorg',
+                'verified': 'false'
+            },
+            'values': {
+                'my blog': 'https://example.net/blog'
+            }
+        }
+
+        s = operation.Sign()
+        assert s is not None
+        test_valid_payload = s.load(sample_payload)
+        assert test_valid_payload is not None
+        sig = s.jws()
+        fake_well_known_json = well_known.MozillIAM().data()
+        mock_resp = self._mock_response(json_data=fake_well_known_json)
+        mock_get.return_value = mock_resp
+        o = operation.Verify()
+        o.load(sig)
+        key_material = o._get_public_key()
+        assert key_material is not None
