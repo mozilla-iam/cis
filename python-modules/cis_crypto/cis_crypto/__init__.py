@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for cis_aws."""
+"""Top-level package for cis_crypto."""
 
 __author__ = """Andrew Krug"""
 __email__ = 'akrug@mozilla.com'
@@ -24,3 +24,11 @@ def get_config():
             ConfigOSEnv()
         ]
     )
+
+
+def open_file(file_path):
+    pass
+
+
+def write_file(contents, file_path):
+    pass
