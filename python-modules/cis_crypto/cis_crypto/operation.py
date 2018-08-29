@@ -85,6 +85,7 @@ class Verify(object):
             # Go get it from the .well-known endpoint and load as json
             # return a dictionary of the json loaded data
             well_known_url = self.config('well_known_url', namespace='cis')
+            # XXX TBD Cache this content and retreive at 15-minute intervals.
             res = requests.get(well_known_url)
 
             if res.status_code == 200:
