@@ -10,7 +10,7 @@ requirements = ['python-jose', 'everett', 'boto3', 'requests']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock']
 
 setup(
     name="cis_crypto",
