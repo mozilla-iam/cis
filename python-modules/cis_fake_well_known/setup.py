@@ -6,11 +6,11 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['jsonschema', 'python-jose', 'flask', 'everett', 'faker', 'pyopenssl']
+requirements = ['jsonschema', 'python-jose', 'flask', 'everett', 'faker']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask']
 
 setup(
     name="cis_fake_well_known",
