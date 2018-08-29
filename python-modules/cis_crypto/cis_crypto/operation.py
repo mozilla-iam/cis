@@ -28,6 +28,8 @@ class Sign(object):
             data = yaml.safe_load(data)
         except yaml.scanner.ScannerError:
             logger.info('This file is likely not YAML.  Attempting JSON load.')
+        except AttributeError:
+            logger.info('This file is likely not YAML.  Attempting JSON load.')
 
         if isinstance(data, str):
             data = json.loads(data)
@@ -55,20 +57,11 @@ class Verify(object):
         self.well_known_mode = self.config('well_known_mode', namespace='cis', default='file')
         self.public_key_name = None  # Optional for use with file based well known mode
         self.jws_signature = None
-        self.payload = None
 
     def load(self, jws_signature, payload=None):
         """Takes data in the form of a dict() and a JWS sig."""
-
-        # Note data is an optional arg.  If passed into this method it will compare the dict with the data in the sig.
-
         # Store the original form in the jws_signature attribute
         self.jws_signature = jws_signature
-
-        if payload is not None:
-            # There is data.  Compare the two dicts and ensure they match.
-            pass
-        pass
 
     def _get_public_key(self):
         """Returns a jwk construct for the public key and mode specified."""
@@ -103,24 +96,19 @@ class Verify(object):
         publisher_keys = well_known_response['publishers_supported']
 
         keys = []
-
-        for key in access_file_keys:
-            count = 0
+        for i in range(len(access_file_keys)):
             keys.append(
                 {
-                    'access_file_key_{}'.format(count): access_file_keys.get(str(count))
+                    'access_file_key_{}'.format(i): access_file_keys.get(str(i))
                 }
             )
-            count = count + 1
 
         for k in publisher_keys:
-            count = 0
             keys.append(
                 {
                     k: publisher_keys[k]
                 }
             )
-
         return keys
 
     def jws(self):
@@ -128,8 +116,8 @@ class Verify(object):
         key_material = self._get_public_key()
         if isinstance(key_material, dict):
             sig = jws.verify(self.jws_signature, key_material, algorithms='RS256', verify=True)
-
-        if isinstance(key_material, list):
+            return sig
+        elif isinstance(key_material, list):
             logger.debug('Multiple keys returned.  Attempting match.')
             for key in key_material:
                 for k_id in key_material[key_material.index(key)]:
@@ -139,6 +127,34 @@ class Verify(object):
                         sig = jws.verify(self.jws_signature, key_content, algorithms='RS256', verify=True)
                         logger.info('Matched a verified signature for: {}'.format(k_id))
                         return sig
+                    except JWSError as e:
+                        logger.error(e)
+        raise JWSError('The signature could not be verified for any trusted key.')
+
+
+class StrictVerify(Verify):
+    """Strict verify exists for use in the stream processors.  If a profile update needs to be ensured to have come
+    from a specific publisher.  Returns the matching key instead of a jws."""
+    def __init__(self):
+        super().__init__()
+
+    def jws(self):
+        """Assumes you loaded a payload.  Return the same jws or raise a custom exception."""
+        key_material = self._get_public_key()
+        if isinstance(key_material, dict):
+            sig = jws.verify(self.jws_signature, key_material, algorithms='RS256', verify=True)
+            return {self.config('public_key_name', namespace='cis', default='access-file-key'): sig}
+        elif isinstance(key_material, list):
+            logger.debug('Multiple keys returned.  Attempting match.')
+            for key in key_material:
+                for k_id in key_material[key_material.index(key)]:
+                    logger.info('Attempting to match against: {}'.format(k_id))
+                    key_content = key_material[key_material.index(key)][k_id]
+                    try:
+
+                        sig = jws.verify(self.jws_signature, key_content, algorithms='RS256', verify=True)
+                        logger.info('Matched a verified signature for: {}'.format(k_id))
+                        return {k_id: sig}
                     except JWSError as e:
                         logger.error(e)
         raise JWSError('The signature could not be verified for any trusted key.')

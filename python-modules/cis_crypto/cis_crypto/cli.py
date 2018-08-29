@@ -15,7 +15,6 @@ class cli():
         self.prog = sys.argv[0].split('/')[-1]
 
     def parse_args(self, args):
-
         parser = argparse.ArgumentParser(
             description="""
             Command line wrapper for mozilla-iam sign verify/operations of JSON and YAML using JWKS.
@@ -54,9 +53,9 @@ class cli():
         if self.config.func == 'sign_operation':
             logger.info('Attempting to sign file: {}'.format(self.config.file))
             file_content = common.load_file(self.config.file)
-            o = operation.Sign()
-            o.load(file_content)
-            jws = o.jws()
+            signing_object = operation.Sign()
+            signing_object.load(file_content)
+            jws = signing_object.jws()
             common.write_file(jws, '{}.jws'.format(self.config.file))
             logger.info('File signed.  Your signed file is now: {}.jws'.format(self.config.file))
             logger.info('To verify this file use cis_crypto verify --file {}.jws'.format(self.config.file))
@@ -69,12 +68,12 @@ class cli():
                 )
             )
             file_content = common.load_file(self.config.file)
-            o = operation.Verify()
-            o.load(file_content)
+            verify_object = operation.Verify()
+            verify_object.load(file_content)
             try:
-                jws = o.jws()  # This will raise if the signature is invalid.
+                jws = verify_object.jws()  # This will raise if the signature is invalid.
                 logger.info('Signature verified for file: {}'.format(self.config.file))
             except jose.exceptions.JWSError:
                 logger.error('The signature could not be verified.')
-                sys.exit(-1)
-            sys.exit(-1)
+                sys.exit()
+            sys.exit()

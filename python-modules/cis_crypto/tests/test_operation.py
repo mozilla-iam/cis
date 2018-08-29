@@ -191,9 +191,50 @@ class TestOperation(object):
         assert test_valid_payload is not None
         sig = s.jws()
         fake_well_known_json = well_known.MozillIAM().data()
-        mock_resp = self._mock_response(json_data=fake_well_known_json)
+        fh = open('tests/fixture/mozilla-iam.json')
+        mock_resp = self._mock_response(json_data=json.loads(fh.read()))
+        fh.close()
         mock_get.return_value = mock_resp
         o = operation.Verify()
         o.load(sig)
         key_material = o._get_public_key()
+        o.jws()
         assert key_material is not None
+
+    @mock.patch('requests.get')
+    def test_strict_verify_with_http_retrieval(self, mock_get):
+        from cis_crypto import operation
+        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
+        os.environ['CIS_SECRET_MANAGER'] = 'file'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_WELL_KNOWN_MODE'] = 'http'
+        os.environ['CIS_WELL_KNOWN_URL'] = 'http://127.0.0.1:5000/.well-known/mozilla-iam'
+        os.environ['CIS_STRICT_VERIFICATION'] = 'True'
+
+        # Assumption : we only want to sign values and not metadata.
+        sample_payload = {
+            'metadata': {
+                'classification': 'PUBLIC',
+                'last_modified': '2018-01-01T00:00:00Z',
+                'created': '2018-01-01T00:00:00Z',
+                'publisher_authority': 'mozilliansorg',
+                'verified': 'false'
+            },
+            'values': {
+                'my blog': 'https://example.net/blog'
+            }
+        }
+
+        s = operation.Sign()
+        assert s is not None
+        test_valid_payload = s.load(sample_payload)
+        assert test_valid_payload is not None
+        sig = s.jws()
+        fake_well_known_json = well_known.MozillIAM().data()
+        mock_resp = self._mock_response(json_data=fake_well_known_json)
+        mock_get.return_value = mock_resp
+        o = operation.StrictVerify()
+        o.load(sig)
+        res = o.jws()
+        assert isinstance(res, dict)
