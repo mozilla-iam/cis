@@ -35,3 +35,7 @@ secret_manager_ssm_region=us-west-2
 
 # give the name of the key without file extension that you would like to sign assertions with
 signing_key_name=fake-access-file-key
+
+# Publisher Settings
+publisher_id=fakemozilliansorg
+kinesis_stream_name=local-stream
