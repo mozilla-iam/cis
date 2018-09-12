@@ -23,13 +23,13 @@ Relevant fields:
 - `access_file.endpoint` the actual endpoint to query. It returns a YAML formatted document.
 - `access_file.jwks_keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
   of the `access_file.endpoint` file. The signature is built-in the file.
-- `person-api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
-- `person-api.endpoint` is the actual endpoint.
-- `person-api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
+- `api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
+- `api.endpoint` is the actual endpoint.
+- `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
   insert data in CIS databases.
-- `person-api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
+- `api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
   to verify the CIS user profile signature for publishers.
-- `person-api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
+- `api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
   validates with these schemas.
 - `scopes_supported`: the scopes supported by the Person-API OAuth2 authorizer.
 

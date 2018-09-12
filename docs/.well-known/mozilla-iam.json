@@ -17,11 +17,11 @@
       }
     }
   },
-  "person-api": {
-    "endpoint": "https://person-api.sso.mozilla.com",
-    "profile_schema_combined_uri": "https://person-api.sso.mozilla.com/schema/v2/profile",
-    "profile_core_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
-    "profile_extended_schema_uri": "https://person-api.sso.mozilla.com/schema/v2/profile/extended",
+  "api": {
+    "endpoint": "https://api.sso.mozilla.com",
+    "profile_schema_combined_uri": "https://api.sso.mozilla.com/schema/v2/profile",
+    "profile_core_schema_uri": "https://api.sso.mozilla.com/schema/v2/profile/core",
+    "profile_extended_schema_uri": "https://api.sso.mozilla.com/schema/v2/profile/extended",
     "scopes_supported": [
       "write",
       "read",
