@@ -27,6 +27,7 @@ secret_manager=file # Can be file or aws-ssm
 secret_manager_file_path=/etc/mozilla-iam/keys/ # required if secret manager is file must be absolute path
 cis_well_known_mode=file # Can also be http if you want to use the well known endpoint above.
 cis_public_key_name=fake-access-file-key # Optional for use with file mode only.
+cis_strict_verification=False #Returns the name of the publisher who signed the content. For use in processors.
 
 ## AWS Specific Secret Manager Settings
 secret_manager_ssm_path=/iam
@@ -34,3 +35,7 @@ secret_manager_ssm_region=us-west-2
 
 # give the name of the key without file extension that you would like to sign assertions with
 signing_key_name=fake-access-file-key
+
+# Publisher Settings
+publisher_id=fakemozilliansorg
+kinesis_stream_name=local-stream

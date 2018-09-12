@@ -1,10 +1,23 @@
 #!/usr/bin/env python3
 
-import sys
+import logging
 import os
+import sys
+import time
+
 sys.path.append(os.getcwd())
 
 from cis_crypto import cli
+
+format_string = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
+time_format = "%Y-%m-%dT%H:%M:%S"
+logger = logging.getLogger('cis_crypto')
+logger.setLevel(logging.INFO)
+streamHandler = logging.StreamHandler()
+streamHandler.setLevel(logging.INFO)
+streamFormatter = logging.Formatter(format_string, time_format)
+streamHandler.setFormatter(streamFormatter)
+logger.addHandler(streamHandler)
 
 c = cli.cli()
 c.run()

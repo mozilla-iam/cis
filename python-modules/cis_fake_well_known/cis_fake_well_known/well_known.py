@@ -52,10 +52,14 @@ class MozillIAM(object):
         return publisher_keys
 
     def _get_oidc_discovery_uri(self):
-        return self._config('oidc_discovery_uri', namespace='cis').lower()
+        return self._config(
+            'oidc_discovery_uri', namespace='cis', default='https://auth.mozilla.auth0.com/.well-known/jwks.json'
+        ).lower()
 
     def _get_access_file(self):
-        access_file_endpoint = self._config('access_file_endpoint', namespace='cis').lower()
+        access_file_endpoint = self._config(
+            'access_file_endpoint', namespace='cis', default='https://cdn.sso.mozilla.com/apps.yml'
+        ).lower()
 
         access_file_key_content = load_key_file('fake-access-file-key', 'pub')
         jwk_construct = jwk.construct(access_file_key_content, algorithm='RS256')
@@ -90,10 +94,18 @@ class MozillIAM(object):
         ]
 
         person_api_data_structure = dict(
-            endpoint=self._config('person_api_endpoint', namespace='cis').lower(),
-            profile_schema_combined_uri=self._config('profile_schema_combined_uri', namespace='cis').lower(),
-            profile_core_schema_uri=self._config('profile_core_schema_uri', namespace='cis').lower(),
-            profile_extended_schema_uri=self._config('profile_extended_schema_uri', namespace='cis').lower(),
+            endpoint=self._config(
+                'person_api_endpoint', namespace='cis', default=''
+            ).lower(),
+            profile_schema_combined_uri=self._config(
+                'profile_schema_combined_uri', namespace='cis', default=''
+            ).lower(),
+            profile_core_schema_uri=self._config(
+                'profile_core_schema_uri', namespace='cis', default=''
+            ).lower(),
+            profile_extended_schema_uri=self._config(
+                'profile_extended_schema_uri', namespace='cis', default=''
+            ).lower(),
             scopes_supported=person_api_scopes
         )
 

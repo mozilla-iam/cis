@@ -112,10 +112,6 @@ class TestConnect(object):
         # Test default fall through to local environ
         assert c._discover_cis_environment() == 'local'
 
-        # Test custom environment name
-        os.environ['CIS_ENVIRONMENT'] = 'purple'
-        assert c._discover_cis_environment() == 'purple'
-
     @mock_dynamodb2
     @mock_sts
     def test_discover_dynamodb_table_local(self):
@@ -179,8 +175,8 @@ class TestConnect(object):
         waiter.wait(
             TableName='testing-identity-vault',
             WaiterConfig={
-                'Delay': 100,
-                'MaxAttempts': 100
+                'Delay': 30,
+                'MaxAttempts': 5
             }
         )
 
@@ -216,7 +212,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 100,
+                'Delay': 30,
                 'MaxAttempts': 5
             }
         )
@@ -255,7 +251,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 100,
+                'Delay': 30,
                 'MaxAttempts': 5
             }
         )
@@ -300,8 +296,8 @@ class TestConnect(object):
         waiter.wait(
             TableName='testing-identity-vault',
             WaiterConfig={
-                'Delay': 100,
-                'MaxAttempts': 100
+                'Delay': 30,
+                'MaxAttempts': 5
             }
         )
 
@@ -385,7 +381,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 100,
+                'Delay': 30,
                 'MaxAttempts': 5
             }
         )
@@ -439,7 +435,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 100,
+                'Delay': 30,
                 'MaxAttempts': 5
             }
         )

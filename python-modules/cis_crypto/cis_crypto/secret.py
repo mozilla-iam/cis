@@ -61,7 +61,9 @@ class AWSParameterstoreProvider(object):
         )
 
         result = ssm_response.get('Parameter')
-
-        key_dict = json.loads(result.get('Value'))
-        key_construct = jwk.construct(key_dict, 'RS256')
+        try:
+            key_dict = json.loads(result.get('Value'))
+            key_construct = jwk.construct(key_dict, 'RS256')
+        except json.decoder.JSONDecodeError:
+            key_construct = jwk.construct(result.get('Value'), 'RS256')
         return key_construct

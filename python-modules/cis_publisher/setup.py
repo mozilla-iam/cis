@@ -6,18 +6,23 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['jsonschema', 'python-jose', 'flask', 'everett', 'faker']
+requirements = [
+    'boto',
+    'jsonschema'
+    # 'cis_crypto', # Uncomment when these are published in warehouse
+    # 'cis_aws' # Uncomment when these are published in warehouse
+]
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto']
 
 setup(
-    name="cis_fake_well_known",
+    name="cis_publisher",
     version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",
-    description="Provides a mock IDP .well-known configuration for testing modules like cryptography.",
+    description="Bindings to send a message with an attribute change to the change integration service.",
     long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=[
@@ -28,9 +33,8 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_fake_well_known', 'cis_fake_well_known/keys', 'bin']),
-    package_data={'cis_fake_well_known': ['keys/*.pem']},
-    scripts=['bin/cis_fake_well_known'],
+    packages=find_packages(include=['cis_publisher']),
+    package_data={'cis_publisher': ['profile.schema']},
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
