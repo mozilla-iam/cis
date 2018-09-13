@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for cis_crypto."""
+"""Flaks application for publishing changes."""
 
 __author__ = """Andrew Krug"""
 __email__ = 'akrug@mozilla.com'
