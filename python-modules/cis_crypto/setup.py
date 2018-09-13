@@ -6,11 +6,11 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['python-jose', 'everett', 'boto3', 'requests']
+requirements = ['python-jose', 'everett', 'boto3', 'requests', 'pyaml']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'mock']
 
 setup(
     name="cis_crypto",
