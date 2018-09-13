@@ -26,7 +26,7 @@ Name the key `/iam/access-key-file`.
 
 Ex: `openssl genrsa -out access-key-file.pem 4096`
 
-For local testing purposes:
+For local testing purposes (you may change the path depending on your `.mozilla-cis.ini` settings, these are defaults:
 ```
 mkdir -p ~/.mozilla-iam/keys
 openssl genrsa 4096 > ~/.mozilla-iam/keys/file.priv.pem
