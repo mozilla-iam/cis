@@ -2,7 +2,7 @@
   "schema": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
   "user_id": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -16,7 +16,7 @@
   },
   "login_method": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -30,7 +30,7 @@
   },
   "active": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -44,7 +44,7 @@
   },
   "last_modified": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -58,7 +58,7 @@
   },
   "created": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -72,7 +72,7 @@
   },
   "usernames": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -88,7 +88,7 @@
   },
   "first_name": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -102,7 +102,7 @@
   },
   "last_name": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -116,7 +116,7 @@
   },
   "primary_email": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -130,7 +130,7 @@
   },
   "identities": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -153,7 +153,7 @@
   },
   "ssh_public_keys": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -169,7 +169,7 @@
   },
   "pgp_public_keys": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
       "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
     },
     "metadata": {
@@ -186,7 +186,7 @@
   "access_information": {
     "ldap": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
         "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
@@ -203,7 +203,7 @@
     },
     "mozilliansorg": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
         "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
@@ -220,7 +220,7 @@
     },
     "hris": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
         "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {
@@ -241,7 +241,7 @@
     },
     "access_provider": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWT", "value": "" },
+        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
         "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
       },
       "metadata": {

@@ -16,20 +16,20 @@ schema: https://person-api.sso.mozilla.com/schema/v2/profile
 # In this case, the `user_id.value` is an immutable, unique value identifying the user. It may not be parsed of made
 # sense of.
 user_id:
-  # The signature can be using different types and algorithms, though this is normally `typ:JWT` and `alg:RS256`
+  # The signature can be using different types and algorithms, though this is normally `typ:JWS` and `alg:RS256`
   # Note that there is both `signature.publisher` (must be present) and `signature.additional` (optional, for users
   # generated signatures). The publisher which creates the `signature.publisher` is declared in
-  # `metadata.publisher_authority` The signature value is then the base64 encoded JWT, for example. The payload that is
+  # `metadata.publisher_authority` The signature value is then the base64 encoded JWS, for example. The payload that is
   # signed is the complete top level attribute structure, that is serialized alphanumerically (with `JSON.stringify(x)`
   # or `json.dumps(x, separators=(',',':'))` for example, where `x` payload is `user_id.*` minus `user_id.signature`
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     # This is the Mozilla data classification for `user_id.*`
@@ -62,11 +62,11 @@ login_method:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -80,11 +80,11 @@ active:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
@@ -99,11 +99,11 @@ last_modified:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -117,11 +117,11 @@ created:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -136,11 +136,11 @@ usernames:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: MOZILLA CONFIDENTIAL
@@ -155,11 +155,11 @@ first_name:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -173,11 +173,11 @@ last_name:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -193,11 +193,11 @@ primary_email:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -214,11 +214,11 @@ identities:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: MOZILLA CONFIDENTIAL
@@ -242,11 +242,11 @@ ssh_public_keys:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -263,11 +263,11 @@ pgp_public_keys:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -293,11 +293,11 @@ access_information:
     signature:
       publisher:
         alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
       additional:
       - alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
     metadata:
       classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
@@ -313,11 +313,11 @@ access_information:
     signature:
       publisher:
         alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
       additional:
       - alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
     metadata:
       classification: MOZILLA CONFIDENTIAL
@@ -333,11 +333,11 @@ access_information:
     signature:
       publisher:
         alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
       additional:
       - alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
     metadata:
       classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
@@ -360,11 +360,11 @@ access_information:
     signature:
       publisher:
         alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
       additional:
       - alg: 'RS256'
-        typ: 'JWT'
+        typ: 'JWS'
         value: ''
     metadata:
       classification: MOZILLA CONFIDENTIAL
@@ -382,11 +382,11 @@ fun_title:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -401,11 +401,11 @@ description:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -420,11 +420,11 @@ location_preference:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -439,11 +439,11 @@ office_location:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -458,11 +458,11 @@ timezone:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -477,11 +477,11 @@ preferred_languages:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -499,11 +499,11 @@ tags:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -521,11 +521,11 @@ pronouns:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -540,11 +540,11 @@ picture:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -559,11 +559,11 @@ uris:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -579,11 +579,11 @@ phone_numbers:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
@@ -600,11 +600,11 @@ alternative_name:
   signature:
     publisher:
       alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
     additional:
     - alg: 'RS256'
-      typ: 'JWT'
+      typ: 'JWS'
       value: ''
   metadata:
     classification: PUBLIC
