@@ -24,6 +24,15 @@ cd ../cis_fake_well_known/ && python setup.py install && cd -
 1. Generate an RSA KeyPair and place the private key material in aws-ssm parameter store.
 Name the key `/iam/access-key-file`.
 
+Ex: `openssl genrsa -out access-key-file.pem 4096`
+
+For local testing purposes:
+```
+mkdir -p ~/.mozilla-iam/keys
+openssl genrsa 4096 > ~/.mozilla-iam/keys/file.priv.pem
+openssl rsa -in ~/.mozilla-iam/keys/file.priv.pem -pubout > ~/.mozilla-iam/keys/access-file-key.pub.pem
+```
+
 2. Place the public key material within the location of the .well-known mozilla file.  Note: this does not exist yet at the time of writing.
 
 
