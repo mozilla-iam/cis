@@ -1,0 +1,2 @@
+include cis_profile/*json
+include cis_profile/*schema
