@@ -23,15 +23,43 @@ Relevant fields:
 - `access_file.endpoint` the actual endpoint to query. It returns a YAML formatted document.
 - `access_file.jwks_keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
   of the `access_file.endpoint` file. The signature is built-in the file.
-- `person-api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
-- `person-api.endpoint` is the actual endpoint.
-- `person-api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
+- `api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
+- `api.endpoint` is the actual endpoint.
+- `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
   insert data in CIS databases.
-- `person-api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
+- `api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
   to verify the CIS user profile signature for publishers.
-- `person-api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
+- `api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
   validates with these schemas.
 - `scopes_supported`: the scopes supported by the Person-API OAuth2 authorizer.
+
+## JWKS
+
+JWKS are the keys for JWS (JSON Web Signature) keys. This is where you find the public keys to verify the signatures
+of tokens, files signed in this way.
+
+A JWS is a base64 encoded, serialized JSON document with a signature appended at the end of the string. When decoded and
+verified, the result is a JSON document.
+
+Note that this mean that it does not provide "detached" signatures natively (to do so you'd need to hash some content,
+then make a JWS with the hash, and manually do the hash verification, which would also be fine as long as you agree on a
+hash algorithm between the provider and consumers of the JWS and it's associated, detached content).
+
+### Key generation for JWKS notes
+
+JWKS are simply base64 encoded PEM formatted keys.
+You can generate one as such:
+
+```
+# Private key
+$ openssl genrsa | tee private_key.pem | base64 > jwks_private_key.key
+
+# Public key
+$ openssl rsa -in private_key.pem -pubout | tee public_key.pem | base64 > jwks_public_key.key
+```
+
+The files in the example above, `jwks_private_key.key` and `jwks_private_key.key` can then directly be loaded, decoded
+and used by most JWS libraries. Note: never expose the private key to the public.
 
 ## Security notes
 

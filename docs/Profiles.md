@@ -91,7 +91,7 @@ The *signature* field is used to certify the attribute has been verified by a pu
 sources such as users (humans). This allows for performing out-of-band signatures and verifications that the IAM systems
 cannot interfere with. No automated IAM system may hold the private signing keys for `additional` signatures.
 
-- JWT and PGP are supported, with various algorithms (see schema for allowed algorithms).
+- JWS and PGP are supported, with various algorithms (see schema for allowed algorithms).
 - The publisher signature is always required. The publisher identity is stored in `metadata.publisher_authority`.
 - The additional signatures may be added by any publisher, and is generally used for user-supplied signatures.
 - The data that is signed are the contents of the structure the field `signature` is in, minus the `signature` structure

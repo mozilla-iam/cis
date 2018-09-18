@@ -22,7 +22,7 @@
       "publisher_authority": "access_provider",
       "verified": true
     },
-    "value": "ad|Mozilla-LDAP-Dev|dummymcdummy"
+    "value": null
   },
   "login_method": {
     "signature": {
@@ -46,7 +46,7 @@
       "publisher_authority": "access_provider",
       "verified": true
     },
-    "value": "Mozilla-LDAP-Dev"
+    "value": null
   },
   "active": {
     "signature": {
@@ -94,7 +94,7 @@
       "publisher_authority": "cis",
       "verified": true
     },
-    "value": "2018-01-01T00:00:00Z"
+    "value": null
   },
   "created": {
     "signature": {
@@ -118,7 +118,7 @@
       "publisher_authority": "cis",
       "verified": true
     },
-    "value": "2018-01-01T00:00:00Z"
+    "value": null
   },
   "usernames": {
     "signature": {
@@ -143,7 +143,6 @@
       "verified": false
     },
     "values": {
-      "posix": "mcdummy"
     }
   },
   "first_name": {
@@ -168,7 +167,7 @@
       "publisher_authority": "hris",
       "verified": false
     },
-    "value": "Dummy"
+    "value": null
   },
   "last_name": {
     "signature": {
@@ -192,7 +191,7 @@
       "publisher_authority": "cis",
       "verified": false
     },
-    "value": "Dumdum"
+    "value": null
   },
   "primary_email": {
     "signature": {
@@ -216,7 +215,7 @@
       "publisher_authority": "ldap",
       "verified": true
     },
-    "value": "dmcdummy@mozilla.com"
+    "value": null
   },
   "identities": {
     "signature": {
@@ -241,14 +240,6 @@
       "verified": true
     },
     "values": {
-      "github_id_v3": "123495",
-      "github_id_v4": "XDSKz==",
-      "LDAP": "dmcdummy@mozilla.com",
-      "bugzilla.mozilla.org": "dmcdummy@mozilla.com",
-      "email_1": "personal@mcdummy.org",
-      "email_2": "mcdummy@gmail.com",
-      "google-oauth2": "mcdummy@gmail.com",
-      "firefoxaccounts": "mcdummy@ownmail.com"
     }
   },
   "ssh_public_keys": {
@@ -274,7 +265,6 @@
       "verified": false
     },
     "values": {
-      "github-work": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R"
     }
   },
   "pgp_public_keys": {
@@ -300,7 +290,6 @@
       "verified": false
     },
     "values": {
-      "personal key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n"
     }
   },
   "access_information": {
@@ -327,8 +316,6 @@
         "verified": true
       },
       "values": {
-        "vpn_infosec": null,
-        "scm_level_1": null
       }
     },
     "mozilliansorg": {
@@ -354,8 +341,6 @@
         "verified": true
       },
       "values": {
-        "nda": null,
-        "iam": null
       }
     },
     "hris": {
@@ -381,15 +366,6 @@
         "verified": true
       },
       "values": {
-        "cost_center": "1420",
-        "team": "infosec",
-        "company": "Mozilla Corporation",
-        "is_manager": false,
-        "is_director_or_above": false,
-        "worker_type": "EMPLOYEE",
-        "business_title": "Security Engineer",
-        "desk_number": 7133,
-        "employee_id": "E31337"
       }
     },
     "access_provider": {
@@ -415,7 +391,6 @@
         "verified": true
       },
       "values": {
-        "5a5munnfxYjqkaN0su1Kl7USxbqkILQN": 7776000
       }
     }
   },
@@ -441,7 +416,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "Dum own title"
+    "value": null
   },
   "description": {
     "signature": {
@@ -465,7 +440,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "I am a funny profile!"
+    "value": null
   },
   "location_preference": {
     "signature": {
@@ -489,7 +464,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "Bahamas"
+    "value": null
   },
   "office_location": {
     "signature": {
@@ -513,7 +488,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "San Francisco"
+    "value": null
   },
   "timezone": {
     "signature": {
@@ -537,7 +512,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "UTC"
+    "value": null
   },
   "preferred_languages": {
     "signature": {
@@ -562,9 +537,6 @@
       "verified": false
     },
     "values": [
-      "French",
-      "English (US)",
-      "German"
     ]
   },
   "tags": {
@@ -590,7 +562,6 @@
       "verified": false
     },
     "values": [
-      "vouched summit2013 likescheese"
     ]
   },
   "pronouns": {
@@ -639,7 +610,7 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "https://example.net/dum.jpg"
+    "value": null
   },
   "uris": {
     "signature": {
@@ -664,7 +635,6 @@
       "verified": false
     },
     "values": {
-      "my blog": "https://example.net/blog"
     }
   },
   "phone_numbers": {
@@ -690,7 +660,6 @@
       "verified": false
     },
     "values": {
-      "home": 33169281122
     }
   },
   "alternative_name": {
@@ -715,6 +684,6 @@
       "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": "Düüm"
+    "value": null
   }
 }

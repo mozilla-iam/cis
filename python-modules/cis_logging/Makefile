@@ -1,4 +1,5 @@
-MODULE_NAME	:= $(abspath $(ROOT_DIR))
+ROOT_DIR        := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+MODULE_NAME     := $(notdir $(patsubst %/,%,$(ROOT_DIR)))
 
 all:
 	@echo 'Available make targets:'

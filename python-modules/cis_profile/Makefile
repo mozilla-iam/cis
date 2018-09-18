@@ -1,5 +1,5 @@
-ROOT_DIR        := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-MODULE_NAME     := $(notdir $(patsubst %/,%,$(ROOT_DIR)))
+ROOT_DIR	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+MODULE_NAME 	:= $(notdir $(patsubst %/,%,$(ROOT_DIR)))
 
 all:
 	@echo 'Available make targets:'
@@ -36,4 +36,4 @@ clean:
 	rm -rf build
 	rm -rf dist
 
-.PHONY: test tests clean all install
+.PHONY: test tests clean all install build
