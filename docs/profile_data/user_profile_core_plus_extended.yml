@@ -1,0 +1,615 @@
+---
+# Note that the schema for the user profile and all serialization is in JSON format - this file is in YAML and must be
+# converted to JSON before validation or signature verification or generation purposes.
+
+
+## Starting here are the CORE profile fields
+
+# This is where the profile schema resides
+# https://person-api.sso.mozilla.com/schema/v2/profile is core+extended
+# https://person-api.sso.mozilla.com/schema/v2/profile/core is core only
+# https://person-api.sso.mozilla.com/schema/v2/profile/extend is extended only (less useful)
+schema: https://person-api.sso.mozilla.com/schema/v2/profile
+# This is a top level attribute (user_id)
+# It contains a `signature` and `metadata` objects in addition to a `value`
+# All top level attributes are formatted this way.
+# In this case, the `user_id.value` is an immutable, unique value identifying the user. It may not be parsed of made
+# sense of.
+user_id:
+  # The signature can be using different types and algorithms, though this is normally `typ:JWS` and `alg:RS256`
+  # Note that there is both `signature.publisher` (must be present) and `signature.additional` (optional, for users
+  # generated signatures). The publisher which creates the `signature.publisher` is declared in
+  # `metadata.publisher_authority` The signature value is then the base64 encoded JWS, for example. The payload that is
+  # signed is the complete top level attribute structure, that is serialized alphanumerically (with `JSON.stringify(x)`
+  # or `json.dumps(x, separators=(',',':'))` for example, where `x` payload is `user_id.*` minus `user_id.signature`
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    # This is the Mozilla data classification for `user_id.*`
+    classification: PUBLIC
+    # This is when any sub-attribute value for `user_id.*` was last modified, in UTC time.
+    last_modified: '2018-01-01T00:00:00Z'
+    # This is the same, for initial attribute setting or creation.
+    created: '2018-01-01T00:00:00Z'
+    # This is the publisher authority. It must be listed in the schema. This is the entity that has written this
+    # structure and is allowed to change it's values. The `signature.publisher` is also created by this publisher.
+    publisher_authority: access_provider
+    # If `verified` is true, this means the `publisher_authority` has strongly verified this attribute value to be correct
+    # `verified` can never be set to true if the data is user-supplied without additional verification.
+    # In general, this means the user had to prove the data is true (through authentication or other means)
+    # or that the publisher originated the data and can guarantee it's accuracy.
+    # This field is often used to grant access indirectly, and may never be depended on if not set to true.
+    # When false, it may be used for display and informational purposes only.
+    #
+    # Finally, note that for objects with multiple values, the `verified` attribute governs all child values. This means
+    # that if, for example, you strongly verify certain email addresses in a list of emails, but not all of them,
+    # `verify` MUST be set to false. You have to verify ALL child values in order to set `verify` to true.
+    verified: true
+  # The `user_id.value` is the actual value of the attribute. This may be a string, boolean, list, etc. which depends
+  # on the attribute.
+  value: ad|Mozilla-LDAP-Dev|dummymcdummy
+
+# `login_method.value` is the login method for the user, which is an auth0 connection (such as "google-oauth2",
+# "github", "firefoxaccounts", etc.
+login_method:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: access_provider
+    verified: true
+  value: Mozilla-LDAP-Dev
+# `active.value` represents if the user is enabled or not. If false, the user is not allowed to login or use IAM.
+active:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: access_provider
+    verified: true
+  value: true
+# `last_modified.value` indicates when the last attribute has been modified. Therefore, it always matches another
+# attribute's `metadata.last_modified`
+last_modified:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: cis
+    verified: true
+  value: '2018-01-01T00:00:00Z'
+# `created.value` indicates the first time this user profile has been seen and it's original creation time.
+created:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: cis
+    verified: true
+  value: '2018-01-01T00:00:00Z'
+# `usernames.values[]` is a list of known custom usernames for the user. Some username keys may be reserved and/or
+# well-known.
+usernames:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: MOZILLA CONFIDENTIAL
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: true
+  values:
+    posix: mcdummy
+# `first_name.value` is the preferred first name for the user. It does not have to be their legal name.
+first_name:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: hris
+    verified: false
+  value: Dummy
+# `last_name.value` is the preferred last name for the user. It does not have to be their legal name.
+last_name:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: cis
+    verified: false
+  value: Dumdum
+# `primary_email.value` is the primary email for the user. It may be used as login identifier, though it may not be
+# unique. Use `user_id.value` for a completely unique identifier. Do not reason about the `primary_email` to set access
+# control.
+primary_email:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: ldap
+    verified: true
+  value: dmcdummy@mozilla.com
+# `identities.values{}` list all known identities for the user. The key values are well-known and defined in the schema.
+# This means that for example `github_id_v3` will always be the GitHub v3 user id (if present).
+# The values are ALWAYS verified by the publisher. This means the publisher has verified the user could login to the
+# associated identities at a point in time.
+identities:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: MOZILLA CONFIDENTIAL
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: true
+  values:
+    github_id_v3: '123495'
+    github_id_v4: XDSKz==
+    LDAP: dmcdummy@mozilla.com
+    bugzilla.mozilla.org: dmcdummy@mozilla.com
+    email_1: personal@mcdummy.org
+    email_2: mcdummy@gmail.com
+    google-oauth2: mcdummy@gmail.com
+    firefoxaccounts: mcdummy@ownmail.com
+# `ssh_public_keys.values{}` are a list of OpenSSH public keys for the user.
+# The SSH keys are ALWAYS verified by the publisher. This means the publisher has verified the user could login with
+# these keys at a point in time.
+ssh_public_keys:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: ldap
+    verified: false
+  values:
+    github-work: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R
+# `pgp_public_keys.values{}` are a list of PGP public keys for the user.
+# The PGP keys are ALWAYS verified by the publisher.a This means the publisher has verified the user could sign or
+# decrypt with these keys at a point in time.
+pgp_public_keys:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  values:
+    personal key: |
+      -----BEGIN PGP PUBLIC KEY BLOCK-----
+
+      mQINBE94eWwBEADjlvvF8HERvp.....=A0dq
+      -----END PGP PUBLIC KEY BLOCK-----
+# `access_information` is a special structure which contains sub-attributes, such as:
+# `access_information.ldap`. These sub-attributes then contain the standard `metadata` and `signature fields, such as:
+# `access_information.ldap.signature`, `access_information.ldap.metadata`, etc.
+# It contains access data that may be used for access control. Note that if a value from these sub-attributes only has a
+# key and no value it is acceptable to set the value to 'null', such as:
+# `access_information.ldap.values = { 'ldap_group_here': null }`
+# The actual contents are up to the publisher. The contents are ALWAYS verified by the publisher.
+access_information:
+  ldap:
+    signature:
+      publisher:
+        alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+      additional:
+      - alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+    metadata:
+      classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
+      last_modified: '2018-01-01T00:00:00Z'
+      created: '2018-01-01T00:00:00Z'
+      publisher_authority: ldap
+      verified: true
+# Note that the values here are null in this example and that the group name is always the key
+    values:
+      vpn_infosec: null
+      scm_level_1: null
+  mozilliansorg:
+    signature:
+      publisher:
+        alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+      additional:
+      - alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+    metadata:
+      classification: MOZILLA CONFIDENTIAL
+      last_modified: '2018-01-01T00:00:00Z'
+      created: '2018-01-01T00:00:00Z'
+      publisher_authority: mozilliansorg
+      verified: true
+# Note that the values here are null in this example and that the group name is always the key
+    values:
+      nda: null
+      iam: null
+  hris:
+    signature:
+      publisher:
+        alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+      additional:
+      - alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+    metadata:
+      classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
+      last_modified: '2018-01-01T00:00:00Z'
+      created: '2018-01-01T00:00:00Z'
+      publisher_authority: hris
+      verified: true
+    values:
+# Note that certain fields from `hris` may be well-known, in particular the ones below
+      cost_center: '1420'
+      team: infosec
+      company: Mozilla Corporation
+      is_manager: false
+      is_director_or_above: false
+      worker_type: EMPLOYEE
+      business_title: Security Engineer
+      desk_number: 7133
+      employee_id: E31337
+  access_provider:
+    signature:
+      publisher:
+        alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+      additional:
+      - alg: 'RS256'
+        typ: 'JWS'
+        value: ''
+    metadata:
+      classification: MOZILLA CONFIDENTIAL
+      last_modified: '2018-01-01T00:00:00Z'
+      created: '2018-01-01T00:00:00Z'
+      publisher_authority: access_provider
+      verified: true
+    values:
+      5a5munnfxYjqkaN0su1Kl7USxbqkILQN: 7776000
+
+## Starting here are the EXTENDED profile fields. ALL extended profile fields are OPTIONAL.
+
+# `fun_title.value` is a title the user gives to themselves, not their official company title. Anyone can have a title.
+fun_title:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: Dum own title
+
+# `description.value` is a free-form text field for user's own description.
+description:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: I am a funny profile!
+
+# `location_preference.value` is the geographical location that the user wants to appear as.
+location_preference:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: Bahamas
+
+# `office_location.value` is the Mozilla Office the user wants to show they're usually at.
+office_location:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: San Francisco
+
+# `timezone.value` is the timezone the user wants to appear as.
+timezone:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: UTC
+
+# `preferred_languages.values[]` is a list of languages the user prefers communicating with.
+preferred_languages:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  values:
+    - French
+    - English (US)
+    - German
+
+# `tags.values[]` is a list of tags associated with the user.
+tags:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  values:
+    - vouched
+    - summit2013
+    - likescheese
+
+# `pronouns.value` is a string representing how the user prefers to be addressed as.
+pronouns:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: null
+
+# `picture.value` is an URL to a picture representing the user.
+picture:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: https://example.net/dum.jpg
+
+# `uris.values{}` are a list of URIs for the user, such as their blog, etc.
+uris:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  values:
+    "my blog": https://example.net/blog
+
+# `phone_numbers.values{}` are a list of phone numbers for the user.
+phone_numbers:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  values:
+    home: +33169281122
+
+# `alternative_name.value` is a string representing an alternative name for the user, such as their name in their local
+# language
+alternative_name:
+  signature:
+    publisher:
+      alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+    additional:
+    - alg: 'RS256'
+      typ: 'JWS'
+      value: ''
+  metadata:
+    classification: PUBLIC
+    last_modified: '2018-01-01T00:00:00Z'
+    created: '2018-01-01T00:00:00Z'
+    publisher_authority: mozilliansorg
+    verified: false
+  value: Düüm
