@@ -75,15 +75,16 @@ _User Stories_
 
 **cis_publisher**
 
-Contains all logic for web properties that publish profile changes to the change integration service stream.  Send an event, check status of event are core functions for this lib.
+Contains logic for web properties that publish profile changes to the change integration service stream.  Send an event, check status of event are core functions for this lib.
 
 Depends on:
 
 * cis_crypto
 
+_User Stories_
+
 - As a publisher like mozillians.org I need to send a profile change and receive an ID for the change record.
 - As a publisher like mozillians.org I need to know the status of a single event and if it failed or succeeded.
-- As a publisher I need to sign individual user attributes in addition to full profiles using JWKS.
 
 **cis_logging**
 
@@ -100,6 +101,24 @@ _User Stories_
 **cis_fake_change_service**
 
 Contains a dummy server that provides mocked responses identical to sending a message successfully to the kinesis stream.
+
+**cis_profile**
+
+Contains a library for generating user profiles "v2" in Python. It dynamically generates a class based on the profile
+JSON data and schema and supports validation as well as signing. This is generally used by anything that wants to create
+or modify a profile, such as `cis_publisher`.
+
+Depends on:
+
+* cis_crypto
+
+_User Stories_
+
+- As a publisher like Mozilla LDAP I need convert my internal data to a valid, signed profile v2 JSON document that CIS
+  can publish.
+- As a publisher like mozillians.org I need to easily create a valid, signed profile v2 JSON document that CIS can
+  publish.
+- As a publisher I need to sign individual user attributes in addition to full profiles using JWKS.
 
 ## Requirements for Development
 
