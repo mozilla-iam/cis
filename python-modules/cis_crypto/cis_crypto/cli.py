@@ -25,7 +25,7 @@ class cli():
         subparsers.required = True
 
         sign_operation_parser = subparsers.add_parser(
-            'sign', help='Use a jwks key to generate a signature for a file.'
+            'sign', help='Use a jwks key to generate a signature for a file. (Assumes a json or yaml file)'
         )
 
         sign_operation_parser.add_argument(
