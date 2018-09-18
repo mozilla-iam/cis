@@ -219,7 +219,7 @@
         "Typ": {
             "type": "string",
             "enum": [
-                "JWT",
+                "JWS",
                 "PGP"
             ],
             "title": "Typ"

@@ -35,15 +35,15 @@ Relevant fields:
 
 ## JWKS
 
-JWKS are the keys for JWT (JSON Web Token) signing. This is where you find the public keys to verify the signatures
+JWKS are the keys for JWS (JSON Web Signature) keys. This is where you find the public keys to verify the signatures
 of tokens, files signed in this way.
 
-A JWT is a base64 encoded, serialized JSON document with a signature appended at the end of the string. When decoded and
+A JWS is a base64 encoded, serialized JSON document with a signature appended at the end of the string. When decoded and
 verified, the result is a JSON document.
 
 Note that this mean that it does not provide "detached" signatures natively (to do so you'd need to hash some content,
-then make a JWT with the hash, and manually do the hash verification, which would also be fine as long as you agree on a
-hash algorithm between the provider and consumers of the JWT and it's associated, detached content).
+then make a JWS with the hash, and manually do the hash verification, which would also be fine as long as you agree on a
+hash algorithm between the provider and consumers of the JWS and it's associated, detached content).
 
 ### Key generation for JWKS notes
 
@@ -59,7 +59,7 @@ $ openssl rsa -in private_key.pem -pubout | tee public_key.pem | base64 > jwks_p
 ```
 
 The files in the example above, `jwks_private_key.key` and `jwks_private_key.key` can then directly be loaded, decoded
-and used by most JWT libraries. Note: never expose the private key to the public.
+and used by most JWS libraries. Note: never expose the private key to the public.
 
 ## Security notes
 
