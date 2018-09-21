@@ -28,10 +28,10 @@ class TestOperation(object):
         for i in range(0, 10):
             o.jws()
         stop = time.time()
-        taken = stop-start
-        taken_per_sig = taken/10
+        taken = stop - start
+        taken_per_sig = taken / 10
         print('test_sign_operation_benchmark() has taken {} seconds to run, or {} second per '
-                     'Sign operation'.format(taken, taken_per_sig))
+              'Sign operation'.format(taken, taken_per_sig))
         # On a recent ULV laptop (2018) taken_per_sig is 0.006s, thus we're being very conservative here in case CI is
         # slow, but this would catch anything crazy slow
         assert(taken_per_sig < 1)
@@ -219,7 +219,6 @@ class TestOperation(object):
         test_valid_payload = s.load(sample_payload)
         assert test_valid_payload is not None
         sig = s.jws()
-        fake_well_known_json = well_known.MozillIAM().data()
         fh = open('tests/fixture/mozilla-iam.json')
         mock_resp = self._mock_response(json_data=json.loads(fh.read()))
         fh.close()
