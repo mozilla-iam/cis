@@ -54,7 +54,7 @@ cis_signing_key_name=access-file-key-private.pem # Not optional!
 secret_manager_ssm_path=/iam
 secret_manager_ssm_region=us-west-2
 
-## File Specific Secret Manager Settings (to use with `secret_manger=file`)
+## File Specific Secret Manager Settings (to use with `secret_manager=file`)
 cis_secret_manager_file_path=/etc/mozilla-iam/keys
 
 ```
