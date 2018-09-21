@@ -12,7 +12,7 @@ class TestOperation(object):
         import time
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
 
         sample_payload = {
             'values': {
@@ -40,7 +40,7 @@ class TestOperation(object):
         from cis_crypto import operation
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
 
         # Taken from the profile v2 specification
         # https://github.com/mozilla-iam/cis/blob/profilev2/docs/profile_data/user_profile_core_plus_extended.json
@@ -110,8 +110,8 @@ class TestOperation(object):
         from cis_crypto import operation
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
         os.environ['CIS_WELL_KNOWN_MODE'] = 'file'
 
         fh = open('tests/fixture/good-signature')
@@ -130,8 +130,8 @@ class TestOperation(object):
 
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'evil-signing-key'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'evil-signing-key.priv.pem'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
         os.environ['CIS_WELL_KNOWN_MODE'] = 'file'
 
         # Assumption : we only want to sign values and not metadata.
@@ -195,8 +195,8 @@ class TestOperation(object):
         from cis_crypto import operation
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
         os.environ['CIS_WELL_KNOWN_MODE'] = 'http'
         os.environ['CIS_WELL_KNOWN_URL'] = 'http://127.0.0.1:5000/.well-known/mozilla-iam'
 
@@ -235,8 +235,8 @@ class TestOperation(object):
         from cis_crypto import operation
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key'
+        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
         os.environ['CIS_WELL_KNOWN_MODE'] = 'http'
         os.environ['CIS_WELL_KNOWN_URL'] = 'http://127.0.0.1:5000/.well-known/mozilla-iam'
         os.environ['CIS_STRICT_VERIFICATION'] = 'True'
