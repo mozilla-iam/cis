@@ -47,14 +47,16 @@ Cryptography Settings for sign-verify operations
 secret_manager=aws-ssm # Can be file or aws-ssm
 cis_well_known_url=https://auth.mozilla.com/.well-known/mozilla-iam
 cis_well_known_mode=file # Can also be http if you want to use the well known endpoint above.
-cis_public_key_name=fake-access-file-key # Optional for use with file mode only.
+cis_public_key_name=fake-access-file-key-public.pem # Optional for use with file mode only.
+cis_signing_key_name=access-file-key-private.pem # Not optional!
 
 ## AWS Specific Secret Manager Settings
 secret_manager_ssm_path=/iam
 secret_manager_ssm_region=us-west-2
 
-# give the name of the key without file extension that you would like to sign assertions with
-signing_key_name=access-file-key
+## File Specific Secret Manager Settings (to use with `secret_manger=file`)
+cis_secret_manager_file_path=/etc/mozilla-iam/keys
+
 ```
 
 Assume a role in the AWS account that has access to the key material.  At the time of writing apps.yml key material is in infosec-dev for auth0-staging and infosec-prod for auth0-production.
