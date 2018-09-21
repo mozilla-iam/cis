@@ -42,7 +42,7 @@ class TestSecretManager(object):
             KeyId='alias/aws/ssm'
         )
         manager = secret.Manager(provider_type='aws-ssm')
-        key_material = manager.get_key('fake-access-file-key.priv.pem')
+        key_material = manager.get_key('fake-access-file-key')
         assert key_material is not None
 
     @mock_ssm
