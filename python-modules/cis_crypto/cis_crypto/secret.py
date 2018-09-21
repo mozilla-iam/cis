@@ -38,7 +38,7 @@ class FileProvider(object):
                 )
             )
         )
-        file_name = '{}.priv.pem'.format(key_name)
+        file_name = '{}'.format(key_name)
         fh = open((os.path.join(key_dir, file_name)), 'rb')
         key_content = fh.read()
         key_construct = jwk.construct(key_content, 'RS256')

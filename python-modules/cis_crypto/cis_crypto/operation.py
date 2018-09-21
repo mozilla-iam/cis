@@ -76,7 +76,7 @@ class Verify(object):
                 )
             )
             key_name = self.config('public_key_name', namespace='cis', default='access-file-key')
-            file_name = '{}.pub.pem'.format(key_name)
+            file_name = '{}'.format(key_name)
             fh = open((os.path.join(key_dir, file_name)), 'rb')
             key_content = fh.read()
             key_construct = jwk.construct(key_content, 'RS256')
