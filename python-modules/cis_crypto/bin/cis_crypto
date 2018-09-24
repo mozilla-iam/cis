@@ -11,7 +11,7 @@ from cis_crypto import cli
 
 format_string = "%(asctime)s - %(name)s - %(levelname)s - %(message)s"
 time_format = "%Y-%m-%dT%H:%M:%S"
-logger = logging.getLogger('cis_crypto')
+logger = logging.getLogger()
 logger.setLevel(logging.INFO)
 streamHandler = logging.StreamHandler()
 streamHandler.setLevel(logging.INFO)

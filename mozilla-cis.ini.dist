@@ -39,3 +39,5 @@ signing_key_name=fake-access-file-key
 # Publisher Settings
 publisher_id=fakemozilliansorg
 kinesis_stream_name=local-stream
+stream_bypass=false # For use in development only for bypassing stream processors
+jwt_validation=true # For use in development where you may not have access to auth0 or a mocker

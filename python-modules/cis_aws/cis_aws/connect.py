@@ -34,14 +34,11 @@ class AWS(object):
             # Must call the .client object in order to return full boto session from Stubber.
             logger.debug('Local environment detected.  Returning boto stub session.')
             self._boto_session = Stubber(boto3.session.Session(region_name=region_name)).client
-
         if self._boto_session:
             logger.debug('A boto session already exists on the object.  Returning already constructed session.')
-            return self._boto_session
         else:
             logger.debug('Initializing new boto session for region: {}'.format(region_name))
             self._boto_session = boto3.session.Session(region_name=region_name)
-
         return self._boto_session
 
     def assume_role(self):
@@ -156,8 +153,10 @@ class AWS(object):
     def _check_sessions_exist(self):
         if self._discover_cis_environment() == 'local':
             logger.info('CIS Local environment detected skipping cloud based validations.')
+            return
         if self._boto_session is not None and self.assume_role_session is not None:
             logger.info('Boto3 session object and assumeRole exists proceeding to next check.')
+            return
         else:
             logger.error('You must initialize an assumeRole and boto session.')
             raise ValueError('AssumeRole or Boto3 Session not initialized.  Refusing operation.')

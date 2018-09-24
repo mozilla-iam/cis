@@ -19,8 +19,8 @@ class TestConnect(object):
     def setup(self):
         dynalite_port = '34569'
         kinesalite_port = '34567'
-        subprocess.Popen(['dynalite', '--port', dynalite_port])
-        subprocess.Popen(['kinesalite', '--port', kinesalite_port])
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
     def test_connect_object_init(self):
         from cis_aws import connect
@@ -463,4 +463,5 @@ class TestConnect(object):
         assert test_port == '34567'
 
     def teardown(self):
-        subprocess.Popen(['killall', 'node'])
+        os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
+        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
