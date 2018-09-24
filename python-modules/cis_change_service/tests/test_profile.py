@@ -26,7 +26,7 @@ class TestProfile(object):
 
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
-        subprocess.Popen(['kinesalite', '--port', kinesalite_port])
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
         # XXX TBD this will eventually be replaced by logic from the vault module
         # The vault module will have the authoritative definitions for Attributes and GSI
@@ -38,7 +38,7 @@ class TestProfile(object):
             AttributeDefinitions=[
                 {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
                 {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                {'AttributeName': 'primaryEmail', 'AttributeType': 'S'},  # value of the primaryEmail attribute
+                {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
                 {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
             ],
             ProvisionedThroughput={
@@ -62,10 +62,10 @@ class TestProfile(object):
                     }
                 },
                 {
-                    'IndexName': '{}-primaryEmail'.format(name),
+                    'IndexName': '{}-primary_email'.format(name),
                     'KeySchema': [
                         {
-                            'AttributeName': 'primaryEmail',
+                            'AttributeName': 'primary_email',
                             'KeyType': 'HASH'
                         },
                     ],
@@ -159,4 +159,4 @@ class TestProfile(object):
         assert is_in_vault is not None
 
     def teardown_class(self):
-        subprocess.Popen(['killall', 'node'])
+        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

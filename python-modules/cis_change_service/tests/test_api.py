@@ -36,8 +36,8 @@ class TestAPI(object):
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
         dynalite_port = config('dynalite_port', namespace='cis')
-        subprocess.Popen(['kinesalite', '--port', kinesalite_port])
-        subprocess.Popen(['dynalite', '--port', dynalite_port])
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
         conn = Stubber(
             boto3.session.Session(
@@ -92,7 +92,7 @@ class TestAPI(object):
             AttributeDefinitions=[
                 {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
                 {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                {'AttributeName': 'primaryEmail', 'AttributeType': 'S'},  # value of the primaryEmail attribute
+                {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
                 {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
             ],
             ProvisionedThroughput={
@@ -116,10 +116,10 @@ class TestAPI(object):
                     }
                 },
                 {
-                    'IndexName': '{}-primaryEmail'.format(name),
+                    'IndexName': '{}-primary_email'.format(name),
                     'KeySchema': [
                         {
-                            'AttributeName': 'primaryEmail',
+                            'AttributeName': 'primary_email',
                             'KeyType': 'HASH'
                         },
                     ],
@@ -263,4 +263,5 @@ class TestAPI(object):
         assert result.status_code == 200
 
     def teardown_class(self):
-        subprocess.Popen(['killall', 'node'])
+        os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
+        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

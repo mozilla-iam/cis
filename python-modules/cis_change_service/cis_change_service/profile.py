@@ -21,13 +21,14 @@ class Vault(object):
         if self.identity_vault_client is None:
             self._connect()
 
+        # XXX TBD replace with cis_profile
         user_id = self._get_id(profile_json)
         primary_email = self._get_primary_email(profile_json)
         dynamodb_schema_dict = {
             'profile': {'S': json.dumps(profile_json)},
             'id': {'S': user_id},
             'sequence_number': {'S': self.sequence_number},
-            'primaryEmail': {'S': primary_email}
+            'primary_email': {'S': primary_email}
         }
 
         client = self.identity_vault_client.get('client')

@@ -26,7 +26,7 @@ class TestFullPublish(object):
         config = get_config()
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
-        subprocess.Popen(['kinesalite', '--port', kinesalite_port])
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
         conn = Stubber(
                 boto3.session.Session(
@@ -156,7 +156,7 @@ class TestFullPublish(object):
         o.kinesis_client['arn'] = 'foo/foo'
         result = o.to_stream(profile_json)
 
-        assert result.get('status_code') == 404
+        assert result.get('status_code') == 500
         assert result.get('sequence_number') is None
 
     def test_super_weird_parititon_key(self):
@@ -190,4 +190,4 @@ class TestFullPublish(object):
         assert result.get('sequence_number') is not None
 
     def teardown_class(self):
-        subprocess.Popen(['killall', 'node'])
+        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

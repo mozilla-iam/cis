@@ -61,11 +61,10 @@ def requires_auth(f):
     """
     @wraps(f)
     def decorated(*args, **kwargs):
-        if CONFIG(
-            'environment', namespace='cis', default='local'
-        ) == 'local' and CONFIG(
-            'jwt_validation', namespace='cis', default='true'
-        ) == 'false':
+        environment = CONFIG('environment', namespace='cis', default='local')
+        jwt_validation = CONFIG('jwt_validation', namespace='cis', default='true')
+
+        if environment == 'local' and jwt_validation == 'false':
             logger.debug('Local environment detected with auth bypass settings enabled.  Skipping JWT validation.')
             return f(*args, **kwargs)
         else:
