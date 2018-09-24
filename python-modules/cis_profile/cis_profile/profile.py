@@ -119,6 +119,8 @@ class User(object):
                 logger.error('Unknown user profile attribute {}'.format(kw))
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
+            self.__signop = cis_crypto.operation.Sign()
+
     def get_schema(self):
         """
         Public method to grab the schema. This is useful for external caching of the schema.
@@ -336,17 +338,15 @@ class User(object):
         See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/Profiles.md
         @attr: a CIS Profilev2 attribute
         """
-        signop = cis_crypto.operation.Sign()
-
         # Extract the attribute without the signature structure itself
         attrnosig = attr.copy()
         del attrnosig['signature']
-        signop.load(attrnosig)
+        self.__signop.load(attrnosig)
 
         # Add the signed attribute back to the original complete attribute structure (with the signature struct)
         # This ensure we also don't touch any existing non-publisher signatures
         sigattr = attr['signature']['publisher']
         sigattr['alg'] = 'RS256'  # Currently hardcoded in cis_crypto
         sigattr['typ'] = 'JWS'    # ""
-        sigattr['value'] = signop.jws()
+        sigattr['value'] = self.__signop.jws()
         return attr
