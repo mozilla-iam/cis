@@ -19,6 +19,7 @@ class Sign(object):
     def __init__(self):
         self.config = get_config()
         self.key_name = self.config('signing_key_name', namespace='cis', default='file')
+        self._jwk = None
         self.secret_manager = self.config('secret_manager', namespace='cis', default='file')
         self.payload = None
 
@@ -46,8 +47,10 @@ class Sign(object):
         return sig
 
     def _get_key(self):
-        manager = secret.Manager(provider_type=self.secret_manager)
-        return manager.get_key(key_name=self.key_name)
+        if self._jwk is None:
+            manager = secret.Manager(provider_type=self.secret_manager)
+            self._jwk = manager.get_key(key_name=self.key_name)
+        return self._jwk
 
 
 class Verify(object):
