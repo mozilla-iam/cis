@@ -119,7 +119,7 @@ class User(object):
                 logger.error('Unknown user profile attribute {}'.format(kw))
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
-            self.__signop = cis_crypto.operation.Sign()
+        self.__signop = cis_crypto.operation.Sign()
 
     def get_schema(self):
         """
