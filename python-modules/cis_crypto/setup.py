@@ -6,8 +6,8 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['python-jose-cryptodome', 'everett', 'boto3==1.7.67', 'boto==2.49.0', 'botocore==1.10.67',
-                'requests', 'pyaml']
+requirements = ['python-jose', 'python-jose-cryptodome', 'everett', 'boto3==1.7.67', 'boto==2.49.0',
+                'botocore==1.10.67', 'requests', 'pyaml']
 
 setup_requirements = ['pytest-runner']
 
