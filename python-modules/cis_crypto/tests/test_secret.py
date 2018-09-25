@@ -12,7 +12,7 @@ class TestSecretManager(object):
         from cis_crypto import secret
         os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
         manager = secret.Manager(provider_type='file')
-        key_material = manager.get_key('fake-access-file-key')
+        key_material = manager.get_key('fake-access-file-key.priv.pem')
         assert key_material is not None
 
     @mock_ssm

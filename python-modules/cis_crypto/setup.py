@@ -6,18 +6,19 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['python-jose[pycryptodome]', 'everett', 'boto3', 'requests', 'pyaml']
+requirements = ['python-jose', 'python-jose-cryptodome', 'everett', 'boto3==1.7.67', 'boto==2.49.0',
+                'botocore==1.10.67', 'requests', 'pyaml']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'mock']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'cis_fake_well_known']
 
 setup(
     name="cis_crypto",
     version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",
-    description="Per attribute signature system for jwks sign-verify in mozill-iam.",
+    description="Per attribute signature system for jwks sign-verify in mozilla-iam.",
     long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=[

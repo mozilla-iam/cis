@@ -87,16 +87,17 @@ class User(object):
     """
 
     def __init__(self, user_structure_json=None, user_structure_json_file=None,
-                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', **kwargs):
+                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', schema=None, **kwargs):
         """
         @user_structure_json an existing user structure to load in this class
         @user_structure_json_file an existing user structure to load in this class, from a JSON file
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        self.__schema_loaded = False
-        self.__schema = None
-        self._load_schema(discovery_url)
+        if schema is None:
+            self.__schema = self._load_schema(discovery_url)
+        else:
+            self.__schema = schema
 
         if (user_structure_json is not None):
             self.load(user_structure_json)
@@ -118,6 +119,18 @@ class User(object):
                 logger.error('Unknown user profile attribute {}'.format(kw))
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
+        self.__signop = cis_crypto.operation.Sign()
+
+    def get_schema(self):
+        """
+        Public method to grab the schema. This is useful for external caching of the schema.
+        (E.g. in case this object is destroyed but cache is to be retained
+        """
+        if '__schema' in self.__dict__:
+            return self.__schema
+        else:
+            return None
+
     def _load_schema(self, discovery_url):
         """
         Attempts to fetch latest validation schema, fall-back to cached version on failure.
@@ -125,8 +138,8 @@ class User(object):
         """
 
         # Check cache first
-        if self.__schema is not None:
-            return self._schema
+        if self.get_schema() is not None:
+            return self.get_schema()
 
         schema = None
         schema_url = None
@@ -156,9 +169,6 @@ class User(object):
                 path = schema_file
 
             schema = json.load(open(path))
-
-        self.__schema = schema
-        self.__schema_loaded = True
         return schema
 
     def load(self, profile_json):
@@ -266,8 +276,6 @@ class User(object):
         Validates against a JSON schema
         """
 
-        if not self.__schema_loaded:
-            self._load_schema()
         return jsonschema.validate(self.as_dict(), self.__schema)
 
     def sign_all(self):
@@ -330,17 +338,15 @@ class User(object):
         See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/Profiles.md
         @attr: a CIS Profilev2 attribute
         """
-        signop = cis_crypto.operation.Sign()
-
         # Extract the attribute without the signature structure itself
         attrnosig = attr.copy()
         del attrnosig['signature']
-        signop.load(attrnosig)
+        self.__signop.load(attrnosig)
 
         # Add the signed attribute back to the original complete attribute structure (with the signature struct)
         # This ensure we also don't touch any existing non-publisher signatures
         sigattr = attr['signature']['publisher']
         sigattr['alg'] = 'RS256'  # Currently hardcoded in cis_crypto
         sigattr['typ'] = 'JWS'    # ""
-        sigattr['value'] = signop.jws()
+        sigattr['value'] = self.__signop.jws()
         return attr
