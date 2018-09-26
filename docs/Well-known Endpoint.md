@@ -21,7 +21,7 @@ Relevant fields:
 - `access_file` contains the access file information, which itself contains public authorization data for users, groups,
   RPs.
 - `access_file.endpoint` the actual endpoint to query. It returns a YAML formatted document.
-- `access_file.jwks_keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
+- `access_file.jwks.keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
   of the `access_file.endpoint` file. The signature is built-in the file.
 - `access_file.aai_mappings` contains Authenticator Assurance Indicators, such as "used 2FA to authenticate".
   Follows the [Mozilla Standard Levels](https://infosec.mozilla.org/guidelines/risk/standard_levels).
@@ -29,8 +29,9 @@ Relevant fields:
 - `api.endpoint` is the actual endpoint.
 - `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
   insert data in CIS databases.
-- `api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
-  to verify the CIS user profile signature for publishers.
+- `api.publishers_jwks.keys` are the list of valid public keys for a specific publisher. These are used
+  to verify the CIS user profile signature for publishers. See also <docs/profile_data/profile.schema#> for a list of
+  supported publishers.
 - `api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
   validates with these schemas.
 - `scopes_supported`: the scopes supported by the Person-API OAuth2 authorizer.
@@ -47,9 +48,12 @@ Note that this mean that it does not provide "detached" signatures natively (to 
 then make a JWS with the hash, and manually do the hash verification, which would also be fine as long as you agree on a
 hash algorithm between the provider and consumers of the JWS and it's associated, detached content).
 
+
+See also: <https://tools.ietf.org/html/rfc7517> for a specification of the format and all used fields.
+
 ### Key generation for JWKS notes
 
-JWKS are simply base64 encoded PEM formatted keys.
+JWKS are simply base64 encoded PEM formatted keys (PEM is stored in `jwks.keys.x5c`).
 You can generate one as such:
 
 ```
