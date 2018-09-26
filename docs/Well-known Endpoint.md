@@ -23,12 +23,8 @@ Relevant fields:
 - `access_file.endpoint` the actual endpoint to query. It returns a YAML formatted document.
 - `access_file.jwks_keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
   of the `access_file.endpoint` file. The signature is built-in the file.
-- `access_file.tai_mappings` contains Trust Assurance Indicators. These are used by the access provider to decide which
-  parameters puts you into which level, such as "has committed code that has been reviewed". Relying Parties can then be
-  assigned required level for someone to login. The levels use 
-  [Mozilla Standard Levels](https://infosec.mozilla.org/guidelines/risk/standard_levels).
-- `access_file.aai_mappings` contains Authenticator Assurance Indicators. Similar to TAI, but for authenticators, such
-  as "used 2FA to authenticate".
+- `access_file.aai_mappings` contains Authenticator Assurance Indicators, such as "used 2FA to authenticate".
+  Follows the [Mozilla Standard Levels](https://infosec.mozilla.org/guidelines/risk/standard_levels).
 - `api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
 - `api.endpoint` is the actual endpoint.
 - `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
