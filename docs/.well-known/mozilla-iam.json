@@ -33,6 +33,7 @@
       "class:mozilla_confidential",
       "class:workgroup_confidential:staff_only"
     ],
+    "publishers_rules_uri": "https://auth.mozilla.com/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {
       "mozilliansorg": {
         "keys": [
