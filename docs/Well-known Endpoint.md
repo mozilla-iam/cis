@@ -13,7 +13,7 @@ The endpoint path for CIS is `/.well-known/mozilla-iam`.
 
 **Content-Type:** application/json
 
-JSON example: [mozilla-iam.json](.well-known/mozilla-iam.json)
+JSON example: [mozilla-iam.json](.well-known/mozilla-iam)
 
 Relevant fields:
 
@@ -21,20 +21,17 @@ Relevant fields:
 - `access_file` contains the access file information, which itself contains public authorization data for users, groups,
   RPs.
 - `access_file.endpoint` the actual endpoint to query. It returns a YAML formatted document.
-- `access_file.jwks_keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
+- `access_file.jwks.keys` a list of valid public keys and their algorithms. These keys are used to verify the signature
   of the `access_file.endpoint` file. The signature is built-in the file.
-- `access_file.tai_mappings` contains Trust Assurance Indicators. These are used by the access provider to decide which
-  parameters puts you into which level, such as "has committed code that has been reviewed". Relying Parties can then be
-  assigned required level for someone to login. The levels use 
-  [Mozilla Standard Levels](https://infosec.mozilla.org/guidelines/risk/standard_levels).
-- `access_file.aai_mappings` contains Authenticator Assurance Indicators. Similar to TAI, but for authenticators, such
-  as "used 2FA to authenticate".
+- `access_file.aai_mappings` contains Authenticator Assurance Indicators, such as "used 2FA to authenticate".
+  Follows the [Mozilla Standard Levels](https://infosec.mozilla.org/guidelines/risk/standard_levels).
 - `api` contains the CIS Person-API information, which is used to query or insert data in CIS databases.
 - `api.endpoint` is the actual endpoint.
 - `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
   insert data in CIS databases.
-- `api.publishers_supported.jwks_keys` are the list of valid public keys for a specific publisher. These are used
-  to verify the CIS user profile signature for publishers.
+- `api.publishers_jwks.keys` are the list of valid public keys for a specific publisher. These are used
+  to verify the CIS user profile signature for publishers. See also [docs/profile_data/profile.schema](profile.schema)
+  for a list of supported publishers.
 - `api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
   validates with these schemas.
 - `scopes_supported`: the scopes supported by the Person-API OAuth2 authorizer.
@@ -51,9 +48,12 @@ Note that this mean that it does not provide "detached" signatures natively (to 
 then make a JWS with the hash, and manually do the hash verification, which would also be fine as long as you agree on a
 hash algorithm between the provider and consumers of the JWS and it's associated, detached content).
 
+
+See also: <https://tools.ietf.org/html/rfc7517> for a specification of the format and all used fields.
+
 ### Key generation for JWKS notes
 
-JWKS are simply base64 encoded PEM formatted keys.
+JWKS are simply base64 encoded PEM formatted keys (PEM is stored in `jwks.keys.x5c`).
 You can generate one as such:
 
 ```
@@ -66,6 +66,25 @@ $ openssl rsa -in private_key.pem -pubout | tee public_key.pem | base64 > jwks_p
 
 The files in the example above, `jwks_private_key.key` and `jwks_private_key.key` can then directly be loaded, decoded
 and used by most JWS libraries. Note: never expose the private key to the public.
+
+## .well-known/mozilla-iam-publisher-rules specification
+
+This file governs the rules by which a publisher is allowed to change user profile data. If this file is fetched as
+source of truth, it's signature must be verified similarly to the `access_file` (see "Security notes" below)
+Otherwise, it is considered to be informational only and the system of records (CIS) keeps an authoritative copy.
+
+**Content-Type:** application/json
+
+JSON example: [mozilla-iam.json](.well-known/mozilla-iam-publisher-rules)
+
+Relevant fields:
+
+- `create` represents arrays of publishers which are allowed to write to profile attributes that are `null`.
+- `update` represents single, unique publishers which are allowed to update fields which are not `null`.
+
+Note that `{create,update}.access_information` is the only structure with childs (2 level deep).
+
+See also the [Profiles.md](Profiles.md) document for more information on profile fields.
 
 ## Security notes
 

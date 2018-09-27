@@ -92,13 +92,19 @@ sources such as users (humans). This allows for performing out-of-band signature
 cannot interfere with. No automated IAM system may hold the private signing keys for `additional` signatures.
 
 - JWS and PGP are supported, with various algorithms (see schema for allowed algorithms).
-- The publisher signature is always required. The publisher identity is stored in `metadata.publisher_authority`.
+- The publisher signature is always required unless the field value is `null`. The publisher identity is stored in
+  `signature.name` and can be mapped to a `kid` in the (well-known)[.well-known/mozilla-iam.json] file.
 - The additional signatures may be added by any publisher, and is generally used for user-supplied signatures.
 - The data that is signed are the contents of the structure the field `signature` is in, minus the `signature` structure
   itself. E.g. below: `dummy_attribute.*` *minus* `dummy_attribute.signature.*` would be the object to sign.
 - The signed object data is serialized by alpha-numerical order (`javascript: JSON.stringify(x)` or `python:
   json.dumps(x, separators=(',',':'))` for example).
 
+To verify a signature, first the `signature.name` is looked up against the publisher names in the well-known endpoint.
+Then, the `kid` for that publisher name is extracted and the signature is verified against this `kid`.
+If the `signature.name` is incorrect, the wrong `kid` will be extracted and the verification will fail (even if the
+signature matches any valid key). This attribute (`signature.name`) is present for performance and human readability
+purposes only.
 
 #### Metadata field
 
@@ -119,16 +125,15 @@ If used, the *values* field is of type associative array and may contain any sub
 ```
 "dummy_attribute": {
   "signature": {
-    "publisher": { "alg": "HS256", "typ": "jwt", "value": "dummy signature" },
+    "publisher": { "alg": "HS256", "typ": "jwt", "name": "dummy_access_provider", "value": "dummy signature" },
     "additional": [
-      { "alg": "RSA", "typ": "PGP", "value": "dummy user pgp signature" }
+      { "alg": "RSA", "typ": "PGP", "name": "dummy user name", "value": "dummy user pgp signature" }
     ]
   },
   "metadata": {
     "classification": "PUBLIC",
     "last_modified": "2018-01-01T00:00:00Z",
     "created": "2018-01-01T00:00:00Z",
-    "publisher_authority": "dummy publisher identifier"
   },
   "values": {
     "title": "dummy attribute value",

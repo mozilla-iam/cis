@@ -66,9 +66,6 @@
                     "type": "string",
                     "format": "date-time"
                 },
-                "publisher_authority": {
-                    "$ref": "#/definitions/PublisherAuthority"
-                },
                 "verified": {
                     "type": "boolean"
                 }
@@ -77,7 +74,6 @@
                 "classification",
                 "created",
                 "last_modified",
-                "publisher_authority",
                 "verified"
             ],
             "title": "Metadata"
@@ -92,7 +88,7 @@
                 "additional": {
                     "type": "array",
                     "items": {
-                        "$ref": "#/definitions/Publisher"
+                        "$ref": "#/definitions/PublisherLax"
                     }
                 }
             },
@@ -112,6 +108,9 @@
                 "typ": {
                     "$ref": "#/definitions/Typ"
                 },
+                "name": {
+                    "$ref": "#/definitions/PublisherAuthority"
+                },
                 "value": {
                     "type": "string"
                 }
@@ -119,9 +118,35 @@
             "required": [
                 "alg",
                 "typ",
+                "name",
                 "value"
             ],
             "title": "Publisher"
+        },
+        "PublisherLax": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "alg": {
+                    "$ref": "#/definitions/Alg"
+                },
+                "typ": {
+                    "$ref": "#/definitions/Typ"
+                },
+                "name": {
+                    "type": [ "null", "string" ]
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "alg",
+                "typ",
+                "name",
+                "value"
+            ],
+            "title": "PublisherLax"
         },
         "StandardAttributeBoolean": {
             "type": "object",

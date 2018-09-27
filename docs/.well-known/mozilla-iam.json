@@ -2,20 +2,14 @@
   "oidc_discovery_uri": "https://auth.mozilla.com/.well-known/openid-configuration",
   "access_file": {
     "endpoint": "https://cdn.sso.mozilla.com/apps.yml",
-    "tai_mapping": {
-      "LOW": ["HAS_SOLVED_CAPTCHA"],
-      "MEDIUM": ["HAS_COMMON_VOICE_DATA", "HAS_REVIEWED_AMO_ADDONS", "IS_STRONG_SET_AND_MOZILLA_VERIFIED"],
-      "HIGH": ["HAS_RECENT_PRODUCT_COMMITS", "IS_VERIFIED_STAFF"],
-      "MAXIMUM": ["IS_SECURITYGROUP", "IS_VIP"]
-    },
     "aai_mapping": {
       "LOW": ["NO_RECENT_AUTH_FAIL", "AUTH_RATE_NORMAL"],
       "MEDIUM": ["2FA", "HAS_KNOWN_BROWSER_KEY"],
       "HIGH": ["GEOLOC_NEAR", "SAME_IP_RANGE"],
       "MAXIMUM": ["KEY_AUTH"]
     },
-    "jwks_keys": {
-      "0": {
+    "jwks":
+      "keys": {
         "alg": "RS256",
         "kty": "RSA",
         "use": "sig",
@@ -24,10 +18,8 @@
         },
         "n": "v2gf-....",
         "e": "AQAB",
-        "kid": "OEI...",
-        "x5t": "OEI..."
+        "kid": "AccessFileKeyIdHere"
       }
-    }
   },
   "api": {
     "endpoint": "https://api.sso.mozilla.com",
@@ -41,10 +33,10 @@
       "class:mozilla_confidential",
       "class:workgroup_confidential:staff_only"
     ],
-    "publishers_supported": {
+    "publishers_rules_uri": "https://auth.mozilla.com/.well-known/mozilla-iam-publisher-rules",
+    "publishers_jwks": {
       "mozilliansorg": {
-        "jwks_keys": {
-          "0": {
+        "keys": [
             "alg": "RS256",
             "kty": "RSA",
             "use": "sig",
@@ -53,14 +45,23 @@
             },
             "n": "v2gf-....",
             "e": "AQAB",
-            "kid": "OEI...",
-            "x5t": "OEI..."
-          }
+            "kid": "MozilliansorgKeyIdProd"
+          ],
+          [
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "MozilliansorgKeyIdDev"
+          ]
         }
       },
-      "ldap": {
-        "jwks_keys": {
-          "0": {
+      "access_provider": {
+        "keys": [
             "alg": "RS256",
             "kty": "RSA",
             "use": "sig",
@@ -69,46 +70,12 @@
             },
             "n": "v2gf-....",
             "e": "AQAB",
-            "kid": "OEI...",
-            "x5t": "OEI..."
-          }
-        }
-      },
-      "cis": {
-        "jwks_keys": {
-          "0": {
-            "alg": "RS256",
-            "kty": "RSA",
-            "use": "sig",
-            "x5c": {
-              "0": "MII......."
-            },
-            "n": "v2gf-....",
-            "e": "AQAB",
-            "kid": "OEI...",
-            "x5t": "OEI..."
-          }
-        }
-      },
-      "auth0": {
-        "jwks_keys": {
-          "0": {
-            "alg": "RS256",
-            "kty": "RSA",
-            "use": "sig",
-            "x5c": {
-              "0": "MII......."
-            },
-            "n": "v2gf-....",
-            "e": "AQAB",
-            "kid": "OEI...",
-            "x5t": "OEI..."
-          }
+            "kid": "APKeyId"
+          ]
         }
       },
       "hris": {
-        "jwks_keys": {
-          "0": {
+        "keys": [
             "alg": "RS256",
             "kty": "RSA",
             "use": "sig",
@@ -117,9 +84,36 @@
             },
             "n": "v2gf-....",
             "e": "AQAB",
-            "kid": "OEI...",
-            "x5t": "OEI..."
-          }
+            "kid": "HRISKeyId"
+          ]
+        }
+      },
+      "ldap": {
+        "keys": [
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "LDAPKeyId"
+          ]
+        }
+      },
+      "cis": {
+        "keys": [
+            "alg": "RS256",
+            "kty": "RSA",
+            "use": "sig",
+            "x5c": {
+              "0": "MII......."
+            },
+            "n": "v2gf-....",
+            "e": "AQAB",
+            "kid": "CISKeyId"
+          ]
         }
       }
     }

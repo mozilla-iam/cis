@@ -19,3 +19,5 @@ test-convert-yml-to-json: user_profile_core_plus_extended.yml
 
 test-convert-json-to-yml: user_profile_core_plus_extended.json
 	python -c 'import sys,yaml,json; print(yaml.dump(json.load(open("user_profile_core_plus_extended.json")), sys.stdout))'
+
+.PHONY: all test-convert-yml-to-json test-convert-json-to-yml

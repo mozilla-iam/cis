@@ -1,85 +1,151 @@
 {
-  "schema": "https://person-api.sso.mozilla.com/schema/v2/profile/core",
+  "schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
   "user_id": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": "ad|Mozilla-LDAP-Dev|dummymcdummy"
   },
   "login_method": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": "Mozilla-LDAP-Dev"
   },
   "active": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": true
   },
   "last_modified": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": true
     },
     "value": "2018-01-01T00:00:00Z"
   },
   "created": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": true
     },
     "value": "2018-01-01T00:00:00Z"
   },
   "usernames": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -88,56 +154,100 @@
   },
   "first_name": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "hris",
       "verified": false
     },
     "value": "Dummy"
   },
   "last_name": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": false
     },
     "value": "Dumdum"
   },
   "primary_email": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap",
       "verified": true
     },
     "value": "dmcdummy@mozilla.com"
   },
   "identities": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": true
     },
     "values": {
@@ -153,14 +263,25 @@
   },
   "ssh_public_keys": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap",
       "verified": false
     },
     "values": {
@@ -169,14 +290,25 @@
   },
   "pgp_public_keys": {
     "signature": {
-      "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-      "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
     },
     "metadata": {
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -186,14 +318,25 @@
   "access_information": {
     "ldap": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "ldap",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "ldap",
         "verified": true
       },
       "values": {
@@ -203,14 +346,25 @@
     },
     "mozilliansorg": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "mozilliansorg",
         "verified": true
       },
       "values": {
@@ -220,14 +374,25 @@
     },
     "hris": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "hris",
         "verified": true
       },
       "values": {
@@ -236,19 +401,33 @@
         "company": "Mozilla Corporation",
         "is_manager": false,
         "is_director_or_above": false,
-        "worker_type": "EMPLOYEE"
+        "worker_type": "EMPLOYEE",
+        "business_title": "Security Engineer",
+        "desk_number": 7133,
+        "employee_id": "E31337"
       }
     },
     "access_provider": {
       "signature": {
-        "publisher": { "alg": "RS256", "typ": "JWS", "value": "" },
-        "additional": [{ "alg": "RSA", "typ": "PGP", "value": "" }]
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "access_provider",
         "verified": true
       },
       "values": {
