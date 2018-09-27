@@ -18,7 +18,7 @@
         "hris": [ "hris" ],
         "mozilliansorg": [ "mozilliansorg" ],
         "cis": [ "cis"]
-    }
+    },
     "fun_title": [ "ldap", "mozilliansorg" ],
     "description": [ "ldap", "mozilliansorg" ],
     "location_preference": [ "ldap", "mozilliansorg" ],
@@ -30,12 +30,12 @@
     "picture": [ "ldap", "mozilliansorg" ],
     "uris": [ "ldap", "mozilliansorg" ],
     "phone_numbers": [ "ldap", "mozilliansorg" ],
-    "alternative_name": [ "ldap", "mozilliansorg" ],
+    "alternative_name": [ "ldap", "mozilliansorg" ]
   },
   "update": {
     "user_id": "access_provider",
     "login_method": "access_provider",
-    "active": "cis"
+    "active": "cis",
     "last_modified": "cis",
     "created": "cis",
     "usernames": "mozilliansorg",
@@ -51,7 +51,7 @@
         "hris": "hris",
         "mozilliansorg": "mozilliansorg",
         "cis": "cis"
-    }
+    },
     "fun_title": "mozilliansorg",
     "description": "mozilliansorg",
     "location_preference": "mozilliansorg",
@@ -63,6 +63,6 @@
     "picture": "mozilliansorg",
     "uris": "mozilliansorg",
     "phone_numbers": "mozilliansorg",
-    "alternative_name": "mozilliansorg",
+    "alternative_name": "mozilliansorg"
   }
 }
