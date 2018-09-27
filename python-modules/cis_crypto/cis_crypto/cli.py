@@ -48,7 +48,7 @@ class cli():
         return parser.parse_args(args)
 
     def run(self):
-        logger = logging.getLogger('cis_crypto')
+        logger = logging.getLogger(__name__)
         self.config = self.parse_args(sys.argv[1:])
         if self.config.func == 'sign_operation':
             logger.info('Attempting to sign file: {}'.format(self.config.file))
