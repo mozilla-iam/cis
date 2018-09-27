@@ -6,8 +6,8 @@ import yaml
 from jose import jwk
 from jose import jws
 from jose.exceptions import JWSError
-from cis_crypto import get_config
 from cis_crypto import secret
+from cis_crypto import common
 
 logger = logging.getLogger(__name__)
 # Note:
@@ -16,7 +16,7 @@ logger = logging.getLogger(__name__)
 
 class Sign(object):
     def __init__(self):
-        self.config = get_config()
+        self.config = common.get_config()
         self.key_name = self.config('signing_key_name', namespace='cis', default='file')
         self._jwk = None
         self.secret_manager = self.config('secret_manager', namespace='cis', default='file')
@@ -54,7 +54,7 @@ class Sign(object):
 
 class Verify(object):
     def __init__(self):
-        self.config = get_config()
+        self.config = common.get_config()
         # Provide file or URL as opts.
         self.well_known_mode = self.config('well_known_mode', namespace='cis', default='file')
         self.public_key_name = None  # Optional for use with file based well known mode
