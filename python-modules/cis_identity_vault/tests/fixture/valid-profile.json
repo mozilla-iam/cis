@@ -4,14 +4,13 @@
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -20,22 +19,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "access_provider",
       "verified": true
     },
-    "value": null
+    "value": "ad|Mozilla-LDAP-Dev|dummymcdummy"
   },
   "login_method": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -44,22 +43,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "access_provider",
       "verified": true
     },
-    "value": null
+    "value": "Mozilla-LDAP-Dev"
   },
   "active": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -68,6 +67,7 @@
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": true
@@ -76,14 +76,13 @@
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -92,22 +91,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "cis",
       "verified": true
     },
-    "value": null
+    "value": "2018-01-01T00:00:00Z"
   },
   "created": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -116,22 +115,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "cis",
       "verified": true
     },
-    "value": null
+    "value": "2018-01-01T00:00:00Z"
   },
   "usernames": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -140,23 +139,24 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
+      "posix": "mcdummy"
     }
   },
   "first_name": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -165,22 +165,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "hris",
       "verified": false
     },
-    "value": null
+    "value": "Dummy"
   },
   "last_name": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -189,22 +189,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "cis",
       "verified": false
     },
-    "value": null
+    "value": "Dumdum"
   },
   "primary_email": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -213,22 +213,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "ldap",
       "verified": true
     },
-    "value": null
+    "value": "dmcdummy@mozilla.com"
   },
   "identities": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -237,23 +237,31 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": true
     },
     "values": {
+      "github_id_v3": "123495",
+      "github_id_v4": "XDSKz==",
+      "LDAP": "dmcdummy@mozilla.com",
+      "bugzilla.mozilla.org": "dmcdummy@mozilla.com",
+      "email_1": "personal@mcdummy.org",
+      "email_2": "mcdummy@gmail.com",
+      "google-oauth2": "mcdummy@gmail.com",
+      "firefoxaccounts": "mcdummy@ownmail.com"
     }
   },
   "ssh_public_keys": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -262,23 +270,24 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "ldap",
       "verified": false
     },
     "values": {
+      "github-work": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R"
     }
   },
   "pgp_public_keys": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -287,9 +296,11 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
+      "personal key": "-----BEGIN PGP PUBLIC KEY BLOCK-----\n\nmQINBE94eWwBEADjlvvF8HERvp.....=A0dq\n-----END PGP PUBLIC KEY BLOCK-----\n"
     }
   },
   "access_information": {
@@ -297,14 +308,13 @@
       "signature": {
         "publisher": {
           "alg": "RS256",
-          "typ": "JWS",
-          "value": "",
-          "name": ""
+          "typ": "JWT",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
-            "typ": "JWS",
+            "typ": "JWT",
             "value": ""
           }
         ]
@@ -313,23 +323,25 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
+        "publisher_authority": "ldap",
         "verified": true
       },
       "values": {
+        "vpn_infosec": null,
+        "scm_level_1": null
       }
     },
     "mozilliansorg": {
       "signature": {
         "publisher": {
           "alg": "RS256",
-          "typ": "JWS",
-          "value": "",
-          "name": ""
+          "typ": "JWT",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
-            "typ": "JWS",
+            "typ": "JWT",
             "value": ""
           }
         ]
@@ -338,23 +350,25 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
+        "publisher_authority": "mozilliansorg",
         "verified": true
       },
       "values": {
+        "nda": null,
+        "iam": null
       }
     },
     "hris": {
       "signature": {
         "publisher": {
           "alg": "RS256",
-          "typ": "JWS",
-          "value": "",
-          "name": ""
+          "typ": "JWT",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
-            "typ": "JWS",
+            "typ": "JWT",
             "value": ""
           }
         ]
@@ -363,23 +377,32 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
+        "publisher_authority": "hris",
         "verified": true
       },
       "values": {
+        "cost_center": "1420",
+        "team": "infosec",
+        "company": "Mozilla Corporation",
+        "is_manager": false,
+        "is_director_or_above": false,
+        "worker_type": "EMPLOYEE",
+        "business_title": "Security Engineer",
+        "desk_number": 7133,
+        "employee_id": "E31337"
       }
     },
     "access_provider": {
       "signature": {
         "publisher": {
           "alg": "RS256",
-          "typ": "JWS",
-          "value": "",
-          "name": ""
+          "typ": "JWT",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
-            "typ": "JWS",
+            "typ": "JWT",
             "value": ""
           }
         ]
@@ -388,9 +411,11 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
+        "publisher_authority": "access_provider",
         "verified": true
       },
       "values": {
+        "5a5munnfxYjqkaN0su1Kl7USxbqkILQN": 7776000
       }
     }
   },
@@ -398,14 +423,13 @@
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -414,22 +438,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "Dum own title"
   },
   "description": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -438,22 +462,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "I am a funny profile!"
   },
   "location_preference": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -462,22 +486,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "Bahamas"
   },
   "office_location": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -486,22 +510,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "San Francisco"
   },
   "timezone": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -510,22 +534,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "UTC"
   },
   "preferred_languages": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -534,23 +558,26 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": [
+      "French",
+      "English (US)",
+      "German"
     ]
   },
   "tags": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -559,23 +586,24 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": [
+      "vouched summit2013 likescheese"
     ]
   },
   "pronouns": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -584,6 +612,7 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -592,14 +621,13 @@
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -608,22 +636,22 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "https://example.net/dum.jpg"
   },
   "uris": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -632,23 +660,24 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
+      "my blog": "https://example.net/blog"
     }
   },
   "phone_numbers": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -657,23 +686,24 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
+      "home": 33169281122
     }
   },
   "alternative_name": {
     "signature": {
       "publisher": {
         "alg": "RS256",
-        "typ": "JWS",
-        "value": "",
-        "name": ""
+        "typ": "JWT",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
-          "typ": "JWS",
+          "typ": "JWT",
           "value": ""
         }
       ]
@@ -682,8 +712,9 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
+      "publisher_authority": "mozilliansorg",
       "verified": false
     },
-    "value": null
+    "value": "Düüm"
   }
 }

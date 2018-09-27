@@ -1,6 +1,10 @@
+import os
 
 
 class TestProfile(object):
+    def setup(self):
+        os.environ['CIS_CONFIG_INI'] = 'tests/fixture/mozilla-cis.ini'
+
     def test_user_init(self):
         from cis_profile import profile
 
