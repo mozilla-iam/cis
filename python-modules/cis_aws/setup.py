@@ -12,6 +12,8 @@ setup_requirements = ['pytest-runner']
 
 test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 
+extras = {'test': test_requirements}
+
 setup(
     name="cis_aws",
     version="0.0.1",
@@ -32,5 +34,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extra,
     zip_safe=False
 )

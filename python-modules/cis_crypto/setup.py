@@ -12,7 +12,9 @@ requirements = ['python-jose-cryptodome', 'python-jose', 'everett', 'boto3==1.7.
 setup_requirements = ['pytest-runner']
 
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'cis_fake_well_known',
-        'flake8']
+                     'flake8']
+
+extras = {'test': test_requirements}
 
 setup(
     name="cis_crypto",
@@ -35,5 +37,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extras,
     zip_safe=False
 )

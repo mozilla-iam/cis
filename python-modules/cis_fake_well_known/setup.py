@@ -12,6 +12,8 @@ setup_requirements = ['pytest-runner']
 
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask', 'flake8']
 
+extras = {'test': test_requirements}
+
 setup(
     name="cis_fake_well_known",
     version="0.0.1",
@@ -34,5 +36,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extras,
     zip_safe=False
 )

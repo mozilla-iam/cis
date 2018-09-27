@@ -11,6 +11,10 @@ install:
 	# Installs via pip
 	pip install .
 
+.install-test:
+	pip install .[test]
+	touch $@
+
 build:
 	python setup.py build
 
@@ -27,7 +31,7 @@ watch-test:
 	ptw --runner "make test"
 
 test: tests
-tests:
+tests: .install-test
 	python setup.py test
 	flake8 setup.py
 	flake8 tests/*.py
@@ -40,5 +44,6 @@ clean:
 	rm -rf .eggs
 	rm -rf build
 	rm -rf dist
+	rm -rf .install-test
 
 .PHONY: test tests clean all install

@@ -26,8 +26,12 @@ watch-test:
 	# than ptw's builting pytest, notably flake8 tests
 	ptw --runner "make test"
 
+.install-test:
+	pip install .[test]
+	touch $@
+
 test: tests
-tests:
+tests: .install-test
 	python setup.py test
 	flake8 setup.py
 	flake8 tests/*.py
@@ -40,5 +44,6 @@ clean:
 	rm -rf .eggs
 	rm -rf build
 	rm -rf dist
+	rm -rf .install-test
 
 .PHONY: test tests clean all install

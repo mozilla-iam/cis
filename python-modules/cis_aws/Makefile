@@ -20,6 +20,10 @@ venv:
 	echo "# Run this in your shell to activate:"
 	echo "source venv/bin/activate"
 
+.install-test:
+	pip install .[test]
+	touch $@
+
 watch-test:
 	# Watches for changes and re-test automatically
 	# we use this wrapper because our test target allows for more tests
@@ -27,7 +31,7 @@ watch-test:
 	ptw --runner "make test"
 
 test: tests
-tests:
+tests: .install-test
 	python setup.py test
 	flake8 setup.py
 	flake8 tests/*.py
@@ -40,5 +44,6 @@ clean:
 	rm -rf .eggs
 	rm -rf build
 	rm -rf dist
+	rm -rf .install-test
 
 .PHONY: test tests clean all install
