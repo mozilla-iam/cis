@@ -1,7 +1,0 @@
-FROM node:alpine
-EXPOSE 4567
-RUN apk add --update --no-cache python make g++
-RUN npm install -g -O dynalite
-RUN mkdir /srv/leveldb
-VOLUME ["/srv/leveldb"]
-ENTRYPOINT ["dynalite"]
