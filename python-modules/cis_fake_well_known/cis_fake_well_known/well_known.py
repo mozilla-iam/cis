@@ -23,9 +23,7 @@ class MozillIAM(object):
 
     def _load_publisher_keys(self):
         keys = os.listdir(os.path.dirname(__file__) + '/keys')
-
         publisher_keys = []
-
         for key_name in keys:
             if 'publisher' in key_name and 'pub' in key_name:
                 fake_publisher_name = Faker().domain_name().replace('.', '_')
@@ -46,7 +44,11 @@ class MozillIAM(object):
                 publisher_keys.append(
                     {
                         'fake-publisher-{}'.format(fake_publisher_name):
-                            jwk_dict
+                            {
+                                'jwks_keys': [
+                                    jwk_dict
+                                ]
+                            }
                     }
                 )
         return publisher_keys
@@ -77,9 +79,15 @@ class MozillIAM(object):
 
         access_file_data_structure = {
             'endpoint': access_file_endpoint,
-            'jwks_keys': {
-                '0': dummy_signing_key
-            }
+            'aai_mapping': {
+              'LOW': ['NO_RECENT_AUTH_FAIL', 'AUTH_RATE_NORMAL'],
+              'MEDIUM': ['2FA', 'HAS_KNOWN_BROWSER_KEY'],
+              'HIGH': ['GEOLOC_NEAR', 'SAME_IP_RANGE'],
+              'MAXIMUM': ['KEY_AUTH']
+            },
+            'jwks_keys': [
+                dummy_signing_key
+            ]
         }
 
         return access_file_data_structure
@@ -125,7 +133,7 @@ class MozillIAM(object):
     def _expand_publisher_key_info(self, publisher_key_dict):
         publisher_name = None
         key_metadata = None
-
+        print(publisher_key_dict)
         for k, v in publisher_key_dict.items():
             publisher_name = k
             key_metadata = v
