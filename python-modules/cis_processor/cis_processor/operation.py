@@ -1,7 +1,6 @@
 import boto3
 import json
 
-from cis_aws import connect
 from cis_crypto import operation
 from cis_identity_vault.models import user
 
