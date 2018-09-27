@@ -133,7 +133,6 @@ class MozillIAM(object):
     def _expand_publisher_key_info(self, publisher_key_dict):
         publisher_name = None
         key_metadata = None
-        print(publisher_key_dict)
         for k, v in publisher_key_dict.items():
             publisher_name = k
             key_metadata = v
