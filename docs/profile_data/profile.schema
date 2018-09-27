@@ -316,7 +316,7 @@
             "title": "Identities"
         },
         "IdentitiesValues": {
-            "type": "object",
+            "type": [ "null", "object" ],
             "additionalProperties": true,
             "properties": {
                 "github_id_v3": {

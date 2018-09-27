@@ -258,7 +258,7 @@
             "title": "StandardAttributeValues"
         },
         "Identities": {
-            "type": "object",
+            "type": [ "null", "object" ],
             "additionalProperties": false,
             "properties": {
                 "signature": {
