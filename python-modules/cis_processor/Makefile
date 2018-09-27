@@ -21,10 +21,10 @@ venv:
 	echo "source venv/bin/activate"
 
 watch-test:
-        # Watches for changes and re-test automatically
-        # we use this wrapper because our test target allows for more tests
-        # than ptw's builting pytest, notably flake8 tests
-        ptw --runner "make test"
+	# Watches for changes and re-test automatically
+	# we use this wrapper because our test target allows for more tests
+	# than ptw's builting pytest, notably flake8 tests
+	ptw --runner "make test"
 
 test: tests
 tests:
