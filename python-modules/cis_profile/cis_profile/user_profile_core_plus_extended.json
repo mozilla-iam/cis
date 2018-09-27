@@ -5,7 +5,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -19,7 +20,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": null
@@ -29,7 +29,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -43,7 +44,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": null
@@ -53,7 +53,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -67,7 +68,6 @@
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "access_provider",
       "verified": true
     },
     "value": true
@@ -77,7 +77,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -91,7 +92,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": true
     },
     "value": null
@@ -101,7 +101,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -115,7 +116,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": true
     },
     "value": null
@@ -125,7 +125,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -139,7 +140,6 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -150,7 +150,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -164,7 +165,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "hris",
       "verified": false
     },
     "value": null
@@ -174,7 +174,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -188,7 +189,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "cis",
       "verified": false
     },
     "value": null
@@ -198,7 +198,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -212,7 +213,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap",
       "verified": true
     },
     "value": null
@@ -222,7 +222,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -236,7 +237,6 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": true
     },
     "values": {
@@ -247,7 +247,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -261,7 +262,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "ldap",
       "verified": false
     },
     "values": {
@@ -272,7 +272,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -286,7 +287,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -298,7 +298,8 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": ""
+          "value": "",
+          "name": ""
         },
         "additional": [
           {
@@ -312,7 +313,6 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "ldap",
         "verified": true
       },
       "values": {
@@ -323,7 +323,8 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": ""
+          "value": "",
+          "name": ""
         },
         "additional": [
           {
@@ -337,7 +338,6 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "mozilliansorg",
         "verified": true
       },
       "values": {
@@ -348,7 +348,8 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": ""
+          "value": "",
+          "name": ""
         },
         "additional": [
           {
@@ -362,7 +363,6 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "hris",
         "verified": true
       },
       "values": {
@@ -373,7 +373,8 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": ""
+          "value": "",
+          "name": ""
         },
         "additional": [
           {
@@ -387,7 +388,6 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
-        "publisher_authority": "access_provider",
         "verified": true
       },
       "values": {
@@ -399,7 +399,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -413,7 +414,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -423,7 +423,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -437,7 +438,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -447,7 +447,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -461,7 +462,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -471,7 +471,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -485,7 +486,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -495,7 +495,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -509,7 +510,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -519,7 +519,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -533,7 +534,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": [
@@ -544,7 +544,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -558,7 +559,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": [
@@ -569,7 +569,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -583,7 +584,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -593,7 +593,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -607,7 +608,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
@@ -617,7 +617,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -631,7 +632,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -642,7 +642,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -656,7 +657,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "values": {
@@ -667,7 +667,8 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": ""
+        "value": "",
+        "name": ""
       },
       "additional": [
         {
@@ -681,7 +682,6 @@
       "classification": "PUBLIC",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
-      "publisher_authority": "mozilliansorg",
       "verified": false
     },
     "value": null
