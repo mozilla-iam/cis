@@ -455,7 +455,7 @@ class TestConnect(object):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
 
-        from cis_aws import get_config
+        from cis_aws.common import get_config
 
         config = get_config()
 
