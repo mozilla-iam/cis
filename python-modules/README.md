@@ -30,7 +30,7 @@ Contains all the code necessary for role assumption in the target AWS account wh
 
 _User stories_
 
-- As an stream woker working with the change integration service in order to publish profiles I need to assume a role.
+- As an stream worker working with the change integration service in order to publish profiles I need to assume a role.
 - As a stream processor in order to publish profiles I must enumerate dynamodb tables and target the appropriate table using tags.
 - As an API endpoint publishing changes I must target kinesis streams to send profiles through the system.
 - As an API endpoint I need to publish profiles to a kinesis stream and validate the message was sent.
@@ -55,7 +55,6 @@ Contains all code for the formation of the identity vault and management there-o
 _User Stories_
 
 - As an IAM admin I can create mozilla-iam profile v2 identity vaults.
-- As an IAMdeveloper I can import the pynamodb schema into other classes for use in applications like graphql.
 
 **cis_processor**
 

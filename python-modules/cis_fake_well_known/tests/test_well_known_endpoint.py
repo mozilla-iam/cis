@@ -18,3 +18,12 @@ class TestWellKnownEndpoint(object):
         assert res.get('oidc_discovery_uri') is not None
         assert res.get('access_file') is not None
         assert res.get('person_api') is not None
+
+        publishers = res.get('publishers_supported')
+
+        for publisher in publishers:
+            for key in publishers[publisher]:
+                assert key == 'jwks_keys'
+
+            for key_dicts in publishers[publisher]['jwks_keys']:
+                print(key_dicts)
