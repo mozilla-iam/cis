@@ -105,7 +105,7 @@ class User(object):
             self.load(self.get_profile_from_file(user_structure_json_file))
         else:
             # Load defaults, including default timestamps
-            self.load(self.get_profile_from_file('user_profile_core_plus_extended.json'))
+            self.load(self.get_profile_from_file('user_profile_core_plus_extended_null.json'))
             self.initialize_timestamps()
 
         # Insert defaults from kwargs
