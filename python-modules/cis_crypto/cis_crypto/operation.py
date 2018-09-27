@@ -9,8 +9,6 @@ from jose.exceptions import JWSError
 from cis_crypto import get_config
 from cis_crypto import secret
 
-from cachetools import cached
-
 logger = logging.getLogger(__name__)
 # Note:
 # These attrs on sign/verify could be refactored to use object inheritance.  Leaving as is for now for readability.
@@ -67,7 +65,6 @@ class Verify(object):
         # Store the original form in the jws_signature attribute
         self.jws_signature = jws_signature
 
-    @cached(cache={})
     def _get_public_key(self):
         """Returns a jwk construct for the public key and mode specified."""
         if self.well_known_mode == 'file':
@@ -139,7 +136,6 @@ class StrictVerify(Verify):
     def __init__(self):
         super().__init__()
 
-    @cached(cache={})
     def _get_public_key(self):
         """Returns a jwk construct for the public key and mode specified."""
         if self.well_known_mode == 'file':
