@@ -34,6 +34,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    extras_require=extra,
+    extras_require=extras,
     zip_safe=False
 )

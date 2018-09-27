@@ -1,5 +1,6 @@
 ROOT_DIR        := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 MODULE_NAME     := $(notdir $(patsubst %/,%,$(ROOT_DIR)))
+SHELL		:= /bin/bash
 
 all:
 	@echo 'Available make targets:'
@@ -22,6 +23,8 @@ venv:
 
 .install-test:
 	pip install .[test]
+	npm install dynalite
+	npm install kinesalite
 	touch $@
 
 watch-test:
@@ -32,6 +35,7 @@ watch-test:
 
 test: tests
 tests: .install-test
+	PATH=$(PATH):$(shell npm bin) \
 	python setup.py test
 	flake8 setup.py
 	flake8 tests/*.py
@@ -45,5 +49,6 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf .install-test
+	rm -rf node_modules
 
 .PHONY: test tests clean all install
