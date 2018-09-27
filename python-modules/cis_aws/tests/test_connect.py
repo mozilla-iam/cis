@@ -465,3 +465,5 @@ class TestConnect(object):
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
+
+    __delete__ = teardown
