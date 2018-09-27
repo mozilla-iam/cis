@@ -10,7 +10,7 @@ requirements = ['boto3', 'everett']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov']
+test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 
 setup(
     name="cis_aws",

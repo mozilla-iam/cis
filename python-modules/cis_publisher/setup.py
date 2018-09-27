@@ -15,7 +15,7 @@ requirements = [
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto', 'flake8']
 
 setup(
     name="cis_publisher",

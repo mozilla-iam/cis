@@ -17,7 +17,7 @@ requirements = [
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8']
 
 setup(
     name="cis_change_service",

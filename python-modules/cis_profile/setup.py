@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = ['cis_crypto', 'jsonschema', 'requests']
-test_requirements = ['pytest']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 setup_requirements = ['pytest-runner']
 
 setup(

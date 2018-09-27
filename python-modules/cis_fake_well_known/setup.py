@@ -10,7 +10,7 @@ requirements = ['jsonschema', 'python-jose', 'flask', 'everett', 'faker']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask', 'flake8']
 
 setup(
     name="cis_fake_well_known",

@@ -20,10 +20,15 @@ venv:
 	echo "# Run this in your shell to activate:"
 	echo "source venv/bin/activate"
 
+watch-test:
+        # Watches for changes and re-test automatically
+        # we use this wrapper because our test target allows for more tests
+        # than ptw's builting pytest, notably flake8 tests
+        ptw --runner "make test"
+
 test: tests
 tests:
 	python setup.py test
-	pip install flake8
 	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py
