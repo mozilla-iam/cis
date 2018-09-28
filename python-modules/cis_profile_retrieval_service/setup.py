@@ -7,10 +7,14 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
+    'python-jose-cryptodome',
+    'python-jose',
+    'boto3==1.7.67',
+    'boto==2.49.0',
+    'botocore==1.10.67',
     'everett',
     'flask',
     'flask_cors',
-    'python-jose',
     'six',
     'flask_restful',
     'flask-graphql',
@@ -21,8 +25,15 @@ requirements = [
 ]
 
 setup_requirements = ['pytest-runner']
-
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock']
+test_requirements = [
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'pytest-mock',
+    'moto',
+    'mock',
+    'flake8'
+]
 
 setup(
     name="cis_profile_retrieval_service",

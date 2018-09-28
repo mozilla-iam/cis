@@ -1,1 +1,4 @@
+build/
+*.egg
 .pytest_cache
+.install-test

@@ -1,13 +1,9 @@
 import json
 import graphene
-import os
-import requests
 from aniso8601 import parse_datetime
 
 from cis_identity_vault.models import user
-from cis_profile_retrieval_service import get_config
-from cis_profile_retrieval_service import get_table_resource
-from cis_profile_retrieval_service.idp import requires_scope
+from cis_profile_retrieval_service.common import get_table_resource
 
 
 # Helper functions
@@ -291,11 +287,7 @@ class CoreProfile(graphene.ObjectType):
 
 class Query(graphene.ObjectType):
     """GraphQL Query class for the V2 Profiles."""
-    if scope('blah'):
-        profiles = graphene.List(CISProfileSchema(scope), primaryEmail=graphene.String(required=False))
-    elif scope('blah blah')
-        profiles = graphene.List(SuperCoreProfile, primaryEmail=graphene.String(required=False))
-
+    profiles = graphene.List(CoreProfile, primaryEmail=graphene.String(required=False))
     profile = graphene.Field(CoreProfile, userId=graphene.String(required=True))
 
     def resolve_profiles(self, info, **kwargs):
@@ -327,9 +319,7 @@ class Query(graphene.ObjectType):
             resp = json.dumps({})
         return json2obj(resp)
 
+
 class AuthorizationMiddleware():
     def resolve(self, next, root, info, **kwargs):
-        authorization_headers = info.context.headers
-
-
         return next(root, info, **kwargs)
