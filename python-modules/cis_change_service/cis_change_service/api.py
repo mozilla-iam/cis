@@ -4,7 +4,7 @@ from flask import jsonify
 from flask import request
 from flask_cors import CORS
 from flask_cors import cross_origin
-from cis_change_service import get_config
+from cis_change_service.common import get_config
 from cis_change_service import profile
 from cis_change_service.idp import requires_auth
 from cis_change_service.idp import AuthError

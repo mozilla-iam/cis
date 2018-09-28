@@ -7,7 +7,7 @@ from flask import _request_ctx_stack
 from six.moves.urllib.request import urlopen
 from jose import jwt
 
-from cis_change_service import get_config
+from cis_change_service.common import get_config
 from cis_change_service.exceptions import AuthError
 
 logger = logging.getLogger(__name__)

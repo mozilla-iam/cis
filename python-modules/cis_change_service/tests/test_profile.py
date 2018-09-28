@@ -5,7 +5,7 @@ import mock
 import subprocess
 from botocore.stub import Stubber
 from boto.kinesis.exceptions import ResourceInUseException
-from cis_change_service import get_config
+from cis_change_service.common import get_config
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 

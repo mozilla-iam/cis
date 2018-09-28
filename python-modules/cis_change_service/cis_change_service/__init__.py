@@ -2,25 +2,12 @@
 
 """Flaks application for publishing changes."""
 
-__author__ = """Andrew Krug"""
-__email__ = 'akrug@mozilla.com'
 __version__ = '0.0.1'
 
-import os
+from cis_change_service import api
+from cis_change_service import common
+from cis_change_service import exceptions
+from cis_change_service import idp
+from cis_change_service import profile
 
-from everett.manager import ConfigManager
-from everett.manager import ConfigIniEnv
-from everett.manager import ConfigOSEnv
-
-
-def get_config():
-    return ConfigManager(
-        [
-            ConfigIniEnv([
-                os.environ.get('CIS_CONFIG_INI'),
-                '~/.mozilla-cis.ini',
-                '/etc/mozilla-cis.ini'
-            ]),
-            ConfigOSEnv()
-        ]
-    )
+__all__ = [api, common, exceptions, idp, profile, __version__]
