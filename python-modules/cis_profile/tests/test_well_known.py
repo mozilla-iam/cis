@@ -1,5 +1,6 @@
 from cis_profile.common import WellKnown
 
+
 class Test_WellKnown(object):
 
     def test_wellknown_retrieve(self):
@@ -12,5 +13,4 @@ class Test_WellKnown(object):
         wk = WellKnown()
         data = wk.get_schema()
         assert(isinstance(data, dict))
-        assert((data.get('$schema'), str))
-
+        assert(isinstance(data.get('$schema'), str))
