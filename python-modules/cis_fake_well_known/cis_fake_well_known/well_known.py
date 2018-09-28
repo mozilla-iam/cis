@@ -2,8 +2,8 @@ import os
 from faker import Faker
 from jose import jwk
 from uuid import uuid4
-from cis_fake_well_known import get_config
-from cis_fake_well_known import load_key_file
+from cis_fake_well_known.common import get_config
+from cis_fake_well_known.common import load_key_file
 
 
 class MozillIAM(object):
