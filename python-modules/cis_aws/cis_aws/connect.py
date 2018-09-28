@@ -2,7 +2,7 @@ import boto3
 import logging
 
 from botocore.stub import Stubber
-from cis_aws import get_config
+from cis_aws.common import get_config
 from datetime import datetime
 from datetime import timedelta
 

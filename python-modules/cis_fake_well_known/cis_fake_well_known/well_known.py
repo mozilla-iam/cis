@@ -2,8 +2,8 @@ import os
 from faker import Faker
 from jose import jwk
 from uuid import uuid4
-from cis_fake_well_known import get_config
-from cis_fake_well_known import load_key_file
+from cis_fake_well_known.common import get_config
+from cis_fake_well_known.common import load_key_file
 
 
 class MozillIAM(object):
@@ -38,17 +38,11 @@ class MozillIAM(object):
 
                 jwk_dict['use'] = 'sig'
                 jwk_dict['kid'] = uuid4().hex
-                jwk_dict['x5t'] = 'unsupported'
                 jwk_dict['x5c'] = 'unsupported'
 
                 publisher_keys.append(
                     {
-                        'fake-publisher-{}'.format(fake_publisher_name):
-                            {
-                                'jwks_keys': [
-                                    jwk_dict
-                                ]
-                            }
+                        'fake-publisher-{}'.format(fake_publisher_name): {'jwks_keys': [jwk_dict]}
                     }
                 )
         return publisher_keys
@@ -74,16 +68,15 @@ class MozillIAM(object):
 
         dummy_signing_key['use'] = 'sig'
         dummy_signing_key['kid'] = uuid4().hex
-        dummy_signing_key['x5t'] = 'unsupported'
         dummy_signing_key['x5c'] = 'unsupported'
 
         access_file_data_structure = {
             'endpoint': access_file_endpoint,
             'aai_mapping': {
-              'LOW': ['NO_RECENT_AUTH_FAIL', 'AUTH_RATE_NORMAL'],
-              'MEDIUM': ['2FA', 'HAS_KNOWN_BROWSER_KEY'],
-              'HIGH': ['GEOLOC_NEAR', 'SAME_IP_RANGE'],
-              'MAXIMUM': ['KEY_AUTH']
+                'LOW': ['NO_RECENT_AUTH_FAIL', 'AUTH_RATE_NORMAL'],
+                'MEDIUM': ['2FA', 'HAS_KNOWN_BROWSER_KEY'],
+                'HIGH': ['GEOLOC_NEAR', 'SAME_IP_RANGE'],
+                'MAXIMUM': ['KEY_AUTH']
             },
             'jwks_keys': [
                 dummy_signing_key

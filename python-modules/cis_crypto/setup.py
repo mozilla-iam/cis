@@ -6,12 +6,15 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['python-jose', 'python-jose-cryptodome', 'everett', 'boto3==1.7.67', 'boto==2.49.0',
+requirements = ['python-jose-cryptodome', 'python-jose', 'everett', 'boto3==1.7.67', 'boto==2.49.0',
                 'botocore==1.10.67', 'requests', 'pyaml']
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'cis_fake_well_known']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'cis_fake_well_known',
+                     'flake8']
+
+extras = {'test': test_requirements}
 
 setup(
     name="cis_crypto",
@@ -34,5 +37,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extras,
     zip_safe=False
 )

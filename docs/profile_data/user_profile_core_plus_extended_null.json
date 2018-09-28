@@ -5,21 +5,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "access_provider",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
     "value": null
@@ -29,21 +30,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "access_provider",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
     "value": null
@@ -53,45 +55,47 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "access_provider",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
-    "value": true
+    "value": false
   },
   "last_modified": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "cis",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
     "value": null
@@ -101,21 +105,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "cis",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
     "value": null
@@ -125,46 +130,47 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": {
-    }
+    "values": null
   },
   "first_name": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -174,21 +180,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -198,21 +205,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "access_provider",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
     "value": null
@@ -222,75 +230,75 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": true
     },
-    "values": {
-    }
+    "values": null
   },
   "ssh_public_keys": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": {
-    }
+    "values": null
   },
   "pgp_public_keys": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": {
-    }
+    "values": null
   },
   "access_information": {
     "ldap": {
@@ -298,21 +306,22 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": "",
-          "name": ""
+          "name": "ldap",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
             "typ": "JWS",
+            "name": null,
             "value": ""
           }
         ]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
-        "last_modified": "2018-01-01T00:00:00Z",
-        "created": "2018-01-01T00:00:00Z",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
         "verified": true
       },
       "values": {
@@ -323,21 +332,22 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": "",
-          "name": ""
+          "name": "mozilliansorg",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
             "typ": "JWS",
+            "name": null,
             "value": ""
           }
         ]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
-        "last_modified": "2018-01-01T00:00:00Z",
-        "created": "2018-01-01T00:00:00Z",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
         "verified": true
       },
       "values": {
@@ -348,21 +358,22 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": "",
-          "name": ""
+          "name": "hris",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
             "typ": "JWS",
+            "name": null,
             "value": ""
           }
         ]
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
-        "last_modified": "2018-01-01T00:00:00Z",
-        "created": "2018-01-01T00:00:00Z",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
         "verified": true
       },
       "values": {
@@ -373,21 +384,22 @@
         "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "value": "",
-          "name": ""
+          "name": "access_provider",
+          "value": ""
         },
         "additional": [
           {
             "alg": "RS256",
             "typ": "JWS",
+            "name": null,
             "value": ""
           }
         ]
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
-        "last_modified": "2018-01-01T00:00:00Z",
-        "created": "2018-01-01T00:00:00Z",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
         "verified": true
       },
       "values": {
@@ -399,21 +411,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -423,21 +436,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -447,21 +461,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -471,21 +486,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -495,21 +511,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -519,71 +536,72 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": [
-    ]
+    "values": null
   },
   "tags": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": [
-    ]
+    "values": null
   },
   "pronouns": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -593,21 +611,22 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
@@ -617,71 +636,72 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": {
-    }
+    "values": null
   },
   "phone_numbers": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
-    "values": {
-    }
+    "values": null
   },
   "alternative_name": {
     "signature": {
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "value": "",
-        "name": ""
+        "name": "mozilliansorg",
+        "value": ""
       },
       "additional": [
         {
           "alg": "RS256",
           "typ": "JWS",
+          "name": null,
           "value": ""
         }
       ]
     },
     "metadata": {
       "classification": "PUBLIC",
-      "last_modified": "2018-01-01T00:00:00Z",
-      "created": "2018-01-01T00:00:00Z",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null

@@ -455,7 +455,7 @@ class TestConnect(object):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
 
-        from cis_aws import get_config
+        from cis_aws.common import get_config
 
         config = get_config()
 
@@ -465,3 +465,5 @@ class TestConnect(object):
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
+
+    __delete__ = teardown

@@ -1,7 +1,7 @@
 import os
 from jose import jwk
-from cis_fake_well_known import get_config
-from cis_fake_well_known import load_key_file
+from cis_fake_well_known.common import get_config
+from cis_fake_well_known.common import load_key_file
 
 
 class Key(object):

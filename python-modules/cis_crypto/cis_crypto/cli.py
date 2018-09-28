@@ -5,7 +5,6 @@ import logging
 import sys
 
 from cis_crypto import common
-from cis_crypto import get_config
 from cis_crypto import operation
 
 
@@ -61,7 +60,7 @@ class cli():
             logger.info('To verify this file use cis_crypto verify --file {}.jws'.format(self.config.file))
         elif self.config.func == 'verify_operation':
             logger.info('Attempting verification of signature for file: {}'.format(self.config.file))
-            everett_config = get_config()
+            everett_config = common.get_config()
             logger.info(
                 'Attempting fetch of .well-known data from: {}'.format(
                     everett_config('public_key_name', namespace='cis', default='access-file-key.pub.pem')

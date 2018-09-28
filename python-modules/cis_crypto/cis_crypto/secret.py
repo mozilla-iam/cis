@@ -2,7 +2,7 @@
 import boto3
 import json
 import os
-from cis_crypto import get_config
+from cis_crypto import common
 from jose import jwk
 
 
@@ -28,7 +28,7 @@ class FileProvider(object):
     """Support loading key material from disk."""
     def key(self, key_name):
         """Takes key_name returns bytes"""
-        config = get_config()
+        config = common.get_config()
         key_dir = config(
             'secret_manager_file_path',
             namespace='cis',
@@ -48,7 +48,7 @@ class FileProvider(object):
 class AWSParameterstoreProvider(object):
     """Support loading secure strings from AWS parameter store."""
     def __init__(self):
-        self.config = get_config()
+        self.config = common.get_config()
         self.region_name = self.config('secret_manager_ssm_region', namespace='cis', default='us-west-2')
         self.boto_session = boto3.session.Session(region_name=self.region_name)
         self.ssm_client = self.boto_session.client('ssm')

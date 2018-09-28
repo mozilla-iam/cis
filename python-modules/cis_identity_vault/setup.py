@@ -8,12 +8,16 @@ with open("README.md", "r") as fh:
 
 requirements = [
     'everett',
-    'boto3'
+    'boto3==1.7.67',
+    'botocore==1.10.67',
+    'botocore==1.10.67'
 ]
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'moto', 'flake8']
+
+extras = {'test': test_requirements}
 
 setup(
     name="cis_identity_vault",
@@ -35,5 +39,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extras,
     zip_safe=False
 )
