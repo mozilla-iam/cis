@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['cis_crypto', 'jsonschema', 'requests']
+requirements = ['logging', 'cis_crypto', 'jsonschema', 'requests', 'requests-cache', 'graphene']
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 setup_requirements = ['pytest-runner']
 extras = {'test': test_requirements}

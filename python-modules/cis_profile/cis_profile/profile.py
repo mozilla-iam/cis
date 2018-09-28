@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+from cis_profile.common import WellKnown
+
 import cis_crypto.operation
 import json
 import json.decoder
@@ -87,17 +89,14 @@ class User(object):
     """
 
     def __init__(self, user_structure_json=None, user_structure_json_file=None,
-                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', schema=None, **kwargs):
+                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', **kwargs):
         """
         @user_structure_json an existing user structure to load in this class
         @user_structure_json_file an existing user structure to load in this class, from a JSON file
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        if schema is None:
-            self.__schema = self._load_schema(discovery_url)
-        else:
-            self.__schema = schema
+        self.__well_known = WellKnown()
 
         if (user_structure_json is not None):
             self.load(user_structure_json)
@@ -120,56 +119,6 @@ class User(object):
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
         self.__signop = cis_crypto.operation.Sign()
-
-    def get_schema(self):
-        """
-        Public method to grab the schema. This is useful for external caching of the schema.
-        (E.g. in case this object is destroyed but cache is to be retained
-        """
-        if '__schema' in self.__dict__:
-            return self.__schema
-        else:
-            return None
-
-    def _load_schema(self, discovery_url):
-        """
-        Attempts to fetch latest validation schema, fall-back to cached version on failure.
-        See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/.well-known/mozilla-iam.json
-        """
-
-        # Check cache first
-        if self.get_schema() is not None:
-            return self.get_schema()
-
-        schema = None
-        schema_url = None
-
-        # Get schema url
-        try:
-            r = requests.get(discovery_url)
-            schema_url = r.json().get('api').get('profile_schema_combined_uri')
-        except (JSONDecodeError, requests.exceptions.ConnectionError) as e:
-            logger.debug('Failed to fetch schema_url from discovery {} ({})'.format(discovery_url, e))
-
-        # Get schema
-        if schema_url is not None:
-            try:
-                r = requests.get(schema_url)
-                schema = r.json()
-            except (JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug('Failed to load schema from schema_url {} ({})'.format(schema_url, e))
-
-        # That did not work, fall-back to local copy
-        if schema is None:
-            schema_file = "profile.schema"
-            if not os.path.isfile(schema_file):
-                dirname = os.path.dirname(os.path.realpath(__file__))
-                path = dirname + '/' + schema_file
-            else:
-                path = schema_file
-
-            schema = json.load(open(path))
-        return schema
 
     def load(self, profile_json):
         """
@@ -276,7 +225,7 @@ class User(object):
         Validates against a JSON schema
         """
 
-        return jsonschema.validate(self.as_dict(), self.__schema)
+        return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
     def sign_all(self):
         """
