@@ -4,7 +4,7 @@ import boto3
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from cis_identity_vault import autoscale
-from cis_identity_vault import get_config
+from cis_identity_vault.common import get_config
 
 
 class IdentityVault(object):
