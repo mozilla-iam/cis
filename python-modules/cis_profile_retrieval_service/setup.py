@@ -8,23 +8,28 @@ with open("README.md", "r") as fh:
 
 requirements = [
     'everett',
-    'boto3==1.7.67',
-    'botocore==1.10.67',
-    'botocore==1.10.67'
+    'flask',
+    'flask_cors',
+    'python-jose',
+    'six',
+    'flask_restful',
+    'flask-graphql',
+    'graphene',
+    'requests',
+    'ipdb',
+    'aniso8601'
 ]
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'moto', 'flake8']
-
-extras = {'test': test_requirements}
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock']
 
 setup(
-    name="cis_identity_vault",
+    name="cis_profile_retrieval_service",
     version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",
-    description="Creates a dynamodb table for the environment for CIS.",
+    description="Flask bindings for providing api.sso.mozilla.com",
     long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=(
@@ -35,10 +40,9 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_identity_vault', 'cis_identity_vault.models']),
+    packages=find_packages(include=['cis_profile_retrieval_service']),
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
-    extras_require=extras,
     zip_safe=False
 )

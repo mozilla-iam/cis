@@ -44,3 +44,14 @@ class Profile(object):
             KeyConditionExpression=Key('primary_email').eq(primary_email)
         )
         return result
+
+    @property
+    def all(self):
+        response = self.table.scan()
+        users = response.get('Items')
+        while 'LastEvaluatedKey' in response:
+            response = self.table.scan(
+                ExclusiveStartKey=response['LastEvaluatedKey']
+            )
+            users.extend(response['Items'])
+        return users
