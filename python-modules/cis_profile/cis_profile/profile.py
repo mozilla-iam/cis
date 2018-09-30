@@ -13,8 +13,6 @@ except ImportError:
 import jsonschema
 import logging
 import os
-import requests
-import requests.exceptions
 import time
 
 logger = logging.getLogger(__name__)
