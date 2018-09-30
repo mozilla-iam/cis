@@ -24,7 +24,7 @@ watch-test:
 	# Watches for changes and re-test automatically
 	# we use this wrapper because our test target allows for more tests
 	# than ptw's builting pytest, notably flake8 tests
-	ptw --runner "make test"
+	ptw -n -q --runner "make test"
 
 .install-test:
 	pip install .[test]
