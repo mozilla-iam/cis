@@ -7,9 +7,22 @@ from cis_profile.common import WellKnown
 from cis_profile.common import DotDict
 
 import graphene
+import json
+import logging
+
+
+logger = logging.getLogger(__name__)
+
 
 class UserProfileObjectType(object):
-    def __init__(self, classification='PUBLIC'):
+    """
+    This is the class representing both Core and Extended profiles. See other classes for separate profile types.
+    """
+    def __init__(self, classification=['PUBLIC']):
+        """
+        @classification list of str. A list of  valid MozillaDataClassification to filter results on. Only attributes
+        from the user profile with these classifications will be returned in the object.
+        """
         # Semi-passive, no-fail functions
         self._well_known_json = WellKnown()
         self._schema = self._well_known_json.get_schema()
@@ -17,10 +30,10 @@ class UserProfileObjectType(object):
     def load(self):
         """
         Schema format summary:
-        JSON: 
+        JSON:
           $schema: ...
           $ref: ...
-          definitions: 
+          definitions:
             ...
             Metadata:
               type: object
@@ -59,11 +72,14 @@ class UserProfileObjectType(object):
             # primitives) so we detect that
             current_def = definitions[definition_name]
             print(definition_name)
+            print(current_def['properties'])
             if current_def.type != 'object':
                 pass
 
+
 class UserProfileCoreObjectType(UserProfileObjectType):
     pass
+
 
 class UserProfileExtendedObjectType(UserProfileObjectType):
     pass
