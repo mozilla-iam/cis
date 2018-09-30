@@ -6,4 +6,3 @@ class TestClassification(object):
         c = MozillaDataClassification()
         if 'PUBLIC' not in c.public():
             raise(KeyError, 'Incorrect Mozilla Data Classification!')
-

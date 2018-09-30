@@ -24,30 +24,81 @@ class MozillaDataClassification(object):
         return [x.lower() for x in items]
 
     def unknown(self):
-        r = [ 'UNKNOWN', '', None ]
-        return self.toupper(r)+self.tolower(r)
+        r = ['UNKNOWN', '', None]
+        return self.toupper(r) + self.tolower(r)
 
     def public(self):
-        r = [ 'PUBLIC' ]
-        return self.toupper(r)+self.tolower(r)
+        r = ['PUBLIC']
+        return self.toupper(r) + self.tolower(r)
 
     def mozilla_confidential(self):
-        r = [ 'Mozilla Confidential - Staff and NDA\'d Mozillians Only', 'MOZILLA CONFIDENTIAL' ]
-        return self.toupper(r)+self.tolower(r)
+        r = ['Mozilla Confidential - Staff and NDA\'d Mozillians Only', 'MOZILLA CONFIDENTIAL']
+        return self.toupper(r) + self.tolower(r)
 
     def workgroup_confidential(self):
-        r = [ 'Mozilla Confidential - Specific Work Groups Only', 'WORKGROUP CONFIDENTIAL' ]
-        return self.toupper(r)+self.tolower(r)
+        r = ['Mozilla Confidential - Specific Work Groups Only', 'WORKGROUP CONFIDENTIAL']
+        return self.toupper(r) + self.tolower(r)
 
     def individual_confidential(self):
-        r = [ 'Mozilla Confidential - Specific Individuals Only', 'INDIVIDUAL CONFIDENTIAL' ]
-        return self.toupper(r)+self.tolower(r)
+        r = ['Mozilla Confidential - Specific Individuals Only', 'INDIVIDUAL CONFIDENTIAL']
+        return self.toupper(r) + self.tolower(r)
 
     def well_known_workgroups(self):
         """
         This is for self.workgroup_confidential() groups that are published by Mozilla
         """
-        return [ 'STAFF ONLY' ]
+        return ['STAFF ONLY']
+
+
+class DotDict(dict):
+    """
+    Convert a dict to a fake class/object with attributes, such as:
+    test = dict({"test": {"value": 1}})
+    test.test.value = 2
+    """
+    def __init__(self, *args, **kwargs):
+        dict.__init__(self, *args, **kwargs)
+        try:
+            # Python2
+            for k, v in self.iteritems():
+                self.__setitem__(k, v)
+        except AttributeError:
+            # Python3
+            for k, v in self.items():
+                self.__setitem__(k, v)
+
+    def __getattr__(self, k):
+        try:
+            return dict.__getitem__(self, k)
+        except KeyError:
+            raise AttributeError("'DotDict' object has no attribute '" + str(k) + "'")
+
+    def __setitem__(self, k, v):
+        dict.__setitem__(self, k, DotDict.__convert(v))
+
+    __setattr__ = __setitem__
+
+    def __delattr__(self, k):
+        try:
+            dict.__delitem__(self, k)
+        except KeyError:
+            raise AttributeError("'DotDict'  object has no attribute '" + str(k) + "'")
+
+    @staticmethod
+    def __convert(o):
+        """
+        Recursively convert `dict` objects in `dict`, `list`, `set`, and
+        `tuple` objects to `DotDict` objects.
+        """
+        if isinstance(o, dict):
+            o = DotDict(o)
+        elif isinstance(o, list):
+            o = list(DotDict.__convert(v) for v in o)
+        elif isinstance(o, set):
+            o = set(DotDict.__convert(v) for v in o)
+        elif isinstance(o, tuple):
+            o = tuple(DotDict.__convert(v) for v in o)
+        return o
 
 
 class WellKnown(object):
@@ -94,7 +145,7 @@ class WellKnown(object):
         schema_url = self._well_known_json.get('api').get('profile_core_schema_uri')
         return self._load_schema(schema_url, stype='profile_core.schema')
 
-    def get_core_schema(self):
+    def get_extended_schema(self):
         self._well_known_json = self._load_well_known()
         schema_url = self._well_known_json.get('api').get('profile_extended_schema_uri')
         return self._load_schema(schema_url, stype='profile_extended.schema')
