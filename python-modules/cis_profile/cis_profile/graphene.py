@@ -165,6 +165,19 @@ class ExtendedProfile(graphene.ObjectType):
     alternative_name = graphene.Field(StandardAttributeString)
 
 
-class Profile(graphene.Union):
-    class Meta:
-        types = (CoreProfile, ExtendedProfile)
+class Profile(CoreProfile):
+    """
+    Copy of ExtendedProfile within CoreProfile
+    """
+    fun_title = graphene.Field(StandardAttributeString)
+    description = graphene.Field(StandardAttributeString)
+    location_preference = graphene.Field(StandardAttributeString)
+    office_location = graphene.Field(StandardAttributeString)
+    timezone = graphene.Field(StandardAttributeString)
+    prefered_language = graphene.Field(StandardAttributeString)
+    tags = graphene.Field(StandardAttributeList)
+    pronouns = graphene.Field(StandardAttributeString)
+    picture = graphene.Field(StandardAttributeString)
+    uris = graphene.Field(StandardAttributeFieldList)
+    phone_numbers = graphene.Field(StandardAttributeFieldList)
+    alternative_name = graphene.Field(StandardAttributeString)
