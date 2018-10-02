@@ -8,48 +8,6 @@ import logging
 logger = logging.getLogger(__name__)
 
 
-class MozillaDataClassification(object):
-    """
-    See https://wiki.mozilla.org/Security/Data_Classification
-    Just a simple object-enum - it returns all valid labels per level
-    as a list/array.
-    """
-    def __init__(self):
-        pass
-
-    def toupper(self, items):
-        return [x.upper() for x in items]
-
-    def tolower(self, items):
-        return [x.lower() for x in items]
-
-    def unknown(self):
-        r = ['UNKNOWN', '', None]
-        return self.toupper(r) + self.tolower(r)
-
-    def public(self):
-        r = ['PUBLIC']
-        return self.toupper(r) + self.tolower(r)
-
-    def mozilla_confidential(self):
-        r = ['Mozilla Confidential - Staff and NDA\'d Mozillians Only', 'MOZILLA CONFIDENTIAL']
-        return self.toupper(r) + self.tolower(r)
-
-    def workgroup_confidential(self):
-        r = ['Mozilla Confidential - Specific Work Groups Only', 'WORKGROUP CONFIDENTIAL']
-        return self.toupper(r) + self.tolower(r)
-
-    def individual_confidential(self):
-        r = ['Mozilla Confidential - Specific Individuals Only', 'INDIVIDUAL CONFIDENTIAL']
-        return self.toupper(r) + self.tolower(r)
-
-    def well_known_workgroups(self):
-        """
-        This is for self.workgroup_confidential() groups that are published by Mozilla
-        """
-        return ['STAFF ONLY']
-
-
 class DotDict(dict):
     """
     Convert a dict to a fake class/object with attributes, such as:
@@ -99,6 +57,22 @@ class DotDict(dict):
         elif isinstance(o, tuple):
             o = tuple(DotDict.__convert(v) for v in o)
         return o
+
+
+class MozillaDataClassification(DotDict):
+    """
+    See https://wiki.mozilla.org/Security/Data_Classification
+    Just a simple object-enum - it returns all valid labels per level
+    as a list/array.
+    """
+    UNKNOWN = ['UNKNOWN']
+    PUBLIC = ['PUBLIC']
+    MOZILLA_CONFIDENTIAL = ['MOZILLA CONFIDENTIAL', 'Mozilla Confidential - Staff and NDA\'d Mozillians Only']
+    WORKGROUP_CONFIDENTIAL = ['WORKGROUP CONFIDENTIAL', 'Mozilla Confidential - Specific Work Groups Only']
+    INDIVIDUAL_CONFIDENTIAL = ['INDIVIDUAL CONFIDENTIAL', 'Mozilla Confidential - Specific Individuals Only']
+    # Well-known Workgroups:
+    WELL_KNOWN_WORKGROUPS = ['STAFF_ONLY']
+    STAFF_ONLY = 'WORKGROUP CONFIDENTIAL'
 
 
 class WellKnown(object):
