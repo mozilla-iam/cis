@@ -1,4 +1,5 @@
 """Send a profile: full or partial to kinesis.  Report back stream entry status."""
+import cis_profile
 import json
 import jsonschema
 import logging
@@ -17,16 +18,7 @@ class Publish(object):
         self.config = get_config()
         self.connection_object = connect.AWS()
         self.kinesis_client = None
-        self.schema = self._get_schema()
-
-    def _get_schema(self):
-        # Future poll from the endpoint where the schema resides.
-        logger.debug('Loading the schema from disk.')
-        module_dir = os.path.dirname(__file__)
-        fh = open(os.path.join(module_dir, 'profile.schema'))
-        schema = fh.read()
-        fh.close()
-        return json.loads(schema)
+        self.schema = cis_profile.get_schema()
 
     def _connect(self):
         if self.kinesis_client is None:
