@@ -52,6 +52,7 @@ setup(
     license="Mozilla Public License 2.0",
     include_package_data=True,
     packages=find_packages(include=['cis_profile_retrieval_service']),
+    scripts=['bin/cis_profile_retrieval_service'],
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

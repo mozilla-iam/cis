@@ -1,0 +1,11 @@
+version: '3'
+services:
+  cis_single:
+    build: .
+      context: ../
+      dockerfile: Dockerfile
+  volumes:
+    - dynamodb:/opt/dynamodb_data
+    - kinesis:/opt/kinesis_data
+volumes:
+  dynamodb:

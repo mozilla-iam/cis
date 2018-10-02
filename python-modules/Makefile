@@ -12,7 +12,7 @@ test: tests
 tests: $(MODULES)
 
 clean: $(MODULES)
-	
+
 $(MODULES):
 	$(MAKE) $(MAKECMDGOALS) -C $@
 
