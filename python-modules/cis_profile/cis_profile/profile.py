@@ -197,6 +197,42 @@ class User(object):
 
         return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
+    def verify_can_publish(self, attr_name, attr, publisher_name):
+        """
+        Verifies that the selected publisher is allowed to change this attribute.
+        This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
+
+        Note that this does /!\ NOT VERIFY SIGNATURE /!\ and that you MUST call verify_attribute_signature()
+        separately.
+
+        If you do not, any publisher can pass a fake publisher name and this function will answer that the publisher is
+        allowed to publish, if the correct one is passed
+        @attr_name str the name of the attribute in the profile, e.g. "user_id"
+        @attr dict user profile attribute to verify, e.g. `User.user_id`
+        Return bool True on publisher allowed to publish, False otherwise
+        """
+        attr = DotDict(attr)
+        publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
+        logger.debug('Verifying that {} is allowed to publish field {}'.format(publisher_name, attr_name))
+
+        # Rules JSON structure:
+        # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
+        rules = self.__well_known.get_publisher_rules()
+        if publisher_name in rules.get('create')[attr_name]:
+            logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+            return True
+        elif publisher_name == rules.get('update')[attr_name]:
+            logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+            return True
+        logger.warning('{} is NOT allowed to publish field {}'.format(publisher_name, attr_name))
+        return False
+
+    def verify_all_signatures(self):
+        pass
+
+    def verify_attribute_signature(self, attr):
+        pass
+
     def sign_all(self):
         """
         Sign all child nodes with a non-null or non-empty value(s)
