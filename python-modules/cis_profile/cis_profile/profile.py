@@ -1,5 +1,8 @@
 #!/usr/bin/env python
 
+from cis_profile.common import WellKnown
+from cis_profile.common import DotDict
+
 import cis_crypto.operation
 import json
 import json.decoder
@@ -10,62 +13,9 @@ except ImportError:
 import jsonschema
 import logging
 import os
-import requests
-import requests.exceptions
 import time
 
 logger = logging.getLogger(__name__)
-
-
-class DotDict(dict):
-    """
-    Convert a dict to a fake class/object with attributes, such as:
-    test = dict({"test": {"value": 1}})
-    test.test.value = 2
-    """
-    def __init__(self, *args, **kwargs):
-        dict.__init__(self, *args, **kwargs)
-        try:
-            # Python2
-            for k, v in self.iteritems():
-                self.__setitem__(k, v)
-        except AttributeError:
-            # Python3
-            for k, v in self.items():
-                self.__setitem__(k, v)
-
-    def __getattr__(self, k):
-        try:
-            return dict.__getitem__(self, k)
-        except KeyError:
-            raise AttributeError("'DotDict' object has no attribute '" + str(k) + "'")
-
-    def __setitem__(self, k, v):
-        dict.__setitem__(self, k, DotDict.__convert(v))
-
-    __setattr__ = __setitem__
-
-    def __delattr__(self, k):
-        try:
-            dict.__delitem__(self, k)
-        except KeyError:
-            raise AttributeError("'DotDict'  object has no attribute '" + str(k) + "'")
-
-    @staticmethod
-    def __convert(o):
-        """
-        Recursively convert `dict` objects in `dict`, `list`, `set`, and
-        `tuple` objects to `DotDict` objects.
-        """
-        if isinstance(o, dict):
-            o = DotDict(o)
-        elif isinstance(o, list):
-            o = list(DotDict.__convert(v) for v in o)
-        elif isinstance(o, set):
-            o = set(DotDict.__convert(v) for v in o)
-        elif isinstance(o, tuple):
-            o = tuple(DotDict.__convert(v) for v in o)
-        return o
 
 
 class User(object):
@@ -87,17 +37,14 @@ class User(object):
     """
 
     def __init__(self, user_structure_json=None, user_structure_json_file=None,
-                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', schema=None, **kwargs):
+                 discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam', **kwargs):
         """
         @user_structure_json an existing user structure to load in this class
         @user_structure_json_file an existing user structure to load in this class, from a JSON file
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        if schema is None:
-            self.__schema = self._load_schema(discovery_url)
-        else:
-            self.__schema = schema
+        self.__well_known = WellKnown()
 
         if (user_structure_json is not None):
             self.load(user_structure_json)
@@ -120,56 +67,6 @@ class User(object):
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
         self.__signop = cis_crypto.operation.Sign()
-
-    def get_schema(self):
-        """
-        Public method to grab the schema. This is useful for external caching of the schema.
-        (E.g. in case this object is destroyed but cache is to be retained
-        """
-        if '__schema' in self.__dict__:
-            return self.__schema
-        else:
-            return None
-
-    def _load_schema(self, discovery_url):
-        """
-        Attempts to fetch latest validation schema, fall-back to cached version on failure.
-        See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/.well-known/mozilla-iam.json
-        """
-
-        # Check cache first
-        if self.get_schema() is not None:
-            return self.get_schema()
-
-        schema = None
-        schema_url = None
-
-        # Get schema url
-        try:
-            r = requests.get(discovery_url)
-            schema_url = r.json().get('api').get('profile_schema_combined_uri')
-        except (JSONDecodeError, requests.exceptions.ConnectionError) as e:
-            logger.debug('Failed to fetch schema_url from discovery {} ({})'.format(discovery_url, e))
-
-        # Get schema
-        if schema_url is not None:
-            try:
-                r = requests.get(schema_url)
-                schema = r.json()
-            except (JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug('Failed to load schema from schema_url {} ({})'.format(schema_url, e))
-
-        # That did not work, fall-back to local copy
-        if schema is None:
-            schema_file = "profile.schema"
-            if not os.path.isfile(schema_file):
-                dirname = os.path.dirname(os.path.realpath(__file__))
-                path = dirname + '/' + schema_file
-            else:
-                path = schema_file
-
-            schema = json.load(open(path))
-        return schema
 
     def load(self, profile_json):
         """
@@ -276,7 +173,7 @@ class User(object):
         Validates against a JSON schema
         """
 
-        return jsonschema.validate(self.as_dict(), self.__schema)
+        return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
     def sign_all(self):
         """
