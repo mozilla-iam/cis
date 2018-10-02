@@ -11,6 +11,16 @@ class TestProfile(object):
         u = profile.User()
         assert u is not None
 
+    def test_filter_scopes(Self):
+        from cis_profile import profile
+        from cis_profile.common import MozillaDataClassification
+
+        u = profile.User()
+        # Make sure a value is non-public
+        u.user_id.metadata.classification = MozillaDataClassification.MOZILLA_CONFIDENTIAL[0]
+        u.filter_scopes(MozillaDataClassification.PUBLIC)
+        assert(MozillaDataClassification.MOZILLA_CONFIDENTIAL[0] not in u.__dict__)
+
     def test_profile_override(self):
         from cis_profile import profile
 

@@ -2,6 +2,7 @@
 
 from cis_profile.common import WellKnown
 from cis_profile.common import DotDict
+from cis_profile.common import MozillaDataClassification
 
 import cis_crypto.operation
 import json
@@ -167,6 +168,27 @@ class User(object):
         """
         user = self._clean_dict()
         return dict(user)
+
+    def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC):
+        """
+        Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
+        @scopes list of str
+        """
+        todel = []
+        classname = self.__class__.__name__
+        for attr in self.__dict__:
+            if attr.startswith('_{}'.format(classname)):
+                # Don't touch private attrs
+                continue
+            elif 'metadata' not in self.__dict__[attr]:
+                logger.debug('Attribute {} has no metadata, won\'t filter scopes on it'.format(attr))
+                continue
+            if self.__dict__[attr]['metadata']['classification'] not in scopes:
+                todel.append(attr)
+
+        for d in todel:
+            logger.debug('Removing attribute {} because it\'s not in {} scopes'.format(attr, scopes))
+            del self.__dict__[d]
 
     def validate(self):
         """
