@@ -66,7 +66,7 @@ class Verify(object):
         # Store the original form in the jws_signature attribute
         self.jws_signature = jws_signature
 
-    def _get_public_key(self):
+    def _get_public_key(self, keyname=None):
         """Returns a jwk construct for the public key and mode specified."""
         if self.well_known_mode == 'file':
             key_dir = self.config(
@@ -85,9 +85,9 @@ class Verify(object):
             key_construct = jwk.construct(key_content, 'RS256')
             return [key_construct.to_dict()]
         elif self.well_known_mode == 'http' or self.well_known_mode == 'https':
-            return self._reduce_keys()
+            return self._reduce_keys(keyname)
 
-    def _reduce_keys(self):
+    def _reduce_keys(self, keyname=None):
         access_file_keys = self.well_known['access_file']['jwks_keys']
         publishers_supported = self.well_known['publishers_supported']
 
@@ -97,16 +97,16 @@ class Verify(object):
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
-            keys = publishers_supported[publisher]['jwks_keys']
+            keys = publishers_supported[keyname]['jwks_keys']
             for key in range(len(keys)):
                 keys.append(
                     key
                 )
         return keys
 
-    def jws(self):
+    def jws(self, keyname=None):
         """Assumes you loaded a payload.  Return the same jws or raise a custom exception."""
-        key_material = self._get_public_key()
+        key_material = self._get_public_key(keyname)
 
         if isinstance(key_material, list):
             logger.debug('Multiple keys returned.  Attempting match.')
