@@ -106,6 +106,14 @@ class WellKnown(object):
         logger.debug('Initializing requests_cache TTL={} at {}'.format(self._request_cache_ttl, self._request_cache))
         requests_cache.install_cache(self._request_cache, expire_after=self._request_cache_ttl, backend='sqlite')
 
+    def get_publisher_rules(self):
+        """
+        Public wrapper for _load_rules
+        """
+        self._well_known_json = self._load_well_known()
+        rules_url = self._well_known_json.get('publishers_rules_uri')
+        return self._load_publisher_rules(rules_url)
+
     def get_schema(self):
         """
         Public wrapper for _load_well_known()
@@ -129,6 +137,32 @@ class WellKnown(object):
         Public wrapper for _load_well_known
         """
         return self._load_well_known()
+
+    def _load_publisher_rules(self, rules_url):
+        """
+        Get the CIS integration rules
+        """
+        rules = None
+        if rules_url is not None:
+            try:
+                r = requests.get(rules_url)
+                rules = r.json()
+                if r.from_cache:
+                    logger.debug('Loaded rules data from requests cache')
+            except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
+                logger.debug('Failed to load rules data from rules_url {} ({})'.format(rules_url, e))
+
+        # Fall-back to built-in copy
+        if rules is None:
+            rules_file = 'mozilla-iam-publisher-rules.json'
+            if not os.path.isfile(rules_file):
+                dirname = os.path.dirname(os.path.realpath(__file__))
+                path = dirname + '/' + rules_file
+            else:
+                path = rules_file
+
+            rules = json.load(open(path))
+        return rules
 
     def _load_well_known(self):
         """
@@ -164,6 +198,7 @@ class WellKnown(object):
         @stype: str, type of schema to load. This is also the name of the library builtin, local copy.
         Return dict JSON object which is the CIS Profile Schema
         """
+        schema = None
         if schema_url is not None:
             try:
                 r = requests.get(schema_url)
@@ -172,7 +207,6 @@ class WellKnown(object):
                     logger.debug('Loaded schema data from requests cache')
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
                 logger.debug('Failed to load schema from schema_url {} ({})'.format(schema_url, e))
-                schema = None
 
         # That did not work, fall-back to local, built-in copy
         if schema is None:
