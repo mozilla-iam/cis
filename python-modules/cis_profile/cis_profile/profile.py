@@ -168,6 +168,12 @@ class User(object):
         user = self._clean_dict()
         return dict(user)
 
+    def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC):
+        """
+        Filter the current user profile object (self) to only contain attributes with scopes listed in @scopes
+        @scopes list of str
+        """
+
     def validate(self):
         """
         Validates against a JSON schema
