@@ -16,8 +16,7 @@
         "access_provider": [ "access_provider" ],
         "ldap": [ "ldap" ],
         "hris": [ "hris" ],
-        "mozilliansorg": [ "mozilliansorg" ],
-        "cis": [ "cis"]
+        "mozilliansorg": [ "mozilliansorg" ]
     },
     "fun_title": [ "ldap", "mozilliansorg" ],
     "description": [ "ldap", "mozilliansorg" ],
@@ -49,8 +48,7 @@
         "access_provider": "access_provider",
         "ldap": "ldap",
         "hris": "hris",
-        "mozilliansorg": "mozilliansorg",
-        "cis": "cis"
+        "mozilliansorg": "mozilliansorg"
     },
     "fun_title": "mozilliansorg",
     "description": "mozilliansorg",

@@ -13,4 +13,9 @@ class Test_WellKnown(object):
         wk = WellKnown()
         data = wk.get_schema()
         assert(isinstance(data, dict))
-        assert(isinstance(data.get('$schema'), str))
+
+    def test_rules_retrieve(self):
+        wk = WellKnown()
+        data = wk.get_publisher_rules()
+        assert(isinstance(data, dict))
+        assert(isinstance(data.get('create'), dict))

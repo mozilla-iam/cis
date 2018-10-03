@@ -5,6 +5,8 @@ from cis_profile.common import DotDict
 from cis_profile.common import MozillaDataClassification
 
 import cis_crypto.operation
+import cis_profile.exceptions
+import jose.exceptions
 import json
 import json.decoder
 try:
@@ -68,6 +70,8 @@ class User(object):
                 raise Exception('Unknown user profile attribute {}'.format(kw))
 
         self.__signop = cis_crypto.operation.Sign()
+        self.__verifyop = cis_crypto.operation.Verify()
+        self.__verifyop.well_known = self.__well_known.get_well_known()
 
     def load(self, profile_json):
         """
@@ -197,9 +201,107 @@ class User(object):
 
         return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
+    def verify_can_publish(self, attr_name, attr, publisher_name):
+        """
+        Verifies that the selected publisher is allowed to change this attribute.
+        This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
+
+        Note that this does /!\ NOT VERIFY SIGNATURE /!\ and that you MUST call verify_attribute_signature()
+        separately.
+
+        If you do not, any publisher can pass a fake publisher name and this function will answer that the publisher is
+        allowed to publish, if the correct one is passed
+        @attr_name str the name of the attribute in the profile, e.g. "user_id"
+        @attr dict user profile attribute to verify, e.g. `User.user_id`
+        Return bool True on publisher allowed to publish, raise Exception otherwise
+        """
+        attr = DotDict(attr)
+        publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
+        logger.debug('Verifying that {} is allowed to publish field {}'.format(publisher_name, attr_name))
+
+        # Rules JSON structure:
+        # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
+        rules = self.__well_known.get_publisher_rules()
+        if publisher_name in rules.get('create')[attr_name]:
+            logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+            return True
+        elif publisher_name == rules.get('update')[attr_name]:
+            logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+            return True
+
+        logger.warning('{} is NOT allowed to publish field {}'.format(publisher_name, attr_name))
+        raise cis_profile.exceptions.PublisherVerificationFailure('[update] {} is allowed to publish field {}'
+                                                      .format(publisher_name, attr_name))
+
+    def verify_all_signatures(self):
+        """
+        Verifies all child nodes with a non-null value's signature against a publisher signature
+        """
+        for item in self.__dict__:
+                if type(self.__dict__[item]) is not DotDict:
+                    continue
+                try:
+                    attr = self.__dict__[item]
+                    if self._attribute_value_set(attr):
+                        attr = self._verify_attribute_signature(attr)
+                except KeyError:
+                    # This is the 2nd level attribute match, see also initialize_timestamps()
+                    for subitem in self.__dict__[item]:
+                        attr = self.__dict__[item][subitem]
+                        if self._attribute_value_set(attr):
+                            attr = self._verify_attribute_signature(attr)
+                if attr is not True:
+                    logger.warning('Verification failed for attribute {}'.format(attr))
+                    return False
+
+    def verify_attribute_signature(self, req_attr, publisher_name=None):
+        """
+        Verify the signature of an attribute
+        @req_attr str this is this user's attribute name, which will be looked up and verified in place
+        """
+        req_attrs = req_attr.split('.')  # Support subitems/subattributes such as 'access_information.ldap'
+        if len(req_attrs) == 1:
+            attr = self.__dict__[req_attr]
+        else:
+            attr = self.__dict__[req_attrs[0]][req_attrs[1]]
+        return self._verify_attribute_signature(attr)
+
+    def _verify_attribute_signature(self, attr, publisher_name=None):
+        """
+        Verify the signature of an attribute
+        @attr dict a structure of this user to be verified
+        @publisher_name bool or None if a publisher name is passed, this will be verified, otherwise the check is
+        ignored
+        """
+
+        if publisher_name is not None and attr['signature']['publisher']['value'] != publisher_name:
+            raise cis_profile.exceptions.SignatureVerificationFailure('Incorrect publisher')
+
+        self.__verifyop.load(attr['signature']['publisher']['value'])
+        try:
+            signed = json.loads(self.__verifyop.jws(publisher_name))
+        except jose.exceptions.JWSError as e:
+            logger.warning('Attribute signature verification failure: {} ({})'.format(attr, publisher_name))
+            raise cis_profile.exceptions.SignatureVerificationFailure('Attribute signature verification failure for {}'
+                                                                      '({}) ({})'.format(attr, publisher_name,  e))
+
+        # Finally check our object matches the stored data
+        attrnosig = attr.copy()
+        del attrnosig['signature']
+
+        if signed is None:
+            raise cis_profile.exceptions.SignatureVerificationFailure('No data returned by jws() call for '
+                                                                      'attribute {}'.format(attr))
+        elif signed != attrnosig:
+            raise cis_profile.exceptions.SignatureVerificationFailure('Signature data in jws does not match '
+                                                                      'attribute data => {} != {}'.format(attrnosig,
+                                                                                                          signed))
+
+
     def sign_all(self):
         """
-        Sign all child nodes with a non-null or non-empty value(s)
+        Sign all child nodes with a non-null value(s) OR empty values (strict=False)
+        To sign empty values, manually call sign_attribute()
         This requires cis_crypto to be properly setup (i.e. with keys)
         """
 
@@ -209,18 +311,19 @@ class User(object):
                 continue
             try:
                 attr = self.__dict__[item]
-                if self._attribute_value_set(attr):
+                if self._attribute_value_set(attr, strict=False):
                     attr = self._sign_attribute(attr)
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
                     attr = self.__dict__[item][subitem]
-                    if self._attribute_value_set(attr):
+                    if self._attribute_value_set(attr, strict=False):
                         attr = self._sign_attribute(attr)
 
     def sign_attribute(self, req_attr):
         """
         Sign a single attribute, including null/empty/unset attributes
+        @req_attr str this user's attribute to sign in place
         """
         req_attrs = req_attr.split('.')  # Support subitems/subattributes such as 'access_information.ldap'
         if len(req_attrs) == 1:
@@ -229,23 +332,27 @@ class User(object):
             attr = self.__dict__[req_attrs[0]][req_attrs[1]]
         return self._sign_attribute(attr)
 
-    def _attribute_value_set(self, attr):
+    def _attribute_value_set(self, attr, strict=True):
         """
-        Checks if an attribute is used/set, ie not null or empty
-        @attr a complete CIS Profilev2 attribute (such as {'test': {'value': null}})
+        Checks if an attribute is used/set, ie not null
+        @attr dict a complete CIS Profilev2 attribute (such as {'test': {'value': null}})
+        @strict bool if True then only null values will be ignored, if False then empty strings/Lists/Dicts will also be
+        ignored
         returns: True if the attribute has a value, False if not
         """
+
+        # Note that None is the JSON `null` equivalent (and not "null" is not the string "null")
         if 'value' in attr:
             if attr['value'] is None:
                 return False
             elif isinstance(attr['value'], bool):
                 return True
-            elif len(attr['value']) == 0:
+            elif not strict and len(attr['value']) == 0:
                 return False
         elif 'values' in attr:
             if attr['values'] is None:
                 return False
-            elif len(attr['values']) == 0:
+            elif not strict and len(attr['values']) == 0:
                 return False
         else:
             raise KeyError(attr)
