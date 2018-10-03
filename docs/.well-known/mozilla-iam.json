@@ -4,7 +4,7 @@
     "endpoint": "https://cdn.sso.mozilla.com/apps.yml",
     "aai_mapping": {
       "LOW": ["NO_RECENT_AUTH_FAIL", "AUTH_RATE_NORMAL"],
-      "MEDIUM": ["2FA", "HAS_KNOWN_BROWSER_KEY"],
+      "MEDIUM": ["2FA", "HAS_KNOWN_BROWSER_KEY", "HIGH_ASSURANCE_IDP"],
       "HIGH": ["GEOLOC_NEAR", "SAME_IP_RANGE"],
       "MAXIMUM": ["KEY_AUTH"]
     },
