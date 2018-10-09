@@ -201,7 +201,26 @@ class User(object):
 
         return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
-    def verify_can_publish(self, attr_name, attr, publisher_name):
+    def verify_all_publishers(self):
+        """
+        Verifies all child nodes have an allowed publisher set according to the rules
+        """
+        for item in self.__dict__:
+                if type(self.__dict__[item]) is not DotDict:
+                    continue
+                try:
+                    attr = self.__dict__[item]
+                    ret = self.verify_can_publish(attr, attr_name=item)
+                except KeyError:
+                    # This is the 2nd level attribute match, see also initialize_timestamps()
+                    for subitem in self.__dict__[item]:
+                        attr = self.__dict__[item][subitem]
+                        ret = self.verify_can_publisher(attr, attr_name=item, parent_name=subitem)
+                if ret is not True:
+                    logger.warning('Verification of publisher failed for attribute {}'.format(attr))
+                    return False
+
+    def verify_can_publish(self, attr, attr_name, parent_name=None):
         """
         Verifies that the selected publisher is allowed to change this attribute.
         This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
@@ -210,10 +229,11 @@ class User(object):
         separately.
 
         If you do not, any publisher can pass a fake publisher name and this function will answer that the publisher is
-        allowed to publish, if the correct one is passed
-        @attr_name str the name of the attribute in the profile, e.g. "user_id"
-        @attr dict user profile attribute to verify, e.g. `User.user_id`
-        Return bool True on publisher allowed to publish, raise Exception otherwise
+        allowed to publish, if the correct one is passed.
+        @attr dict requested attribute to verify the publisher of.
+        @attr_name str the name of the requested attribute as we cannot look this up.
+        @parent_name str the name of the requested attribute's parent name as we cannot look this up.
+        Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
         attr = DotDict(attr)
         publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
@@ -222,12 +242,22 @@ class User(object):
         # Rules JSON structure:
         # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
         rules = self.__well_known.get_publisher_rules()
-        if publisher_name in rules.get('create')[attr_name]:
-            logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
-            return True
-        elif publisher_name == rules.get('update')[attr_name]:
-            logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
-            return True
+        if parent_name is None:
+            allowed_creators = rules['create'][attr_name]
+            allowed_updators = rules['update'][attr_name]
+        else:
+            allowed_creators = rules['create'][parent_name][attr_name]
+            allowed_updators = rules['update'][parent_name][attr_name]
+
+        # Creators are only allowed if there is no previous value set
+        if self._attribute_value_set(attr):
+            if publisher_name in allowed_creators:
+                logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+                return True
+        else:
+            if publisher_name == allowed_updators:
+                logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+                return True
 
         logger.warning('{} is NOT allowed to publish field {}'.format(publisher_name, attr_name))
         raise cis_profile.exceptions.PublisherVerificationFailure('[update] {} is allowed to publish field {}'
@@ -254,7 +284,7 @@ class User(object):
                     logger.warning('Verification failed for attribute {}'.format(attr))
                     return False
 
-    def verify_attribute_signature(self, req_attr, publisher_name=None):
+    def verify_attribute_signature(self, req_attr):
         """
         Verify the signature of an attribute
         @req_attr str this is this user's attribute name, which will be looked up and verified in place
@@ -270,8 +300,8 @@ class User(object):
         """
         Verify the signature of an attribute
         @attr dict a structure of this user to be verified
-        @publisher_name bool or None if a publisher name is passed, this will be verified, otherwise the check is
-        ignored
+        @publisher_name str this is the name of the publisher that should be signing this attribute. If None, the
+        publisher_name from the current user structure is used instead and no check is performed.
         """
 
         if publisher_name is not None and attr['signature']['publisher']['value'] != publisher_name:
@@ -296,7 +326,6 @@ class User(object):
             raise cis_profile.exceptions.SignatureVerificationFailure('Signature data in jws does not match '
                                                                       'attribute data => {} != {}'.format(attrnosig,
                                                                                                           signed))
-
 
     def sign_all(self):
         """
