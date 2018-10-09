@@ -238,6 +238,7 @@ class User(object):
         attr = DotDict(attr)
         publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
         logger.debug('Verifying that {} is allowed to publish field {}'.format(publisher_name, attr_name))
+        operation='create'
 
         # Rules JSON structure:
         # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
@@ -251,17 +252,19 @@ class User(object):
 
         # Creators are only allowed if there is no previous value set
         if self._attribute_value_set(attr):
+            operation='create'
             if publisher_name in allowed_creators:
                 logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
                 return True
         else:
+            operation='update'
             if publisher_name == allowed_updators:
                 logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
                 return True
 
-        logger.warning('{} is NOT allowed to publish field {}'.format(publisher_name, attr_name))
-        raise cis_profile.exceptions.PublisherVerificationFailure('[update] {} is allowed to publish field {}'
-                                                                  .format(publisher_name, attr_name))
+        logger.warning('[{}] {} is NOT allowed to publish field {}'.format(operation, publisher_name, attr_name))
+        raise cis_profile.exceptions.PublisherVerificationFailure('[{}] {} is NOT allowed to publish field {}'
+                                                                  .format(operation, publisher_name, attr_name))
 
     def verify_all_signatures(self):
         """
