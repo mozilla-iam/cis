@@ -261,7 +261,7 @@ class User(object):
 
         logger.warning('{} is NOT allowed to publish field {}'.format(publisher_name, attr_name))
         raise cis_profile.exceptions.PublisherVerificationFailure('[update] {} is allowed to publish field {}'
-                                                      .format(publisher_name, attr_name))
+                                                                  .format(publisher_name, attr_name))
 
     def verify_all_signatures(self):
         """
@@ -313,7 +313,7 @@ class User(object):
         except jose.exceptions.JWSError as e:
             logger.warning('Attribute signature verification failure: {} ({})'.format(attr, publisher_name))
             raise cis_profile.exceptions.SignatureVerificationFailure('Attribute signature verification failure for {}'
-                                                                      '({}) ({})'.format(attr, publisher_name,  e))
+                                                                      '({}) ({})'.format(attr, publisher_name, e))
 
         # Finally check our object matches the stored data
         attrnosig = attr.copy()
