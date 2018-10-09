@@ -95,3 +95,8 @@ class TestProfile(object):
         assert u.verify_can_publish(u.user_id, 'user_id') is True
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
             u.verify_can_publish(attrfail, namefail)
+
+    def test_verify_all_publishers(self):
+        u = profile.User(user_id='test')
+        with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
+            u.verify_all_publishers()
