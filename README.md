@@ -1,5 +1,9 @@
 # CIS - Change Integration Service
 
+# THIS IS A WIP BRANCH FOR PROFILE v2
+
+This is a work in progress for updating docs and design concepts for profile v2.  Things may not all be updated as yet.
+
 ## Documentation & Resources
 
 - [CIS Person-API](https://github.com/mozilla-iam/person-api)
