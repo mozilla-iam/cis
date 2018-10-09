@@ -1,6 +1,7 @@
 from cis_profile import profile
 from cis_profile.common import MozillaDataClassification
 
+import copy
 import cis_profile.exceptions
 import pytest
 import os
@@ -82,19 +83,20 @@ class TestProfile(object):
         u = profile.User(user_id='test')
         u.sign_attribute('user_id')
         u.verify_attribute_signature('user_id')
-        u.verify_attribute_signature('user_id', publisher_name='access_provider')
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature('fun_title')  # Unsigned, so should raise and fail
 
     def test_verify_can_publish(self):
         u = profile.User(user_id='test')
-        publisher_name = 'cis'
-        attr = u.user_id.copy()
-        name = 'user_id'
 
-        attrfail = u.first_name.copy()
+        attrfail = copy.deepcopy(u.first_name)
         attrfail['signature']['publisher']['name'] = 'failure'
         namefail = 'first_name'
-        assert u.verify_can_publish(name, attr, publisher_name) is True
+        assert u.verify_can_publish(u.user_id, 'user_id') is True
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
-            u.verify_can_publish(namefail, attrfail, publisher_name)
+            u.verify_can_publish(attrfail, namefail)
+
+    def test_verify_all_publishers(self):
+        u = profile.User(user_id='test')
+        with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
+            u.verify_all_publishers()

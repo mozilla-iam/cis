@@ -9,4 +9,5 @@ __all__ = [User,
            DotDict,
            WellKnown,
            MozillaDataClassification,
-           DotDict]
+           DotDict,
+           cis_profile.exceptions]
