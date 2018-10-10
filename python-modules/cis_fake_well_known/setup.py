@@ -6,7 +6,11 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['jsonschema', 'python-jose', 'flask', 'everett', 'faker']
+requirements = [
+    'python-jose-cryptodome', 'python-jose', 'everett',
+    'boto3==1.7.67', 'boto==2.49.0', 'jsonschema', 'flask',
+    'faker'
+]
 
 setup_requirements = ['pytest-runner']
 

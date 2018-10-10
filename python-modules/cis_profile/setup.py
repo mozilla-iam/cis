@@ -29,6 +29,7 @@ setup(
     license="Mozilla Public License 2.0",
     include_package_data=True,
     packages=find_packages(include=['cis_profile']),
+    package_data={'cis_profile': ['*.json', '*.schema']},
     setup_requires=setup_requirements,
     tests_require=test_requirements,
     extras_require=extras,

@@ -10,7 +10,7 @@ class TestWellKnownEndpoint(object):
         from cis_fake_well_known import well_known
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis-testing.ini'
 
-        well_known_object = well_known.MozillIAM()
+        well_known_object = well_known.MozillaIAM()
 
         res = well_known_object.data()
 
