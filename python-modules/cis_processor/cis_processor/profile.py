@@ -18,7 +18,7 @@ class ProfileDelegate(object):
         )
 
     def _get_user_id_from_stream(self):
-        kinesis_data = self.event_record.get('data')
+        kinesis_data = self.event_record['kinesis']['data']
         user_profile = json.loads(base64.b64decode(kinesis_data))
         profile_v2_data = json.loads(user_profile['profile'])
         return profile_v2_data['user_id']['value']
@@ -36,7 +36,7 @@ class ProfileDelegate(object):
 
     def load_new_user_profile(self):
         """Return an instance of cis_profile User."""
-        kinesis_data = self.event_record.get('data')
+        kinesis_data = self.event_record['kinesis']['data']
         user_profile = json.loads(base64.b64decode(kinesis_data))
         profile_v2_data = json.loads(user_profile['profile'])
         user_object = User(user_structure_json=profile_v2_data)

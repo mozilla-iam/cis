@@ -1,36 +1,60 @@
-import boto3
 import json
-
-from base64 import b64decode
-from cis_crypto import operation
 from cis_processor import profile
-from cis_profile import User as Profilev2User
+from cis_processor.common import get_config
+from cis_identity_vault.models import user
 
 
 from logging import getLogger
 
 logger = getLogger(__name__)
 
+
 class BaseProcessor(object):
     """Object to the basics to check the schema and integrate to dynamodb."""
-    def __init__(self, event, dynamodb_client, dynamodb_table):
-        self.event = event
+    def __init__(self, event_record, dynamodb_client, dynamodb_table):
+        self.event_record = event_record
         self.dynamodb_client = dynamodb_client
         self.dynamodb_table = dynamodb_table
+        self.config = get_config()
 
     def _load_profiles(self):
-        profile_delegate = profile.ProfileDelegate(self.event, self.dynamodb_client, self.dynamodb_table)
+        profile_delegate = profile.ProfileDelegate(self.event_record, self.dynamodb_client, self.dynamodb_table)
         self.profiles = profile_delegate.profiles
+
+    def _profile_to_vault_structure(self, user_profile):
+        return {
+            'sequence_number': self.event_record['kinesis']['sequenceNumber'],
+            'primary_email': user_profile['primary_email']['value'],
+            'profile': json.dumps(user_profile),
+            'id': user_profile['user_id']['value']
+        }
 
     def process(self):
         self._load_profiles()
+        publishers_valid = False
+        signatures_valid = False
+
         if self.needs_integration(self.profiles['new_profile'], self.profiles['old_profile']):
             # Check the rules
-            self.profiles['new_user'].validate()
-            self.profiles['new_user'].verify_all_publishers()
-            pass
+            self.profiles['new_profile'].validate()
+            publishers_valid = self.profiles['new_profile'].verify_all_publishers(
+                previous_user=self.profiles['old_profile']
+            )
+
+            if self.config('processor_verify_signatures', namespace='cis', default='True') == 'True':
+                signatures_valid = self.profiles['new_profile'].verify_all_signatures()
+            else:
+                signatures_valid = True
         else:
-            pass
+            return True
+
+        if signatures_valid is True and publishers_valid is True:
+            vault_data_structure = self._profile_to_vault_structure(self.profiles['new_profile'].as_dict())
+            identity_vault = user.Profile(self.dynamodb_table)
+            identity_vault.create(vault_data_structure)
+            return True
+        else:
+            return False
 
     def needs_integration(self, new_user_profile, old_user_profile):
         """Retreive the profile from the dynamodb table.  Integrate it as needed."""
@@ -44,28 +68,6 @@ class BaseProcessor(object):
             return True
         return False
 
-    def integration_authorized(self):
-        """Truthy method returns if object should be put to dynamodb."""
-        pass
-
-    def _to_dynamodb_schema(self):
-        """Takes user profile and converts it to the datastructure necessary to put to dynamodb."""
-        """
-        dynamodb_schema = dict(
-            primary_email=
-            sequence_number=
-            profile=
-            user_id=
-        )
-
-        return dynamodb_schema
-        """
-        pass
-
-    def _sequence_number_out_of_order(self):
-        """Truthy method ensures sequence numbers are incrementing.  Reject if not by raising."""
-        pass
-
     def event_type(self):
         """Return kinesis or dynamodb based on event structure."""
         if self.event.get('kinesis') is not None:
@@ -73,32 +75,3 @@ class BaseProcessor(object):
 
         if self.event.get('dynamodb') is not None:
             return 'dynamodb'
-
-
-class VerifyProcessor(BaseProcessor):
-    """Override operation object and introduce crypto sign/verify bits."""
-    def __init__(self, event, dyanmodb_client, dynamodb_table):
-        """Super the base object to reusability."""
-        pass
-
-    def verify_signature(self):
-        """Takes an attribute and returns a dictionary using the strict verification mode in cis_crypto.
-        Raises if the signature is not verifiable.
-        """
-        pass
-
-    def is_correct_publisher_for_attr(self):
-        """Takes the publisher kid and compares it with the schema.  Returns true or false for the attribute."""
-        pass
-
-    def _cache_well_known(self):
-        """Grab the .well-known metadata every 15 minutes and serialize to cache."""
-        pass
-
-    def _fifteen_minutes_has_passed(self):
-        """Let cache .well-known know to refresh the cache."""
-        pass
-
-    def _verify_signature(self, jws):
-        """Truthy method takes a JWS and compares it to the .well-known file."""
-        pass
