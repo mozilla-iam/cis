@@ -201,26 +201,38 @@ class User(object):
 
         return jsonschema.validate(self.as_dict(), self.__well_known.get_schema())
 
-    def verify_all_publishers(self):
+    def verify_all_publishers(self, previous_user):
         """
         Verifies all child nodes have an allowed publisher set according to the rules
+        @previous_user profile.User object is the previous user we're updating fields from. This allows for checking if
+        fields are being updated (value is already set) or created (values are changed from `null`). It defaults to an
+        empty profile (with a bunch of `null` values).
+
+        Ex: user.verify_all_publishers(cis_profile.profile.User()) #this checks against a brand new user
+
+        Returns True on success, False if validation fails.
         """
         for item in self.__dict__:
                 if type(self.__dict__[item]) is not DotDict:
                     continue
                 try:
                     attr = self.__dict__[item]
-                    ret = self.verify_can_publish(attr, attr_name=item)
-                except KeyError:
+                    ret = self.verify_can_publish(attr,
+                                                  attr_name=item,
+                                                  previous_attribute=previous_user.as_dict()[item])
+                except (AttributeError, KeyError):
                     # This is the 2nd level attribute match, see also initialize_timestamps()
                     for subitem in self.__dict__[item]:
                         attr = self.__dict__[item][subitem]
-                        ret = self.verify_can_publisher(attr, attr_name=item, parent_name=subitem)
+                        ret = self.verify_can_publish(attr,
+                                                      attr_name=subitem,
+                                                      parent_name=item,
+                                                      previous_attribute=previous_user.as_dict()[item][subitem])
                 if ret is not True:
                     logger.warning('Verification of publisher failed for attribute {}'.format(attr))
                     return False
 
-    def verify_can_publish(self, attr, attr_name, parent_name=None):
+    def verify_can_publish(self, attr, attr_name, parent_name=None, previous_attribute=None):
         """
         Verifies that the selected publisher is allowed to change this attribute.
         This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
@@ -233,6 +245,11 @@ class User(object):
         @attr dict requested attribute to verify the publisher of.
         @attr_name str the name of the requested attribute as we cannot look this up.
         @parent_name str the name of the requested attribute's parent name as we cannot look this up.
+        @previous_attribute dict the previous attribute if the user is being updated. If None, the value is always
+        considered to be "updated" from the current value stored in `self.__dict__`. Otherwise, it will check against
+        the passed value if it's `null` or set, and consider it "created" if it's `null`, "updated" otherwise. Makes
+        sense? Good!
+
         Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
         attr = DotDict(attr)
@@ -242,6 +259,7 @@ class User(object):
 
         # Rules JSON structure:
         # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
+        # I know `updators` is not English :)
         rules = self.__well_known.get_publisher_rules()
         if parent_name is None:
             allowed_creators = rules['create'][attr_name]
@@ -250,19 +268,42 @@ class User(object):
             allowed_creators = rules['create'][parent_name][attr_name]
             allowed_updators = rules['update'][parent_name][attr_name]
 
-        # Creators are only allowed if there is no previous value set
-        if self._attribute_value_set(attr):
-            operation = 'create'
-            if publisher_name in allowed_creators:
+        # Do we have an attribute to check against?
+        if previous_attribute is not None:
+            # Creators are only allowed if there is no previous value set
+            if (self._attribute_value_set(previous_attribute) is False) and (self._attribute_value_set(attr) is True):
+                operation = 'create'
+                if publisher_name in allowed_creators:
+                    logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
+                    return True
+            else:
+                operation = 'update'
+                # Find if the value changed at all, else don't bother checking and allow it. Otherwise, we'd fail when a
+                # publisher tries to validate all fields, but has not actually modified them all.
+                # Figure out where values are stored first:
+                if 'value' in attr:
+                    value = 'value'
+                else:
+                    value = 'values'
+
+                if attr[value] == previous_attribute[value]:
+                    logger.debug('[noop] {} skipped verification for  {} (no changes)'
+                                 .format(publisher_name, attr_name))
+                    return True
+
+        # No previous attribute set, just check we're allowed to change the field
+        else:
+            if not self._attribute_value_set(attr):
+                operation = 'create'
                 logger.debug('[create] {} is allowed to publish field {}'.format(publisher_name, attr_name))
                 return True
-        else:
-            operation = 'update'
-            if publisher_name == allowed_updators:
+            elif publisher_name == allowed_updators:
                 logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
                 return True
 
-        logger.warning('[{}] {} is NOT allowed to publish field {}'.format(operation, publisher_name, attr_name))
+        # None of the checks allowed this change, bail!
+        logger.warning('[{}] {} is NOT allowed to publish field {} (value: {}, previous_attribute value: {})'
+                       .format(operation, publisher_name, attr_name, attr, previous_attribute))
         raise cis_profile.exceptions.PublisherVerificationFailure('[{}] {} is NOT allowed to publish field {}'
                                                                   .format(operation, publisher_name, attr_name))
 
