@@ -91,6 +91,7 @@ class TestProfile(object):
 
         attrfail = copy.deepcopy(u.first_name)
         attrfail['signature']['publisher']['name'] = 'failure'
+        attrfail['value'] = 'failure'
         namefail = 'first_name'
         assert u.verify_can_publish(u.user_id, 'user_id') is True
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
@@ -98,5 +99,9 @@ class TestProfile(object):
 
     def test_verify_all_publishers(self):
         u = profile.User(user_id='test')
+        old_user = profile.User()
+        u.verify_all_publishers(old_user)
+
+        old_user.active.value = True
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
-            u.verify_all_publishers()
+            u.verify_all_publishers(old_user)
