@@ -231,6 +231,7 @@ class User(object):
                 if ret is not True:
                     logger.warning('Verification of publisher failed for attribute {}'.format(attr))
                     return False
+        return True
 
     def verify_can_publish(self, attr, attr_name, parent_name=None, previous_attribute=None):
         """
@@ -327,6 +328,7 @@ class User(object):
                 if attr is not True:
                     logger.warning('Verification failed for attribute {}'.format(attr))
                     return False
+        return True
 
     def verify_attribute_signature(self, req_attr):
         """

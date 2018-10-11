@@ -40,7 +40,7 @@ class Profile(object):
 
     def find_by_email(self, primary_email):
         result = self.table.query(
-            IndexName='local-identity-vault-primary_email',
+            IndexName='{}-primary_email'.format(self.table.table_name),
             KeyConditionExpression=Key('primary_email').eq(primary_email)
         )
         return result
@@ -55,3 +55,15 @@ class Profile(object):
             )
             users.extend(response['Items'])
         return users
+
+    def all_by_page(self, next_page=None, limit=25):
+        if next_page is not None:
+            response = self.table.scan(
+                Limit=limit,
+                ExclusiveStartKey=next_page
+            )
+        else:
+            response = self.table.scan(
+                Limit=limit
+            )
+        return response

@@ -165,14 +165,31 @@ class IdentityVault(object):
 
         return result
 
+    def __get_table_resource(self):
+        region = self.config('region_name', namespace='cis', default='us-west-2')
+        if self._get_cis_environment() == 'local':
+            self.boto_session = Stubber(boto3.session.Session(region_name=region)).client
+            dynalite_port = self.config('dynalite_port', namespace='cis', default='4567')
+            dynalite_host = self.config('dynalite_host', namespace='cis', default='localhost')
+
+            dynamodb_resource = self.boto_session.resource(
+                'dynamodb',
+                endpoint_url='http://{}:{}'.format(
+                    dynalite_host,
+                    dynalite_port
+                )
+            )
+        else:
+            dynamodb_resource = boto3.resource('dynamodb')
+            table = dynamodb_resource.Table(self._generate_table_name())
+            return table
+
     def find_or_create(self):
         if self.find() is not None:
-            dynamodb_resource = boto3.resource('dynamodb')
-            table = dynamodb_resource.Table(self._generate_table_name())
+            table = self.__get_table_resource()
         else:
             self.create()
-            dynamodb_resource = boto3.resource('dynamodb')
-            table = dynamodb_resource.Table(self._generate_table_name())
+            table = self.__get_table_resource()
         return table
 
     def describe_indices(self):

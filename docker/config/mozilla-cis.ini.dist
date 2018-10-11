@@ -8,10 +8,10 @@ environment=local
 assume_role_arn=arn:aws:iam::123456789000:role/demo-assume-role
 
 # Set these parameters if you are running locally.
-# dynalite_host=localhost
-# dynalite_port=4567
-# kinesalite_host=localhost
-# kinesalite_port=4568
+dynalite_host=localhost
+dynalite_port=4567
+kinesalite_host=localhost
+kinesalite_port=4568
 
 # Fake Well Known Endpoint Options
 oidc_discovery_uri='https://auth.mozilla.com/.well-known/openid-configuration'
@@ -39,10 +39,10 @@ signing_key_name=fake-access-file-key
 # Publisher Settings
 publisher_id=fakemozilliansorg
 kinesis_stream_name=local-stream
-stream_bypass=false # For use in development only for bypassing stream processors
-jwt_validation=true # For use in development where you may not have access to auth0 or a mocker
-
+stream_bypass=true # For use in development where you may not have access to auth0 or a mocker
 seed_api_data=true # Set this to populate the identity vault with users on person api spin up
+change_service_port=8100
+profile_retrieval_port=8200
 
 [person_api]
 environment=local

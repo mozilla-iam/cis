@@ -32,7 +32,8 @@ test_requirements = [
     'pytest-mock',
     'moto',
     'mock',
-    'flake8'
+    'flake8',
+    'iam-profile-faker'
 ]
 
 setup(

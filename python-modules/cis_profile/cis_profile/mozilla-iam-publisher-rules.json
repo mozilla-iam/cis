@@ -1,1 +1,66 @@
-../../../docs/.well-known/mozilla-iam-publisher-rules
+{
+  "create": {
+    "user_id": [ "ldap", "hris", "access_provider" ],
+    "login_method": [ "ldap", "hris", "access_provider" ],
+    "active": [ "ldap", "hris", "access_provider" ],
+    "last_modified": [ "ldap", "hris", "access_provider" ],
+    "created": [ "ldap", "hris", "access_provider" ],
+    "usernames": [ "ldap", "access_provider", "mozilliansorg" ],
+    "first_name": [ "ldap", "hris", "access_provider" ],
+    "last_name": [ "ldap", "hris", "access_provider" ],
+    "primary_email": [ "ldap", "hris", "access_provider" ],
+    "identities": [ "ldap", "hris", "access_provider" ],
+    "ssh_public_keys": [ "ldap", "mozilliansorg" ],
+    "pgp_public_keys": [ "ldap", "mozilliansorg" ],
+    "access_information": {
+        "access_provider": [ "access_provider" ],
+        "ldap": [ "ldap" ],
+        "hris": [ "hris" ],
+        "mozilliansorg": [ "mozilliansorg" ]
+    },
+    "fun_title": [ "ldap", "mozilliansorg" ],
+    "description": [ "ldap", "mozilliansorg" ],
+    "location_preference": [ "ldap", "mozilliansorg" ],
+    "office_location": [ "ldap", "mozilliansorg" ],
+    "timezone": [ "ldap", "mozilliansorg" ],
+    "preferred_languages": [ "ldap", "mozilliansorg" ],
+    "tags": [ "ldap", "mozilliansorg" ],
+    "pronouns": [ "ldap", "mozilliansorg" ],
+    "picture": [ "ldap", "mozilliansorg" ],
+    "uris": [ "ldap", "mozilliansorg" ],
+    "phone_numbers": [ "ldap", "mozilliansorg" ],
+    "alternative_name": [ "ldap", "mozilliansorg" ]
+  },
+  "update": {
+    "user_id": "access_provider",
+    "login_method": "access_provider",
+    "active": "cis",
+    "last_modified": "cis",
+    "created": "cis",
+    "usernames": "mozilliansorg",
+    "first_name": "mozilliansorg",
+    "last_name": "mozilliansorg",
+    "primary_email": "access_provider",
+    "identities": "mozilliansorg",
+    "ssh_public_keys": "mozilliansorg",
+    "pgp_public_keys": "mozilliansorg",
+    "access_information": {
+        "access_provider": "access_provider",
+        "ldap": "ldap",
+        "hris": "hris",
+        "mozilliansorg": "mozilliansorg"
+    },
+    "fun_title": "mozilliansorg",
+    "description": "mozilliansorg",
+    "location_preference": "mozilliansorg",
+    "office_location": "mozilliansorg",
+    "timezone": "mozilliansorg",
+    "preferred_languages": "mozilliansorg",
+    "tags": "mozilliansorg",
+    "pronouns": "mozilliansorg",
+    "picture": "mozilliansorg",
+    "uris": "mozilliansorg",
+    "phone_numbers": "mozilliansorg",
+    "alternative_name": "mozilliansorg"
+  }
+}

@@ -6,25 +6,28 @@ import random
 from botocore.stub import Stubber
 from moto import mock_dynamodb2
 
+
 def profile_to_vault_structure(user_profile):
     return {
-        'sequence_number': str(random.randint(100000,100000000)),
+        'sequence_number': str(random.randint(100000, 100000000)),
         'primary_email': user_profile['primary_email']['value'],
         'profile': json.dumps(user_profile),
         'id': user_profile['user_id']['value']
     }
+
 
 def kinesis_event_generate(user_profile):
     fh = open('tests/fixture/kinesis-event.json')
     kinesis_event_structure = json.loads(fh.read())
     fh.close()
 
-    kinesis_event_structure['Records'][0]['parititionKey'] = 'generic_publisher'
-    kinesis_event_structure['Records'][0]['data'] = base64.b64encode(
+    kinesis_event_structure['Records'][0]['kinesis']['parititionKey'] = 'generic_publisher'
+    kinesis_event_structure['Records'][0]['kinesis']['data'] = base64.b64encode(
         json.dumps(profile_to_vault_structure(user_profile=user_profile)).encode()
     ).decode()
 
-    return kinesis_event_structure
+    return kinesis_event_structure['Records'][0]
+
 
 @mock_dynamodb2
 class TestProfileDelegate(object):
@@ -72,7 +75,7 @@ class TestProfileDelegate(object):
 
     def test_profile_object_returns_object_it_should_succeed(self):
         from cis_processor.profile import ProfileDelegate
-        profile_delegate = ProfileDelegate(self.mr_mozilla_change_event['Records'][0], self.dynamodb_client, self.table)
+        profile_delegate = ProfileDelegate(self.mr_mozilla_change_event, self.dynamodb_client, self.table)
         old_user_profile = profile_delegate.load_old_user_profile()
         assert old_user_profile.as_json() is not None
 
@@ -94,6 +97,6 @@ class TestProfileDelegate(object):
 
         kinesis_event = kinesis_event_generate(user_profile=new_user_stub)
 
-        profile_delegate = ProfileDelegate(kinesis_event['Records'][0], self.dynamodb_client, self.table)
+        profile_delegate = ProfileDelegate(kinesis_event, self.dynamodb_client, self.table)
         result = profile_delegate.load_old_user_profile()
         assert result is None

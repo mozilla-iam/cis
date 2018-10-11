@@ -44,7 +44,7 @@ def get_table_resource():
         )
     else:
         session = boto3.session.Session(region_name=region)
-        resource = session.resource('dyanmodb')
+        resource = session.resource('dynamodb')
 
     table = resource.Table(table_name)
     return table
@@ -54,12 +54,13 @@ def initialize_vault():
     if config('environment', namespace='cis', default='local') == 'local':
         identity_vault = IdentityVault()
         identity_vault.find_or_create()
+    else:
+        return None
 
 
-def seed():
-    environment = config('environment', namespace='cis', default='local')
-    seed_data = config('seed_api_data', namespace='cis', default='true')
-    if environment == 'local' and seed_data.lower() == 'true':
+def seed(number_of_fake_users=100):
+    seed_data = config('seed_api_data', namespace='cis', default='false')
+    if seed_data.lower() == 'true':
         table = get_table_resource()
         user_profile = user.Profile(table)
 
@@ -68,7 +69,7 @@ def seed():
         else:
             factory = V2ProfileFactory()
             factory.create()
-            identities = factory.create_batch(5)
+            identities = factory.create_batch(number_of_fake_users)
 
             for identity in identities:
                 identity_vault_data_structure = {

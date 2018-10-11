@@ -41,7 +41,7 @@ RUN echo '### Setting up supervisord'
 RUN pip install supervisor
 RUN mkdir -p /opt/cis/conf
 COPY docker/config/supervisor.conf /opt/cis/conf/
-
+COPY docker/config/mozilla-cis.ini.dist /etc/mozila-cis.ini
 RUN echo '### Setting up a home for cis.'
 RUN mkdir -p /opt/cis
 ADD . /opt/cis

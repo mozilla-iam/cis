@@ -8,4 +8,4 @@ from cis_fake_well_known.app import app
 from cis_fake_well_known.common import get_config
 
 if __name__== "__main__":
-  app.run(port=get_config('fake_well_known_port', namespace='cis', default='5000'))
+  app.run(port=get_config('profile_retrieval_port', namespace='cis', default='5000'))
