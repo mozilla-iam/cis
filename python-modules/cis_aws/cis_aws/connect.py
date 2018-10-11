@@ -93,10 +93,15 @@ class AWS(object):
                 'dynamodb', endpoint_url='http://{}:{}'.format(dynalite_host, dynalite_port)
             )
 
+            dynamodb_resource = self._boto_session.resource(
+                'dynamodb', endpoint_url='http://{}:{}'.format(dynalite_host, dynalite_port)
+            )
+
             # Construct a dictionary of standard information.
             identity_vault_info = {
                 'client': dynamodb_client,
-                'arn': self._discover_dynamo_table(dynamodb_client)
+                'arn': self._discover_dynamo_table(dynamodb_client),
+                'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
             }
         else:
             # Assume we are using an assumeRole because not local.
@@ -106,9 +111,17 @@ class AWS(object):
                 aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
                 aws_session_token=self.assume_role_session['Credentials']['SessionToken']
             )
+
+            dynamodb_resource = self._boto_session.resource(
+                'dynamodb',
+                aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
+                aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
+                aws_session_token=self.assume_role_session['Credentials']['SessionToken']
+            )
             identity_vault_info = {
                 'client': dynamodb_client,
-                'arn': self._discover_dynamo_table(dynamodb_client)
+                'arn': self._discover_dynamo_table(dynamodb_client),
+                'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
             }
 
         return identity_vault_info

@@ -133,7 +133,6 @@ class AccessInformation(StandardProperty):
 
 
 ## Profiles
-
 class CoreProfile(graphene.ObjectType):
     user_id = graphene.Field(StandardAttributeString)
     login_method = graphene.Field(StandardAttributeString)

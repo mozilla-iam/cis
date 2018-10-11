@@ -10,7 +10,7 @@ app = Flask(__name__)
 
 @app.route('/.well-known/mozilla-iam')
 def mozilla_iam():
-    return jsonify(well_known.MozillIAM().data())
+    return jsonify(well_known.MozillaIAM().data())
 
 
 @app.route('/.well-known/mozilla-iam-publisher-rules')

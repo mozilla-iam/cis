@@ -5,6 +5,7 @@ import os
 sys.path.append(os.getcwd())
 
 from cis_fake_well_known.app import app
+from cis_fake_well_known.common import get_config
 
 if __name__== "__main__":
-  app.run()
+  app.run(port=get_config('fake_well_known_port', namespace='cis', default='5000'))

@@ -41,3 +41,11 @@ publisher_id=fakemozilliansorg
 kinesis_stream_name=local-stream
 stream_bypass=false # For use in development only for bypassing stream processors
 jwt_validation=true # For use in development where you may not have access to auth0 or a mocker
+
+seed_api_data=true # Set this to populate the identity vault with users on person api spin up
+
+[person_api]
+environment=local
+jwt_validation=false
+initialize_vault=true # Set this if you want to pre-create the vault on init
+graphiql=false

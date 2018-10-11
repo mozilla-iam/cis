@@ -1,0 +1,11 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+from cis_fake_well_known.app import app
+from cis_fake_well_known.common import get_config
+
+if __name__== "__main__":
+  app.run(port=get_config('profile_retrieval_port', namespace='cis', default='5000'))

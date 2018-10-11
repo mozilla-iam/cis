@@ -6,10 +6,15 @@ from cis_fake_well_known.common import get_config
 from cis_fake_well_known.common import load_key_file
 
 
-class MozillIAM(object):
+class MozillaIAM(object):
     def __init__(self):
-        self.publisher_keys = self._load_publisher_keys()
         self._config = get_config()
+        self.well_known_publisher_names = ['cis', 'mozilliansorg', 'ldap', 'hris', 'access_provider']
+        self.randomize_publishers = bool(
+            self._config('randomize_publisher_names', namespace='cis', default='True')
+        )
+
+        self.publisher_keys = self._load_publisher_keys()
 
     def data(self):
         well_known_data_structure = {
@@ -26,8 +31,12 @@ class MozillIAM(object):
         publisher_keys = []
         for key_name in keys:
             if 'publisher' in key_name and 'pub' in key_name:
-                fake_publisher_name = Faker().domain_name().replace('.', '_')
-                key_content = load_key_file(key_name.split('.')[0], 'pub')
+                if self.randomize_publishers is True:
+                    fake_publisher_name = Faker().domain_name().replace('.', '_')
+                    key_content = load_key_file(key_name.split('.')[0], 'pub')
+                else:
+                    fake_publisher_name = self.well_known_publisher_names.pop()
+                    key_content = load_key_file(key_name.split('.')[0], 'pub')
                 jwk_construct = jwk.construct(key_content, algorithm='RS256')
 
                 jwk_dict = jwk_construct.to_dict()
@@ -40,11 +49,18 @@ class MozillIAM(object):
                 jwk_dict['kid'] = uuid4().hex
                 jwk_dict['x5c'] = 'unsupported'
 
-                publisher_keys.append(
-                    {
-                        'fake-publisher-{}'.format(fake_publisher_name): {'jwks_keys': [jwk_dict]}
-                    }
-                )
+                if self.randomize_publishers is True:
+                    publisher_keys.append(
+                        {
+                            'fake-publisher-{}'.format(fake_publisher_name): {'jwks_keys': [jwk_dict]}
+                        }
+                    )
+                else:
+                    publisher_keys.append(
+                        {
+                            '{}'.format(fake_publisher_name): {'jwks_keys': [jwk_dict]}
+                        }
+                    )
         return publisher_keys
 
     def _get_oidc_discovery_uri(self):
