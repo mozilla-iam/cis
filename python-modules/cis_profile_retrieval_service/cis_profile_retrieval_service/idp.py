@@ -116,8 +116,13 @@ def requires_auth(f):
 
 
 def get_scopes(token):
-    split_bearer = token.split()
-    unverified_claims = jwt.get_unverified_claims(split_bearer[1])
+    try:
+        split_bearer = token.split()
+        unverified_claims = jwt.get_unverified_claims(split_bearer[1])
+    except AttributeError:
+        logger.warning("Could not parse bearer token, this client will have empty scopes")
+        unverified_claims = {}
+
     if unverified_claims.get("scope"):
             token_scopes = unverified_claims["scope"].split()
             return token_scopes
