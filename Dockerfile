@@ -61,4 +61,4 @@ RUN bash -c '\
   for D in $(find /opt/cis/python-modules -mindepth 1 -maxdepth 1 -type d) ; \
   do pip3 install $D ; done'
 
-CMD ['supervisor', '-c', '/opt/cis/docker/config/supervisor.conf']
+CMD ['supervisord', '-c', '/opt/cis/docker/config/supervisor.conf']

@@ -31,7 +31,7 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
-        from cis_change_service import get_config
+        from cis_change_service.common import get_config
         config = get_config()
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
@@ -219,11 +219,11 @@ class TestAPI(object):
         assert result.status_code == 200
 
         status_endpoint_result = self.app.get(
-            '/status',
+            '/change/status',
             headers={
                 'Authorization': 'Bearer ' + token
             },
-            query_string={'sequence_number': response.get('sequence_number')},
+            query_string={'sequenceNumber': response.get('sequence_number')},
             follow_redirects=True
         )
 

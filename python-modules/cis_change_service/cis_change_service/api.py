@@ -74,10 +74,10 @@ def change():
     return jsonify(result)
 
 
-@app.route('/status', methods=['GET'])
+@app.route('/change/status', methods=['GET'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 def status():
-    sequence_number = request.args.get('sequence_number')
+    sequence_number = request.args.get('sequenceNumber')
     status = profile.Status(sequence_number)
     result = status.all
     return jsonify(result)
