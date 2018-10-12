@@ -29,8 +29,10 @@ CORS(app)
 config = get_config()
 
 if config('initialize_vault', namespace='person_api', default='false') == 'true':
+    logger.debug('Initializing vault and pre-seeding it, this will take some time...')
     initialize_vault()
     seed()
+    logger.debug('Vault is seeded and ready to go!')
 
 authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()

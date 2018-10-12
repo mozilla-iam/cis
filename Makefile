@@ -8,6 +8,9 @@ docker-build:
 	docker build -t mozillaiam/cis-dev-preview:latest .
 
 docker-run:
+	@echo "Starting Docker..."
+	@echo "/!\ Creating a fake database of users WILL TAKE SOME TIME."
+	@echo "/!\ Wait a bit before querying the service!"
 	docker run -p 80:80 \
 	  -e AWS_ACCESS_KEY_ID="fake" \
 	  -e AWS_SECRET_ACCESS_KEY="fake" \
