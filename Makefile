@@ -8,7 +8,7 @@ docker-build:
 	docker build -t mozillaiam/cis-dev-preview:latest .
 
 preview-shell:
-	docker run -ti cis-dev-preview:latest /bin/bash
+	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
 
 compose-up:
 	docker-compose up -f docker/docker-compose/devpreview.yml

@@ -8,7 +8,7 @@ import os
 from boto.kinesis.exceptions import ResourceNotFoundException
 from boto.kinesis.exceptions import InvalidArgumentException
 from cis_aws import connect
-from cis_publisher import get_config
+from cis_publisher.common import get_config
 
 logger = logging.getLogger(__name__)
 
