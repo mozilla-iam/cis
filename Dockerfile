@@ -15,7 +15,8 @@ RUN \
                   openssl-dev \
                   which \
                   net-tools \
-                  wget
+                  wget \
+                  procps-ng-3.3.10-17.amzn2.2.2.x86_64
 
 RUN echo '### Adding bash prompt'
 RUN echo -n "PS1=\"(cis-dev-preview)$\"" >> /root/.bashrc
@@ -37,11 +38,17 @@ RUN npm install leveldown
 RUN mkdir /opt/dynamodb_data
 RUN mkdir /opt/kinesis_data
 
+# Install nginx
+
+RUN amazon-linux-extras install nginx1.12 -y
+RUN mkdir -p /var/log/cis
+
 RUN echo '### Setting up supervisord'
 RUN pip install supervisor
 RUN mkdir -p /opt/cis/conf
 COPY docker/config/supervisor.conf /opt/cis/conf/
 COPY docker/config/mozilla-cis.ini.dist /etc/mozila-cis.ini
+COPY docker/config/nginx.conf /etc/nginx/nginx.conf
 RUN echo '### Setting up a home for cis.'
 RUN mkdir -p /opt/cis
 ADD . /opt/cis
@@ -53,3 +60,5 @@ RUN bash -c '\
   source /opt/cis/venv/bin/activate && \
   for D in $(find /opt/cis/python-modules -mindepth 1 -maxdepth 1 -type d) ; \
   do pip3 install $D ; done'
+
+CMD ['supervisor', '-c', '/opt/cis/docker/config/supervisor.conf']

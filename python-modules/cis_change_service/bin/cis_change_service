@@ -10,4 +10,5 @@ from cis_change_service.common import get_config
 config = get_config()
 
 if __name__== "__main__":
-  app.run(port=get_config('change_service_port', namespace='cis', default='8100'))
+    config = get_config()
+    app.run(port=config('change_service_port', namespace='cis', default='8100'))
