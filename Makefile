@@ -19,6 +19,3 @@ docker-run:
 
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
-
-compose-up:
-	docker-compose up -f docker/docker-compose/devpreview.yml
