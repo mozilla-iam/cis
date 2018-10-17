@@ -44,8 +44,40 @@
                 },
                 "alternative_name": {
                     "$ref": "#/definitions/StandardAttributeString"
+                },
+                "is_manager": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "is_manager_or_above": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "business_title": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "entity": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "team": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "cost_center": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "primary_work_email": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "wpr_desk_number": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "worker_type": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "employee_id": {
+                    "$ref": "#/definitions/StandardAttributeString"
+                },
+                "public_email_addresses": {
+                    "$ref": "#/definitions/StandardAttributeValues"
                 }
-
             },
             "required": [
             ],
@@ -57,6 +89,9 @@
             "properties": {
                 "classification": {
                     "$ref": "#/definitions/Classification"
+                },
+                "visibility": {
+                    "$ref": "#/definitions/Visibility"
                 },
                 "last_modified": {
                     "type": "string",
@@ -219,6 +254,18 @@
                 "INDIVIDUAL CONFIDENTIAL"
             ],
             "title": "Classification"
+        },
+        "Visibility": {
+            "type": "string",
+            "enum": [
+                "public",
+                "authenticated",
+                "vouched",
+                "ndad",
+                "staff",
+                "private"
+            ],
+            "title": "Visibility"
         },
         "PublisherAuthority": {
             "type": "string",

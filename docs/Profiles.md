@@ -112,6 +112,8 @@ The *metadata* field contains additional information about the attribute, which 
 whom may have access to this attribute for example.
 - We follow the [Mozilla Data Classification](https://wiki.mozilla.org/Security/Data_Classification) standard for the
   *classification* field.
+- The `visibility` field is set by the user and describes the visibility status of the field in public facing
+  sites. This field can be set for a subset of attributes. When this is not possible it will default to private.
 - The `publisher_authority` is the same publisher identifier as used for the signature fields.
 - The `verified` field is set by the `publisher_authority` and represent the fact that **all** values in this object
   have been strongly verified to be correct. For example, an email has been verified to belong to the owner by sending
@@ -168,7 +170,7 @@ CIS will revalidate all changes and verify changes have been signed before integ
 
 ### Attribute validation during profile updates
 
-Attributes are updated by CIS Publishers by sending a specifically formatted [Event](cis/docs/Event.md). CIS possesses 
+Attributes are updated by CIS Publishers by sending a specifically formatted [Event](cis/docs/Event.md). CIS possesses
 a validation mechanism that enforces which CIS Publisher is allowed to modify which attributes, and which values inside
 the said attributes.
 

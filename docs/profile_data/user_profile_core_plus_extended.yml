@@ -1,6 +1,6 @@
 access_information:
   access_provider:
-    metadata: {classification: MOZILLA CONFIDENTIAL, created: '2018-01-01T00:00:00Z',
+    metadata: {classification: MOZILLA CONFIDENTIAL, visibility: private, created: '2018-01-01T00:00:00Z',
       last_modified: '2018-01-01T00:00:00Z', verified: true}
     signature:
       additional:
@@ -8,8 +8,8 @@ access_information:
       publisher: {alg: RS256, name: access_provider, typ: JWS, value: ''}
     values: {5a5munnfxYjqkaN0su1Kl7USxbqkILQN: 7776000}
   hris:
-    metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', created: '2018-01-01T00:00:00Z',
-      last_modified: '2018-01-01T00:00:00Z', verified: true}
+    metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', visibility: private,
+      created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
     signature:
       additional:
       - {alg: RS256, name: null, typ: JWS, value: ''}
@@ -18,72 +18,72 @@ access_information:
       desk_number: 7133, employee_id: E31337, is_director_or_above: false, is_manager: false,
       team: infosec, worker_type: EMPLOYEE}
   ldap:
-    metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', created: '2018-01-01T00:00:00Z',
-      last_modified: '2018-01-01T00:00:00Z', verified: true}
+    metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', visibility: private,
+      created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
     signature:
       additional:
       - {alg: RS256, name: null, typ: JWS, value: ''}
       publisher: {alg: RS256, name: ldap, typ: JWS, value: ''}
     values: {scm_level_1: null, vpn_infosec: null}
   mozilliansorg:
-    metadata: {classification: MOZILLA CONFIDENTIAL, created: '2018-01-01T00:00:00Z',
-      last_modified: '2018-01-01T00:00:00Z', verified: true}
+    metadata: {classification: MOZILLA CONFIDENTIAL, visibility: private,
+      created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
     signature:
       additional:
       - {alg: RS256, name: null, typ: JWS, value: ''}
       publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
     values: {iam: null, nda: null}
 active:
-  metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', created: '2018-01-01T00:00:00Z',
-    last_modified: '2018-01-01T00:00:00Z', verified: true}
+  metadata: {classification: 'WORKGROUP CONFIDENTIAL: STAFF ONLY', visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: access_provider, typ: JWS, value: ''}
   value: true
 alternative_name:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: public,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: "D\xFC\xFCm"
 created:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: true}
+  metadata: {classification: PUBLIC, visibility: staff, created: '2018-01-01T00:00:00Z',
+    last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: cis, typ: JWS, value: ''}
   value: '2018-01-01T00:00:00Z'
 description:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: I am a funny profile!
 first_name:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: Dummy
 fun_title:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: public,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: Dum own title
 identities:
-  metadata: {classification: MOZILLA CONFIDENTIAL, created: '2018-01-01T00:00:00Z',
-    last_modified: '2018-01-01T00:00:00Z', verified: true}
+  metadata: {classification: MOZILLA CONFIDENTIAL, visibility: vouched,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
@@ -92,48 +92,48 @@ identities:
     email_1: personal@mcdummy.org, email_2: mcdummy@gmail.com, firefoxaccounts: mcdummy@ownmail.com,
     github_id_v3: '123495', github_id_v4: XDSKz==, google-oauth2: mcdummy@gmail.com}
 last_modified:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: true}
+  metadata: {classification: PUBLIC, visibility: private,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: cis, typ: JWS, value: ''}
   value: '2018-01-01T00:00:00Z'
 last_name:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: vouched,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: Dumdum
 location_preference:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: Bahamas
 login_method:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: true}
+  metadata: {classification: PUBLIC, visibility: private,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: access_provider, typ: JWS, value: ''}
   value: Mozilla-LDAP-Dev
 office_location:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: San Francisco
 pgp_public_keys:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: vouched,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
@@ -147,40 +147,40 @@ pgp_public_keys:
 
       '}
 phone_numbers:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: {home: 33169281122}
 picture:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: https://example.net/dum.jpg
 preferred_languages:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: public,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: [French, English (US), German]
 primary_email:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: true}
+  metadata: {classification: PUBLIC, visibility: vouched,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: access_provider, typ: JWS, value: ''}
   value: dmcdummy@mozilla.com
 pronouns:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: public,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
@@ -188,50 +188,142 @@ pronouns:
   value: null
 schema: https://person-api.sso.mozilla.com/schema/v2/profile
 ssh_public_keys:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: vouched,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: {github-work: ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCiAoThvwWQaiTLdkGVvUKbkhmNX9X+cvJZRKnoiv7iGHBKTw4flcTSkwyJQzXTep8R}
 tags:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: [vouched summit2013 likescheese]
 timezone:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: authenticated,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   value: UTC
 uris:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: false}
+  metadata: {classification: PUBLIC, visibility: ndad,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: {my blog: 'https://example.net/blog'}
 user_id:
-  metadata: {classification: PUBLIC, created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z',
-    verified: true}
+  metadata: {classification: PUBLIC, visibility: private,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: access_provider, typ: JWS, value: ''}
   value: ad|Mozilla-LDAP-Dev|dummymcdummy
 usernames:
-  metadata: {classification: MOZILLA CONFIDENTIAL, created: '2018-01-01T00:00:00Z',
-    last_modified: '2018-01-01T00:00:00Z', verified: false}
+  metadata: {classification: MOZILLA CONFIDENTIAL, visibility: private,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
   signature:
     additional:
     - {alg: RS256, name: null, typ: JWS, value: ''}
     publisher: {alg: RS256, name: mozilliansorg, typ: JWS, value: ''}
   values: {posix: mcdummy}
+
+
+
+
+employee_id:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: 1234
+business_title:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: dummymcdummy
+is_manager:
+  metadata: {classification: MOZILLA CONFIDENTIAL, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  values: true
+is_manager_or_above:
+  metadata: {classification: MOZILLA CONFIDENTIAL, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: false}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  values: true
+entity:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: dummymcdummy
+team:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: dummymcdummy
+cost_center:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: dummymcdummy
+worker_type:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: dummymcdummy
+primary_work_email:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: personal@mcdummy.org
+wpr_desk_number:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  value: 1234
+public_email_addresses:
+  metadata: {classification: PUBLIC, visibility: staff,
+    created: '2018-01-01T00:00:00Z', last_modified: '2018-01-01T00:00:00Z', verified: true}
+  signature:
+    additional:
+    - {alg: RS256, name: null, typ: JWS, value: ''}
+    publisher: {alg: RS256, name: hris, typ: JWS, value: ''}
+  values: {email: personal@mcdummy.org}

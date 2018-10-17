@@ -19,6 +19,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -44,6 +45,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -69,6 +71,7 @@
     },
     "metadata": {
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+      "visibility": "vouched",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -94,6 +97,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -119,6 +123,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -144,6 +149,7 @@
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
+      "visibility": "private",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": false
@@ -171,6 +177,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": false
@@ -196,6 +203,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": false
@@ -221,6 +229,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "staff",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -246,6 +255,7 @@
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
+      "visibility": "staff",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": true
@@ -280,6 +290,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": false
@@ -307,6 +318,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "2018-01-01T00:00:00Z",
       "created": "2018-01-01T00:00:00Z",
       "verified": false
@@ -335,6 +347,7 @@
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "visibility": "private",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
         "verified": true
@@ -363,6 +376,7 @@
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
+        "visibility": "public",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
         "verified": true
@@ -391,6 +405,7 @@
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "visibility": "private",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
         "verified": true
@@ -426,6 +441,7 @@
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
+        "visibility": "ndad",
         "last_modified": "2018-01-01T00:00:00Z",
         "created": "2018-01-01T00:00:00Z",
         "verified": true

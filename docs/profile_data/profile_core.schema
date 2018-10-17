@@ -120,6 +120,9 @@
                 "classification": {
                     "$ref": "#/definitions/Classification"
                 },
+                "visibility": {
+                    "$ref": "#/definitions/Visibility"
+                },
                 "last_modified": {
                     "type": "string",
                     "format": "date-time"
@@ -339,6 +342,18 @@
                 "INDIVIDUAL CONFIDENTIAL"
             ],
             "title": "Classification"
+        },
+        "Visibility": {
+            "type": "string",
+            "enum": [
+                "public",
+                "authenticated",
+                "vouched",
+                "ndad",
+                "staff",
+                "private"
+            ],
+            "title": "Visibility"
         },
         "PublisherAuthority": {
             "type": "string",

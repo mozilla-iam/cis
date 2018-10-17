@@ -19,6 +19,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "private",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -44,6 +45,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -69,6 +71,7 @@
     },
     "metadata": {
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+      "visibility": "private",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -94,6 +97,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "private",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -119,6 +123,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "private",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -144,6 +149,7 @@
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
+      "visibility": "ndad",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -169,6 +175,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -194,6 +201,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -219,6 +227,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -244,6 +253,7 @@
     },
     "metadata": {
       "classification": "MOZILLA CONFIDENTIAL",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": true
@@ -269,6 +279,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -294,6 +305,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -320,6 +332,7 @@
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "visibility": "private",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
         "verified": true
@@ -346,6 +359,7 @@
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
+        "visibility": "private",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
         "verified": true
@@ -372,6 +386,7 @@
       },
       "metadata": {
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "visibility": "private",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
         "verified": true
@@ -398,6 +413,7 @@
       },
       "metadata": {
         "classification": "MOZILLA CONFIDENTIAL",
+        "visibility": "private",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
         "verified": true
@@ -425,6 +441,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -450,6 +467,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "public",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -475,6 +493,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -500,6 +519,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "staff",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -525,6 +545,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -550,6 +571,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "vouched",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -575,6 +597,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -600,6 +623,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -625,6 +649,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "authenticated",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -650,6 +675,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "ndad",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -675,6 +701,7 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "ndad",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
@@ -700,10 +727,297 @@
     },
     "metadata": {
       "classification": "PUBLIC",
+      "visibility": "ndad",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified": false
     },
     "value": null
+  },
+  "is_manager": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": true
+    },
+    "value": null
+  },
+  "is_manager_or_above": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "employee_id": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "business_title": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "entity": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "team": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "cost_center": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "worker_type": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "primary_work_email": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "wpr_desk_number": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "value": null
+  },
+  "public_email_addresses": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "hris",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "visibility": "staff",
+      "last_modified": "2018-01-01T00:00:00Z",
+      "created": "2018-01-01T00:00:00Z",
+      "verified": false
+    },
+    "values": null
   }
 }
