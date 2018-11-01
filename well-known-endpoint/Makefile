@@ -22,6 +22,6 @@ create-s3-bucket:
 
 upload-s3-bucket:
 	@export AWS_REGION=$(AWS_REGION)
-	aws s3 sync s3/ $(S3_BUCKET_URI) --acl public-read
+	aws s3 sync --content-type 'application/json' s3/ $(S3_BUCKET_URI) --acl public-read
 
 cloudformation: cloudformation.yml
