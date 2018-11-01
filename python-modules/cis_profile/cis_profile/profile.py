@@ -238,7 +238,7 @@ class User(object):
         Verifies that the selected publisher is allowed to change this attribute.
         This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
 
-        Note that this does /!\ NOT VERIFY SIGNATURE /!\ and that you MUST call verify_attribute_signature()
+        Note that this does ! NOT VERIFY SIGNATURE ! and that you MUST call verify_attribute_signature()
         separately.
 
         If you do not, any publisher can pass a fake publisher name and this function will answer that the publisher is
