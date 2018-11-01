@@ -32,8 +32,8 @@ watch-test:
 
 test: tests
 tests: .install-test
-	python setup.py test
-	  flake8 setup.py
+	tox
+	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py
 

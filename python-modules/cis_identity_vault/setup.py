@@ -13,7 +13,10 @@ requirements = [
     'botocore==1.10.67'
 ]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
 
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'moto', 'flake8']
 

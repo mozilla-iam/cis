@@ -32,11 +32,13 @@ class TestVault(object):
 
 class TestVaultDynalite(object):
     def setup(self):
-        dynalite_port = '4567'
+        dynalite_port = '9567'
         self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
 
     def test_create_using_dynalite(self):
         os.environ['CIS_ENVIRONMENT'] = 'local'
+        os.environ['CIS_DYNALITE_PORT'] = '9567'
+        os.environ['CIS_REGION_NAME'] = 'us-east-1'
         from cis_identity_vault import vault
         v = vault.IdentityVault()
         v.connect()

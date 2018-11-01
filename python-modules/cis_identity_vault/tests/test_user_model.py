@@ -12,11 +12,11 @@ class TestUsersDynalite(object):
         self.dynalite_port = '4567'
         self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', self.dynalite_port], preexec_fn=os.setsid)
         os.environ['CIS_ENVIRONMENT'] = 'local'
+        os.environ['CIS_DYNAMODB_PORT'] = self.dynalite_port
+        os.environ['CIS_REGION_NAME'] = 'us-east-1'
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
-        result = self.vault_client.find_or_create()
-        assert result is not None
-
+        self.vault_client.find_or_create()
         fh = open('tests/fixture/valid-profile.json')
         self.user_profile = json.loads(fh.read())
         fh.close()
@@ -27,7 +27,7 @@ class TestUsersDynalite(object):
             'sequence_number': '12345678',
             'profile': json.dumps(self.user_profile)
         }
-        self.boto_session = Stubber(boto3.session.Session(region_name='us-west-2')).client
+        self.boto_session = Stubber(boto3.session.Session(region_name='us-east-1')).client
         self.dynamodb_client = self.boto_session.resource(
             'dynamodb', endpoint_url='http://{}:{}'.format(
                 self.dynalite_host,
@@ -76,7 +76,6 @@ class TestUsersDynalite(object):
         user_id = self.user_profile.get('user_id').get('value')
         result_for_user_id = profile.find_by_id(user_id)
         result_for_email = profile.find_by_email(primary_email)
-        print(result_for_email)
         assert result_for_user_id is not None
         assert result_for_email is not None
 

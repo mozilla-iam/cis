@@ -179,10 +179,11 @@ class IdentityVault(object):
                     dynalite_port
                 )
             )
+            table = dynamodb_resource.Table(self._generate_table_name())
         else:
             dynamodb_resource = boto3.resource('dynamodb')
             table = dynamodb_resource.Table(self._generate_table_name())
-            return table
+        return table
 
     def find_or_create(self):
         if self.find() is not None:

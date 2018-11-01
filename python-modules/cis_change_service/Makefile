@@ -21,7 +21,6 @@ venv:
 	echo "source venv/bin/activate"
 
 .install-test:
-	pip install .[test]
 	touch $@
 
 watch-test:
@@ -32,7 +31,7 @@ watch-test:
 
 test: tests
 tests: .install-test
-	python setup.py test
+	tox
 	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py

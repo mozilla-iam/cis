@@ -27,12 +27,11 @@ watch-test:
 	ptw --runner "make test"
 
 .install-test:
-	pip install .[test]
 	touch $@
 
 test: tests
 tests: .install-test
-	python setup.py test
+	tox
 	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py

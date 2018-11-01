@@ -36,7 +36,7 @@ watch-test:
 test: tests
 tests: .install-test
 	PATH=$(PATH):$(shell npm bin) \
-	python setup.py test
+	tox
 	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py

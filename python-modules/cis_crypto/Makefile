@@ -32,6 +32,7 @@ watch-test:
 
 test: tests
 tests: .install-test
+	tox
 	python setup.py test
 	flake8 setup.py
 	flake8 tests/*.py

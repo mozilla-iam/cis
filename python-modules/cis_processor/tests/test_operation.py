@@ -68,10 +68,11 @@ class TestOperation(object):
         self.config = get_config()
         from cis_fake_well_known import well_known
         from cis_identity_vault import vault
+        os.environ['CIS_CONFIG_INI'] = 'tests/fixture/mozilla-cis.ini'
         self.well_known_json = well_known.MozillaIAM()
         self.well_known_json.randomize_publishers = False
         self.well_known_json.publisher_keys = self.well_known_json._load_publisher_keys()
-        os.environ['CIS_CONFIG_INI'] = 'tests/fixture/mozilla-cis.ini'
+
         self.dynamodb_client = boto3.client(
             'dynamodb',
             region_name='us-west-2',
