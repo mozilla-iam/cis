@@ -12,7 +12,7 @@ class Vault(object):
 
     def _connect(self):
         self.connection_object.session()
-        self.connection_object.assume_role()
+        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
@@ -54,7 +54,7 @@ class Status(object):
 
     def _connect(self):
         self.connection_object.session()
-        self.connection_object.assume_role()
+        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
