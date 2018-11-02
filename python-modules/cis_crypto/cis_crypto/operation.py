@@ -1,7 +1,6 @@
 import json
 import logging
 import os
-import requests
 import yaml
 from jose import jwk
 from jose import jws
@@ -59,7 +58,7 @@ class Verify(object):
         self.well_known_mode = self.config('well_known_mode', namespace='cis', default='file')
         self.public_key_name = None  # Optional for use with file based well known mode
         self.jws_signature = None
-        self.well_known = None # Well known JSON data
+        self.well_known = None  # Well known JSON data
 
     def load(self, jws_signature):
         """Takes data in the form of a dict() and a JWS sig."""
