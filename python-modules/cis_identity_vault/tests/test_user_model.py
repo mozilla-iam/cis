@@ -92,7 +92,7 @@ class TestUsersDynalite(object):
         }
 
         profile = user.Profile(self.table)
-        result = profile.update(vault_json_datastructure_first_id)
+        profile.update(vault_json_datastructure_first_id)
 
         vault_json_datastructure_second_id = {
             'id': 'foo|mcbar',
