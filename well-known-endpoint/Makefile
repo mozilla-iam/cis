@@ -31,3 +31,7 @@ upload-s3-bucket:
 	aws s3 sync --content-type 'application/json' s3/ $(S3_BUCKET_URI) --acl public-read
 
 cloudformation: cloudformation.yml
+
+
+test: tests/test_format.py
+	pytest tests
