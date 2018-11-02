@@ -63,5 +63,7 @@
     "uris": "mozilliansorg",
     "phone_numbers": "mozilliansorg",
     "staff_information": "hris"
+  },
+  "display": {
   }
 }
