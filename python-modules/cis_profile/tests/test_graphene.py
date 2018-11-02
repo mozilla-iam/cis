@@ -43,8 +43,8 @@ class TestGraphene(object):
                 fh.close()
                 return json2obj(user_profile)
 
-        ## The following code may be used to test for scopes in the JWT token
-        ## However, we're not doing this right now (and we may never need it, but if we do, it's here!)
+        # The following code may be used to test for scopes in the JWT token
+        # However, we're not doing this right now (and we may never need it, but if we do, it's here!)
         # See fake_auth0.py in cis modules
         # f = FakeBearer()
         # token = f.generate_bearer_without_scope()
