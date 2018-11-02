@@ -1,8 +1,8 @@
 {
     "$schema": "http://json-schema.org/draft-04/schema#",
-    "$ref": "#/definitions/CorePlusExtendedProfile",
+    "$ref": "#/definitions/Profile",
     "definitions": {
-        "CorePlusExtendedProfile": {
+        "Profile": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -10,100 +10,164 @@
                     "type": "string"
                 },
                 "user_id": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "This is the UUID for the user and may or may not be opaque."
                 },
                 "login_method": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "This is the IdP providing a proof of identity for the user."
                 },
                 "active": {
-                    "$ref": "#/definitions/StandardAttributeBoolean"
+                    "$ref": "#/definitions/StandardAttributeBoolean",
+                    "$comment": "If the user is no longer active, no system should let the user in."
                 },
                 "last_modified": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "Last time the profile data has been modified."
                 },
                 "created": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "When the profile was first created. Somewhat close to hire date for employees."
                 },
                 "usernames": {
-                    "$ref": "#/definitions/StandardAttributeValues"
-                },
-                "first_name": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "last_name": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "primary_email": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "identities": {
-                    "$ref": "#/definitions/Identities"
-                },
-                "ssh_public_keys": {
-                    "$ref": "#/definitions/StandardAttributeValues"
-                },
-                "pgp_public_keys": {
-                    "$ref": "#/definitions/StandardAttributeValues"
-                },
-                "access_information": {
-                    "$ref": "#/definitions/AccessInformation"
-                },
-                "fun_title": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "description": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "location_preference": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "office_location": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "timezone": {
-                    "$ref": "#/definitions/StandardAttributeString"
-                },
-                "preferred_languages": {
-                    "$ref": "#/definitions/StandardAttributeValues"
-                },
-                "tags": {
-                    "$ref": "#/definitions/StandardAttributeValues"
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "List of well-known usernames for the user. These can be user-set and publisher-specific."
                 },
                 "pronouns": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "Preferred set of pronouns to address the user, if any."
                 },
-                "picture": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                "first_name": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "Preferred first name for the user (not necessary a legal name)."
                 },
-                "uris": {
-                    "$ref": "#/definitions/StandardAttributeValues"
-                },
-                "phone_numbers": {
-                    "$ref": "#/definitions/StandardAttributeValues"
+                "last_name": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "Preferred last name for the user (not necessary a legal name)."
                 },
                 "alternative_name": {
-                    "$ref": "#/definitions/StandardAttributeString"
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "Alternate name for the user - could be a handle, an ASCII-compatible spelling of the name, etc."
+                },
+                "primary_email": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "User's primary email for this profile. It is not a UUID, but may become so in the future. Many RP use this as UUID regardless."
+                },
+                "identities": {
+                    "$ref": "#/definitions/IdentitiesAttributesValuesArray",
+                    "$comment": "Identities that we know of for the user. This could be accounts on other IdPs than the login_method for example."
+                },
+                "ssh_public_keys": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "List of known public OpenSSH keys for the user."
+                },
+                "pgp_public_keys": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "List of known PGP/GPG public keys for the user."
+                },
+                "access_information": {
+                    "$ref": "#/definitions/AccessInformationValuesArray",
+                    "$comment": "List of publisher-specific information that is used to authorize or deny access for this user"
+                },
+                "fun_title": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "A title the user likes to use, if any. Not necessarily a real job title."
+                },
+                "description": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "A description field for the user. Could be used for a biography, or anything the user would like to say."
+                },
+                "location": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "The location the user declares to be living at (city, country, etc.), if any."
+                },
+                "timezone": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "The timezone the user declares to be living at, if any."
+                },
+                "languages": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "The languages the user would like to use to communicate with others."
+                },
+                "tags": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "Just tags. Used for Mozillians.org style vouches, for example."
+                },
+                "picture": {
+                    "$ref": "#/definitions/StandardAttributeString",
+                    "$comment": "A URL to the user's picture or avatar, if any."
+                },
+                "uris": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "A list of URIs such as the user's website, blog, etc."
+                },
+                "phone_numbers": {
+                    "$ref": "#/definitions/StandardAttributeValues",
+                    "$comment": "A list of phone numbers for the user, if any."
+                },
+                "staff_information": {
+                    "$ref": "#/definitions/StaffInformationValuesArray",
+                    "$comment": "Mozilla Staff information - never used for non-staff."
                 }
             },
             "required": [
-                "access_information",
-                "active",
-                "created",
-                "first_name",
-                "identities",
-                "last_modified",
-                "last_name",
-                "login_method",
-                "pgp_public_keys",
-                "primary_email",
                 "schema",
-                "ssh_public_keys",
                 "user_id",
-                "usernames"
+                "login_method",
+                "active",
+                "last_modified",
+                "created",
+                "usernames",
+                "pronouns",
+                "first_name",
+                "last_name",
+                "alternative_name",
+                "primary_email",
+                "identities",
+                "ssh_public_keys",
+                "pgp_public_keys",
+                "access_information",
+                "fun_title",
+                "description",
+                "location",
+                "timezone",
+                "languages",
+                "tags",
+                "picture",
+                "uris",
+                "phone_numbers",
+                "staff_information"
             ],
-            "title": "CorePlusExtendedProfile"
+            "title": "Profile"
         },
-        "AccessInformation": {
+        "StaffInformationValuesArray": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+              "manager": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "director": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "staff": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "title": { "$ref": "#/definitions/StandardAttributeString" },
+              "team": { "$ref": "#/definitions/StandardAttributeString" },
+              "cost_center": { "$ref": "#/definitions/StandardAttributeString" },
+              "worker_type": { "$ref": "#/definitions/StandardAttributeString" },
+              "wpr_desk_number": { "$ref": "#/definitions/StandardAttributeString" },
+              "office_location": { "$ref": "#/definitions/StandardAttributeString" }
+            },
+            "required": [
+              "manager",
+              "director",
+              "staff",
+              "title",
+              "team",
+              "cost_center",
+              "worker_type",
+              "wpr_desk_number",
+              "office_location"
+            ],
+            "title": "StaffInformationValuesArray"
+        },
+        "AccessInformationValuesArray": {
             "type": "object",
             "additionalProperties": false,
             "properties": {
@@ -126,7 +190,7 @@
                 "ldap",
                 "mozilliansorg"
             ],
-            "title": "AccessInformation"
+            "title": "AccessInformationValuesArray"
         },
         "AccessInformationProviderSubObject": {
             "type": "object",
@@ -166,15 +230,27 @@
                 },
                 "verified": {
                   "type": "boolean"
+                },
+                "display": {
+                  "$comment": "Audience display setting for DinoPark, subject to specific rules. Do not use this without reading the docs.",
+                  "$ref": "#/definitions/DinoParkDisplay"
                 }
             },
             "required": [
                 "classification",
                 "created",
                 "last_modified",
-                "verified"
+                "verified",
+                "display"
             ],
             "title": "Metadata"
+        },
+        "DinoParkDisplay": {
+          "type": [ "null", "string" ],
+          "additionalProperties": false,
+          "enum": [ "public", "authenticated", "vouched", "ndaed", "staff", "private", null ],
+          "default": "private",
+          "title": "DinoParkDisplay"
         },
         "Signature": {
             "type": "object",
@@ -246,7 +322,6 @@
             ],
             "title": "PublisherLax"
         },
-
         "AccessInformationValues": {
             "type": "object",
             "additionalProperties": true,
@@ -294,57 +369,21 @@
             ],
             "title": "StandardAttributeValues"
         },
-        "Identities": {
-            "type": "object",
-            "additionalProperties": false,
-            "properties": {
-                "signature": {
-                    "$ref": "#/definitions/Signature"
-                },
-                "metadata": {
-                    "$ref": "#/definitions/Metadata"
-                },
-                "values": {
-                    "$ref": "#/definitions/IdentitiesValues"
-                }
-            },
-            "required": [
-                "metadata",
-                "signature",
-                "values"
-            ],
-            "title": "Identities"
-        },
-        "IdentitiesValues": {
-            "type": [ "null", "object" ],
-            "additionalProperties": true,
-            "properties": {
-                "github_id_v3": {
-                    "type": "string"
-                },
-                "github_id_v4": {
-                    "type": "string"
-                },
-                "LDAP": {
-                    "type": "string"
-                },
-                "bugzilla.mozilla.org": {
-                    "type": "string"
-                },
-                "email_1": {
-                    "type": "string"
-                },
-                "email_2": {
-                    "type": "string"
-                },
-                "google-oauth2": {
-                    "type": "string"
-                },
-                "firefoxaccounts": {
-                    "type": "string"
-                }
-            },
-            "title": "IdentitiesValues"
+        "IdentitiesAttributesValuesArray": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "github_id_v3": { "$ref": "#/definitions/StandardAttributeString" },
+            "github_id_v4": { "$ref": "#/definitions/StandardAttributeString" },
+            "dinopark_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "mozilliansorg_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "bugzilla_mozilla_org_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "mozilla_ldap_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "mozilla_posix_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "google_oauth2_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "firefox_accounts_id": { "$ref": "#/definitions/StandardAttributeString" }
+          },
+          "title": "IdentitiesAttributesValuesArray"
         },
         "StandardAttributeString": {
             "type": "object",
