@@ -1,7 +1,7 @@
 {
-  "oidc_discovery_uri": "https://auth.allizom.org/.well-known/openid-configuration",
+  "oidc_discovery_uri": "https://auth.${DOMAIN}/.well-known/openid-configuration",
   "access_file": {
-    "endpoint": "https://cdn.sso.allizom.org/apps.yml",
+    "endpoint": "https://cdn.sso.${DOMAIN}/apps.yml",
     "aai_mapping": {
       "LOW": ["NO_RECENT_AUTH_FAIL", "AUTH_RATE_NORMAL"],
       "MEDIUM": ["2FA", "HAS_KNOWN_BROWSER_KEY", "HIGH_ASSURANCE_IDP"],
@@ -23,8 +23,8 @@
     }
   },
   "api": {
-    "endpoint": "https://api.sso.allizom.org",
-    "profile_schema_combined_uri": "https://api.sso.allizom.org/schema/v2/profile",
+    "endpoint": "https://api.sso.${DOMAIN}",
+    "profile_schema_combined_uri": "https://api.sso.${DOMAIN}/schema/v2/profile",
     "scopes_supported": [
       "write",
       "read",
@@ -32,7 +32,7 @@
       "class:mozilla_confidential",
       "class:workgroup_confidential:staff_only"
     ],
-    "publishers_rules_uri": "https://auth.allizom.org/.well-known/mozilla-iam-publisher-rules",
+    "publishers_rules_uri": "https://auth.${DOMAIN}/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {
         "mozilliansorg": {
           "keys": [
