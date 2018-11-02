@@ -152,7 +152,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "values": null
@@ -179,7 +178,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "value": null
@@ -206,7 +204,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "value": null
   },
@@ -286,7 +284,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "values": null
@@ -313,7 +310,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "values": null
@@ -450,7 +446,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "value": null
@@ -477,7 +472,6 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null,
       "display": null
     },
     "value": null
@@ -504,7 +498,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "value": null
   },
@@ -530,7 +524,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "value": null
   },
@@ -556,7 +550,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "values": null
   },
@@ -582,7 +576,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "values": null
   },
@@ -608,7 +602,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "value": null
   },
@@ -634,7 +628,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "value": null
   },
@@ -660,7 +654,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "values": null
   },
@@ -686,7 +680,7 @@
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
       "verified" : true,
-        "display": null
+      "display": null
     },
     "values": null
   },
