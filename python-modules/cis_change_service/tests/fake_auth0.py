@@ -106,7 +106,7 @@ class FakeBearer(object):
             'sub': 'mc1l0G4sJI2eQfdWxqgVNcRAD9EAgHib@clients',
             'aud': 'https://change.sso.allizom.org',
             'iat': (datetime.utcnow() - timedelta(seconds=3100)).strftime('%s'),
-            'exp': (datetime.utcnow() - timedelta(seconds=3100)).strftime('%s'),
+            'exp': (datetime.utcnow() + timedelta(seconds=3100)).strftime('%s'),
             'gty': 'client-credentials'
         }
         return jws.sign(claims, self.fake_signing_key_private, headers=self.additional_headers, algorithm='RS256')
@@ -117,7 +117,7 @@ class FakeBearer(object):
             'sub': 'mc1l0G4sJI2eQfdWxqgVNcRAD9EAgHib@clients',
             'aud': 'https://change.sso.allizom.org',
             'iat': (datetime.utcnow() - timedelta(seconds=3100)).strftime('%s'),
-            'exp': (datetime.utcnow() - timedelta(seconds=3100)).strftime('%s'),
+            'exp': (datetime.utcnow() + timedelta(seconds=3100)).strftime('%s'),
             'scope': scope,
             'gty': 'client-credentials'
         }
