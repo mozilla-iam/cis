@@ -54,8 +54,8 @@ class User(object):
         elif (user_structure_json_file is not None):
             self.load(self.get_profile_from_file(user_structure_json_file))
         else:
-            # Load defaults, including default timestamps
-            self.load(self.get_profile_from_file('user_profile_core_plus_extended_null.json'))
+            # Load builtin defaults, including default timestamps
+            self.load(self.get_profile_from_file('data/user_profile_null.json'))
             self.initialize_timestamps()
 
         # Insert defaults from kwargs
@@ -253,7 +253,6 @@ class User(object):
 
         Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
-        attr = DotDict(attr)
         publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
         logger.debug('Verifying that {} is allowed to publish field {}'.format(publisher_name, attr_name))
         operation = 'create'
@@ -266,8 +265,12 @@ class User(object):
             allowed_creators = rules['create'][attr_name]
             allowed_updators = rules['update'][attr_name]
         else:
-            allowed_creators = rules['create'][parent_name][attr_name]
-            allowed_updators = rules['update'][parent_name][attr_name]
+            try:
+                allowed_creators = rules['create'][parent_name][attr_name]
+                allowed_updators = rules['update'][parent_name][attr_name]
+            except TypeError: #This is not access_information, this is identities or staff_information
+                allowed_creators = rules['create'][parent_name]
+                allowed_updators = rules['create'][parent_name]
 
         # Do we have an attribute to check against?
         if previous_attribute is not None:
