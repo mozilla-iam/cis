@@ -91,7 +91,7 @@
                 },
                 "tags": {
                     "$ref": "#/definitions/StandardAttributeValues",
-                    "$comment": "Just tags. Used for Mozillians.org style vouches, for example."
+                    "$comment": "Interests tagged for the user."
                 },
                 "picture": {
                     "$ref": "#/definitions/StandardAttributeString",
