@@ -1,8 +1,8 @@
 language: python
-env:
-  BOTO_CONFIG=/dev/null
 python:
   - 3.6
+env:
+  - "BOTO_CONFIG=/dev/null"
 before_install:
   - pip install flake8
   - pip install tox
