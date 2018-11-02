@@ -411,6 +411,7 @@
             "enum": [
                 "MOZILLA CONFIDENTIAL",
                 "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "WORKGROUP CONFIDENTIAL",
                 "PUBLIC",
                 "INDIVIDUAL CONFIDENTIAL"
             ],

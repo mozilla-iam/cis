@@ -72,7 +72,7 @@ class MozillaDataClassification(DotDict):
     INDIVIDUAL_CONFIDENTIAL = ['INDIVIDUAL CONFIDENTIAL', 'Mozilla Confidential - Specific Individuals Only']
     # Well-known Workgroups:
     WELL_KNOWN_WORKGROUPS = ['STAFF_ONLY']
-    STAFF_ONLY = 'WORKGROUP CONFIDENTIAL'
+    STAFF_ONLY = ['WORKGROUP CONFIDENTIAL: STAFF ONLY']
 
 
 class WellKnown(object):
