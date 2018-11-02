@@ -1,5 +1,4 @@
 """Create, destroy, and configure the appropriate vault for the environment."""
-import boto
 import boto3
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
@@ -102,7 +101,6 @@ class IdentityVault(object):
                 {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
                 {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
                 {'AttributeName': 'primary_email', 'AttributeType': 'S'}  # value of the primary_email attribute
-                # {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
             ],
             ProvisionedThroughput={
                 'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
