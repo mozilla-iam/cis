@@ -69,7 +69,7 @@ class TestUsersDynalite(object):
             'profile': json.dumps(modified_profile)
         }
         profile = user.Profile(self.table)
-        result = profile.update(vault_json_datastructure)
+        profile.update(vault_json_datastructure)
 
         primary_email = 'dummy@zxy.foo'
         profile = user.Profile(self.table)
@@ -101,11 +101,11 @@ class TestUsersDynalite(object):
             'profile': json.dumps(modified_profile)
         }
 
-        result = profile.update(vault_json_datastructure_second_id)
+        profile.update(vault_json_datastructure_second_id)
 
         primary_email = 'dummy@zxy.foo'
         profile = user.Profile(self.table)
-        user_id = self.user_profile.get('user_id').get('value')
+        self.user_profile.get('user_id').get('value')
         result_for_email = profile.find_by_email(primary_email)
         assert result_for_email is not None
         assert len(result_for_email.get('Items')) == 2
