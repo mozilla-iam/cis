@@ -21,7 +21,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": null
   },
@@ -46,7 +47,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": null
   },
@@ -71,7 +73,8 @@
       "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": false
   },
@@ -96,7 +99,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": null
   },
@@ -121,7 +125,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": null
   },
@@ -146,7 +151,9 @@
       "classification": "MOZILLA CONFIDENTIAL",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "values": null
   },
@@ -171,7 +178,9 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "value": null
   },
@@ -196,7 +205,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "value": null
   },
@@ -221,34 +231,38 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": true
+      "verified" : true,
+      "display": null
     },
     "value": null
   },
   "identities": {
-    "signature": {
-      "publisher": {
-        "alg": "RS256",
-        "typ": "JWS",
-        "name": "mozilliansorg",
-        "value": ""
-      },
-      "additional": [
-        {
+    "dinopark_id": {
+      "signature": {
+        "publisher": {
           "alg": "RS256",
           "typ": "JWS",
-          "name": null,
+          "name": "mozilliansorg",
           "value": ""
-        }
-      ]
-    },
-    "metadata": {
-      "classification": "MOZILLA CONFIDENTIAL",
-      "last_modified": "1970-01-01T00:00:00Z",
-      "created": "1970-01-01T00:00:00Z",
-      "verified": true
-    },
-    "values": null
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    }
   },
   "ssh_public_keys": {
     "signature": {
@@ -271,7 +285,9 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "values": null
   },
@@ -296,7 +312,9 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "values": null
   },
@@ -322,7 +340,8 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
-        "verified": true
+        "verified" : true,
+        "display": null
       },
       "values": {
       }
@@ -348,7 +367,8 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
-        "verified": true
+        "verified" : true,
+        "display": null
       },
       "values": {
       }
@@ -374,7 +394,8 @@
         "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
-        "verified": true
+        "verified" : true,
+        "display": null
       },
       "values": {
       }
@@ -400,7 +421,8 @@
         "classification": "MOZILLA CONFIDENTIAL",
         "last_modified": "1970-01-01T00:00:00Z",
         "created": "1970-01-01T00:00:00Z",
-        "verified": true
+        "verified" : true,
+        "display": null
       },
       "values": {
       }
@@ -427,7 +449,9 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "value": null
   },
@@ -452,11 +476,13 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null,
+      "display": null
     },
     "value": null
   },
-  "location_preference": {
+  "location": {
     "signature": {
       "publisher": {
         "alg": "RS256",
@@ -477,32 +503,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
-    },
-    "value": null
-  },
-  "office_location": {
-    "signature": {
-      "publisher": {
-        "alg": "RS256",
-        "typ": "JWS",
-        "name": "mozilliansorg",
-        "value": ""
-      },
-      "additional": [
-        {
-          "alg": "RS256",
-          "typ": "JWS",
-          "name": null,
-          "value": ""
-        }
-      ]
-    },
-    "metadata": {
-      "classification": "PUBLIC",
-      "last_modified": "1970-01-01T00:00:00Z",
-      "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "value": null
   },
@@ -527,11 +529,12 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "value": null
   },
-  "preferred_languages": {
+  "languages": {
     "signature": {
       "publisher": {
         "alg": "RS256",
@@ -552,7 +555,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "values": null
   },
@@ -577,7 +581,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "values": null
   },
@@ -602,7 +607,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "value": null
   },
@@ -627,7 +633,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "value": null
   },
@@ -652,7 +659,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "values": null
   },
@@ -677,7 +685,8 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+        "display": null
     },
     "values": null
   },
@@ -702,8 +711,245 @@
       "classification": "PUBLIC",
       "last_modified": "1970-01-01T00:00:00Z",
       "created": "1970-01-01T00:00:00Z",
-      "verified": false
+      "verified" : true,
+      "display": null
     },
     "value": null
+  },
+  "staff_information": {
+    "manager": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": false
+    },
+    "director": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": false
+    },
+    "staff": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": false
+    },
+    "title": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "team": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "cost_center": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "worker_type": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "wpr_desk_number": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "office_location": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    }
   }
 }
