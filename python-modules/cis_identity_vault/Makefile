@@ -22,10 +22,16 @@ venv:
 	echo "source venv/bin/activate"
 
 .install-test:
-	pip install .[test]
-	npm install dynalite
-	npm install kinesalite
-	touch $@
+		pip install .[test]
+		npm install dynalite
+		npm install kinesalite
+		touch $@
+
+
+.flake:
+	flake8 setup.py
+	flake8 tests/*.py
+	flake8 $(MODULE_NAME)/*.py
 
 watch-test:
 	# Watches for changes and re-test automatically
@@ -34,12 +40,14 @@ watch-test:
 	ptw --runner "make test"
 
 test: tests
-tests: .install-test
+tests: .install-test .flake
 	PATH=$(PATH):$(shell npm bin) \
-	tox
-	flake8 setup.py
-	flake8 tests/*.py
-	flake8 $(MODULE_NAME)/*.py
+	python setup.py test
+
+test-tox: test-tox
+test-tox: .flake
+	PATH=$(PATH):$(shell npm bin) \
+	tox -r
 
 clean:
 	rm -rf venv

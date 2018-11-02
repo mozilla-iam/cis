@@ -7,7 +7,9 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose==3.0.0', 'everett',
+    'python-jose[cryptography]==3.0.1',
+    'cryptography==2.3.1',
+    'everett',
     'boto3==1.7.67', 'boto==2.49.0', 'jsonschema', 'flask',
     'faker'
 ]

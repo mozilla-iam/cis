@@ -1,0 +1,8 @@
+language: python
+python:
+  - 3.6
+before_install:
+  - pip install flake8
+  - pip install tox
+script:
+- cd python-modules && make test-tox

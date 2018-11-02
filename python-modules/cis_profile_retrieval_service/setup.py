@@ -7,8 +7,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose-cryptodome',
-    'python-jose==3.0.0',
+    'python-jose==3.0.1',
+    'cryptography==2.3.1',
     'boto3==1.7.67',
     'boto==2.49.0',
     'botocore==1.10.67',
@@ -24,7 +24,11 @@ requirements = [
     'aniso8601'
 ]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
+
 test_requirements = [
     'pytest',
     'pytest-watch',
@@ -35,6 +39,8 @@ test_requirements = [
     'flake8',
     'iam-profile-faker'
 ]
+
+extras = {'test': test_requirements}
 
 setup(
     name="cis_profile_retrieval_service",
@@ -57,5 +63,6 @@ setup(
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
+    extras_require=extras,
     zip_safe=False
 )

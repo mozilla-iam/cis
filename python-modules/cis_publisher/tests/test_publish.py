@@ -22,7 +22,7 @@ class TestFullPublish(object):
     """Test sending a full profile with all the required attributes."""
     def setup_class(self):
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
-        from cis_publisher import get_config
+        from cis_publisher.common import get_config
         config = get_config()
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
