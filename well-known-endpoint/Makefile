@@ -23,7 +23,7 @@ create-s3-bucket:
 	@export AWS_REGION=$(AWS_REGION)
 	aws s3api create-bucket --bucket $(S3_BUCKET_NAME) --acl public-read --create-bucket-configuration LocationConstraint=$(AWS_REGION)
 
-upload-s3-bucket:
+upload-s3-bucket: test
 	@export AWS_REGION=$(AWS_REGION)
 	@echo Templatizing...
 	cp tpl/* s3/.well-known
