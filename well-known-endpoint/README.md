@@ -14,3 +14,12 @@ See also:
 Type `make` for a list of targets.
 Use `pem_to_jwks.py` if you need to convert PEM pubkey files to JWKS (useful when first generating the keys from openssl for
 example)
+
+# About `s3` and `tpl`
+
+- `tpl` contains the original templates for the files, CHANGE THESE!
+- `s3` is where the templates are copied after changing their values depending on the environment, DO NOT CHANGE THESE!
+
+# Where does Mozilla run this?
+
+Mozilla runs this in the IAM AWS environment: http://sso.mozilla.com/iam-infra

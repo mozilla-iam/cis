@@ -9,6 +9,9 @@ ROOT_DIR        := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 AWS_REGION	:= us-west-2
 S3_BUCKET_NAME	:= cis-well-known-endpoint
 S3_BUCKET_URI   := s3://$(S3_BUCKET_NAME)/
+## Change to mozilla.com for prod - make sure there's no comments or spaces
+## after this value (that's why this comment is above it and not inline)
+DOMAIN		:= allizom.org
 
 .PHONY:all
 all:
@@ -22,6 +25,9 @@ create-s3-bucket:
 
 upload-s3-bucket:
 	@export AWS_REGION=$(AWS_REGION)
+	@echo Templatizing...
+	cp tpl/* s3/.well-known
+	sed -i 's/$${DOMAIN}/$(DOMAIN)/' s3/.well-known/*
 	aws s3 sync --content-type 'application/json' s3/ $(S3_BUCKET_URI) --acl public-read
 
 cloudformation: cloudformation.yml
