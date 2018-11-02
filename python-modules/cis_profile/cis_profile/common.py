@@ -123,11 +123,11 @@ class WellKnown(object):
 
     def get_core_schema(self):
         """ Deprecated """
-        return get_schema()
+        return self.get_schema()
 
     def get_extended_schema(self):
         """ Deprecated """
-        return get_schema()
+        return self.get_schema()
 
     def get_well_known(self):
         """
