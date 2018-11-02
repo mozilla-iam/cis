@@ -9,6 +9,8 @@ before_install:
   - sudo rm -f /etc/boto.cfg
   - pip install flake8
   - pip install tox
+  - npm install -g dynalite
+  - npm install -g kinesalite
 script:
   - export BOTO_CONFIG=/dev/null
   - cd python-modules && make test-tox
