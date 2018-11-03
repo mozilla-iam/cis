@@ -5,6 +5,8 @@ import copy
 import cis_profile.exceptions
 import pytest
 import os
+import json
+import jsonschema
 
 
 class TestProfile(object):
@@ -110,3 +112,8 @@ class TestProfile(object):
         u = profile.User(user_id='test')
         assert(u.user_id.metadata.classification in MozillaDataClassification.PUBLIC)
         assert(u.staff_information.worker_type.metadata.classification in MozillaDataClassification.STAFF_ONLY)
+
+    def test_json_load_and_self_validate_profile(self):
+        profile = json.load(open('cis_profile/data/user_profile_null.json'))
+        schema = json.load(open('cis_profile/data/profile.schema'))
+        jsonschema.validate(profile, schema)
