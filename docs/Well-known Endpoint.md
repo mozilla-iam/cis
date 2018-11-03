@@ -82,10 +82,8 @@ Relevant fields:
 
 - `create` represents arrays of publishers which are allowed to write to profile attributes that are `null`.
 - `update` represents single, unique publishers which are allowed to update fields which are not `null`.
-- `display` represents DinoPark's user display intent, i.e. a setting the user can change to communicate their intent on
-  how to display the data in DinoPark. This allow a user to "show their name publicly, or not" for example.
 
-Note that `{create,update,display}.access_information`, `identities`, `staff_information` are structures with childs (2
+Note that `{create,update}.access_information`, `identities`, `staff_information` are structures with childs (2
 level deep).
 
 Relevant values:

@@ -27,6 +27,13 @@ The latest version is available at <https://auth.allizom.org/.well-known/mozilla
 See [cis_profile](../python-modules/cis_profile/cis_profile/data/profile.schema) for the schema. It contains comments to
 indicate what each field is used for.
 
+*IMPORTANT*: The schema validates and enforces correct field attributes such as `display` and `classification`. Passing
+schema validation is *required* without any exception.
+
+Note that you may use the `cis_profile` python module as a convenient wrapper to load, validate, create, compare, etc.
+user profiles. It can perform signing, verification, validation, scope filtering, etc. steps for you and provide users
+as a python class.
+
 ### Standard attribute structure
 
 This is the schema that every attribute in the profile **should** follow. Where noted, certain top level attributes may

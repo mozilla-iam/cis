@@ -30,10 +30,10 @@ upload-s3-bucket: test verify
 	aws s3 sync --content-type 'application/json' s3/ $(S3_BUCKET_URI) --acl public-read
 
 .PHONY: templatize
+templatize:
 	@echo Templatizing...
 	cp tpl/* s3/.well-known
 	sed -i 's/$${DOMAIN}/$(DOMAIN)/' s3/.well-known/*
-emplatize:
 
 .PHONY: cloudformation
 cloudformation: cloudformation.yml
