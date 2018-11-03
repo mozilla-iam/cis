@@ -62,41 +62,5 @@
     "uris": "mozilliansorg",
     "phone_numbers": "mozilliansorg",
     "staff_information": "hris"
-  },
-  "display": {
-    "user_id": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "login_method": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "active": [ null ],
-    "last_modified": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "created": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "usernames": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "pronouns": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "first_name": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "last_name": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "alternative_name": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "primary_email": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "identities": {
-     "_default_": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-     "mozilla_ldap_id": [  "public", "authenticated", "vouched", "ndaed", "staff" ]
-    },
-    "ssh_public_keys": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "pgp_public_keys": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "access_information": {
-      "_default_": [ null ]
-    },
-    "fun_title": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "description": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "location": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "timezone": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "languages": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "tags": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "picture": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "uris": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "phone_numbers": [ "public", "authenticated", "vouched", "ndaed", "staff", "private" ],
-    "staff_information": {
-      "_default_": [ "ndaed", "staff" ],
-      "cost_center": [ "staff" ],
-      "worker_type": [ "staff" ]
-    }
   }
 }
