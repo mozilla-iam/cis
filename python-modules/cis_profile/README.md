@@ -3,8 +3,8 @@
 This library is a dynamic class-constructor for the Mozilla IAM profiles (v2).
 It takes the Mozilla IAM default profile and schema, and creates a Python class from it dynamically.
 
-This means that the default profile (JSON file: user_profile_core_plus_extended.json) and schema can be changed without
-affecting the class code. It allows for directly loading it from https://github.com/mozilla-iam/cis.
+This means that the default profile (JSON file: user_profile_null.json) and schema can be changed without
+affecting the class code (to some degree).
 
 ## Example usage
 

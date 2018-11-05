@@ -1,0 +1,684 @@
+{
+    "$schema": "http://json-schema.org/draft-04/schema#",
+    "$ref": "#/definitions/Profile",
+    "definitions": {
+        "Profile": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "schema": {
+                    "type": "string"
+                },
+                "user_id": {
+                    "allOf": [
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "This is the UUID for the user and may or may not be opaque."
+                },
+                "login_method": {
+                    "allOf": [
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "This is the IdP providing a proof of identity for the user."
+                },
+                "active": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/StandardAttributeBoolean" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "If the user is no longer active, no system should let the user in."
+                },
+                "last_modified": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "Last time the profile data has been modified."
+                },
+                "created": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "When the profile was first created. Somewhat close to hire date for employees."
+                },
+                "usernames": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "List of well-known usernames for the user. These can be user-set and publisher-specific."
+                },
+                "pronouns": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "Preferred set of pronouns to address the user, if any."
+                },
+                "first_name": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "Preferred first name for the user (not necessary a legal name)."
+                },
+                "last_name": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "Preferred last name for the user (not necessary a legal name)."
+                },
+                "alternative_name": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "Alternate name for the user - could be a handle, an ASCII-compatible spelling of the name, etc."
+                },
+                "primary_email": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "User's primary email for this profile. It is not a UUID, but may become so in the future. Many RP use this as UUID regardless."
+                },
+                "identities": {
+                    "$ref": "#/definitions/IdentitiesAttributesValuesArray",
+                    "$comment": "Identities that we know of for the user. This could be accounts on other IdPs than the login_method for example."
+                },
+                "ssh_public_keys": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "List of known public OpenSSH keys for the user."
+                },
+                "pgp_public_keys": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "List of known PGP/GPG public keys for the user."
+                },
+                "access_information": {
+                    "$ref": "#/definitions/AccessInformationValuesArray",
+                    "$comment": "List of publisher-specific information that is used to authorize or deny access for this user"
+                },
+                "fun_title": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "A title the user likes to use, if any. Not necessarily a real job title."
+                },
+                "description": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "A description field for the user. Could be used for a biography, or anything the user would like to say."
+                },
+                "location": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "The location the user declares to be living at (city, country, etc.), if any."
+                },
+                "timezone": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "The timezone the user declares to be living at, if any."
+                },
+                "languages": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "The languages the user would like to use to communicate with others."
+                },
+                "tags": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "Interests tagged for the user."
+                },
+                "picture": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "A URL to the user's picture or avatar, if any."
+                },
+                "uris": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "A list of URIs such as the user's website, blog, etc."
+                },
+                "phone_numbers": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/StandardAttributeValues" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ],
+                    "$comment": "A list of phone numbers for the user, if any."
+                },
+                "staff_information": {
+                    "$ref": "#/definitions/StaffInformationValuesArray",
+                    "$comment": "Mozilla Staff information - never used for non-staff."
+                }
+            },
+            "required": [
+                "schema",
+                "user_id",
+                "login_method",
+                "active",
+                "last_modified",
+                "created",
+                "usernames",
+                "pronouns",
+                "first_name",
+                "last_name",
+                "alternative_name",
+                "primary_email",
+                "identities",
+                "ssh_public_keys",
+                "pgp_public_keys",
+                "access_information",
+                "fun_title",
+                "description",
+                "location",
+                "timezone",
+                "languages",
+                "tags",
+                "picture",
+                "uris",
+                "phone_numbers",
+                "staff_information"
+            ],
+            "title": "Profile"
+        },
+        "DisplayAnyValue": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ "public", "authenticated", "vouched", "ndaed", "staff", "private", null ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayAnyValue"
+        },
+        "DisplayNone": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ null ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayNone"
+        },
+        "DisplayStaffOnly": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ "staff" ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayStaffOnly"
+        },
+        "DisplayStaffNDAOnly": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ "ndaed", "staff" ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayStaffNDAOnly"
+        },
+        "ClassificationPublic": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "classification": {
+                    "enum": [ "PUBLIC" ]
+                  }
+                }
+              }
+            },
+            "title": "ClassificationPublic"
+        },
+        "ClassificationMozillaConfidential": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "classification": {
+                    "enum": [ "MOZILLA CONFIDENTIAL" ]
+                  }
+                }
+              }
+            },
+            "title": "ClassificationMozillaConfidential"
+        },
+
+        "ClassificationStaffOnly": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "classification": {
+                    "enum": [ "WORKGROUP CONFIDENTIAL: STAFF ONLY" ]
+                  }
+                }
+              }
+            },
+            "title": "ClassificationStaffOnly"
+        },
+        "ClassificationWorkgroupConfidential": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "classification": {
+                    "enum": [ "WORKGROUP CONFIDENTIAL" ]
+                  }
+                }
+              }
+            },
+            "title": "ClassificationWorkgroupConfidential"
+        },
+        "StaffInformationValuesArray": {
+            "type": "object",
+            "additionalProperties": false,
+            "allOf": [
+              { "$ref": "#/definitions/DisplayStaffNDAOnly" },
+              { "$ref": "#/definitions/ClassificationMozillaConfidential" }
+            ],
+            "properties": {
+              "manager": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "director": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "staff": { "$ref": "#/definitions/StandardAttributeBoolean" },
+              "title": { "$ref": "#/definitions/StandardAttributeString" },
+              "team": { "$ref": "#/definitions/StandardAttributeString" },
+              "cost_center": {
+                "allOf": [
+                  { "$ref": "#/definitions/StandardAttributeString" },
+                  { "$ref": "#/definitions/DisplayStaffOnly" },
+                  { "$ref": "#/definitions/ClassificationStaffOnly" }
+                ]
+              },
+              "worker_type": {
+                "allOf": [
+                  { "$ref": "#/definitions/StandardAttributeString" },
+                  { "$ref": "#/definitions/DisplayStaffOnly" },
+                  { "$ref": "#/definitions/ClassificationStaffOnly" }
+                ]
+              },
+              "wpr_desk_number": { "$ref": "#/definitions/StandardAttributeString" },
+              "office_location": { "$ref": "#/definitions/StandardAttributeString" }
+            },
+            "required": [
+              "manager",
+              "director",
+              "staff",
+              "title",
+              "team",
+              "cost_center",
+              "worker_type",
+              "wpr_desk_number",
+              "office_location"
+            ],
+            "title": "StaffInformationValuesArray"
+        },
+        "AccessInformationValuesArray": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "ldap": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/AccessInformationProviderSubObject" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ]
+                },
+                "mozilliansorg": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/AccessInformationProviderSubObject" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ]
+                },
+                "hris": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/AccessInformationProviderSubObject" },
+                      { "$ref": "#/definitions/ClassificationStaffOnly" }
+                    ]
+                },
+                "access_provider": {
+                    "allOf": [
+                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/AccessInformationProviderSubObject" },
+                      { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+                    ]
+                }
+            },
+            "required": [
+                "access_provider",
+                "hris",
+                "ldap",
+                "mozilliansorg"
+            ],
+            "title": "AccessInformationValuesArray"
+        },
+        "AccessInformationProviderSubObject": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "values": {
+                    "$ref": "#/definitions/AccessInformationValues"
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "values"
+            ],
+            "title": "AccessInformationProviderSubObject"
+        },
+        "Metadata": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "classification": {
+                    "$ref": "#/definitions/Classification"
+                },
+                "last_modified": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "created": {
+                    "type": "string",
+                    "format": "date-time"
+                },
+                "verified": {
+                  "type": "boolean"
+                },
+                "display": {
+                  "$comment": "Audience display setting for DinoPark, subject to specific rules. Do not use this without reading the docs.",
+                  "$ref": "#/definitions/DinoParkDisplay"
+                }
+            },
+            "required": [
+                "classification",
+                "created",
+                "last_modified",
+                "verified",
+                "display"
+            ],
+            "title": "Metadata"
+        },
+        "DinoParkDisplay": {
+          "type": [ "null", "string" ],
+          "additionalProperties": false,
+          "enum": [ "public", "authenticated", "vouched", "ndaed", "staff", "private", null ],
+          "default": "private",
+          "title": "DinoParkDisplay"
+        },
+        "Signature": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "publisher": {
+                    "$ref": "#/definitions/Publisher"
+                },
+                "additional": {
+                    "type": "array",
+                    "items": {
+                        "$ref": "#/definitions/PublisherLax"
+                    }
+                }
+            },
+            "required": [
+                "additional",
+                "publisher"
+            ],
+            "title": "Signature"
+        },
+        "Publisher": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "alg": {
+                    "$ref": "#/definitions/Alg"
+                },
+                "typ": {
+                    "$ref": "#/definitions/Typ"
+                },
+                "name": {
+                    "$ref": "#/definitions/PublisherAuthority"
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "alg",
+                "typ",
+                "name",
+                "value"
+            ],
+            "title": "Publisher"
+        },
+        "PublisherLax": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "alg": {
+                    "$ref": "#/definitions/Alg"
+                },
+                "typ": {
+                    "$ref": "#/definitions/Typ"
+                },
+                "name": {
+                    "type": [ "null", "string" ]
+                },
+                "value": {
+                    "type": "string"
+                }
+            },
+            "required": [
+                "alg",
+                "typ",
+                "name",
+                "value"
+            ],
+            "title": "PublisherLax"
+        },
+        "AccessInformationValues": {
+            "type": "object",
+            "additionalProperties": true,
+            "properties": {},
+            "title": "AccessInformationValues"
+        },
+        "StandardAttributeBoolean": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": "boolean"
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "value"
+            ],
+            "title": "Active"
+        },
+        "StandardAttributeValues": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "values": {
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "values"
+            ],
+            "title": "StandardAttributeValues"
+        },
+        "IdentitiesAttributesValuesArray": {
+          "type": "object",
+          "additionalProperties": false,
+          "allOf": [
+            { "$ref": "#/definitions/DisplayAnyValue" },
+            { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
+          ],
+          "properties": {
+            "github_id_v3": { "$ref": "#/definitions/StandardAttributeString" },
+            "github_id_v4": { "$ref": "#/definitions/StandardAttributeString" },
+            "dinopark_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "mozilliansorg_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "bugzilla_mozilla_org_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "mozilla_ldap_id": {
+              "allOf": [
+                { "$ref": "#/definitions/StandardAttributeString" },
+                { "$ref": "#/definitions/DisplayStaffOnly" }
+              ]
+            },
+            "mozilla_posix_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "google_oauth2_id": { "$ref": "#/definitions/StandardAttributeString" },
+            "firefox_accounts_id": { "$ref": "#/definitions/StandardAttributeString" }
+          },
+          "title": "IdentitiesAttributesValuesArray"
+        },
+        "StandardAttributeString": {
+            "type": "object",
+            "additionalProperties": false,
+            "properties": {
+                "signature": {
+                    "$ref": "#/definitions/Signature"
+                },
+                "metadata": {
+                    "$ref": "#/definitions/Metadata"
+                },
+                "value": {
+                    "type": [ "null", "string" ]
+                }
+            },
+            "required": [
+                "metadata",
+                "signature",
+                "value"
+            ],
+            "title": "StandardAttributeString"
+        },
+        "Classification": {
+            "type": "string",
+            "enum": [
+                "MOZILLA CONFIDENTIAL",
+                "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "WORKGROUP CONFIDENTIAL",
+                "PUBLIC",
+                "INDIVIDUAL CONFIDENTIAL"
+            ],
+            "title": "Classification"
+        },
+        "PublisherAuthority": {
+            "type": "string",
+            "enum": [
+                "ldap",
+                "mozilliansorg",
+                "hris",
+                "cis",
+                "access_provider"
+            ],
+            "title": "PublisherAuthority"
+        },
+        "Alg": {
+            "type": "string",
+            "enum": [
+                "HS256",
+                "RS256",
+                "RSA",
+                "ED25519"
+            ],
+            "title": "Alg"
+        },
+        "Typ": {
+            "type": "string",
+            "enum": [
+                "JWS",
+                "PGP"
+            ],
+            "title": "Typ"
+        }
+    }
+}

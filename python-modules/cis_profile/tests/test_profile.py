@@ -5,6 +5,8 @@ import copy
 import cis_profile.exceptions
 import pytest
 import os
+import json
+import jsonschema
 
 
 class TestProfile(object):
@@ -99,9 +101,19 @@ class TestProfile(object):
 
     def test_verify_all_publishers(self):
         u = profile.User(user_id='test')
-        old_user = profile.User()
-        u.verify_all_publishers(old_user)
+        u.verify_all_publishers(u)
 
+        old_user = profile.User()
         old_user.active.value = True
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
             u.verify_all_publishers(old_user)
+
+    def test_data_classification(self):
+        u = profile.User(user_id='test')
+        assert(u.user_id.metadata.classification in MozillaDataClassification.PUBLIC)
+        assert(u.staff_information.worker_type.metadata.classification in MozillaDataClassification.STAFF_ONLY)
+
+    def test_json_load_and_self_validate_profile(self):
+        profile = json.load(open('cis_profile/data/user_profile_null.json'))
+        schema = json.load(open('cis_profile/data/profile.schema'))
+        jsonschema.validate(profile, schema)

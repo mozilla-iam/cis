@@ -15,66 +15,24 @@ longer possible to retire the attribute without potentially breaking the flow fo
 User profiles are represented as JSON objects that follow a [JSON schema](http://json-schema.org/). The schema contains
 descriptions of its fields and is the primary reference for the content of a profile.
 
-- The **Core+Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile>. It
-  will validate profiles that contains data from both Core and Extended profiles in the same document.
-- The **Core profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/core>.
-- The **Extended profile** schema is available at <https://person-api.sso.mozilla.com/schema/v2/profile/extended>.
-
 When using these schemas, you *should* attempt to fetch the latest version every time (it's fine to cache it for some
 period of time, but the schemas may sometimes be updated).
 
-### Core vs Extended profiles principles
+The latest version is available at <https://auth.allizom.org/.well-known/mozilla-iam> (dev) and
+<https://auth.mozilla.com/.well-known/mozilla-iam> (prod), look for the `profile_schema_uri` attribute.
 
-- Do not duplicate data between "Core profile data" and "Extended profile data"
-- "Core profile data" is profile data than *any* RP needs to function with IAM
-- The "Extended profile data" may contain additional claims over time, and is generally user-supplied data
-- Access to "Extended profile data" fields may require specific approval for privacy reasons
-- Fields are using `this_format` (all lower-case, `_` as word separator)
-- All "Extended profile data" fields are **optional** and may be missing have have `null` values
-- Top level fields use the standard attribute structure (see below) unless otherwise noted
+### Profile
 
-### Core Profile
 
-Top level fields for the Core profile.
+See [cis_profile](../python-modules/cis_profile/cis_profile/data/profile.schema) for the schema. It contains comments to
+indicate what each field is used for.
 
-```
-schema: https://person-api.sso.mozilla.com/schema/v2/profile/core (this field does not follow the standard attribute
-structure)
-user_id: unique_id
-login_method: ldap, fxa, ...
-active: true
-last_modified: date of last change
-created: date of profile creation
-username: a short username with no spaces
-first_name: user's preferred first name
-last_name: user's preferred last name
-primary_email: user's main email, such as xxx@mozilla.com
-identities: list of additional user identities on other IdPs, such as their alternative emails, github accounts, etc.
-ssh_public_keys: list of OpenSSH public keys for the user
-pgp_public_keys: list of PGP public keys for the user
-access_information: structure containing group data and other information used to validate if the user should be granted
-access or not. This structure uses a list of standard attributes.
-```
+*IMPORTANT*: The schema validates and enforces correct field attributes such as `display` and `classification`. Passing
+schema validation is *required* without any exception.
 
-### Extended Profile
-
-Top level fields for the Extended profile. Fields that are staff-only are not used for non-staff users.
-
-```
-fun_title: a title that the user identifies with, not their official Staff title
-description: a free form text field for the user to put information about themselves in
-location_preference: where the user would like to appear to be located (such as a country, city, etc.)
-office_location: user's preferred Mozilla office location
-timezone: user's preferred timezone
-preferred_languages: user's preferred languages to write or speak
-tags: list of tags the user associates with. formerly called mozillians groups
-pronouns: prefered user pronouns
-picture: link to a user picture
-uris: list of uris (urls) that the user associate with, such as their website
-phone_numbers: telephone numbers for the user
-alternate_name: name in local language for spelling or display purposes in case the user prefer communicating their name in a
-different way to international users, or any other alternative name
-```
+Note that you may use the `cis_profile` python module as a convenient wrapper to load, validate, create, compare, etc.
+user profiles. It can perform signing, verification, validation, scope filtering, etc. steps for you and provide users
+as a python class.
 
 ### Standard attribute structure
 
@@ -93,7 +51,7 @@ cannot interfere with. No automated IAM system may hold the private signing keys
 
 - JWS and PGP are supported, with various algorithms (see schema for allowed algorithms).
 - The publisher signature is always required unless the field value is `null`. The publisher identity is stored in
-  `signature.name` and can be mapped to a `kid` in the (well-known)[.well-known/mozilla-iam.json] file.
+  `signature.name` and can be mapped to a `kid` in the well-known endpoint.
 - The additional signatures may be added by any publisher, and is generally used for user-supplied signatures.
 - The data that is signed are the contents of the structure the field `signature` is in, minus the `signature` structure
   itself. E.g. below: `dummy_attribute.*` *minus* `dummy_attribute.signature.*` would be the object to sign.
@@ -117,6 +75,9 @@ whom may have access to this attribute for example.
   have been strongly verified to be correct. For example, an email has been verified to belong to the owner by sending
 them an email with a link to verify that they own it. If *any* value is unverified, then the whole object shows as
 `verified: false`.
+- The `display` field is set by the `publisher_authority` and represent the display intent from the user. For example
+  the user may choose to display their name to publicly.
+
 
 **value** and **values** fields are exclusionary, only one of them may be used.
 If used, the *value* field may be of any type: string, boolean, integer, list or associative array value.
@@ -134,6 +95,8 @@ If used, the *values* field is of type associative array and may contain any sub
     "classification": "PUBLIC",
     "last_modified": "2018-01-01T00:00:00Z",
     "created": "2018-01-01T00:00:00Z",
+    "verified": true,
+    "display": "staff"
   },
   "values": {
     "title": "dummy attribute value",
@@ -144,11 +107,8 @@ If used, the *values* field is of type associative array and may contain any sub
 
 ## Schema Validation
 
-Profiles are validated to comply with the [schemas](https://person-api.sso.mozilla.com/schema/v2/profile) on
+Profiles are validated to comply with the [schemas](../python-modules/cis_profile/cis_profile/data/profile.schema) on
 creation and modification. Relying parties (RP) may perform additional validation at their discretion.
-
-Note that you may manually run validation for test profiles by using the Makefile under `profile_data`:
-`make validate-core-plus-extended-test-profile` for example.
 
 ## `/userinfo` endpoint and `id_token` responses
 
@@ -201,17 +161,4 @@ A YAML-equivalent profile may be generated and verified, for example at <https:/
 Note that profiles may be written in YAML instead of JSON, albeit **all** processing will be performed in JSON. This
 means all profiles must be converted to JSON before being submitted or used.
 
-- [Core profile (JSON)](profile_data/user_profile_core.json)
-- [Core+Extended profile (JSON)](profile_data/user_profile_core_plus_extended.json)
-- [Core+Extended profile (YAML, commented)](profile_data/user_profile_core_plus_extended.yml)
-
-## Schema source
-
-Note that you should **not** get the schemas from here for production use, nor may you copy them locally. Instead, use
-the official URLs to source the schema from, which are located at the top of this document.
-
-The source schemas here are only provided for testing and informational purposes.
-
-- [Core profile schema](profile_data/profile_core.schema)
-- [Extended profile schema](profile_data/profile_extended.schema)
-- [Core plus extended profile schema](profile_data/profile.schema)
+See [cis_profile](../cis_profile/cis_profile/data/user_profile_null.json) for an example.

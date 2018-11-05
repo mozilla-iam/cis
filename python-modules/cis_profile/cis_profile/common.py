@@ -72,7 +72,7 @@ class MozillaDataClassification(DotDict):
     INDIVIDUAL_CONFIDENTIAL = ['INDIVIDUAL CONFIDENTIAL', 'Mozilla Confidential - Specific Individuals Only']
     # Well-known Workgroups:
     WELL_KNOWN_WORKGROUPS = ['STAFF_ONLY']
-    STAFF_ONLY = 'WORKGROUP CONFIDENTIAL'
+    STAFF_ONLY = ['WORKGROUP CONFIDENTIAL: STAFF ONLY']
 
 
 class WellKnown(object):
@@ -84,7 +84,6 @@ class WellKnown(object):
     Tries to get the well-known URL and schema from local cache if the cache has not expired.
     Else, tries to get the schema from well-known URL and cache it.
     Else, uses a library-builtin copy of schema.
-    See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/.well-known/mozilla-iam.json
 
     Return: dict Schema dictionary (can be converted to JSON)
 
@@ -119,18 +118,16 @@ class WellKnown(object):
         Public wrapper for _load_well_known()
         """
         self._well_known_json = self._load_well_known()
-        schema_url = self._well_known_json.get('api').get('profile_schema_combined_uri')
-        return self._load_schema(schema_url, stype='profile.schema')
+        schema_url = self._well_known_json.get('api').get('data/profile_schema')
+        return self._load_schema(schema_url, stype='data/profile.schema')
 
     def get_core_schema(self):
-        self._well_known_json = self._load_well_known()
-        schema_url = self._well_known_json.get('api').get('profile_core_schema_uri')
-        return self._load_schema(schema_url, stype='profile_core.schema')
+        """ Deprecated """
+        return self.get_schema()
 
     def get_extended_schema(self):
-        self._well_known_json = self._load_well_known()
-        schema_url = self._well_known_json.get('api').get('profile_extended_schema_uri')
-        return self._load_schema(schema_url, stype='profile_extended.schema')
+        """ Deprecated """
+        return self.get_schema()
 
     def get_well_known(self):
         """
@@ -154,7 +151,7 @@ class WellKnown(object):
 
         # Fall-back to built-in copy
         if rules is None:
-            rules_file = 'mozilla-iam-publisher-rules.json'
+            rules_file = 'data/well-known/mozilla-iam-publisher-rules'
             if not os.path.isfile(rules_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
                 path = dirname + '/' + rules_file
@@ -181,7 +178,7 @@ class WellKnown(object):
         except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
             logger.debug('Failed to fetch schema url from discovery {} ({})'.format(self.discovery_url, e))
             logger.debug('Using builtin copy')
-            well_known_file = 'mozilla-iam.json'  # Local fall-back
+            well_known_file = 'data/well-known/mozilla-iam'  # Local fall-back
             if not os.path.isfile(well_known_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
                 path = dirname + '/' + well_known_file
@@ -191,7 +188,7 @@ class WellKnown(object):
 
         return self._well_known_json
 
-    def _load_schema(self, schema_url, stype='profile.schema'):
+    def _load_schema(self, schema_url, stype='data/profile.schema'):
         """
         Loads JSON Schema from an URL
         @schema_url: str,None the schema URL

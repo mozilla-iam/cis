@@ -13,7 +13,7 @@ The endpoint path for CIS is `/.well-known/mozilla-iam`.
 
 **Content-Type:** application/json
 
-JSON example: [mozilla-iam.json](.well-known/mozilla-iam)
+JSON examples: [here](../well-known-endpoint/tpl)
 
 Relevant fields:
 
@@ -30,7 +30,8 @@ Relevant fields:
 - `api.publishers_supported` is a list of publishers supported by the Person-API endpoint. These are entities which may
   insert data in CIS databases.
 - `api.publishers_jwks.keys` are the list of valid public keys for a specific publisher. These are used
-  to verify the CIS user profile signature for publishers. See also [docs/profile_data/profile.schema](profile.schema)
+  to verify the CIS user profile signature for publishers. See also
+[cis_profile/profile.schema](../python-modules/cis_profile/cis_profile/data/profile.schema)
   for a list of supported publishers.
 - `api.profile_*schema*_uri`: URI to various supported Person-API schemas. All data stored by Person-API
   validates with these schemas.
@@ -75,14 +76,18 @@ Otherwise, it is considered to be informational only and the system of records (
 
 **Content-Type:** application/json
 
-JSON example: [mozilla-iam.json](.well-known/mozilla-iam-publisher-rules)
+JSON examples: [here](../well-known-endpoint/tpl)
 
 Relevant fields:
 
 - `create` represents arrays of publishers which are allowed to write to profile attributes that are `null`.
 - `update` represents single, unique publishers which are allowed to update fields which are not `null`.
 
-Note that `{create,update}.access_information` is the only structure with childs (2 level deep).
+Note that `{create,update}.access_information`, `identities`, `staff_information` are structures with childs (2
+level deep).
+
+Relevant values:
+- `_default_` indicates that this default will be used for all fields that are not specifically named in the rule file.
 
 See also the [Profiles.md](Profiles.md) document for more information on profile fields.
 

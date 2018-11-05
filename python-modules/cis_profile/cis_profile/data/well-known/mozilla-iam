@@ -24,7 +24,7 @@
   },
   "api": {
     "endpoint": "https://api.sso.allizom.org",
-    "profile_schema_uri": "https://api.sso.allizom.org/schema/v2/profile",
+    "profile_schema_combined_uri": "https://api.sso.allizom.org/schema/v2/profile",
     "scopes_supported": [
       "write",
       "read",

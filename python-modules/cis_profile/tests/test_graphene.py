@@ -38,7 +38,7 @@ class TestGraphene(object):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
             def resolve_profile(self, info, **kwargs):
-                fh = open('tests/fixture/valid-profile.json')
+                fh = open('cis_profile/data/user_profile_null.json')
                 user_profile = fh.read()
                 fh.close()
                 return json2obj(user_profile)
@@ -61,4 +61,5 @@ class TestGraphene(object):
                          follow_redirects=True)
 
         response = json.loads(result.get_data())
-        assert response['data']['profile']['first_name']['value'] == 'Dummy'
+        print(response)
+        assert response['data']['profile']['first_name']['value'] is None
