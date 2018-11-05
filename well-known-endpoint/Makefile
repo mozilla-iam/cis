@@ -12,7 +12,7 @@ S3_BUCKET_URI   := s3://$(S3_BUCKET_NAME)/
 ## Change to mozilla.com for prod - make sure there's no comments or spaces
 ## after this value (that's why this comment is above it and not inline)
 DOMAIN		:= allizom.org
-INFOSEC_FP	:= 2FC05413E11014B0DC658AD5956347F6FBF3A415
+INFOSEC_FP	:= 85D77543B3D624B63CEA9E6DBC17301B491B3F21
 
 .PHONY:all
 all:
@@ -43,8 +43,8 @@ verify:
 	gpg --verify s3/.well-known/mozilla-iam.asc 2>&1 | grep "using RSA key" | grep $(INFOSEC_FP)
 
 sign: templatize
-	cd s3/.well-known && gpg -sab mozilla-iam
-	cd s3/.well-known && gpg -sab mozilla-iam-publisher-rules
+	cd s3/.well-known && gpg --default-key $(INFOSEC_FP) -sab mozilla-iam
+	cd s3/.well-known && gpg --default-key $(INFOSEC_FP) -sab mozilla-iam-publisher-rules
 
 test: tests/test_format.py
 	pytest tests
