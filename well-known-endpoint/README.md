@@ -19,6 +19,8 @@ example)
 
 - `tpl` contains the original templates for the files, CHANGE THESE!
 - `s3` is where the templates are copied after changing their values depending on the environment, DO NOT CHANGE THESE!
+- `profile.schema` comes from CIS's `cis_profile` module, if you change it, change it in the module then copy it back
+  here.
 
 # Signed files
 
