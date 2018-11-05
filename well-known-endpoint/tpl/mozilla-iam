@@ -24,7 +24,7 @@
   },
   "api": {
     "endpoint": "https://api.sso.${DOMAIN}",
-    "profile_schema_uri": "https://api.sso.${DOMAIN}/schema/v2/profile",
+    "profile_schema_uri": "https://auth.${DOMAIN}/.well-known/profile.schema",
     "scopes_supported": [
       "write",
       "read",
