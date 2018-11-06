@@ -64,7 +64,8 @@ class Classification(graphene.Enum):
     """
     MOZILLA_CONFIDENTIAL = 'MOZILLA CONFIDENTIAL'
     PUBLIC = 'PUBLIC'
-    WORKGROUP_CONFIDENTIAL = ' WORKGROUP CONFIDENTIAL'
+    WORKGROUP_CONFIDENTIAL = 'WORKGROUP CONFIDENTIAL'
+    STAFF_ONLY = 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
     INDIVIDUAL_CONFIDENTIAL = 'INDIVIDUAL CONFIDENTIAL'
 
 
@@ -74,6 +75,7 @@ class Metadata(graphene.ObjectType):
     last_modified = DateTime()
     created = DateTime()
     verified = graphene.Boolean()
+    display = graphene.Field(Display)
 
 
 class SignatureField(graphene.ObjectType):
@@ -143,40 +145,19 @@ class CoreProfile(graphene.ObjectType):
     first_name = graphene.Field(StandardAttributeString)
     last_name = graphene.Field(StandardAttributeString)
     primary_email = graphene.Field(StandardAttributeString)
-    identities = graphene.Field(StandardAttributeFieldList)
+    identities = graphene.Field(Identities)
     ssh_public_keys = graphene.Field(StandardAttributeFieldList)
     pgp_public_keys = graphene.Field(StandardAttributeFieldList)
-    acess_information = graphene.Field(AccessInformation)
-
-
-class ExtendedProfile(graphene.ObjectType):
+    access_information = graphene.Field(AccessInformation)
     fun_title = graphene.Field(StandardAttributeString)
     description = graphene.Field(StandardAttributeString)
-    location_preference = graphene.Field(StandardAttributeString)
-    office_location = graphene.Field(StandardAttributeString)
+    location = graphene.Field(StandardAttributeString)
     timezone = graphene.Field(StandardAttributeString)
-    prefered_language = graphene.Field(StandardAttributeString)
+    language = graphene.Field(StandardAttributeString)
     tags = graphene.Field(StandardAttributeList)
     pronouns = graphene.Field(StandardAttributeString)
     picture = graphene.Field(StandardAttributeString)
     uris = graphene.Field(StandardAttributeFieldList)
     phone_numbers = graphene.Field(StandardAttributeFieldList)
     alternative_name = graphene.Field(StandardAttributeString)
-
-
-class Profile(CoreProfile):
-    """
-    Copy of ExtendedProfile within CoreProfile
-    """
-    fun_title = graphene.Field(StandardAttributeString)
-    description = graphene.Field(StandardAttributeString)
-    location_preference = graphene.Field(StandardAttributeString)
-    office_location = graphene.Field(StandardAttributeString)
-    timezone = graphene.Field(StandardAttributeString)
-    prefered_language = graphene.Field(StandardAttributeString)
-    tags = graphene.Field(StandardAttributeList)
-    pronouns = graphene.Field(StandardAttributeString)
-    picture = graphene.Field(StandardAttributeString)
-    uris = graphene.Field(StandardAttributeFieldList)
-    phone_numbers = graphene.Field(StandardAttributeFieldList)
-    alternative_name = graphene.Field(StandardAttributeString)
+    staff_information = graphene.Field(StaffInformation)
