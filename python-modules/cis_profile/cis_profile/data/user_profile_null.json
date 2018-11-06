@@ -1,5 +1,5 @@
 {
-  "schema": "https://person-api.sso.mozilla.com/schema/v2/profile",
+  "schema": "https://auth.mozilla.com/.well-known/profile.schema",
   "user_id": {
     "signature": {
       "publisher": {
