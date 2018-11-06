@@ -235,7 +235,215 @@
     "value": null
   },
   "identities": {
+    "github_id_v3": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "github_id_v4": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
     "dinopark_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "mozilliansorg_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "bugzilla_mozilla_org_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "mozilla_ldap_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "mozilla_posix_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "google_oauth2_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "firefox_accounts_id": {
       "signature": {
         "publisher": {
           "alg": "RS256",
