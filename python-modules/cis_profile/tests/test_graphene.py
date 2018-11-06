@@ -24,7 +24,7 @@ class TestGraphene(object):
 
     def test_schema_initializes_core(self):
         class Query(graphene.ObjectType):
-            profile = graphene.Field(cis_g.CoreProfile)
+            profile = graphene.Field(cis_g.Profile)
 
             def resolve_profile(self, info, **kwargs):
                 return {}
