@@ -70,6 +70,19 @@ class Classification(graphene.Enum):
 
 
 # Standard properties
+class Display(graphene.Enum):
+    """
+    DinoPark visibility/display intent
+    """
+    public = 'public'
+    authenticated = 'authenticated'
+    vouched = 'vouched'
+    ndaed = 'ndaed'
+    staff = 'staff'
+    private = 'private'
+    null = 'null'
+
+
 class Metadata(graphene.ObjectType):
     classification = graphene.Field(Classification)
     last_modified = DateTime()
@@ -135,7 +148,35 @@ class AccessInformation(StandardProperty):
 
 
 # Profiles
-class CoreProfile(graphene.ObjectType):
+class StaffInformation(StandardProperty):
+    manager = graphene.Field(StandardAttributeString)
+    director = graphene.Field(StandardAttributeString)
+    staff = graphene.Field(StandardAttributeString)
+    title = graphene.Field(StandardAttributeString)
+    team = graphene.Field(StandardAttributeString)
+    cost_center = graphene.Field(StandardAttributeString)
+    worker_type = graphene.Field(StandardAttributeString)
+    wpr_desk_number = graphene.Field(StandardAttributeString)
+    office_location = graphene.Field(StandardAttributeString)
+
+
+class Identities(StandardProperty):
+    github_id_v3 = graphene.Field(StandardAttributeString)
+    github_id_v4 = graphene.Field(StandardAttributeString)
+    dinopark_id = graphene.Field(StandardAttributeString)
+    mozilliansorg_id = graphene.Field(StandardAttributeString)
+    bugzilla_mozilla_org_id = graphene.Field(StandardAttributeString)
+    mozilla_ldap_id = graphene.Field(StandardAttributeString)
+    mozilla_posix_id = graphene.Field(StandardAttributeString)
+    google_oauth2_id = graphene.Field(StandardAttributeString)
+    firefox_accounts_id = graphene.Field(StandardAttributeString)
+
+
+## Profiles
+class Profile(graphene.ObjectType):
+    """
+    IAM Profile v2
+    """
     user_id = graphene.Field(StandardAttributeString)
     login_method = graphene.Field(StandardAttributeString)
     active = graphene.Field(StandardAttributeBoolean)
