@@ -6,10 +6,14 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['cis_crypto', 'jsonschema', 'requests', 'requests-cache', 'graphene']
+requirements = ['jsonschema', 'requests', 'requests-cache', 'graphene']
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'flake8', 'flask', 'flask_graphql',
                      'flask_restful']
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
+
 extras = {'test': test_requirements}
 
 setup(

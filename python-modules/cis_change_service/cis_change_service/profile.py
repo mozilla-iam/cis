@@ -12,14 +12,13 @@ class Vault(object):
 
     def _connect(self):
         self.connection_object.session()
-        self.connection_object.assume_role()
+        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
-        if self.identity_vault_client is None:
-            self._connect()
+        self._connect()
 
         # XXX TBD replace with cis_profile
         user_id = self._get_id(profile_json)
@@ -55,15 +54,14 @@ class Status(object):
 
     def _connect(self):
         self.connection_object.session()
-        self.connection_object.assume_role()
+        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
     def query(self):
         """Query the identity vault using the named Global Secondary Index for the sequence number."""
         # Vault returns a dictionary of dictionaries for the statuses of each check.
-        if self.identity_vault_client is None:
-            self._connect()
+        self._connect()
 
         client = self.identity_vault_client.get('client')
 

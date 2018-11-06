@@ -11,6 +11,9 @@ build: $(MODULES)
 test: tests
 tests: $(MODULES)
 
+test-tox: test-tox
+test-tox: $(MODULES)
+
 clean: $(MODULES)
 
 $(MODULES):

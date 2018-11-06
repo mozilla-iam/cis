@@ -6,9 +6,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['boto3', 'everett']
+requirements = [
+    'botocore==1.10.67',
+    'boto3==1.7.67',
+    'boto==2.49.0',
+    'everett'
+]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
 
 test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 

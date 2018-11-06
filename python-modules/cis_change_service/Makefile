@@ -1,5 +1,6 @@
 ROOT_DIR        := $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 MODULE_NAME     := $(notdir $(patsubst %/,%,$(ROOT_DIR)))
+SHELL		:= /bin/bash
 
 all:
 	@echo 'Available make targets:'
@@ -21,8 +22,16 @@ venv:
 	echo "source venv/bin/activate"
 
 .install-test:
-	pip install .[test]
-	touch $@
+		pip install .[test]
+		npm install dynalite
+		npm install kinesalite
+		touch $@
+
+
+.flake:
+	flake8 setup.py
+	flake8 tests/*.py
+	flake8 $(MODULE_NAME)/*.py
 
 watch-test:
 	# Watches for changes and re-test automatically
@@ -31,11 +40,14 @@ watch-test:
 	ptw --runner "make test"
 
 test: tests
-tests: .install-test
+tests: .install-test .flake
+	PATH=$(PATH):$(shell npm bin) \
 	python setup.py test
-	flake8 setup.py
-	flake8 tests/*.py
-	flake8 $(MODULE_NAME)/*.py
+
+test-tox: test-tox
+test-tox: .flake
+	PATH=$(PATH):$(shell npm bin) \
+	tox -r
 
 clean:
 	rm -rf venv
@@ -45,5 +57,6 @@ clean:
 	rm -rf build
 	rm -rf dist
 	rm -rf .install-test
+	rm -rf node_modules
 
 .PHONY: test tests clean all install

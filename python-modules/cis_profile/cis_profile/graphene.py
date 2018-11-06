@@ -19,7 +19,7 @@ from graphql.language import ast
 # seems frankly overkill
 # See commit c38f00975896cb60a1467e3315d2291dd5f31657 for a Schema generator head-start
 
-## Required non-scalar to scalar transforms
+# Required non-scalar to scalar transforms
 class DateTime(Scalar):
     """
     Graphene Scaler for our date time format
@@ -39,7 +39,7 @@ class DateTime(Scalar):
         return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
 
 
-## Profile enums
+# Profile enums
 class Alg(graphene.Enum):
     """
     Supported signature algorithms
@@ -69,6 +69,7 @@ class Classification(graphene.Enum):
     INDIVIDUAL_CONFIDENTIAL = 'INDIVIDUAL CONFIDENTIAL'
 
 
+# Standard properties
 class Display(graphene.Enum):
     """
     DinoPark visibility/display intent
@@ -82,7 +83,6 @@ class Display(graphene.Enum):
     null = 'null'
 
 
-## Standard properties
 class Metadata(graphene.ObjectType):
     classification = graphene.Field(Classification)
     last_modified = DateTime()
@@ -139,7 +139,7 @@ class StandardAttributeFieldList(StandardProperty):
             return None
 
 
-## Profile advanced properties
+# Profile advanced properties
 class AccessInformation(StandardProperty):
     ldap = graphene.Field(StandardAttributeFieldList)
     mozilliansorg = graphene.Field(StandardAttributeFieldList)
@@ -147,6 +147,7 @@ class AccessInformation(StandardProperty):
     access_provider = graphene.Field(StandardAttributeFieldList)
 
 
+# Profiles
 class StaffInformation(StandardProperty):
     manager = graphene.Field(StandardAttributeString)
     director = graphene.Field(StandardAttributeString)

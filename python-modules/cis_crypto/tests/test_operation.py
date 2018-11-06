@@ -3,8 +3,6 @@ import mock
 import os
 import pytest
 
-from cis_fake_well_known import well_known
-
 
 class TestOperation(object):
     def test_sign_operation_benchmark(self):

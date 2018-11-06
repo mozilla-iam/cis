@@ -18,7 +18,8 @@ class Publish(object):
         self.config = get_config()
         self.connection_object = connect.AWS()
         self.kinesis_client = None
-        self.schema = cis_profile.get_schema()
+        self.wk = cis_profile.common.WellKnown()
+        self.schema = self.wk.get_schema()
 
     def _connect(self):
         if self.kinesis_client is None:
@@ -44,18 +45,21 @@ class Publish(object):
         # Assume the following ( publisher has signed the new attributes and regenerated metadata )
         # Validate JSON schema
         try:
+            import pprint
+            print(pprint.pprint(self._validate_schema(profile_json)))
             self._validate_schema(profile_json)
             logger.debug(
                 'The schema was successfully validated for user_id: {}'.format(
                     profile_json.get('user_id').get('value')
                 )
             )
-        except jsonschema.exceptions.ValidationError:
+        except jsonschema.exceptions.ValidationError as e:
             logger.debug(
                 'Schema validation failed for user_id: {}'.format(
                     profile_json.get('user_id').get('value')
                 )
             )
+            logger.debug('Reason for schema failure was: {}'.format(e))
             status = 400
             sequence_number = None
             return {'status_code': status, 'sequence_number': sequence_number}

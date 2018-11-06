@@ -1,0 +1,27 @@
+language: python
+dist: trusty
+cache:
+  - pip
+  - npm
+python:
+  - 3.6
+env:
+  - "AWS_DEFAULT_REGION=us-west-2 BOTO_CONFIG=/dev/null"
+before_install:
+  - sudo rm -f /etc/boto.cfg
+  - pip install flake8
+  - pip install tox
+  - npm install -g dynalite
+  - npm install -g kinesalite
+script:
+  - export BOTO_CONFIG=/dev/null
+  - mkdir ~/.aws
+  - touch ~/.aws/credentials
+  - echo '[default]' >> ~/.aws/credentials
+  - echo 'aws_access_key_id=ABCDEFG'  >> ~/.aws/credentials
+  - echo 'aws_secret_access_key=ABCDEFG'  >> ~/.aws/credentials
+  - touch ~/.aws/config
+  - echo '[default]' >> ~/.aws/config
+  - echo 'output=json'  >> ~/.aws/config
+  - echo 'region=us-west-2'  >> ~/.aws/config
+  - cd python-modules && make test-tox

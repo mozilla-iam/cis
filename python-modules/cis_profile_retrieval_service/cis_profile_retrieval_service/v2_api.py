@@ -9,6 +9,7 @@ from flask_restful import Resource
 from flask_restful import reqparse
 from flask import jsonify
 from graphene import Schema
+from logging import getLogger
 
 from cis_identity_vault.models import user
 from cis_profile.common import MozillaDataClassification
@@ -27,6 +28,7 @@ app = Flask(__name__)
 api = Api(app)
 CORS(app)
 config = get_config()
+logger = getLogger(__name__)
 
 if config('initialize_vault', namespace='person_api', default='false') == 'true':
     logger.debug('Initializing vault and pre-seeding it, this will take some time...')

@@ -6,13 +6,25 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['python-jose-cryptodome', 'python-jose', 'everett', 'boto3==1.7.67', 'boto==2.49.0',
-                'botocore==1.10.67', 'requests', 'pyaml']
+requirements = [
+    'python-jose[cryptography]==3.0.1',
+    'cryptography==2.3.1',
+    'everett',
+    'boto3==1.7.67',
+    'boto==2.49.0',
+    'botocore==1.10.67',
+    'requests',
+    'pyaml'
+]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'cis_fake_well_known',
-                     'flake8']
+test_requirements = [
+    'pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'flake8'
+]
 
 extras = {'test': test_requirements}
 

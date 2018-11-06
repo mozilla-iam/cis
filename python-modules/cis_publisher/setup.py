@@ -7,7 +7,7 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'boto',
+    'boto==2.49.0',
     'jsonschema'
     # 'cis_crypto', # Uncomment when these are published in warehouse
     # 'cis_aws' # Uncomment when these are published in warehouse

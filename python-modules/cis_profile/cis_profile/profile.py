@@ -238,7 +238,7 @@ class User(object):
         Verifies that the selected publisher is allowed to change this attribute.
         This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
 
-        Note that this does ! NOT VERIFY SIGNATURE ! and that you MUST call verify_attribute_signature()
+        Note that this does NOT VERIFY SIGNATURE and that you MUST call verify_attribute_signature()
         separately.
 
         If you do not, any publisher can pass a fake publisher name and this function will answer that the publisher is
@@ -247,7 +247,7 @@ class User(object):
         @attr_name str the name of the requested attribute as we cannot look this up.
         @parent_name str the name of the requested attribute's parent name as we cannot look this up.
         @previous_attribute dict the previous attribute if the user is being updated. If None, the value is always
-        considered to be "updated" from the current value stored in `self.__dict__`. Otherwise, it will check against
+        considered to be "updated" from the current value stored in self.__dict__. Otherwise, it will check against
         the passed value if it's `null` or set, and consider it "created" if it's `null`, "updated" otherwise. Makes
         sense? Good!
 

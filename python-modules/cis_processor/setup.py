@@ -13,14 +13,17 @@ requirements = [
     'botocore==1.10.67'
 ]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = [
+    'pytest-runner',
+    'setuptools>=40.5.0'
+]
 
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8', 'moto']
 
 extras = {'test': test_requirements}
 
 setup(
-    name="cis_identity_vault",
+    name="cis_processor",
     version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",

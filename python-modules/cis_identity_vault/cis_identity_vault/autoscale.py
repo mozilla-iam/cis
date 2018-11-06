@@ -132,10 +132,10 @@ class ScalableTable(object):
                     'TargetValue': self.percent_of_use_to_aim_for,
                     'PredefinedMetricSpecification': {
                         'PredefinedMetricType': 'DynamoDBWriteCapacityUtilization'
-                  },
-                  'ScaleOutCooldown': self.scale_out_cooldown_in_seconds,
-                  'ScaleInCooldown': self.scale_in_cooldown_in_seconds
-              }
+                    },
+                    'ScaleOutCooldown': self.scale_out_cooldown_in_seconds,
+                    'ScaleInCooldown': self.scale_in_cooldown_in_seconds
+                }
             )
 
             self._autoscaling_client.put_scaling_policy(
@@ -152,8 +152,8 @@ class ScalableTable(object):
                     'TargetValue': self.percent_of_use_to_aim_for,
                     'PredefinedMetricSpecification': {
                         'PredefinedMetricType': 'DynamoDBReadCapacityUtilization'
-                  },
-                  'ScaleOutCooldown': self.scale_out_cooldown_in_seconds,
-                  'ScaleInCooldown': self.scale_in_cooldown_in_seconds
-              }
+                    },
+                    'ScaleOutCooldown': self.scale_out_cooldown_in_seconds,
+                    'ScaleInCooldown': self.scale_in_cooldown_in_seconds
+                }
             )

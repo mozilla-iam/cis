@@ -331,17 +331,17 @@ class TestConnect(object):
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
 
         dynalite_session = Stubber(
-                boto3.session.Session(
-                    region_name='us-west-2'
-                )
-        ).client.client(
-                    'dynamodb',
-                    endpoint_url='http://localhost:34569'
-                .format(
-                    dynalite_host,
-                    dynalite_port
-                )
+            boto3.session.Session(
+                region_name='us-west-2'
             )
+        ).client.client(
+            'dynamodb',
+            endpoint_url='http://localhost:34569'
+            .format(
+                dynalite_host,
+                dynalite_port
+            )
+        )
 
         dynalite_session.create_table(
             TableName=name,
@@ -412,17 +412,17 @@ class TestConnect(object):
         os.environ['CIS_KINESALITE_HOST'] = kinesalite_host
         os.environ['CIS_KINESALITE_PORT'] = kinesalite_port
         conn = Stubber(
-                boto3.session.Session(
-                    region_name='us-west-2'
-                )
-        ).client.client(
-                    'kinesis',
-                    endpoint_url='http://localhost:34567'
-                .format(
-                    kinesalite_host,
-                    kinesalite_port
-                )
+            boto3.session.Session(
+                region_name='us-west-2'
             )
+        ).client.client(
+            'kinesis',
+            endpoint_url='http://localhost:34567'
+            .format(
+                kinesalite_host,
+                kinesalite_port
+            )
+        )
 
         response = conn.create_stream(
             StreamName=name,

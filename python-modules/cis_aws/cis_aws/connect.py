@@ -104,25 +104,40 @@ class AWS(object):
                 'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
             }
         else:
-            # Assume we are using an assumeRole because not local.
-            dynamodb_client = self._boto_session.client(
-                'dynamodb',
-                aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
-                aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
-                aws_session_token=self.assume_role_session['Credentials']['SessionToken']
-            )
+            if self.assume_role_session is not None:
+                # Assume we are using an assumeRole because not local.
+                dynamodb_client = self._boto_session.client(
+                    'dynamodb',
+                    aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
+                    aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
+                    aws_session_token=self.assume_role_session['Credentials']['SessionToken']
+                )
 
-            dynamodb_resource = self._boto_session.resource(
-                'dynamodb',
-                aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
-                aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
-                aws_session_token=self.assume_role_session['Credentials']['SessionToken']
-            )
-            identity_vault_info = {
-                'client': dynamodb_client,
-                'arn': self._discover_dynamo_table(dynamodb_client),
-                'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
-            }
+                dynamodb_resource = self._boto_session.resource(
+                    'dynamodb',
+                    aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
+                    aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
+                    aws_session_token=self.assume_role_session['Credentials']['SessionToken']
+                )
+                identity_vault_info = {
+                    'client': dynamodb_client,
+                    'arn': self._discover_dynamo_table(dynamodb_client),
+                    'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
+                }
+            else:
+                # Assume we are using in a place that uses normal credentials.
+                dynamodb_client = self._boto_session.client(
+                    'dynamodb'
+                )
+
+                dynamodb_resource = self._boto_session.resource(
+                    'dynamodb'
+                )
+                identity_vault_info = {
+                    'client': dynamodb_client,
+                    'arn': self._discover_dynamo_table(dynamodb_client),
+                    'table': dynamodb_resource.Table(self._discover_dynamo_table(dynamodb_client).split('/')[1])
+                }
 
         return identity_vault_info
 
@@ -148,13 +163,17 @@ class AWS(object):
                 'arn': self._discover_kinesis_stream(kinesis_client)
             }
         else:
-            # Assume we are using an assumeRole because not local.
-            kinesis_client = self._boto_session.client(
-                'kinesis',
-                aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
-                aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
-                aws_session_token=self.assume_role_session['Credentials']['SessionToken']
-            )
+            if self.assume_role_session is not None:
+                # Assume we are using an assumeRole because not local.
+                kinesis_client = self._boto_session.client(
+                    'kinesis',
+                    aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
+                    aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
+                    aws_session_token=self.assume_role_session['Credentials']['SessionToken']
+                )
+            else:
+                # Assume we are running somwhere that can assume role natively.
+                kinesis_client = self._boto_session.client('kinesis')
 
             stream_info = {
                 'client': kinesis_client,
