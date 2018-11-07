@@ -7,6 +7,7 @@ import subprocess
 from botocore.stub import Stubber
 from boto.kinesis.exceptions import ResourceInUseException
 from cis_change_service.common import get_config
+from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
@@ -18,7 +19,7 @@ class TestProfile(object):
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         config = get_config()
         dynalite_port = config('dynalite_port', namespace='cis')
-        subprocess.Popen(['dynalite', '--port', dynalite_port])
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
         conn = boto3.client('dynamodb',
                             region_name='us-west-2',
                             aws_access_key_id="ak",
@@ -118,6 +119,7 @@ class TestProfile(object):
         tags_2 = {'Key': 'application', 'Value': 'change-stream'}
         conn.add_tags_to_stream(StreamName=name, Tags=tags_1)
         conn.add_tags_to_stream(StreamName=name, Tags=tags_2)
+        self.user_profile = FakeUser().as_json()
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
@@ -127,16 +129,12 @@ class TestProfile(object):
         token = f.generate_bearer_without_scope()
         api.app.testing = True
         self.app = api.app.test_client()
-        fh = open('tests/fixture/valid-profile.json')
-        user_profile = json.loads(fh.read())
-        fh.close()
-        user_profile = user_profile
         result = self.app.post(
             '/change',
             headers={
                 'Authorization': 'Bearer ' + token
             },
-            data=json.dumps(user_profile),
+            data=json.dumps(self.user_profile),
             content_type='application/json',
             follow_redirects=True
         )
@@ -160,4 +158,5 @@ class TestProfile(object):
         assert is_in_vault is not None
 
     def teardown_class(self):
+        os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
