@@ -1,2 +1,1 @@
-include cis_profile/*json
-include cis_profile/*schema
+recursive-include cis_profile *.schema *.json mozilla-*
