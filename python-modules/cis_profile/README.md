@@ -8,8 +8,10 @@ affecting the class code (to some degree).
 
 ## Example usage
 
+### Using profiles
+
 ```
-from moz_iam_profile import User
+from cis_profile import User
 skel_user = User(user_id="bobsmith")
 skel_user.user_id.value = "notbobsmith"
 if skel_user.validate():
@@ -19,6 +21,15 @@ user = { exiting...user..json }
 skel_user2 = User(profile_structure_json=user)
 skel_user2.fun_title.value = 'New title!'
 skel_user2.sign_attribute('fun_title')
+```
+
+### Faking profiles
+
+```
+from cis_profile import FakeUser
+user = FakeUser()
+print(user.first_name.value)
+# Jim
 ```
 
 ## About tests
