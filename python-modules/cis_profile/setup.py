@@ -32,7 +32,7 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_profile']),
+    packages=find_packages(include=['cis_profile', 'cis_profile/data', 'cis_profile/data/well-known']),
     package_data={'cis_profile': ['*.json', 'data/*', 'data/well-known/*']},
     setup_requires=setup_requirements,
     tests_require=test_requirements,
