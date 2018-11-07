@@ -149,7 +149,7 @@ class User(object):
         classname = self.__class__.__name__
         for k in user:
             # Anything that is within the class namespace is whitelisted
-            if k.startswith('_{}'.format(classname)):
+            if k.startswith('_{}'.format(classname)) or k.startswith('_User'):
                 todel.append(k)
 
         for d in todel:
