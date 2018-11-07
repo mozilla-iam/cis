@@ -7,8 +7,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose-cryptodome',
     'python-jose',
+    'cryptography',
     'everett',
     'flask',
     'flask_cors',
@@ -16,7 +16,7 @@ requirements = [
     'boto3>=1.6.16',
     'botocore>=1.12.13',
     'six',
-    'cis_profile==0.0.1'
+    'cis_profile==0.0.3'
     # cis_publisher
 ]
 
