@@ -15,6 +15,9 @@ install:
 build:
 	python setup.py build
 
+upload: dist
+	python setup.py sdist check upload --sign
+
 python-venv: venv
 venv:
 	$(shell [ -d venv ] || python3 -m venv venv)
