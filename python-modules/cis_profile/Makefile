@@ -8,15 +8,15 @@ all:
 
 install:
 	# Installs as egg
-	python setup.py install
+	python3 setup.py install
 	# Installs via pip
 	pip install .
 
 build:
-	python setup.py build
+	python3 setup.py build
 
 upload: dist
-	python setup.py sdist check upload --sign
+	python3 setup.py sdist check upload --sign
 
 python-venv: venv
 venv:
@@ -45,7 +45,7 @@ watch-test:
 test: tests
 tests: .install-test .flake
 	PATH=$(PATH):$(shell npm bin) \
-	python setup.py test
+	python3 setup.py test
 
 test-tox: test-tox
 test-tox: .flake
