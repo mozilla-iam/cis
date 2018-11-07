@@ -12,9 +12,9 @@ requirements = [
     'everett',
     'flask',
     'flask_cors',
-    'botocore==1.10.67',
-    'boto3==1.7.67',
-    'boto==2.49.0',
+    'boto>=2.36.0',
+    'boto3>=1.6.16',
+    'botocore>=1.12.13',
     'six'
     # cis_publisher
 ]
@@ -23,7 +23,7 @@ setup_requirements = [
     'pytest-runner',
     'setuptools>=40.5.0'
 ]
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8', 'moto']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8', 'moto>=1.3.7']
 
 extras = {'test': test_requirements}
 

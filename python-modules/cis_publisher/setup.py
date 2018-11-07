@@ -7,7 +7,9 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'boto==2.49.0',
+    'boto>=2.36.0',
+    'boto3>=1.6.16',
+    'botocore>=1.12.13',
     'jsonschema'
     # 'cis_crypto', # Uncomment when these are published in warehouse
     # 'cis_aws' # Uncomment when these are published in warehouse
@@ -15,7 +17,7 @@ requirements = [
 
 setup_requirements = ['pytest-runner']
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto', 'flake8']
+test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto>=1.3.7', 'flake8']
 
 extras = {'test': test_requirements}
 

@@ -9,9 +9,9 @@ with open("README.md", "r") as fh:
 requirements = [
     'python-jose==3.0.1',
     'cryptography==2.3.1',
-    'boto3==1.7.67',
-    'boto==2.49.0',
-    'botocore==1.10.67',
+    'boto>=2.36.0',
+    'boto3>=1.6.16',
+    'botocore>=1.12.13',
     'everett',
     'flask',
     'flask_cors',
@@ -34,7 +34,7 @@ test_requirements = [
     'pytest-watch',
     'pytest-cov',
     'pytest-mock',
-    'moto',
+    'moto>=1.3.7',
     'mock',
     'flake8',
     'iam-profile-faker'
