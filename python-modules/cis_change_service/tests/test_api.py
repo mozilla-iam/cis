@@ -7,6 +7,7 @@ import subprocess
 from botocore.stub import Stubber
 from boto.kinesis.exceptions import ResourceInUseException
 from cis_change_service import api
+from cis_profile import FakeUser
 from datetime import datetime
 from datetime import timedelta
 from tests.fake_auth0 import FakeBearer
@@ -133,6 +134,7 @@ class TestAPI(object):
                 }
             ]
         )
+        self.user_profile = FakeUser().as_json()
 
     def test_index_exists(self):
         result = self.app.get('/', follow_redirects=True)
@@ -145,16 +147,12 @@ class TestAPI(object):
         token = f.generate_bearer_without_scope()
         api.app.testing = True
         self.app = api.app.test_client()
-        fh = open('tests/fixture/valid-profile.json')
-        user_profile = json.loads(fh.read())
-        fh.close()
-        user_profile = user_profile
         result = self.app.post(
             '/change',
             headers={
                 'Authorization': 'Bearer ' + token
             },
-            data=json.dumps(user_profile),
+            data=json.dumps(self.user_profile),
             content_type='application/json',
             follow_redirects=True
         )
@@ -199,16 +197,12 @@ class TestAPI(object):
         token = f.generate_bearer_without_scope()
         api.app.testing = True
         self.app = api.app.test_client()
-        fh = open('tests/fixture/valid-profile.json')
-        user_profile = json.loads(fh.read())
-        fh.close()
-        user_profile = user_profile
         result = self.app.post(
             '/change',
             headers={
                 'Authorization': 'Bearer ' + token
             },
-            data=json.dumps(user_profile),
+            data=json.dumps(self.user_profile),
             content_type='application/json',
             follow_redirects=True
         )
@@ -242,10 +236,7 @@ class TestAPI(object):
             'scope': 'read:allthething',
             'gty': 'client-credentials'
         }
-        fh = open('tests/fixture/valid-profile.json')
-        user_profile = json.loads(fh.read())
-        fh.close()
-        user_profile = user_profile
+
         fake_jwks.return_value = json_form_of_pk
         token = f.generate_bearer_with_scope('read:profile', bad_claims)
         api.app.testing = True
@@ -255,7 +246,7 @@ class TestAPI(object):
             headers={
                 'Authorization': 'Bearer ' + token
             },
-            data=json.dumps(user_profile),
+            data=json.dumps(self.user_profile),
             content_type='application/json',
             follow_redirects=True
         )
