@@ -15,6 +15,10 @@ class TestProfile(object):
 
     def test_user_init(self):
         u = profile.User()
+        j = u.as_json()
+        d = u.as_dict()
+        assert j is not None
+        assert d is not None
         assert u is not None
 
     def test_filter_scopes(Self):
