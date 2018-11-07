@@ -7,9 +7,9 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'botocore==1.10.67',
-    'boto3==1.7.67',
-    'boto==2.49.0',
+    'boto>=2.36.0',
+    'boto3>=1.6.16',
+    'botocore>=1.12.13',
     'everett'
 ]
 
@@ -18,7 +18,7 @@ setup_requirements = [
     'setuptools>=40.5.0'
 ]
 
-test_requirements = ['jsonschema', 'mock', 'moto', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
+test_requirements = ['jsonschema', 'mock', 'moto>=1.3.7', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
 
 extras = {'test': test_requirements}
 
