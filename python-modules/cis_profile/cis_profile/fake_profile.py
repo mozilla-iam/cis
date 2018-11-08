@@ -119,12 +119,12 @@ class FakeUser(cis_profile.profile.User):
         self.__dict__['last_name']['metadata']['display'] = fake.display()
 
         self.__dict__['primary_email']['value'] = fprofile['mail']
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['identities']['mozilla_ldap_id']['value'] = fprofile['mail']
         self.__dict__['identities']['dinopark_id'] = fake.user_name()
         self.__dict__['ssh_public_keys']['values'] = fake.pub_key()
         self.__dict__['pgp_public_keys']['values'] = fake.pub_key()
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['access_information']['ldap'] = fake.ai()
             self.__dict__['access_information']['hris'] = fake.ai()
         self.__dict__['access_information']['mozilliansorg'] = fake.ai()
@@ -143,7 +143,7 @@ class FakeUser(cis_profile.profile.User):
         self.__dict__['uris']['values'] = fake.websites(fprofile['website'])
         self.__dict__['phone_numbers']['values'] = fake.phone()
         self.__dict__['alternative_name'] = fprofile['name']
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['staff_information']['manager']['value'] = fake.boolean()
             self.__dict__['staff_information']['manager']['metadata']['display'] = \
                 fake.display(filterout=['public', 'authenticated', 'vouched', None])
