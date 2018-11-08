@@ -171,7 +171,7 @@ class FakeUser(cis_profile.profile.User):
             self.__dict__['staff_information']['worker_type']['metadata']['display'] = \
                 fake.display(filterout=['public', 'authenticated', 'vouched', 'ndaed', None])
 
-            self.__dict__['staff_information']['wpr_desk_number']['value'] = fake.randint(100, 900)
+            self.__dict__['staff_information']['wpr_desk_number']['value'] = random.randint(100, 900)
             self.__dict__['staff_information']['wpr_desk_number']['metadata']['display'] = \
                 fake.display(filterout=['public', 'authenticated', 'vouched', None])
 
