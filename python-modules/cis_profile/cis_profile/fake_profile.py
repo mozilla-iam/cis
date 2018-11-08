@@ -69,6 +69,11 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         p = ['Employee', 'Contractor', 'Intern']
         return random.choice(p)
 
+    def display(self, filterout=[]):
+        p = [None, 'public', 'authenticated', 'vouched', 'ndaed', 'staff', 'private']
+        r = set(p) - set(filterout)
+        return random.choice(list(r))
+
 
 class FakeUser(cis_profile.profile.User):
     """
@@ -103,21 +108,31 @@ class FakeUser(cis_profile.profile.User):
         self.__dict__['active']['value'] = fake.boolean()
         self.__dict__['last_modified']['value'] = fake.iso8601()
         self.__dict__['created']['value'] = fake.iso8601()
+
         self.__dict__['usernames']['values'] = fake.usernames()
+        self.__dict__['usernames']['metadata']['display'] = fake.display()
+
         self.__dict__['first_name']['value'] = fake.first_name()
+        self.__dict__['first_name']['metadata']['display'] = fake.display()
+
         self.__dict__['last_name']['value'] = fake.last_name()
+        self.__dict__['last_name']['metadata']['display'] = fake.display()
+
         self.__dict__['primary_email']['value'] = fprofile['mail']
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['identities']['mozilla_ldap_id']['value'] = fprofile['mail']
         self.__dict__['identities']['dinopark_id'] = fake.user_name()
         self.__dict__['ssh_public_keys']['values'] = fake.pub_key()
         self.__dict__['pgp_public_keys']['values'] = fake.pub_key()
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['access_information']['ldap'] = fake.ai()
             self.__dict__['access_information']['hris'] = fake.ai()
         self.__dict__['access_information']['mozilliansorg'] = fake.ai()
         self.__dict__['access_information']['access_provider'] = fake.ai()
+
         self.__dict__['fun_title']['value'] = fprofile['job']
+        self.__dict__['fun_title']['metadata']['display'] = fake.display()
+
         self.__dict__['description']['value'] = fake.text(max_nb_chars=200)
         self.__dict__['location']['value'] = fake.country()
         self.__dict__['timezone']['value'] = fake.timezone()
@@ -128,13 +143,38 @@ class FakeUser(cis_profile.profile.User):
         self.__dict__['uris']['values'] = fake.websites(fprofile['website'])
         self.__dict__['phone_numbers']['values'] = fake.phone()
         self.__dict__['alternative_name'] = fprofile['name']
-        if self.login_method == 'Mozilla-LDAP':
+        if self.login_method.value == 'Mozilla-LDAP':
             self.__dict__['staff_information']['manager']['value'] = fake.boolean()
+            self.__dict__['staff_information']['manager']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
+
             self.__dict__['staff_information']['director']['value'] = fake.boolean()
+            self.__dict__['staff_information']['director']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
+
             self.__dict__['staff_information']['staff']['value'] = True
+            self.__dict__['staff_information']['staff']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
+
             self.__dict__['staff_information']['title']['value'] = fprofile['job']
+            self.__dict__['staff_information']['title']['metadata']['display'] = fake.display()
+
             self.__dict__['staff_information']['team']['value'] = fake.sentence(nb_words=2)
+            self.__dict__['staff_information']['team']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
+
             self.__dict__['staff_information']['cost_center']['value'] = random.randint(1000, 9000)
+            self.__dict__['staff_information']['cost_center']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', 'ndaed', None])
+
             self.__dict__['staff_information']['worker_type']['value'] = fake.worker_type()
-            self.__dict__['staff_information']['wpr_desk_number']['value'] = fake.randint(100, 900)
+            self.__dict__['staff_information']['worker_type']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', 'ndaed', None])
+
+            self.__dict__['staff_information']['wpr_desk_number']['value'] = random.randint(100, 900)
+            self.__dict__['staff_information']['wpr_desk_number']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
+
             self.__dict__['staff_information']['office_location']['value'] = fake.city()
+            self.__dict__['staff_information']['office_location']['metadata']['display'] = \
+                fake.display(filterout=['public', 'authenticated', 'vouched', None])
