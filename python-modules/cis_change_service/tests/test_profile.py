@@ -148,7 +148,7 @@ class TestProfile(object):
         from cis_change_service import profile
 
         vault = profile.Vault(sequence_number)
-        res = vault.put_profile(user_profile)
+        res = vault.put_profile(self.user_profile)
         assert res['ResponseMetadata']['HTTPStatusCode'] == 200
 
         # Fetch the sequence number we just inserted to the the vault.
