@@ -633,6 +633,7 @@
                 { "$ref": "#/definitions/DisplayStaffOnly" }
               ]
             },
+            "mozilla_ldap_primary_email": { "$ref": "#/definitions/StandardAttributeString" },,
             "mozilla_posix_id": { "$ref": "#/definitions/StandardAttributeString" },
             "google_oauth2_id": { "$ref": "#/definitions/StandardAttributeString" },
             "google_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
