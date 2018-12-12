@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 requirements = ['jsonschema', 'requests', 'requests-cache', 'graphene', 'Faker', 'everett']
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'flake8', 'flask', 'flask_graphql',
-                     'flask_restful', 'sqlite3']
+                     'flask_restful']
 setup_requirements = [
     'pytest-runner',
     'setuptools>=40.5.0'
