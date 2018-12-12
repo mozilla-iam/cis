@@ -5,7 +5,24 @@ import requests.exceptions
 import requests_cache
 import logging
 
+from everett.manager import ConfigManager
+from everett.manager import ConfigIniEnv
+from everett.manager import ConfigOSEnv
+
 logger = logging.getLogger(__name__)
+
+
+def get_config():
+    return ConfigManager(
+        [
+            ConfigIniEnv([
+                os.environ.get('CIS_CONFIG_INI'),
+                '~/.mozilla-cis.ini',
+                '/etc/mozilla-cis.ini'
+            ]),
+            ConfigOSEnv()
+        ]
+    )
 
 
 class DotDict(dict):
@@ -95,7 +112,8 @@ class WellKnown(object):
     """
 
     def __init__(self, discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam'):
-        self._request_cache = '/var/tmp/cis_request_cache'  # XXX use `get_config` to configure that
+        self.config = get_config()
+        self._request_cache = self.config('requests_cache_path', namespace='cis', default='/var/tmp/cis_request_cache')
         self._request_cache_ttl = 3600
         # Memory cached copies
         self._well_known_json = None
@@ -103,7 +121,11 @@ class WellKnown(object):
         self.discovery_url = discovery_url
 
         logger.debug('Initializing requests_cache TTL={} at {}'.format(self._request_cache_ttl, self._request_cache))
-        requests_cache.install_cache(self._request_cache, expire_after=self._request_cache_ttl, backend='sqlite')
+        requests_cache.install_cache(
+            self._request_cache,
+            expire_after=self._request_cache_ttl,
+            backend=self.config('requests_cache_backend', namespace='cis', default='sqlite')
+        )
 
     def get_publisher_rules(self):
         """
