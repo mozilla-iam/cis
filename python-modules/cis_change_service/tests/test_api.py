@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 
 class TestAPI(object):
-    def setup_class(self):
+    def setup(self):
         api.app.testing = True
         self.app = api.app.test_client()
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
@@ -58,7 +58,8 @@ class TestAPI(object):
                 StreamName=name,
                 ShardCount=1
             )
-        except ResourceInUseException:
+        except Exception as e:
+            logger.error('Stream error: {}'.format(e))
             # This just means we tried too many tests too fast.
             pass
 
@@ -84,56 +85,59 @@ class TestAPI(object):
                             aws_access_key_id="ak",
                             aws_secret_access_key="sk",
                             endpoint_url='http://localhost:{}'.format(dynalite_port))
-
-        conn.create_table(
-            TableName=name,
-            KeySchema=[
-                {'AttributeName': 'id', 'KeyType': 'HASH'}
-            ],
-            AttributeDefinitions=[
-                {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
-                {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
-                {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
-            },
-            GlobalSecondaryIndexes=[
-                {
-                    'IndexName': '{}-sequence_number'.format(name),
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'sequence_number',
-                            'KeyType': 'HASH'
-                        },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
-                    },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
-                    }
+        try:
+            conn.create_table(
+                TableName=name,
+                KeySchema=[
+                    {'AttributeName': 'id', 'KeyType': 'HASH'}
+                ],
+                AttributeDefinitions=[
+                    {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
+                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
+                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
+                    {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
+                ],
+                ProvisionedThroughput={
+                    'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
                 },
-                {
-                    'IndexName': '{}-primary_email'.format(name),
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'primary_email',
-                            'KeyType': 'HASH'
+                GlobalSecondaryIndexes=[
+                    {
+                        'IndexName': '{}-sequence_number'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'sequence_number',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
                         },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
                     },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
+                    {
+                        'IndexName': '{}-primary_email'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'primary_email',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
+                        },
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
                     }
-                }
-            ]
-        )
+                ]
+            )
+        except Exception as e:
+            logger.error('Table error: {}'.format(e))
+
         self.user_profile = FakeUser().as_json()
 
     def test_index_exists(self):
@@ -253,6 +257,6 @@ class TestAPI(object):
 
         assert result.status_code == 200
 
-    def teardown_class(self):
+    def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

@@ -1,0 +1,14 @@
+#!/Users/akrug/workspace/cis/python-modules/cis_change_service/.tox/py36/bin/python
+
+import sys
+import os
+sys.path.append(os.getcwd())
+
+from cis_change_service.api import app
+from cis_change_service.common import get_config
+
+config = get_config()
+
+if __name__== "__main__":
+    config = get_config()
+    app.run(port=config('change_service_port', namespace='cis', default='8100'))

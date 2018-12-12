@@ -45,20 +45,8 @@ class Publish(object):
         # Assume the following ( publisher has signed the new attributes and regenerated metadata )
         # Validate JSON schema
         try:
-            import pprint
-            print(pprint.pprint(self._validate_schema(profile_json)))
             self._validate_schema(profile_json)
-            logger.debug(
-                'The schema was successfully validated for user_id: {}'.format(
-                    profile_json.get('user_id').get('value')
-                )
-            )
         except jsonschema.exceptions.ValidationError as e:
-            logger.debug(
-                'Schema validation failed for user_id: {}'.format(
-                    profile_json.get('user_id').get('value')
-                )
-            )
             logger.debug('Reason for schema failure was: {}'.format(e))
             status = 400
             sequence_number = None

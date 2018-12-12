@@ -1,6 +1,7 @@
 
 import boto3
 import json
+import logging
 import os
 import mock
 import subprocess
@@ -12,8 +13,21 @@ from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
 
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
+)
+
+logging.getLogger('boto').setLevel(logging.CRITICAL)
+logging.getLogger('boto3').setLevel(logging.CRITICAL)
+logging.getLogger('botocore').setLevel(logging.CRITICAL)
+
+
+logger = logging.getLogger(__name__)
+
+
 class TestProfile(object):
-    def setup_class(self):
+    def setup(self):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         name = 'local-identity-vault'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
@@ -32,55 +46,58 @@ class TestProfile(object):
 
         # XXX TBD this will eventually be replaced by logic from the vault module
         # The vault module will have the authoritative definitions for Attributes and GSI
-        conn.create_table(
-            TableName=name,
-            KeySchema=[
-                {'AttributeName': 'id', 'KeyType': 'HASH'}
-            ],
-            AttributeDefinitions=[
-                {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
-                {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
-                {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
-            },
-            GlobalSecondaryIndexes=[
-                {
-                    'IndexName': '{}-sequence_number'.format(name),
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'sequence_number',
-                            'KeyType': 'HASH'
-                        },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
-                    },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
-                    }
+        try:
+            conn.create_table(
+                TableName=name,
+                KeySchema=[
+                    {'AttributeName': 'id', 'KeyType': 'HASH'}
+                ],
+                AttributeDefinitions=[
+                    {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
+                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
+                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
+                    {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
+                ],
+                ProvisionedThroughput={
+                    'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
                 },
-                {
-                    'IndexName': '{}-primary_email'.format(name),
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'primary_email',
-                            'KeyType': 'HASH'
+                GlobalSecondaryIndexes=[
+                    {
+                        'IndexName': '{}-sequence_number'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'sequence_number',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
                         },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
                     },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
+                    {
+                        'IndexName': '{}-primary_email'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'primary_email',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
+                        },
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
                     }
-                }
-            ]
-        )
+                ]
+            )
+        except Exception as e:
+            logger.error('Table error: {}'.format(e))
 
         conn = Stubber(
             boto3.session.Session(
@@ -100,7 +117,8 @@ class TestProfile(object):
                 StreamName=name,
                 ShardCount=1
             )
-        except ResourceInUseException:
+        except Exception as e:
+            logger.error('Stream creation error: {}'.format(e))
             # This just means we tried too many tests too fast.
             pass
 
@@ -157,6 +175,6 @@ class TestProfile(object):
 
         assert is_in_vault is not None
 
-    def teardown_class(self):
+    def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
