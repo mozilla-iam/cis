@@ -272,6 +272,56 @@ class TestConnect(object):
 
     @mock_dynamodb2
     @mock_sts
+    def test_role_arn_is_none(self):
+        os.environ['CIS_ENVIRONMENT'] = 'inalambda'
+        name = 'inalambda-identity-vault'
+        conn = boto3.client('dynamodb',
+                            region_name='us-west-2',
+                            aws_access_key_id="ak",
+                            aws_secret_access_key="sk")
+
+        conn.create_table(
+            TableName=name,
+            KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
+            AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+        )
+
+        table_description = conn.describe_table(TableName=name)
+        arn = table_description['Table']['TableArn']
+
+        assert arn is not None
+
+        waiter = conn.get_waiter('table_exists')
+        waiter.wait(
+            TableName='inalambda-identity-vault',
+            WaiterConfig={
+                'Delay': 30,
+                'MaxAttempts': 5
+            }
+        )
+
+        tags = [
+            {'Key': 'cis_environment', 'Value': 'inalambda'},
+            {'Key': 'application', 'Value': 'identity-vault'}
+        ]
+
+        conn.tag_resource(ResourceArn=arn, Tags=tags)
+
+        os.environ['CIS_ASSUME_ROLE_ARN'] = 'None'
+        from cis_aws import connect
+        c = connect.AWS()
+        c._boto_session = boto3.session.Session(region_name='us-west-2')
+        c.assume_role()
+
+        res = c.identity_vault_client()
+        assert res is not None
+
+        assert res.get('client') is not None
+        assert res.get('arn').endswith('inalambda-identity-vault')
+
+    @mock_dynamodb2
+    @mock_sts
     def test_dynamodb_full_client_with_mock_cloud(self):
         os.environ['CIS_ENVIRONMENT'] = 'testing'
         name = 'testing-identity-vault'
