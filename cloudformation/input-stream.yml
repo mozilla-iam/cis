@@ -1,0 +1,30 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: Create the input stream for mozilla-iam CIS v2
+Parameters:
+  StageParameter:
+    Type: String
+    Default: development
+    AllowedValues:
+      - production
+      - development
+      - test
+    Description: Enter production, development, or test.
+  ShardScale:
+    Type: Number
+    Default: 1
+    Description: Starting scale for the stream.  Suggested is currently 1.
+Resources:
+  InputStream:
+    Type: AWS::Kinesis::Stream
+    Properties:
+      Name: !Join [ '', [ 'cis-input-', !Ref StageParameter ] ]
+      RetentionPeriodHours: 24
+      ShardCount: !Ref ShardScale
+      Tags:
+        -
+          Key: cis_environment
+          Value: !Ref StageParameter
+Outputs:
+  StreamArn:
+    Description: The Arn of the kinesis stream.
+    Value: !Ref InputStream
