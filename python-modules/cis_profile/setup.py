@@ -18,7 +18,11 @@ extras = {'test': test_requirements}
 
 setup(
     name="cis_profile",
+<<<<<<< HEAD
     version="0.3.7",
+=======
+    version="0.3.4",
+>>>>>>> bump to version 0.3.4
     author="Guillaume Destuynder",
     author_email="kang@mozilla.com",
     description="Mozilla IAM user profile ('v2') class utility.",
