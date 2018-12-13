@@ -15,7 +15,7 @@ install:
 build:
 	python3 setup.py build
 
-upload: dist
+upload:
 	python3 setup.py sdist check upload --sign
 
 python-venv: venv
