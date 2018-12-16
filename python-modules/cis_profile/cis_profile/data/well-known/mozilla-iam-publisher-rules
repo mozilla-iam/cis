@@ -3,7 +3,7 @@
     "user_id": [ "ldap", "hris", "access_provider" ],
     "login_method": [ "ldap", "hris", "access_provider" ],
     "active": [ "ldap", "hris", "access_provider" ],
-    "last_modified": [ "ldap", "hris", "access_provider" ],
+    "last_modified": [ "ldap", "hris", "access_provider", "cis" ],
     "created": [ "ldap", "hris", "access_provider" ],
     "usernames": [ "ldap", "access_provider", "mozilliansorg" ],
     "pronouns": [ "ldap", "mozilliansorg" ],

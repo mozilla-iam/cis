@@ -19,7 +19,9 @@ class BaseProcessor(object):
         self.config = get_config()
 
     def _load_profiles(self):
-        profile_delegate = profile.ProfileDelegate(self.event_record, self.dynamodb_client, self.dynamodb_table)
+        profile_delegate = profile.ProfileDelegate(
+            self.event_record, self.dynamodb_client, self.dynamodb_table
+        )
         self.profiles = profile_delegate.profiles
 
     def _profile_to_vault_structure(self, user_profile):
