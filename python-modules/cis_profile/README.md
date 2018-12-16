@@ -20,7 +20,7 @@ if skel_user.validate():
 user = { exiting...user..json }
 skel_user2 = User(profile_structure_json=user)
 skel_user2.fun_title.value = 'New title!'
-skel_user2.sign_attribute('fun_title')
+skel_user2.sign_attribute('fun_title', 'ldap')
 ```
 
 ### Faking profiles
