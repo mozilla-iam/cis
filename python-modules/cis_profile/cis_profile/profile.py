@@ -382,39 +382,47 @@ class User(object):
                                                                       'attribute data => {} != {}'.format(attrnosig,
                                                                                                           signed))
 
-    def sign_all(self):
+    def sign_all(self, publisher_name):
         """
         Sign all child nodes with a non-null value(s) OR empty values (strict=False)
         To sign empty values, manually call sign_attribute()
         This requires cis_crypto to be properly setup (i.e. with keys)
+
+        WARNING: Since it signs all attributes, this is to be used only when CREATING a new profile. Signing all fields
+        while UPDATING a profile is a sure way to cause a validation failure (since no publisher is allowed to modify
+        all fields)
+
+        @publisher_name str a publisher name (will be set in signature.publisher.name at signing time)
         """
 
-        logger.debug('Signing all profile fields that have a value set')
+        logger.debug('Signing all profile fields that have a value set with publisher {}'.format(publisher_name))
         for item in self.__dict__:
             if type(self.__dict__[item]) is not DotDict:
                 continue
             try:
                 attr = self.__dict__[item]
                 if self._attribute_value_set(attr, strict=False):
-                    attr = self._sign_attribute(attr)
+                    attr = self._sign_attribute(attr, publisher_name)
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
                     attr = self.__dict__[item][subitem]
                     if self._attribute_value_set(attr, strict=False):
-                        attr = self._sign_attribute(attr)
+                        attr = self._sign_attribute(attr, publisher_name)
 
-    def sign_attribute(self, req_attr):
+    def sign_attribute(self, req_attr, publisher_name):
         """
         Sign a single attribute, including null/empty/unset attributes
         @req_attr str this user's attribute to sign in place
+        @publisher_name str a publisher name (will be set in signature.publisher.name) which corresponds to the
+        signing key
         """
         req_attrs = req_attr.split('.')  # Support subitems/subattributes such as 'access_information.ldap'
         if len(req_attrs) == 1:
             attr = self.__dict__[req_attr]
         else:
             attr = self.__dict__[req_attrs[0]][req_attrs[1]]
-        return self._sign_attribute(attr)
+        return self._sign_attribute(attr, publisher_name)
 
     def _attribute_value_set(self, attr, strict=True):
         """
@@ -442,11 +450,13 @@ class User(object):
             raise KeyError(attr)
         return True
 
-    def _sign_attribute(self, attr):
+    def _sign_attribute(self, attr, publisher_name):
         """
         Perform the actual signature operation
         See also https://github.com/mozilla-iam/cis/blob/profilev2/docs/Profiles.md
         @attr: a CIS Profilev2 attribute
+        @publisher_name str a publisher name (will be set in signature.publisher.name) which corresponds to the
+        signing key
         """
         # Extract the attribute without the signature structure itself
         attrnosig = attr.copy()
@@ -456,6 +466,7 @@ class User(object):
         # Add the signed attribute back to the original complete attribute structure (with the signature struct)
         # This ensure we also don't touch any existing non-publisher signatures
         sigattr = attr['signature']['publisher']
+        sigattr['name'] = publisher_name
         sigattr['alg'] = 'RS256'  # Currently hardcoded in cis_crypto
         sigattr['typ'] = 'JWS'    # ""
         sigattr['value'] = self.__signop.jws()
