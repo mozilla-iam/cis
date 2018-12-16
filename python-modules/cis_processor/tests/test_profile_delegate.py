@@ -5,7 +5,7 @@ import os
 import random
 from botocore.stub import Stubber
 from moto import mock_dynamodb2
-
+from cis_profile import fake_profile
 
 def profile_to_vault_structure(user_profile):
     return {
@@ -23,7 +23,7 @@ def kinesis_event_generate(user_profile):
 
     kinesis_event_structure['Records'][0]['kinesis']['parititionKey'] = 'generic_publisher'
     kinesis_event_structure['Records'][0]['kinesis']['data'] = base64.b64encode(
-        json.dumps(profile_to_vault_structure(user_profile=user_profile)).encode()
+        json.dumps(user_profile).encode()
     ).decode()
 
     return kinesis_event_structure['Records'][0]
@@ -54,13 +54,10 @@ class TestProfileDelegate(object):
         self.vault_client.dynamodb_client = self.dynamodb_client
         self.vault_client.find_or_create()
         self.table = self.dynamodb_resource.Table('testing-identity-vault')
-        fh = open('tests/fixture/mr-mozilla.json')
-        self.mr_mozilla_profile = json.loads(fh.read())
-        fh.close()
+        self.mr_mozilla_profile = fake_profile.FakeUser(generator=1337).as_dict()
 
-        fh = open('tests/fixture/mr-nozilla-tainted.json')
-        self.mr_nozilla_tainted_profile = json.loads(fh.read())
-        fh.close()
+        self.mr_nozilla_tainted_profile = fake_profile.FakeUser(generator=1337).as_dict()
+
 
         from cis_identity_vault.models import user
         vault_interface = user.Profile(self.table)

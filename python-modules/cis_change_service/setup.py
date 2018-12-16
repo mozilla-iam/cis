@@ -15,8 +15,8 @@ requirements = [
     'boto>=2.36.0',
     'boto3>=1.6.16',
     'botocore>=1.12.13',
-    'six',
-    'cis_profile>=0.0.3.2'
+    'six'
+    # 'cis_profile>=0.0.3.2'
     # cis_publisher
 ]
 

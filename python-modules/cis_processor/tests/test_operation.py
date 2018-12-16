@@ -7,6 +7,7 @@ import random
 
 from botocore.stub import Stubber
 from cis_profile import profile
+from cis_profile import fake_profile
 from everett.manager import ConfigManager
 from everett.manager import ConfigIniEnv
 from everett.manager import ConfigOSEnv
@@ -55,7 +56,7 @@ def kinesis_event_generate(user_profile):
     kinesis_event_structure['Records'][0]['kinesis']['sequenceNumber'] = '900000000000'
     kinesis_event_structure['Records'][0]['kinesis']['parititionKey'] = 'generic_publisher'
     kinesis_event_structure['Records'][0]['kinesis']['data'] = base64.b64encode(
-        json.dumps(profile_to_vault_structure(user_profile=user_profile)).encode()
+        json.dumps(user_profile).encode()
     ).decode()
 
     return kinesis_event_structure
@@ -92,18 +93,11 @@ class TestOperation(object):
         self.vault_client.dynamodb_client = self.dynamodb_client
         self.vault_client.find_or_create()
         self.table = self.dynamodb_resource.Table('testing-identity-vault')
-        fh = open('tests/fixture/mr-mozilla.json')
-        self.mr_mozilla_profile = json.loads(fh.read())
-        fh.close()
-
-        fh = open('tests/fixture/mr-nozilla-tainted.json')
-        self.mr_nozilla_tainted_profile = json.loads(fh.read())
-        fh.close()
+        self.mr_mozilla_profile = fake_profile.FakeUser(generator=1337).as_dict()
 
         from cis_identity_vault.models import user
         vault_interface = user.Profile(self.table)
         vault_interface.create(profile_to_vault_structure(user_profile=self.mr_mozilla_profile))
-        vault_interface.create(profile_to_vault_structure(user_profile=self.mr_nozilla_tainted_profile))
         self.mr_mozilla_change_event = kinesis_event_generate(self.mr_mozilla_profile)
 
     def test_base_operation_object_it_should_succeed_and_skip_integration(self):
@@ -175,6 +169,34 @@ class TestOperation(object):
         patched_profile = self.mr_mozilla_profile
         patched_profile['first_name']['value'] = 'anupdatedfirstname'
         kinesis_event = kinesis_event_generate(patched_profile)
+
+        from cis_processor import operation
+        for kinesis_record in kinesis_event['Records']:
+            base_operation = operation.BaseProcessor(
+                event_record=kinesis_record,
+                dynamodb_client=self.dynamodb_client,
+                dynamodb_table=self.table
+            )
+            base_operation._load_profiles()
+            needs_integration = base_operation.needs_integration(
+                base_operation.profiles['new_profile'],
+                base_operation.profiles['old_profile']
+            )
+            assert needs_integration is True
+            assert base_operation.profiles['new_profile'].verify_all_publishers(
+                base_operation.profiles['old_profile']
+            ) is True
+            assert base_operation.process() is False
+
+    @patch.object(profile.User, 'verify_all_publishers')
+    @patch.object(profile.User, 'verify_all_signatures')
+    def test_new_user_scenario(self, verify_sigs, verify_pubs):
+        verify_sigs.return_value = False
+        verify_pubs.return_value = True
+        os.environ['CIS_PROCESSOR_VERIFY_SIGNATURES'] = 'True'
+        new_user_profile = fake_profile.FakeUser().as_dict()
+        new_user_profile['user_id']['value'] = 'harrypotter'
+        kinesis_event = kinesis_event_generate(new_user_profile)
 
         from cis_processor import operation
         for kinesis_record in kinesis_event['Records']:

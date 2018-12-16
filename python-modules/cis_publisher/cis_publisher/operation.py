@@ -46,8 +46,13 @@ class Publish(object):
         # Validate JSON schema
         try:
             self._validate_schema(profile_json)
+            logger.info(
+                'Schema validated successfully for user_id: {}'.format(
+                    profile_json.get('user_id').get('value')
+                )
+            )
         except jsonschema.exceptions.ValidationError as e:
-            logger.debug('Reason for schema failure was: {}'.format(e))
+            logger.info('Reason for schema failure was: {}'.format(e))
             status = 400
             sequence_number = None
             return {'status_code': status, 'sequence_number': sequence_number}

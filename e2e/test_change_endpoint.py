@@ -1,6 +1,9 @@
 import boto3
 import json
+import jsonschema
 import http.client
+from cis_profile import fake_profile
+from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
@@ -34,6 +37,7 @@ def exchange_for_access_token():
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = json.loads(res.read())
+    print(data)
     return data['access_token']
 
 def test_api_is_alive():
@@ -46,18 +50,9 @@ def test_api_is_alive():
     assert data['identity_vault'] is not None
 
 def test_publishing_a_profile_it_should_be_accepted():
-    from cis_profile import fake_profile
     u = fake_profile.FakeUser()
     json_payload = u.as_json()
-
-    from cis_profile import WellKnown
-
     wk = WellKnown()
-
-    print()
-
-    import jsonschema
-    import json
     jsonschema.validate(json.loads(json_payload), wk.get_schema())
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
@@ -68,8 +63,7 @@ def test_publishing_a_profile_it_should_be_accepted():
     conn.request("POST", "/development/change", json_payload, headers=headers)
     res = conn.getresponse()
     data = res.read()
-    print(data)
+    return data
 
 if __name__== "__main__":
-  print(test_api_is_alive())
   print(test_publishing_a_profile_it_should_be_accepted())

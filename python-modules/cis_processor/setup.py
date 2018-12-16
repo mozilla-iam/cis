@@ -10,8 +10,7 @@ requirements = [
     'everett',
     'boto>=2.36.0',
     'boto3>=1.6.16',
-    'botocore>=1.12.13',
-    'cis_profile==0.0.1'
+    'botocore>=1.12.13'
 ]
 
 setup_requirements = [

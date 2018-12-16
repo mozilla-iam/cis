@@ -58,8 +58,11 @@ def version():
 @requires_auth
 def change():
     user_profile = request.get_json(silent=True)
+    logger.info('A json payload was received for user: {}'.format(user_profile['user_id']['value']))
+    logger.debug('User profile received.  Detail: {}'.format(user_profile))
     publish = operation.Publish()
     result = publish.to_stream(user_profile)
+    logger.debug('The result of the attempt to publish the profile was: {}'.format(result))
 
     if config('stream_bypass', namespace='cis', default='false') == 'true':
         # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
@@ -71,6 +74,11 @@ def change():
         )
         vault = profile.Vault(result.get('sequence_number'))
         vault.put_profile(user_profile)
+    logger.info('The result of publishing for user: {} is: {}'.format(
+            user_profile['user_id']['value'],
+            result
+        )
+    )
     return jsonify(result)
 
 
