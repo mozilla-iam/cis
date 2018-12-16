@@ -260,6 +260,9 @@ class User(object):
         # Rules JSON structure:
         # { "create": { "user_id": [ "publisherA", "publisherB"], ...}, "update": { "user_id": "publisherA",... }
         # I know `updators` is not English :)
+        # DO NOTE: "create" is a list while "update" is a single item/str (ie check in the list of creators, but check
+        # equality against updators). This is because we explicitely do not support multiple update mechanisms, while we
+        # do support multiple create mechanisms.
         rules = self.__well_known.get_publisher_rules()
         if parent_name is None:
             allowed_creators = rules['create'][attr_name]
@@ -293,6 +296,9 @@ class User(object):
                 if attr[value] == previous_attribute[value]:
                     logger.debug('[noop] {} skipped verification for  {} (no changes)'
                                  .format(publisher_name, attr_name))
+                    return True
+                elif publisher_name == allowed_updators:
+                    logger.debug('[update] {} is allowed to publish field {}'.format(publisher_name, attr_name))
                     return True
 
         # No previous attribute set, just check we're allowed to change the field

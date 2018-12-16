@@ -112,6 +112,12 @@ class TestProfile(object):
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
             u.verify_all_publishers(old_user)
 
+    def test_verify_can_publish_login_method(self):
+        u = profile.User(login_method='Mozilla-LDAP-Dev')
+        u2 = copy.deepcopy(u)
+        u2.login_method.value = 'github'
+        assert u2.verify_all_publishers(u) is True
+
     def test_data_classification(self):
         u = profile.User(user_id='test')
         assert(u.user_id.metadata.classification in MozillaDataClassification.PUBLIC)
