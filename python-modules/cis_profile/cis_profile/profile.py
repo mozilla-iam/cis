@@ -54,9 +54,8 @@ class User(object):
         elif (user_structure_json_file is not None):
             self.load(self.get_profile_from_file(user_structure_json_file))
         else:
-            # Load builtin defaults, including default timestamps
+            # Load builtin defaults
             self.load(self.get_profile_from_file('data/user_profile_null.json'))
-            self.initialize_timestamps()
 
         # Insert defaults from kwargs
         for kw in kwargs:
