@@ -423,7 +423,7 @@ class User(object):
             attr = self.__dict__[req_attrs[0]][req_attrs[1]]
         return self._sign_attribute(attr, publisher_name)
 
-    def _attribute_value_set(self, attr, strict=False):
+    def _attribute_value_set(self, attr, strict=True):
         """
         Checks if an attribute is used/set, ie not null
         @attr dict a complete CIS Profilev2 attribute (such as {'test': {'value': null}})
@@ -431,13 +431,10 @@ class User(object):
         ignored
         returns: True if the attribute has a value, False if not
         """
-        logger.debug('Checking attr value for: {}'.format(attr))
 
         # Note that None is the JSON `null` equivalent (and not "null" is not the string "null")
         if 'value' in attr:
             if attr['value'] is None:
-                return False
-            elif not strict and attr['value'] == '':
                 return False
             elif isinstance(attr['value'], bool):
                 return True
