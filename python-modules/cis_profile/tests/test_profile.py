@@ -58,7 +58,7 @@ class TestProfile(object):
 
     def test_full_profile_signing(self):
         u = profile.User(user_id='test')
-        u.sign_all()
+        u.sign_all(publisher_name='ldap')
         assert u.user_id.signature.publisher.value is not None
         assert len(u.user_id.signature.publisher.value) > 0
         # Empty attributes should not be signed
@@ -66,28 +66,28 @@ class TestProfile(object):
 
     def test_single_attribute_signing(self):
         u = profile.User(user_id='test')
-        u.sign_attribute('user_id')
+        u.sign_attribute('user_id', publisher_name='ldap')
         assert u.user_id.signature.publisher.value is not None
         assert len(u.user_id.signature.publisher.value) > 0
 
         # Empty attributes should be signed in this case since it's directly requested to be signed
-        u.sign_attribute('fun_title')
+        u.sign_attribute('fun_title', publisher_name='ldap')
         assert u.fun_title.signature.publisher.value is not None
         assert len(u.fun_title.signature.publisher.value) > 0
 
         # test for subitems
-        u.sign_attribute('access_information.ldap')
+        u.sign_attribute('access_information.ldap', publisher_name='ldap')
         assert u.access_information.ldap.signature.publisher.value is not None
         assert len(u.access_information.ldap.signature.publisher.value) > 0
 
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id='test')
-        u.sign_all()
+        u.sign_all(publisher_name='ldap')
         u.verify_all_signatures()
 
     def test_single_attribute_signing_verification(self):
         u = profile.User(user_id='test')
-        u.sign_attribute('user_id')
+        u.sign_attribute('user_id', publisher_name='ldap')
         u.verify_attribute_signature('user_id')
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature('fun_title')  # Unsigned, so should raise and fail
