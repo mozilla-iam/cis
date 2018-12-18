@@ -5,7 +5,6 @@ import mock
 import os
 import subprocess
 from botocore.stub import Stubber
-from boto.kinesis.exceptions import ResourceInUseException
 from cis_change_service import api
 from cis_profile import FakeUser
 from datetime import datetime

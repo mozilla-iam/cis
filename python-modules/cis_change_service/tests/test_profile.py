@@ -6,7 +6,6 @@ import os
 import mock
 import subprocess
 from botocore.stub import Stubber
-from boto.kinesis.exceptions import ResourceInUseException
 from cis_change_service.common import get_config
 from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
