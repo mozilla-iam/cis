@@ -115,22 +115,35 @@ def handle(event, context):
     success = 0
     failure = 0
 
-    for user in users:
-        v2_user_profile = users[user]
-        user_id = v2_user_profile['user_id']['value']
-        logger.info('Processing integration for user: {}'.format(user_id))
-        res = publish_profile(access_token, v2_user_profile)
-        logger.info(
-            'The result of the attempt to publish the profile was: {} for user: {}'.format(res['status_code'], user_id)
-        )
+    config = common.get_config()
 
-        if res['status_code'] == 200:
-            success = success + 1
-        else:
-            failure = failure + 1
+    if config('batch_publish', namespace='cis', default='False') == 'False':
+        for user in users:
+            v2_user_profile = users[user]
+            user_id = v2_user_profile['user_id']['value']
+            logger.info('Processing integration for user: {}'.format(user_id))
+            res = publish_profile(access_token, v2_user_profile)
+            logger.info(
+                'The result of the attempt to publish the profile was: {} for user: {}'.format(res['status_code'], user_id)
+            )
 
-    return {
-        'success': success,
-        'failure': failure,
-        'total_processed': success + failure
-    }
+            if res['status_code'] == 200:
+                success = success + 1
+            else:
+                failure = failure + 1
+
+        return {
+            'success': success,
+            'failure': failure,
+            'total_processed': success + failure
+        }
+    else:
+        # Slide throught the list of users 10 at a time
+        while len(users) > 0:
+            user_slice = users[:10]
+
+            for user in user_slice:
+                v2_user_profile = users[user]
+                user_id = v2_user_profile['user_id']['value']
+                users.pop(user)
+                print(user_id)
