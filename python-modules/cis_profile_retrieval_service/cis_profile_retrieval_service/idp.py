@@ -125,5 +125,8 @@ def get_scopes(token):
 
     if unverified_claims.get("scope"):
             token_scopes = unverified_claims["scope"].split()
+            logger.debug('Returning the following token scopes: {}'.format(token_scopes))
             return token_scopes
-    return False
+    else:
+        logger.debug('No scopes in token returning empty list.')
+        return []

@@ -33,7 +33,7 @@ package-layer:
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_publisher/ -t $(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) serverless_wsgi -t $(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) flask -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) sqlite3 -t $(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) iam-profile-faker -t $(PY_DIR)
 
 .PHONY:package-single-layer
 package-single-layer:
@@ -55,3 +55,15 @@ deploy-change-service:
 .PHONY:test-change-service
 test-change-service:
 	python e2e/test_change_endpoint.py
+
+.PHONY:deploy-ldap-publisher
+deploy-ldap-publisher:
+	cd serverless-functions/ldap-publisher && sls deploy --region us-west-2 --stage development
+
+.PHONY:deploy-stream-processor
+deploy-stream-processor:
+	cd serverless-functions/stream-processor && sls deploy --region us-west-2 --stage development
+
+.PHONY:deploy-person-api
+deploy-person-api:
+	cd serverless-functions/profile-retrieval && sls deploy --region us-west-2 --stage development

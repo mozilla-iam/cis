@@ -40,9 +40,13 @@ class BaseProcessor(object):
         if self.needs_integration(self.profiles['new_profile'], self.profiles['old_profile']):
             # Check the rules
             self.profiles['new_profile'].validate()
-            publishers_valid = self.profiles['new_profile'].verify_all_publishers(
-                previous_user=self.profiles['old_profile']
-            )
+
+            if self.config('processor_verify_publishers', namespace='cis', default='True') == 'True':
+                publishers_valid = self.profiles['new_profile'].verify_all_publishers(
+                    previous_user=self.profiles['old_profile']
+                )
+            else:
+                publishers_valid = True
 
             if self.config('processor_verify_signatures', namespace='cis', default='True') == 'True':
                 logger.info('Testing signatures for user: {}'.format(

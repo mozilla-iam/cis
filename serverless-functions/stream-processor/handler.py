@@ -9,13 +9,14 @@ import sys
 def setup_logging():
     logger = logging.getLogger()
     for h in logger.handlers:
-      logger.removeHandler(h)
+        logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
     FORMAT = '%(message)s'
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
     logger.setLevel(logging.DEBUG)
     return logger
+
 
 def handle(event, context):
     logger = setup_logging()
@@ -31,9 +32,9 @@ def handle(event, context):
         user_id = user_profile['user_id']['value']
         logger.info('Record deserialized for user: {}'.format(user_id))
         record_op = cis_processor.operation.BaseProcessor(
-            event_record = record,
-            dynamodb_client = dynamodb_client,
-            dynamodb_table = dynamodb_table
+            event_record=record,
+            dynamodb_client=dynamodb_client,
+            dynamodb_table=dynamodb_table
         )
         record_op._load_profiles()
         result = record_op.process()

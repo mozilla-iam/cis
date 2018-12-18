@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'ze4nhrltib.execute-api.us-west-2.amazonaws.com'
+base_url = 'r10339l3z1.execute-api.us-west-2.amazonaws.com'
 client = boto3.client('ssm')
 
 
@@ -33,7 +33,8 @@ def exchange_for_access_token():
         client_id=get_client_id(),
         client_secret=get_client_secret(),
         audience="https://api.sso.allizom.org",
-        grant_type="client_credentials"
+        grant_type="client_credentials",
+        scopes="read:fullprofile"
     )
 
     payload = json.dumps(payload_dict)
@@ -41,52 +42,29 @@ def exchange_for_access_token():
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = json.loads(res.read())
-    print(data)
     return data['access_token']
 
-def test_api_is_alive():
+
+def test_paginated_users():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/development/change/status?sequenceNumber=123456", headers=headers)
+    conn.request("GET", "/development/v2/users", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
-    assert data['identity_vault'] is not None
-
-def test_publishing_a_profile_it_should_be_accepted():
-    u = fake_profile.FakeUser()
-    json_payload = u.as_json()
-    wk = WellKnown()
-    jsonschema.validate(json.loads(json_payload), wk.get_schema())
-    access_token = exchange_for_access_token()
-    conn = http.client.HTTPSConnection(base_url)
-    headers = {
-        'authorization': "Bearer {}".format(access_token),
-        'Content-type': 'application/json'
-    }
-    conn.request("POST", "/development/change", json_payload, headers=headers)
-    res = conn.getresponse()
-    data = res.read()
     return data
 
-def test_publishing_profiles_it_should_be_accepted():
-    profiles = []
-    for x in range(0, 9):
-        u = fake_profile.FakeUser()
-        profiles.append(u.as_json())
-    wk = WellKnown()
+
+def test_get_single_user():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
-    headers = {
-        'authorization': "Bearer {}".format(access_token),
-        'Content-type': 'application/json'
-    }
-    conn.request("POST", "/development/changes", json.dumps(profiles), headers=headers)
+    headers = {'authorization': "Bearer {}".format(access_token)}
+    conn.request("GET", "/development/v2/user/akrug%40mozilla.com", headers=headers)
     res = conn.getresponse()
-    data = res.read()
+    data = json.loads(res.read())
     return data
 
 
 if __name__ == "__main__":
-    # print(test_publishing_a_profile_it_should_be_accepted())
-    print(test_publishing_profiles_it_should_be_accepted())
+    import pprint
+    print(pprint.pprint(test_get_single_user()))

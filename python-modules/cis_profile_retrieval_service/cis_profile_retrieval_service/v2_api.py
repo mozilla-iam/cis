@@ -10,6 +10,7 @@ from flask_restful import reqparse
 from flask import jsonify
 from graphene import Schema
 from logging import getLogger
+import urllib.parse
 
 from cis_identity_vault.models import user
 from cis_profile.common import MozillaDataClassification
@@ -53,12 +54,16 @@ def load_dirty_json(dirty_json):
 def scope_to_mozilla_data_classification(scopes):
     classifications = []
     if 'classification:staff' in scopes:
+        logger.debug('Staff data classification in scope.')
         classifications.append(MozillaDataClassification.STAFF_ONLY)
     elif 'classification:workgroup' in scopes:
+        logger.debug('Workgroup data classification in scope.')
         classifications.append(MozillaDataClassification.WORKGROUP_CONFIDENTIAL)
     elif 'classification:individual' in scopes:
+        logger.debug('Individual data classification in scope.')
         classifications.append(MozillaDataClassification.INDIVIDUAL_CONFIDENTIAL)
     else:
+        logger.debug('No data classification in scope returning only public data.')
         classifications.append(MozillaDataClassification.PUBLIC)
     return classifications
 
@@ -79,18 +84,33 @@ class v2User(Resource):
 
     def get(self, user_id):
         """Return a single user with id `user_id`."""
+        user_id = urllib.parse.unquote(user_id)
         parser = reqparse.RequestParser()
         parser.add_argument('Authorization', location='headers')
         scopes = get_scopes(parser.parse_args().get('Authorization'))
         identity_vault = user.Profile(dynamodb_table)
-        result = identity_vault.find_by_id(user_id)
-        vault_profile = result.get('profile')
-        v2_profile = User(user_structure_json=vault_profile)
-        if len(scopes) == 1 and 'read:fullprofile' in scopes:
-            pass
+
+        logger.debug('Attempting to locate a user for: {}'.format(user_id))
+        if '|' in user_id:
+            logger.debug('Searching the vault by user_id for: {}'.format(user_id))
+            result = identity_vault.find_by_id(user_id)
+        elif '@' in user_id:
+            logger.debug('Searching the vault by primary_email for: {}'.format(user_id))
+            result = identity_vault.find_by_email(user_id)
         else:
-            v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
-        return jsonify(v2_profile.as_dict())
+            return jsonify({})
+
+        if len(result['Items']) > 0:
+            vault_profile = result['Items'][0]['profile']
+            v2_profile = User(user_structure_json=json.loads(vault_profile))
+            if len(scopes) == 1 and 'read:fullprofile' in scopes:
+                logger.debug('read:fullprofile in token returning the full user profile.')
+                pass
+            else:
+                v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
+            return jsonify(v2_profile.as_dict())
+        else:
+            return jsonify({})
 
 
 class v2Users(Resource):
@@ -143,6 +163,11 @@ if config('graphql', namespace='person_api', default='false') == 'true':
 
 api.add_resource(v2Users, '/v2/users')
 api.add_resource(v2User, '/v2/user/<string:user_id>')
+
+
+@app.route('/')
+def index():
+    return 'Mozilla Profile Retrieval Service Endpoint'
 
 
 def main():

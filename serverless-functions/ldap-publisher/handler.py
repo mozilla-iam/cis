@@ -16,13 +16,14 @@ AUTHZERO_DOMAIN_PARAMETER = '/iam/ldap-publisher/{}/authzero_domain'.format(os.g
 def setup_logging():
     logger = logging.getLogger()
     for h in logger.handlers:
-      logger.removeHandler(h)
+        logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
     FORMAT = '%(message)s'
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
     return logger
+
 
 def assume_role():
     config = common.get_config()
@@ -37,6 +38,7 @@ def assume_role():
 
     return credentials['Credentials']
 
+
 def get_parameter(parameter_name):
     ssm = boto3.client('ssm')
     res = ssm.get_parameter(
@@ -45,6 +47,7 @@ def get_parameter(parameter_name):
     )
     return res['Parameter']['Value']
 
+
 def get_audience():
     config = common.get_config()
     environment = config('environment', namespace='cis')
@@ -52,6 +55,7 @@ def get_audience():
         return 'https://api.sso.allizom.org'
     else:
         return 'https://api.sso.mozilla.com'
+
 
 def exchange_for_access_token(client_id, client_secret, authzero_domain):
     conn = http.client.HTTPSConnection(authzero_domain)
@@ -63,12 +67,12 @@ def exchange_for_access_token(client_id, client_secret, authzero_domain):
     )
 
     payload = json.dumps(payload_dict)
-    print(payload)
-    headers = { 'content-type': "application/json" }
+    headers = {'content-type': "application/json"}
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data['access_token']
+
 
 def publish_profile(access_token, user_profile):
     config = common.get_config()
@@ -77,11 +81,10 @@ def publish_profile(access_token, user_profile):
 
     conn = http.client.HTTPSConnection(base_url)
 
-    headers =  {
+    headers = {
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-
 
     conn.request("POST", path, json.dumps(user_profile), headers=headers)
     res = conn.getresponse()
@@ -109,17 +112,25 @@ def handle(event, context):
     authzero_domain = get_parameter(AUTHZERO_DOMAIN_PARAMETER)
     access_token = exchange_for_access_token(authzero_client_id, authzero_client_secret, authzero_domain)
 
-    x = 10
-    while x > 0:
-        for user in users:
-            try:
-                v2_user_profile = users[user]
-                user_id = v2_user_profile['user_id']['value']
-                logger.info('Processing integration for user: {}'.format(user_id))
-                res = publish_profile(access_token, v2_user_profile)
-                logger.info(
-                    'The result of the attempt to publish the profile was: {} for user: {}'.format(res['status_code'], user_id)
-                )
-                x = x - 1
-            except Exception as e:
-                logger.error(e)
+    success = 0
+    failure = 0
+
+    for user in users:
+        v2_user_profile = users[user]
+        user_id = v2_user_profile['user_id']['value']
+        logger.info('Processing integration for user: {}'.format(user_id))
+        res = publish_profile(access_token, v2_user_profile)
+        logger.info(
+            'The result of the attempt to publish the profile was: {} for user: {}'.format(res['status_code'], user_id)
+        )
+
+        if res['status_code'] == 200:
+            success = success + 1
+        else:
+            failure = failure + 1
+
+    return {
+        'success': success,
+        'failure': failure,
+        'total_processed': success + failure
+    }

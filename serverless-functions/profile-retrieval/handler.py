@@ -1,9 +1,8 @@
-import cis_change_service
+import cis_profile_retrieval_service
 import logging
 import serverless_wsgi
+import sys
 
-FORMAT = '%(asctime)-15s %(clientip)s %(user)-8s %(message)s'
-logging.basicConfig(level=logging.DEBUG, format=FORMAT)
 
 serverless_wsgi.TEXT_MIME_TYPES.append("application/custom+json")
 
@@ -16,10 +15,10 @@ def setup_logging():
     FORMAT = '%(message)s'
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     return logger
 
 
 def handle(event, context):
     logger = setup_logging()
-    return serverless_wsgi.handle_request(cis_change_service.api.app, event, context)
+    return serverless_wsgi.handle_request(cis_profile_retrieval_service.v2_api.app, event, context)
