@@ -11,6 +11,7 @@ class TestFakeProfile(object):
         assert(j is not None)
         assert(d is not None)
         assert(u.user_id.value is not None)
+        u.validate()
 
     def test_same_fake_user(self):
         u = fake_profile.FakeUser(generator=1337)
