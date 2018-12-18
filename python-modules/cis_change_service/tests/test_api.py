@@ -135,6 +135,12 @@ class TestAPI(object):
                     }
                 ]
             )
+            waiter = conn.get_waiter('table_exists')
+            waiter.wait(
+                TableName='local-identity-vault',
+                WaiterConfig={
+                }
+            )
         except Exception as e:
             logger.error('Table error: {}'.format(e))
 

@@ -175,6 +175,31 @@ class TestProfile(object):
 
         assert is_in_vault is not None
 
+    @mock.patch('cis_change_service.idp.get_jwks')
+    def test_post_profiles_and_retreiving_status_it_should_succeed(self, fake_jwks):
+        from cis_change_service import api
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        profiles = []
+        for x in range(0, 10):
+            profiles.append(FakeUser().as_json())
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            '/changes',
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            data=json.dumps(profiles),
+            content_type='application/json',
+            follow_redirects=True
+        )
+
+        response = json.loads(result.get_data())
+        print(response)
+        assert 0
+
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
