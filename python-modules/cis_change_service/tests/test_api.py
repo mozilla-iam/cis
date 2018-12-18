@@ -92,10 +92,10 @@ class TestAPI(object):
                     {'AttributeName': 'id', 'KeyType': 'HASH'}
                 ],
                 AttributeDefinitions=[
-                    {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
-                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
-                    {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
+                    {'AttributeName': 'id', 'AttributeType': 'S'},
+                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},
+                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},
+                    {'AttributeName': 'profile', 'AttributeType': 'S'}
                 ],
                 ProvisionedThroughput={
                     'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5

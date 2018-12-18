@@ -91,32 +91,11 @@ def change():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def changes():
-    user_profiles = request.get_json(silent=True)
-    logger.info('A json list of payloads was received totaling: {}'.format(len(user_profiles)))
-
-    results = []
-    for profile in user_profiles:
-        profile = json.loads(profile)
-        publish = operation.Publish()
-        result = publish.to_stream(profile)
-        logger.debug('The result of the attempt to publish the profile was: {}'.format(result))
-
-        if config('stream_bypass', namespace='cis', default='false') == 'true':
-            # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
-            # Great for development, seeding the vault, and contingency.
-            logger.debug(
-                'Stream bypass activated.  Integrating user profile directly to dynamodb for: {}'.format(
-                    user_profile.get('user_id').get('value')
-                )
-            )
-            vault = profile.Vault(result.get('sequence_number'))
-            vault.put_profile(profile)
-        logger.info('The result of publishing for user: {} is: {}'.format(
-                profile['user_id']['value'],
-                result
-            )
-        )
-        results.append(result)
+    profiles = request.get_json(silent=True)
+    logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
+    publish = operation.Publish()
+    results = publish.to_stream_batch(profiles)
+    logger.debug('The result of the attempt to publish the profiles was: {}'.format(results))
     return jsonify(results)
 
 

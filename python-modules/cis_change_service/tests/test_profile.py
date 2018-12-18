@@ -53,10 +53,9 @@ class TestProfile(object):
                     {'AttributeName': 'id', 'KeyType': 'HASH'}
                 ],
                 AttributeDefinitions=[
-                    {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
-                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
-                    {'AttributeName': 'profile', 'AttributeType': 'S'}  # profile json for the v2 profile as a dumped string
+                    {'AttributeName': 'id', 'AttributeType': 'S'},
+                    {'AttributeName': 'sequence_number', 'AttributeType': 'S'},
+                    {'AttributeName': 'primary_email', 'AttributeType': 'S'},
                 ],
                 ProvisionedThroughput={
                     'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
@@ -196,9 +195,10 @@ class TestProfile(object):
             follow_redirects=True
         )
 
-        response = json.loads(result.get_data())
-        print(response)
-        assert 0
+        results = json.loads(result.get_data())
+        for result in results:
+            assert result['sequence_number'] is not None
+            assert result['status_code'] is not None
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
