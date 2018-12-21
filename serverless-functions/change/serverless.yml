@@ -16,6 +16,7 @@ provider:
       Action:
         - "kinesis:DescribeStream"
         - "kinesis:PutRecord"
+        - "kinesis:PutRecords"
       Resource:
         - arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
     - Effect: Allow
@@ -36,4 +37,4 @@ functions:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:55
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:56

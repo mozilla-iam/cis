@@ -92,6 +92,24 @@ def publish_profile(access_token, user_profile):
     return data
 
 
+def publish_profiles(access_token, user_profiles):
+    config = common.get_config()
+    base_url = config('change_endpoint_domain', namespace='cis')
+    path = config('change_batch_endpoint_route', namespace='cis')
+
+    conn = http.client.HTTPSConnection(base_url)
+
+    headers = {
+        'authorization': "Bearer {}".format(access_token),
+        'Content-type': 'application/json'
+    }
+
+    conn.request("POST", path, json.dumps(user_profiles), headers=headers)
+    res = conn.getresponse()
+    data = json.loads(res.read().decode())
+    return data
+
+
 def handle(event, context):
     logger = setup_logging()
     credentials = assume_role()
@@ -117,12 +135,13 @@ def handle(event, context):
 
     config = common.get_config()
 
-    if config('batch_publish', namespace='cis', default='False') == 'False':
+    if config('batch_publish', namespace='cis', default='True') == 'False':
         for user in users:
             v2_user_profile = users[user]
             user_id = v2_user_profile['user_id']['value']
             logger.info('Processing integration for user: {}'.format(user_id))
             res = publish_profile(access_token, v2_user_profile)
+            print(res)
             logger.info(
                 'The result of the attempt to publish the profile was: {} for user: {}'.format(res['status_code'], user_id)
             )
@@ -131,19 +150,26 @@ def handle(event, context):
                 success = success + 1
             else:
                 failure = failure + 1
-
-        return {
-            'success': success,
-            'failure': failure,
-            'total_processed': success + failure
-        }
     else:
         # Slide throught the list of users 10 at a time
-        while len(users) > 0:
-            user_slice = users[:10]
-
+        logger.info('Batch publisher mode enabled.  Proceeding.')
+        while len(users.keys()) > 0:
+            user_slice = {k: users[k] for k in list(users)[:10]}
+            profiles = []
             for user in user_slice:
                 v2_user_profile = users[user]
-                user_id = v2_user_profile['user_id']['value']
-                users.pop(user)
-                print(user_id)
+                profiles.append(v2_user_profile)
+                del users[user]
+            res = publish_profiles(access_token, profiles)
+            for item in res:
+                if item['status_code'] == 200:
+                    success = success + 1
+                else:
+                    failure = failures + 1
+            logger.info('The result of publishing this batch was: {}'.format(res))
+            logger.info('{} LDAP profiles remain to process.'.format(len(users.keys())))
+    return {
+        'success': success,
+        'failure': failure,
+        'total_processed': success + failure
+    }

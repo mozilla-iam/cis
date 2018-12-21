@@ -9,6 +9,8 @@ from boto.kinesis.exceptions import ResourceNotFoundException
 from boto.kinesis.exceptions import InvalidArgumentException
 from cis_aws import connect
 from cis_publisher.common import get_config
+from urllib.parse import urlencode, quote_plus
+
 
 logger = logging.getLogger(__name__)
 
@@ -157,3 +159,43 @@ class Publish(object):
 
         # Return status code and sequence number of message as dict
         return {'status_code': status, 'sequence_number': sequence_number}
+
+
+class Integration(object):
+    def __init__(self, user_id=None, primary_email='', access_token=''):
+        self.access_token = access_token
+        self.config = get_config()
+        self.user_id = quote_plus(user_id)
+        self.primary_email = quote_plus(primary_email)
+
+    def _get_base_url(self):
+        return self.config('')
+
+    def _get_query_string(self):
+        if self.user_id != '':
+            return self.user_id
+        else:
+            return self.primary_email
+
+    def _get_single_user(self):
+        conn = http.client.HTTPSConnection(base_url)
+        headers = {'authorization': "Bearer {}".format(self.access_token)}
+        conn.request(
+            "GET", "/development/v2/user/{}".format(self._get_query_string()),
+            headers=headers
+        )
+        res = conn.getresponse()
+
+        if res.status == 200:
+            data = json.loads(res.read())
+        else:
+            data = None
+        return data
+
+    def _is_new(self):
+        self.user_profile = self._get_single_user()
+
+        if self.user profile is None:
+            logger.info('This is a new user for: {}'.format(self._get_query_string()))
+        else:
+            logger.info('The record already exists for: {}'.format(self._get_query_string()))

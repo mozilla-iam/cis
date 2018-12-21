@@ -8,8 +8,8 @@ provider:
     CIS_ENVIRONMENT: development
     CIS_ASSUME_ROLE_ARN: None
     CIS_REQUESTS_CACHE_BACKEND: memory
-    CIS_PROCESSOR_VERIFY_SIGNATURES: false
-    CIS_PROCESSOR_VERIFY_PUBLISHERS: false
+    CIS_PROCESSOR_VERIFY_SIGNATURES: True
+    CIS_PROCESSOR_VERIFY_PUBLISHERS: True
   iamRoleStatements:
     - Effect: Allow
       Action:

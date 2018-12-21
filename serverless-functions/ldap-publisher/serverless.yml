@@ -36,5 +36,5 @@ functions:
     memorySize: 1024
     timeout: 900
     layers:
-      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:44
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:56
     onError: arn:aws:sns:us-west-2:320464205386:cis-dev-dlq

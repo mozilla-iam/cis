@@ -14,7 +14,7 @@ def setup_logging():
     FORMAT = '%(message)s'
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     return logger
 
 
