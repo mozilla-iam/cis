@@ -7,6 +7,10 @@ import graphene
 
 
 def json2obj(d):
+    # ATTENTION ATTENTION!
+    # This looks like nothing but this returns an Object (type: <class '__main__.DotDict'>) because of the `object_hook`
+    # not a dict which is a core class (type: <class 'dict'>)
+    # graphql will only try to resolve methods IF it's not a dict, so this step is required
     return json.loads(d, object_hook=DotDict)
 
 
