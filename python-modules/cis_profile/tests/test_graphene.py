@@ -33,6 +33,25 @@ class TestGraphene(object):
         r = schema.execute('{}')
         assert r.data is None
 
+    def test_graphql_query(self):
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
+
+            def resolve_profile(self, info, **kwargs):
+                fh = open('cis_profile/data/user_profile_null.json')
+                user_profile = fh.read()
+                fh.close()
+                tmp = json2obj(user_profile)
+                tmp.first_name.value = 'Hello'
+                tmp.user_id.value = 'my_user_id'
+                return tmp
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute('query getProfile($user_id: String!) {profile(user_id:$user_id) {first_name{value}}}',
+                                variables={'user_id': 'my_user_id'})
+        print(result.errors, result.data)
+        assert result.errors is None
+        assert result.data['profile']['first_name']['value'] == 'Hello'
 
     def test_flask_graphql_query(self):
         class Query(graphene.ObjectType):

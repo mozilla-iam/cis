@@ -112,7 +112,7 @@ class FakeUser(cis_profile.profile.User):
 
         self.__dict__['usernames']['values'] = fake.usernames()
         self.__dict__['usernames']['metadata']['display'] = fake.display(filterout=["staff", "ndaed", "authenticated",
-            "private", "vouched", None])
+                                                                                    "private", "vouched", None])
 
         self.__dict__['first_name']['value'] = fake.first_name()
         self.__dict__['first_name']['metadata']['display'] = fake.display()
