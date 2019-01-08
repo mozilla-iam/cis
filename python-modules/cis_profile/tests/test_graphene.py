@@ -33,6 +33,7 @@ class TestGraphene(object):
         r = schema.execute('{}')
         assert r.data is None
 
+
     def test_flask_graphql_query(self):
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
@@ -41,7 +42,10 @@ class TestGraphene(object):
                 fh = open('cis_profile/data/user_profile_null.json')
                 user_profile = fh.read()
                 fh.close()
-                return json2obj(user_profile)
+                tmp = json2obj(user_profile)
+                tmp.first_name.value = 'Hello'
+                tmp.user_id.value = 'ad|Mozilla-LDAP-Dev|dummymcdummy'
+                return tmp
 
         # The following code may be used to test for scopes in the JWT token
         # However, we're not doing this right now (and we may never need it, but if we do, it's here!)
@@ -60,6 +64,8 @@ class TestGraphene(object):
         result = app.get('/graphql?query={}'.format(payload),
                          follow_redirects=True)
 
+        assert result.status_code == 200
         response = json.loads(result.get_data())
         print(response)
-        assert response['data']['profile']['first_name']['value'] is None
+        assert response.get('errors') is None
+        assert response['data']['profile']['first_name']['value'] == "Hello"
