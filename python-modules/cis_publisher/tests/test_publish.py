@@ -1,6 +1,7 @@
 """Demonstrates a sample of publishing an event to kinesis and handling the response."""
 import boto3
 import json
+import logging
 import os
 import subprocess
 from boto.kinesis.exceptions import ResourceInUseException
@@ -10,6 +11,10 @@ from datetime import timedelta
 from datetime import tzinfo
 
 from cis_profile import fake_profile
+
+logging.basicConfig(level=logging.DEBUG)
+
+logger = logging.getLogger(__name__)
 
 
 class simple_utc(tzinfo):
@@ -78,19 +83,6 @@ class TestFullPublish(object):
         # modify an attribute
         profile_json['last_name']['value'] = 'AFakeLastName'
 
-        # regenerate metadata
-        d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
-        str(d).replace('+00:00', 'Z')
-        metadata = {
-              "classification": "PUBLIC",
-              "last_modified": "{}".format(d),
-              "created": "2018-01-01T00:00:00Z",
-              "publisher_authority": "cis",
-              "verified": True
-        }
-
-        profile_json['last_name']['metadata'] = metadata
-
         # send to kinesis
         result = o.to_stream(profile_json)
 
@@ -108,18 +100,6 @@ class TestFullPublish(object):
         profile_json['last_name']['value'] = [
             'ImBadDataandICannotlie'
         ]
-        # regenerate metadata
-        d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
-        str(d).replace('+00:00', 'Z')
-        metadata = {
-              "classification": "PUBLIC",
-              "last_modified": "{}".format(d),
-              "created": "2018-01-01T00:00:00Z",
-              "publisher_authority": "cis",
-              "verified": True
-        }
-
-        profile_json['last_name']['metadata'] = metadata
 
         # send to kinesis
         result = o.to_stream(profile_json)
@@ -132,19 +112,6 @@ class TestFullPublish(object):
         o = operation.Publish()
 
         profile_json = fake_profile.FakeUser().as_dict()
-
-        # regenerate metadata
-        d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
-        str(d).replace('+00:00', 'Z')
-        metadata = {
-              "classification": "PUBLIC",
-              "last_modified": "{}".format(d),
-              "created": "2018-01-01T00:00:00Z",
-              "publisher_authority": "cis",
-              "verified": True
-        }
-
-        profile_json['last_name']['metadata'] = metadata
 
         # send to kinesis
         o._connect()
@@ -161,19 +128,6 @@ class TestFullPublish(object):
 
         # open the full-profile
         profile_json = fake_profile.FakeUser().as_dict()
-
-        # regenerate metadata
-        d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
-        str(d).replace('+00:00', 'Z')
-        metadata = {
-              "classification": "PUBLIC",
-              "last_modified": "{}".format(d),
-              "created": "2018-01-01T00:00:00Z",
-              "publisher_authority": "cis",
-              "verified": True
-        }
-
-        profile_json['last_name']['metadata'] = metadata
 
         # send to kinesis
         o._connect()

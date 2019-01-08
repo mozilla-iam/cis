@@ -2,6 +2,7 @@ service: change-service
 provider:
   name: aws
   runtime: python3.6
+  stage: ${opt:stage, 'dev'}
   environment:
     CIS_KINESIS_ARN: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
     CIS_DYNAMODB_ARN: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault

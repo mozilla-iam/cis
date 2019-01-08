@@ -21,8 +21,6 @@ class Query(graphene.ObjectType):
     profile = graphene.Field(cis_profile.graphene.Profile, userId=graphene.String(required=True))
 
     def resolve_profiles(self, info, **kwargs):
-        print(info.context.headers)
-        print('woooooo')
         """GraphQL resolver for the profiles attribute."""
         table = get_table_resource()
         vault = user.Profile(table)
