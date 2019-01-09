@@ -11,6 +11,8 @@ def json2obj(d):
     # This looks like nothing but this returns an Object (type: <class '__main__.DotDict'>) because of the `object_hook`
     # not a dict which is a core class (type: <class 'dict'>)
     # graphql will only try to resolve methods IF it's not a dict, so this step is required
+    # This trick ensures that the object returned has real methods (while a Dict or a class that is based on dict, like
+    # the DotDict does, does not. It uses __getattr__ instead)
     return json.loads(d, object_hook=DotDict)
 
 
