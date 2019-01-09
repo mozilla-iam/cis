@@ -64,17 +64,23 @@ class AWS(object):
         if self.assume_role_session is not None and self._assume_role_is_expired() is False:
             return self.assume_role_session
 
-        role_arn = self.config('assume_role_arn', namespace='cis').lower()
+        role_arn = self.config('assume_role_arn', namespace='cis', default='None').lower()
 
-        sts = self._boto_session.client('sts')
+        logger.debug('Role arn provided is: {}'.format(role_arn))
 
-        res = sts.assume_role(
-            DurationSeconds=3600,
-            RoleArn=role_arn,
-            RoleSessionName='cis-aws-library',
-        )
+        if role_arn == 'none' or role_arn == 'None':
+            logger.info('Assume role arn not present.  Skipping assume role operation.')
+            res = None
+        else:
+            sts = self._boto_session.client('sts')
 
-        self.assume_role_session = res
+            res = sts.assume_role(
+                DurationSeconds=3600,
+                RoleArn=role_arn,
+                RoleSessionName='cis-aws-library',
+            )
+
+            self.assume_role_session = res
         return res
 
     def identity_vault_client(self):
@@ -112,7 +118,6 @@ class AWS(object):
                     aws_secret_access_key=self.assume_role_session['Credentials']['SecretAccessKey'],
                     aws_session_token=self.assume_role_session['Credentials']['SessionToken']
                 )
-
                 dynamodb_resource = self._boto_session.resource(
                     'dynamodb',
                     aws_access_key_id=self.assume_role_session['Credentials']['AccessKeyId'],
@@ -189,6 +194,9 @@ class AWS(object):
         if self._boto_session is not None and self.assume_role_session is not None:
             logger.info('Boto3 session object and assumeRole exists proceeding to next check.')
             return
+        if self._boto_session is not None:
+            logger.info('Running without assumeRole. Likely an ec2 instance or lambda.')
+            return
         else:
             logger.error('You must initialize an assumeRole and boto session.')
             raise ValueError('AssumeRole or Boto3 Session not initialized.  Refusing operation.')
@@ -218,6 +226,11 @@ class AWS(object):
         """Enumerate all kinesis streams in the region for the current
         assumeRole.  Return the stream arn matching the appropriate tagging
         configuration."""
+        kinesis_arn = self.config('kinesis_arn', namespace='cis', default='None')
+
+        if kinesis_arn is not 'None':
+            return kinesis_arn
+
         if self._discover_cis_environment() == 'local':
             # Assume developer environment and return for an explicit stream name.
             return kinesis_client.describe_stream(StreamName='local-stream')['StreamDescription']['StreamARN']
@@ -242,6 +255,10 @@ class AWS(object):
         """Enumerate all tables in a region for the current
         assumerole session.  Return the arn of table matching the
         appropriate tagging configuration."""
+        dynamodb_arn = self.config('dynamodb_arn', namespace='cis', default='None')
+
+        if dynamodb_arn is not 'None':
+            return dynamodb_arn
 
         if self._discover_cis_environment() == 'local':
             # Assume that the local identity vault is always called local-identity-vault

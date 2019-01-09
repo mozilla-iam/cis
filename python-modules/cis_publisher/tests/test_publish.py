@@ -9,6 +9,8 @@ from datetime import datetime
 from datetime import timedelta
 from datetime import tzinfo
 
+from cis_profile import fake_profile
+
 
 class simple_utc(tzinfo):
     def tzname(self, **kwargs):
@@ -71,9 +73,7 @@ class TestFullPublish(object):
         o = operation.Publish()
 
         # open the full-profile
-        fh = open('tests/fixture/full-profile.json')
-        profile_json = json.loads(fh.read())
-        fh.close()
+        profile_json = fake_profile.FakeUser().as_dict()
 
         # modify an attribute
         profile_json['last_name']['value'] = 'AFakeLastName'
@@ -102,9 +102,7 @@ class TestFullPublish(object):
         o = operation.Publish()
 
         # open the full-profile
-        fh = open('tests/fixture/full-profile.json')
-        profile_json = json.loads(fh.read())
-        fh.close()
+        profile_json = fake_profile.FakeUser().as_dict()
 
         # modify an attribute
         profile_json['last_name']['value'] = [
@@ -133,10 +131,7 @@ class TestFullPublish(object):
         from cis_publisher import operation
         o = operation.Publish()
 
-        # open the full-profile
-        fh = open('tests/fixture/full-profile.json')
-        profile_json = json.loads(fh.read())
-        fh.close()
+        profile_json = fake_profile.FakeUser().as_dict()
 
         # regenerate metadata
         d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
@@ -165,9 +160,7 @@ class TestFullPublish(object):
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis-bad.ini'
 
         # open the full-profile
-        fh = open('tests/fixture/full-profile.json')
-        profile_json = json.loads(fh.read())
-        fh.close()
+        profile_json = fake_profile.FakeUser().as_dict()
 
         # regenerate metadata
         d = datetime.utcnow().replace(tzinfo=simple_utc()).isoformat()
@@ -188,6 +181,22 @@ class TestFullPublish(object):
 
         assert result.get('status_code') == 200
         assert result.get('sequence_number') is not None
+
+    def test_batch_publishing(self):
+        from cis_publisher import operation
+        o = operation.Publish()
+        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis-bad.ini'
+
+        profiles = []
+        for x in range(0, 10):
+            profiles.append(fake_profile.FakeUser().as_dict())
+
+        # send to kinesis
+        o._connect()
+        results = o.to_stream_batch(profiles)
+        for result in results:
+            assert result['sequence_number'] is not None
+            assert result['status_code'] is not None
 
     def teardown_class(self):
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

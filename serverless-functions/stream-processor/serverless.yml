@@ -1,0 +1,48 @@
+service: stream-processor
+provider:
+  name: aws
+  runtime: python3.6
+  environment:
+    CIS_KINESIS_ARN: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+    CIS_DYNAMODB_ARN: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+    CIS_ENVIRONMENT: development
+    CIS_ASSUME_ROLE_ARN: None
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CIS_PROCESSOR_VERIFY_SIGNATURES: false
+    CIS_PROCESSOR_VERIFY_PUBLISHERS: false
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "kinesis:DescribeStream"
+        - "kinesis:GetRecords"
+        - "kinesis:GetShardIterator"
+        - "kinesis:ListShards"
+        - "kinesis:ListStreams"
+        - "kinesis:DescribeStreamSummary"
+        - "kinesis:SubscribeToShard"
+      Resource:
+        - arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+    - Effect: Allow
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+        - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+      Resource:
+        - arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+functions:
+  kinesis-processor:
+    handler: handler.handle
+    description: Lambda function receiving events from kinesis and integrating to dynamodb.
+    memorySize: 512
+    timeout: 300
+    events:
+      - stream:
+          arn: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+          batchSize: 100
+          startingPosition: LATEST
+          enabled: true
+    layers:
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:44
+    onError: arn:aws:sns:us-west-2:320464205386:cis-dev-dlq

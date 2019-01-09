@@ -1,3 +1,4 @@
+import json
 import logging
 from flask import Flask
 from flask import jsonify
@@ -58,8 +59,15 @@ def version():
 @requires_auth
 def change():
     user_profile = request.get_json(silent=True)
+
+    if isinstance(user_profile, str):
+        user_profile = json.loads(user_profile)
+
+    logger.info('A json payload was received for user: {}'.format(user_profile['user_id']['value']))
+    logger.debug('User profile received.  Detail: {}'.format(user_profile))
     publish = operation.Publish()
     result = publish.to_stream(user_profile)
+    logger.debug('The result of the attempt to publish the profile was: {}'.format(result))
 
     if config('stream_bypass', namespace='cis', default='false') == 'true':
         # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
@@ -71,7 +79,24 @@ def change():
         )
         vault = profile.Vault(result.get('sequence_number'))
         vault.put_profile(user_profile)
+    logger.info('The result of publishing for user: {} is: {}'.format(
+            user_profile['user_id']['value'],
+            result
+        )
+    )
     return jsonify(result)
+
+
+@app.route('/changes', methods=['GET', 'POST', 'PUT'])
+@cross_origin(headers=['Content-Type', 'Authorization'])
+@requires_auth
+def changes():
+    profiles = request.get_json(silent=True)
+    logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
+    publish = operation.Publish()
+    results = publish.to_stream_batch(profiles)
+    logger.debug('The result of the attempt to publish the profiles was: {}'.format(results))
+    return jsonify(results)
 
 
 @app.route('/change/status', methods=['GET'])

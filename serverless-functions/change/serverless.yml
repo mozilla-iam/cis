@@ -1,0 +1,39 @@
+service: change-service
+provider:
+  name: aws
+  runtime: python3.6
+  environment:
+    CIS_KINESIS_ARN: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+    CIS_DYNAMODB_ARN: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+    CIS_ENVIRONMENT: development
+    CIS_STREAM_BYPASS: false
+    CIS_ASSUME_ROLE_ARN: None
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CHANGE_SERVICE_AUTH0_DOMAIN: auth-dev.mozilla.auth0.com
+    CHANGE_SERVICE_API_IDENTIFIER: https://api.sso.allizom.org
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "kinesis:DescribeStream"
+        - "kinesis:PutRecord"
+      Resource:
+        - arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+    - Effect: Allow
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+        - "dynamodb:GetItem"
+      Resource:
+        - arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/index/development-identity-vault-sequence_number
+functions:
+  api:
+    handler: handler.handle
+    description: serverless-wsgi based endpoint to recieve profile changes.
+    memorySize: 512
+    timeout: 15
+    events:
+      - http: ANY /
+      - http: ANY {proxy+}
+    layers:
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:55

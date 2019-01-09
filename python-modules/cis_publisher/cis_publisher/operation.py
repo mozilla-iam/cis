@@ -37,6 +37,61 @@ class Publish(object):
         )
         return jsonschema.validate(profile_json, self.schema)
 
+    def to_stream_batch(self, profiles):
+        """Send a list of profiles to kinesis.  Helpful in large publish operations."""
+        if self.kinesis_client is None:
+            self._connect()
+
+        rejected_profiles = []
+        valid_profiles = []
+        status = []
+
+        for profile in profiles:
+            try:
+                if isinstance(profile, str):
+                    profile = json.loads(profile)
+
+                self._validate_schema(profile)
+                valid_profiles.append(dict(
+                        Data=json.dumps(profile),
+                        PartitionKey=self.config('publisher_id', namespace='cis', default='generic-publisher')
+                    )
+                )
+            except jsonschema.exceptions.ValidationError as e:
+                logger.info('Reason for schema failure was: {}'.format(e))
+                status = 400
+                sequence_number = None
+                rejected_profiles.append({'status_code': status, 'sequence_number': sequence_number})
+
+        try:
+            # Send to kinesis
+            logger.debug('Attempting to send batch of profiles to kinesis.')
+            results = self.kinesis_client.get('client').put_records(
+                StreamName=self.kinesis_client.get('arn').split('/')[1],
+                Records=valid_profiles,
+            )
+
+            for result in results['Records']:
+                status.append(
+                    {
+                        'status_code': result.get('ErrorCode', 200),
+                        'sequence_number': result.get('SequenceNumber')
+                    }
+                )
+        except ResourceNotFoundException:
+            logger.debug(
+                'Profile publishing failed for batch. Could not find the kinesis stream in the account.'
+            )
+            status = 404
+            sequence_number = None
+            status.append(
+                {
+                    'status_code': result.get('ErrorCode', 200),
+                    'sequence_number': result.get(sequence_number)
+                }
+            )
+        return status + rejected_profiles
+
     def to_stream(self, profile_json):
         """Send to kinesis and test the profile is valid."""
         if self.kinesis_client is None:
@@ -45,21 +100,14 @@ class Publish(object):
         # Assume the following ( publisher has signed the new attributes and regenerated metadata )
         # Validate JSON schema
         try:
-            import pprint
-            print(pprint.pprint(self._validate_schema(profile_json)))
             self._validate_schema(profile_json)
-            logger.debug(
-                'The schema was successfully validated for user_id: {}'.format(
+            logger.info(
+                'Schema validated successfully for user_id: {}'.format(
                     profile_json.get('user_id').get('value')
                 )
             )
         except jsonschema.exceptions.ValidationError as e:
-            logger.debug(
-                'Schema validation failed for user_id: {}'.format(
-                    profile_json.get('user_id').get('value')
-                )
-            )
-            logger.debug('Reason for schema failure was: {}'.format(e))
+            logger.info('Reason for schema failure was: {}'.format(e))
             status = 400
             sequence_number = None
             return {'status_code': status, 'sequence_number': sequence_number}

@@ -1,3 +1,4 @@
+import cis_profile
 import json
 from cis_processor import profile
 from cis_processor.common import get_config
@@ -18,7 +19,9 @@ class BaseProcessor(object):
         self.config = get_config()
 
     def _load_profiles(self):
-        profile_delegate = profile.ProfileDelegate(self.event_record, self.dynamodb_client, self.dynamodb_table)
+        profile_delegate = profile.ProfileDelegate(
+            self.event_record, self.dynamodb_client, self.dynamodb_table
+        )
         self.profiles = profile_delegate.profiles
 
     def _profile_to_vault_structure(self, user_profile):
@@ -37,13 +40,26 @@ class BaseProcessor(object):
         if self.needs_integration(self.profiles['new_profile'], self.profiles['old_profile']):
             # Check the rules
             self.profiles['new_profile'].validate()
-            publishers_valid = self.profiles['new_profile'].verify_all_publishers(
-                previous_user=self.profiles['old_profile']
-            )
+
+            if self.config('processor_verify_publishers', namespace='cis', default='True') == 'True':
+                publishers_valid = self.profiles['new_profile'].verify_all_publishers(
+                    previous_user=self.profiles['old_profile']
+                )
+            else:
+                publishers_valid = True
 
             if self.config('processor_verify_signatures', namespace='cis', default='True') == 'True':
+                logger.info('Testing signatures for user: {}'.format(
+                    self.profiles['new_profile'].as_dict()['user_id']['value'])
+                )
                 signatures_valid = self.profiles['new_profile'].verify_all_signatures()
+                logger.info('The result of signature checking for user: {} resulted in: {}'.format(
+                        self.profiles['new_profile'].as_dict()['user_id']['value'],
+                        signatures_valid
+                    )
+                )
             else:
+                logger.info('Signature checking is currently disabled.  Skipping all signature checks.')
                 signatures_valid = True
         else:
             return True
@@ -51,6 +67,10 @@ class BaseProcessor(object):
         if signatures_valid is True and publishers_valid is True:
             vault_data_structure = self._profile_to_vault_structure(self.profiles['new_profile'].as_dict())
             identity_vault = user.Profile(self.dynamodb_table)
+            logger.info('Tests pass for the integration.  Proceeding to flush to dynamodb for user: {}'.format(
+                    self.profiles['new_profile'].as_dict()['user_id']['value']
+                )
+            )
             identity_vault.create(vault_data_structure)
             return True
         else:

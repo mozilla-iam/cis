@@ -1,0 +1,12 @@
+service: hello-world
+provider:
+  name: aws
+  runtime: python3.6
+functions:
+  api:
+    handler: handler.handle
+    events:
+      - http: ANY /
+      - http: ANY {proxy+}
+    layers:
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:10

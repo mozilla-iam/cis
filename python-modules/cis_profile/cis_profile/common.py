@@ -5,7 +5,24 @@ import requests.exceptions
 import requests_cache
 import logging
 
+from everett.manager import ConfigManager
+from everett.manager import ConfigIniEnv
+from everett.manager import ConfigOSEnv
+
 logger = logging.getLogger(__name__)
+
+
+def get_config():
+    return ConfigManager(
+        [
+            ConfigIniEnv([
+                os.environ.get('CIS_CONFIG_INI'),
+                '~/.mozilla-cis.ini',
+                '/etc/mozilla-cis.ini'
+            ]),
+            ConfigOSEnv()
+        ]
+    )
 
 
 class DotDict(dict):
@@ -101,9 +118,13 @@ class WellKnown(object):
         self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
-
+        self.config = get_config()
         logger.debug('Initializing requests_cache TTL={} at {}'.format(self._request_cache_ttl, self._request_cache))
-        requests_cache.install_cache(self._request_cache, expire_after=self._request_cache_ttl, backend='sqlite')
+        requests_cache.install_cache(
+            self._request_cache,
+            expire_after=self._request_cache_ttl,
+            backend=self.config('requests_cache_backend', namespace='cis', default='sqlite')
+        )
 
     def get_publisher_rules(self):
         """

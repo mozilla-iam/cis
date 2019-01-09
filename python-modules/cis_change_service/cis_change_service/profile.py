@@ -39,9 +39,13 @@ class Vault(object):
         return res
 
     def _get_id(self, profile_json):
+        if isinstance(profile_json, str):
+            profile_json = json.loads(profile_json)
         return profile_json.get('user_id').get('value').lower()
 
     def _get_primary_email(self, profile_json):
+        if isinstance(profile_json, str):
+            profile_json = json.loads(profile_json)
         return profile_json.get('primary_email').get('value').lower()
 
 
