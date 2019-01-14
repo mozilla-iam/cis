@@ -174,7 +174,7 @@ class TestProfile(object):
         assert is_in_vault is not None
 
     @mock.patch('cis_change_service.idp.get_jwks')
-    def test_post_profiles_and_retreiving_status_it_should_succeed(self, fake_jwks):
+    def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
         from cis_change_service import api
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
