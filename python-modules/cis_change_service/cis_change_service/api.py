@@ -95,7 +95,7 @@ def changes():
     logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
     publish = operation.Publish()
     results = publish.to_stream_batch(profiles)
-    logger.debug('The result of the attempt to publish the profiles was: {}'.format(results))
+    logger.info('The result of the attempt to publish the profiles was: {}'.format(results))
     return jsonify(results)
 
 

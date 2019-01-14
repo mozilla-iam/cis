@@ -1,4 +1,4 @@
-import cis_profile_retrieval_service
+import api
 import logging
 import serverless_wsgi
 import sys
@@ -15,10 +15,10 @@ def setup_logging():
     FORMAT = '%(message)s'
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     return logger
 
 
 def handle(event, context):
     logger = setup_logging()
-    return serverless_wsgi.handle_request(cis_profile_retrieval_service.v2_api.app, event, context)
+    return serverless_wsgi.handle_request(api.app, event, context)
