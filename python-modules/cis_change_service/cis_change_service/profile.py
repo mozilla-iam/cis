@@ -16,7 +16,8 @@ class Vault(object):
         if sequence_number is not None:
             self.sequence_number = sequence_number
         else:
-            self.sequence_number = random.randrange(0, 10000000000000, 10000)
+             uuid = uuid.uuid4()
+            self.sequence_number = uuid.int;
 
     def _connect(self):
         self.connection_object.session()
