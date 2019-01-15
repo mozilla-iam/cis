@@ -92,7 +92,7 @@ def change():
             result.get('sequence_number')
         )
         vault.identity_vault_client = identity_vault_client
-        vault.put_profile(user_profile)
+        result = vault.put_profile(user_profile)
     logger.info('The result of publishing for user: {} is: {}'.format(
             user_profile['user_id']['value'],
             result
@@ -110,7 +110,7 @@ def changes():
     if config('stream_bypass', namespace='cis', default='false') == 'true':
         vault = profile.Vault(sequence_number=None)
         vault.identity_vault_client = identity_vault_client
-        vault.put_profiles(profiles)
+        results = vault.put_profiles(profiles)
     else:
         logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
         publish = operation.Publish()
