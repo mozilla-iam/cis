@@ -10,7 +10,9 @@ requirements = [
     'boto>=2.36.0',
     'boto3>=1.6.16',
     'botocore>=1.12.13',
-    'everett'
+    'everett',
+    'everett[ini]',
+    'configobj'
 ]
 
 setup_requirements = [

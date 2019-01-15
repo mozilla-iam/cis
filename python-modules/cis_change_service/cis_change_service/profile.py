@@ -1,42 +1,94 @@
 """Get the status of an integration from the identity vault and auth0."""
 import json
+import random
+import uuid
 from cis_aws import connect
+from cis_change_service import common
+from cis_identity_vault.models import user
 
 
 class Vault(object):
     """Handles flushing profiles to Dynamo when running local or in stream bypass mode."""
-    def __init__(self, sequence_number):
+    def __init__(self, sequence_number=None):
         self.connection_object = connect.AWS()
         self.identity_vault_client = None
-        self.sequence_number = sequence_number
+        self.config = common.get_config()
+
+        if sequence_number is not None:
+            self.sequence_number = sequence_number
+        else:
+             uuid = uuid.uuid4()
+            self.sequence_number = uuid.int;
 
     def _connect(self):
         self.connection_object.session()
-        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
         self._connect()
-
-        # XXX TBD replace with cis_profile
         user_id = self._get_id(profile_json)
-        primary_email = self._get_primary_email(profile_json)
-        dynamodb_schema_dict = {
-            'profile': {'S': json.dumps(profile_json)},
-            'id': {'S': user_id},
-            'sequence_number': {'S': self.sequence_number},
-            'primary_email': {'S': primary_email}
-        }
 
-        client = self.identity_vault_client.get('client')
-        res = client.put_item(
-            TableName=self.identity_vault_client.get('arn').split('/')[1],
-            Item=dynamodb_schema_dict
+        if isinstance(profile_json, str):
+            profile_json = json.loads(profile_json)
+
+        if self.config('dynamodb_transactions', namespace='cis') == 'true':
+            profile = user.Profile(
+                self.identity_vault_client.get('table'),
+                self.identity_vault_client.get('client'),
+                transactions=True
+            )
+        else:
+            profile = user.Profile(
+                self.identity_vault_client.get('table'),
+                self.identity_vault_client.get('client'),
+                transactions=False
+            )
+
+        user_profile = dict(
+            id=profile_json['user_id']['value'],
+            primary_email=profile_json['primary_email']['value'],
+            sequence_number=self.sequence_number,
+            profile=json.dumps(profile_json)
         )
 
+        res = profile.find_or_create(user_profile)
         return res
+
+    def put_profiles(self, profile_list):
+        """Write profile to the identity vault."""
+        self._connect()
+        user_id = self._get_id(profile_json)
+
+        if isinstance(profile_json, str):
+            profile_json = json.loads(profile_json)
+
+        if self.config('dynamodb_transactions', namespace='cis') == 'true':
+            profile = user.Profile(
+                self.identity_vault_client.get('table'),
+                self.identity_vault_client.get('client'),
+                transactions=True
+            )
+        else:
+            profile = user.Profile(
+                self.identity_vault_client.get('table'),
+                self.identity_vault_client.get('client'),
+                transactions=False
+            )
+
+        user_profiles = []
+
+        for profile in profile_list:
+            user_profile = dict(
+                id=profile_json['user_id']['value'],
+                primary_email=profile_json['primary_email']['value'],
+                sequence_number=self.sequence_number,
+                profile=json.dumps(profile_json)
+            )
+            user_profiles.append(user_profile)
+
+        return profile.find_or_create_batch(user_profiles)
 
     def _get_id(self, profile_json):
         if isinstance(profile_json, str):
@@ -58,7 +110,6 @@ class Status(object):
 
     def _connect(self):
         self.connection_object.session()
-        # self.connection_object.assume_role()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 

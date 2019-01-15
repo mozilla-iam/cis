@@ -1,10 +1,12 @@
 import json
 import logging
+from botocore.exceptions import ClientError
 from flask import Flask
 from flask import jsonify
 from flask import request
 from flask_cors import CORS
 from flask_cors import cross_origin
+from cis_aws import connect
 from cis_change_service.common import get_config
 from cis_change_service import profile
 from cis_change_service.idp import requires_auth
@@ -17,6 +19,15 @@ from cis_publisher import operation
 app = Flask(__name__)
 config = get_config()
 logger = logging.getLogger(__name__)
+
+
+try:
+    connection = connect.AWS()
+    connection.session()
+    identity_vault_client = connection.identity_vault_client()
+except ClientError as e:
+    logger.warn('Could not discover the kinesis stream or dynamo table: {}'.format(e))
+
 
 CORS(
     app,
@@ -77,8 +88,11 @@ def change():
                 user_profile.get('user_id').get('value')
             )
         )
-        vault = profile.Vault(result.get('sequence_number'))
-        vault.put_profile(user_profile)
+        vault = profile.Vault(
+            result.get('sequence_number')
+        )
+        vault.identity_vault_client = identity_vault_client
+        result = vault.put_profile(user_profile)
     logger.info('The result of publishing for user: {} is: {}'.format(
             user_profile['user_id']['value'],
             result
@@ -92,9 +106,15 @@ def change():
 @requires_auth
 def changes():
     profiles = request.get_json(silent=True)
-    logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
-    publish = operation.Publish()
-    results = publish.to_stream_batch(profiles)
+
+    if config('stream_bypass', namespace='cis', default='false') == 'true':
+        vault = profile.Vault(sequence_number=None)
+        vault.identity_vault_client = identity_vault_client
+        results = vault.put_profiles(profiles)
+    else:
+        logger.info('A json list of payloads was received totaling: {}'.format(len(profiles)))
+        publish = operation.Publish()
+        results = publish.to_stream_batch(profiles)
     logger.info('The result of the attempt to publish the profiles was: {}'.format(results))
     return jsonify(results)
 

@@ -4,15 +4,13 @@ import os
 import subprocess
 from botocore.stub import Stubber
 from cis_identity_vault import vault
+from moto import mock_dynamodb2
 
 
+@mock_dynamodb2
 class TestUsersDynalite(object):
     def setup(self):
-        self.dynalite_host = 'localhost'
-        self.dynalite_port = '4567'
-        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', self.dynalite_port], preexec_fn=os.setsid)
-        os.environ['CIS_ENVIRONMENT'] = 'local'
-        os.environ['CIS_DYNAMODB_PORT'] = self.dynalite_port
+        os.environ['CIS_ENVIRONMENT'] = 'testing'
         os.environ['CIS_REGION_NAME'] = 'us-east-1'
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
@@ -27,18 +25,20 @@ class TestUsersDynalite(object):
             'sequence_number': '12345678',
             'profile': json.dumps(self.user_profile)
         }
-        self.boto_session = Stubber(boto3.session.Session(region_name='us-east-1')).client
-        self.dynamodb_client = self.boto_session.resource(
-            'dynamodb', endpoint_url='http://{}:{}'.format(
-                self.dynalite_host,
-                self.dynalite_port
-            )
+        self.boto_session = boto3.session.Session(region_name='us-east-1')
+        self.dynamodb_resource = self.boto_session.resource(
+            'dynamodb'
         )
-        self.table = self.dynamodb_client.Table('local-identity-vault')
+        self.dynamodb_client = self.boto_session.client('dynamodb')
+        self.table = self.dynamodb_resource.Table('testing-identity-vault')
 
     def test_create_method(self):
         from cis_identity_vault.models import user
-        profile = user.Profile(self.table)
+        profile = user.Profile(
+            self.table,
+            self.dynamodb_client,
+            transactions=False
+        )
         result = profile.create(self.vault_json_datastructure)
         assert result is not None
 
@@ -53,7 +53,11 @@ class TestUsersDynalite(object):
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
         }
-        profile = user.Profile(self.table)
+        profile = user.Profile(
+            self.table,
+            self.dynamodb_client,
+            transactions=False
+        )
         result = profile.update(vault_json_datastructure)
         assert result is not None
 
@@ -68,7 +72,12 @@ class TestUsersDynalite(object):
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
         }
-        profile = user.Profile(self.table)
+        profile = user.Profile(
+            self.table,
+            self.dynamodb_client,
+            transactions=False
+        )
+
         profile.update(vault_json_datastructure)
 
         primary_email = 'dummy@zxy.foo'
@@ -91,7 +100,12 @@ class TestUsersDynalite(object):
             'profile': json.dumps(modified_profile)
         }
 
-        profile = user.Profile(self.table)
+        profile = user.Profile(
+            self.table,
+            self.dynamodb_client,
+            transactions=False
+        )
+
         profile.update(vault_json_datastructure_first_id)
 
         vault_json_datastructure_second_id = {
@@ -109,6 +123,3 @@ class TestUsersDynalite(object):
         result_for_email = profile.find_by_email(primary_email)
         assert result_for_email is not None
         assert len(result_for_email.get('Items')) == 2
-
-    def teardown(self):
-        os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)

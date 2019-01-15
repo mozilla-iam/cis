@@ -10,6 +10,8 @@ requirements = [
     'python-jose[cryptography]==3.0.1',
     'cryptography==2.3.1',
     'everett',
+    'everett[ini]',
+    'configobj',
     'boto3==1.7.67',
     'boto==2.49.0',
     'botocore==1.10.67',

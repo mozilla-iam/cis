@@ -10,6 +10,8 @@ requirements = [
     'python-jose',
     'cryptography',
     'everett',
+    'everett[ini]',
+    'configobj',
     'flask',
     'flask_cors',
     'boto>=2.36.0',
