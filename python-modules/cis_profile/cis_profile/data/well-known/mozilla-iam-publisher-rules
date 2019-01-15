@@ -1,5 +1,6 @@
 {
   "create": {
+    "uuid": [ "ldap", "hris", "cis", "access_provider" ],
     "user_id": [ "ldap", "hris", "access_provider" ],
     "login_method": [ "ldap", "hris", "access_provider" ],
     "active": [ "ldap", "hris", "access_provider" ],
@@ -32,6 +33,7 @@
     "staff_information": [ "ldap", "hris" ]
   },
   "update": {
+    "uuid": "cis",
     "user_id": "access_provider",
     "login_method": "access_provider",
     "active": "cis",
@@ -54,7 +56,6 @@
     },
     "fun_title": "mozilliansorg",
     "description": "mozilliansorg",
-    "preference": "mozilliansorg",
     "location": "mozilliansorg",
     "timezone": "mozilliansorg",
     "languages": "mozilliansorg",

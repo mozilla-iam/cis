@@ -10,3 +10,12 @@ Always attempt to copy over the original here, these are last-resort-fallback wh
 
 - mozilla-iam (see [well-known-endpoint](../../../../well-known-endpoint))
 - mozilla-iam-publisher-rules (see [well-known-endpoint](../../../../well-known-endpoint))
+
+
+# How to change the profile schema?
+
+- update data/profile.schema
+- update data/user_profile_null.json
+- update data/well-known/mozilla-iam-publiser-rules
+- update CIS's well-known endpoint repository with these files as well (cis/well-known-endpoint)
+- Ensure all tests run of course
