@@ -1,6 +1,7 @@
 """Get the status of an integration from the identity vault and auth0."""
 import json
 import random
+import uuid
 from cis_aws import connect
 from cis_change_service import common
 from cis_identity_vault.models import user
