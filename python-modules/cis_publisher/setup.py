@@ -10,7 +10,10 @@ requirements = [
     'boto>=2.36.0',
     'boto3>=1.6.16',
     'botocore>=1.12.13',
-    'jsonschema'
+    'jsonschema',
+    'everett',
+    'everett[ini]',
+    'configobj'
     # 'cis_crypto', # Uncomment when these are published in warehouse
     # 'cis_aws' # Uncomment when these are published in warehouse
 ]

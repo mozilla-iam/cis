@@ -45,7 +45,7 @@ class Publish(object):
                 if isinstance(profile, str):
                     profile = json.loads(profile)
 
-                cis_profile.profile.User(user_structure_json=profile_json).validate()
+                cis_profile.profile.User(user_structure_json=profile).validate()
                 valid_profiles.append(dict(
                         Data=json.dumps(profile),
                         PartitionKey=self.config('publisher_id', namespace='cis', default='generic-publisher')

@@ -6,14 +6,13 @@ import os
 import mock
 import subprocess
 from botocore.stub import Stubber
-from cis_change_service.common import get_config
 from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
 )
 
@@ -27,21 +26,21 @@ logger = logging.getLogger(__name__)
 
 class TestProfile(object):
     def setup(self):
+        from cis_change_service.common import get_config
         os.environ['CIS_ENVIRONMENT'] = 'local'
         name = 'local-identity-vault'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         config = get_config()
+        kinesalite_port = config('kinesalite_port', namespace='cis')
+        kinesalite_host = config('kinesalite_host', namespace='cis')
         dynalite_port = config('dynalite_port', namespace='cis')
         self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
         conn = boto3.client('dynamodb',
                             region_name='us-west-2',
                             aws_access_key_id="ak",
                             aws_secret_access_key="sk",
                             endpoint_url='http://localhost:{}'.format(dynalite_port))
-
-        kinesalite_port = config('kinesalite_port', namespace='cis')
-        kinesalite_host = config('kinesalite_host', namespace='cis')
-        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
         # XXX TBD this will eventually be replaced by logic from the vault module
         # The vault module will have the authoritative definitions for Attributes and GSI
@@ -139,6 +138,9 @@ class TestProfile(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
+        os.environ['CIS_ENVIRONMENT'] = 'local'
+        name = 'local-identity-vault'
+        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service import api
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -175,6 +177,9 @@ class TestProfile(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
+        os.environ['CIS_ENVIRONMENT'] = 'local'
+        name = 'local-identity-vault'
+        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service import api
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk

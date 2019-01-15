@@ -7,6 +7,7 @@ user_profile must be passed to this in the form required by dynamodb
     'profile': 'jsondumpofuserfullprofile'
 }
 """
+import json
 from boto3.dynamodb.conditions import Key
 
 
@@ -126,6 +127,18 @@ class Profile(object):
         return self.table.delete_item(Item=user_profile)
 
     def create_batch(self, list_of_profiles):
+        if self.transactions:
+            res = self._create_items_with_transaction(list_of_profiles)
+        else:
+            res = self._put_items_without_transaction(list_of_profiles)
+        return res
+
+    def _put_items_without_transaction(self, list_of_profiles):
+        with table.batch_writer() as batch:
+            for profile in list_of_profiles:
+                batch.put_item(Item=profile)
+
+    def _create_items_with_transaction(self, list_of_profiles):
         transact_items = []
         for user_profile in list_of_profiles:
             transact_item = {
@@ -153,6 +166,13 @@ class Profile(object):
         return self._run_transaction(transact_items)
 
     def update_batch(self, list_of_profiles):
+        if self.transactions:
+            res = self._update_batch_with_transaction(list_of_profiles)
+        else:
+            res = self._put_items_without_transaction(list_of_profiles)
+        return res
+
+    def _update_batch_with_transaction(self, list_of_profiles):
         transact_items = []
         for user_profile in list_of_profiles:
             transact_item = {
@@ -203,6 +223,32 @@ class Profile(object):
             )
             users.extend(response['Items'])
         return users
+
+    def find_or_create(self, user_profile):
+        profilev2 = json.loads(user_profile['profile'])
+        if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
+            res = self.update(user_profile)
+        else:
+            res = self.create(user_profile)
+        return res
+
+    def find_or_create_batch(self, user_profiles):
+        updates = []
+        creations = []
+        for profile in user_profiles:
+            profilev2 = json.loads(user_profile['profile'])
+            if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
+                updates.append(profile)
+            else:
+                creations.append(profile)
+
+        if len(updates) > 0:
+            res_create = create_batch(creations)
+
+        if len(creations) > 0:
+            res_update = update_batch(updates)
+
+        return [res_create, res_update]
 
     def all_by_page(self, next_page=None, limit=25):
         if next_page is not None:

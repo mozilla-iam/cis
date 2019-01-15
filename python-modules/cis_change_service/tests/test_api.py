@@ -5,7 +5,6 @@ import mock
 import os
 import subprocess
 from botocore.stub import Stubber
-from cis_change_service import api
 from cis_profile import FakeUser
 from datetime import datetime
 from datetime import timedelta
@@ -14,7 +13,7 @@ from tests.fake_auth0 import json_form_of_pk
 
 
 logging.basicConfig(
-    level=logging.DEBUG,
+    level=logging.INFO,
     format='%(asctime)s:%(levelname)s:%(name)s:%(message)s'
 )
 
@@ -28,8 +27,6 @@ logger = logging.getLogger(__name__)
 
 class TestAPI(object):
     def setup(self):
-        api.app.testing = True
-        self.app = api.app.test_client()
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service.common import get_config
         config = get_config()
@@ -144,6 +141,9 @@ class TestAPI(object):
             logger.error('Table error: {}'.format(e))
 
         self.user_profile = FakeUser().as_json()
+        from cis_change_service import api
+        api.app.testing = True
+        self.app = api.app.test_client()
 
     def test_index_exists(self):
         result = self.app.get('/', follow_redirects=True)
@@ -151,6 +151,7 @@ class TestAPI(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_change_endpoint_returns(self, fake_jwks):
+        from cis_change_service import api
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
         token = f.generate_bearer_without_scope()
@@ -173,6 +174,7 @@ class TestAPI(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_change_endpoint_fails_with_invalid_token(self, fake_jwks):
+        from cis_change_service import api
         f = FakeBearer()
         bad_claims = {
             'iss': 'https://auth-dev.mozilla.auth0.com/',
@@ -200,6 +202,7 @@ class TestAPI(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_stream_bypass_publishing_mode_it_should_succeed(self, fake_jwks):
+        from cis_change_service import api
         os.environ['CIS_STREAM_BYPASS'] = 'true'
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -234,6 +237,7 @@ class TestAPI(object):
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_change_endpoint_fails_with_invalid_token_and_jwt_validation_false(self, fake_jwks):
+        from cis_change_service import api
         os.environ['CIS_JWT_VALIDATION'] = 'false'
         f = FakeBearer()
         bad_claims = {
