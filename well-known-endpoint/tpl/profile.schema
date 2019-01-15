@@ -12,7 +12,7 @@
                 "uuid": {
                   "allOf": [
                       { "$ref": "#/definitions/StandardAttributeString" },
-                      { "$ref": "#/definitions/DisplayAnyValue" },
+                      { "$ref": "#/definitions/DisplayPublicOnly" },
                       { "$ref": "#/definitions/ClassificationPublic" }
                     ],
                     "$comment": "This is Mozilla IAM UUID. It is similar to user_id, however, it is always opaque and can be used across linked profiles to identify a single person."
