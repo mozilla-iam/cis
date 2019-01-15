@@ -149,8 +149,8 @@ class IdentityVault(object):
         waiter.wait(
             TableName=self._generate_table_name(),
             WaiterConfig={
-                'Delay': 30,
-                'MaxAttempts': 5
+                'Delay': 10,
+                'MaxAttempts': 2
             }
         )
 
