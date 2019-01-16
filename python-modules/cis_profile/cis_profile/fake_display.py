@@ -4,16 +4,16 @@ import os
 
 class DisplayFakerPolicy:
     @staticmethod
-    def max_display(display):
+    def max_display():
         def f(display):
-            return display[-1] if display else None
+            return display[0] if display else None
 
         return f
 
     @staticmethod
     def min_display():
         def f(display):
-            return display[0] if display else None
+            return display[-1] if display else None
 
         return f
 
