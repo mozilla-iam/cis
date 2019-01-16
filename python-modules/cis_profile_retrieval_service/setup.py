@@ -13,6 +13,8 @@ requirements = [
     'boto3>=1.6.16',
     'botocore>=1.12.13',
     'everett',
+    'everett[ini]',
+    'configobj',
     'flask',
     'flask_cors',
     'six',
