@@ -1,5 +1,5 @@
 ROOT_DIR	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD := docker run --rm -v /home/krug/workspace/cis:/var/task:delegated lambci/lambda:build-python3.6
+LAMBDA_PACKAGE_CMD := docker run --rm -v ${HOME}/workspace/cis:/var/task:delegated lambci/lambda:build-python3.6
 VENV_COMMAND := virtualenv venv -p python3
 VENV_ACTIVATE := source venv/bin/activate
 CIS_MODULE_PATH := python-modules
@@ -50,20 +50,19 @@ upload-layer:
 
 .PHONY:deploy-change-service
 deploy-change-service:
-	cd serverless-functions/change && sls deploy --region us-west-2 --stage development
-
+	cd serverless-functions/change && sls deploy --region us-west-2 --stage ${STAGE}
 .PHONY:test-change-service
 test-change-service:
 	python e2e/test_change_endpoint.py
 
 .PHONY:deploy-ldap-publisher
 deploy-ldap-publisher:
-	cd serverless-functions/ldap-publisher && sls deploy --region us-west-2 --stage development
+	cd serverless-functions/ldap-publisher && sls deploy --region us-west-2 --stage ${STAGE}
 
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
-	cd serverless-functions/stream-processor && sls deploy --region us-west-2 --stage development
+	cd serverless-functions/stream-processor && sls deploy --region us-west-2 --stage ${STAGE}
 
 .PHONY:deploy-person-api
 deploy-person-api:
-	cd serverless-functions/profile-retrieval && sls deploy --region us-west-2 --stage development
+	cd serverless-functions/profile-retrieval && sls deploy --region us-west-2 --stage ${STAGE}

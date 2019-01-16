@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'ze4nhrltib.execute-api.us-west-2.amazonaws.com'
+base_url = 'nzg21zsxm3.execute-api.us-west-2.amazonaws.com'
 client = boto3.client('ssm')
 
 
@@ -44,14 +44,16 @@ def exchange_for_access_token():
     print(data)
     return data['access_token']
 
+
 def test_api_is_alive():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/development/change/status?sequenceNumber=123456", headers=headers)
+    conn.request("GET", "/testing/change/status?sequenceNumber=123456", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     assert data['identity_vault'] is not None
+
 
 def test_publishing_a_profile_it_should_be_accepted():
     u = fake_profile.FakeUser()
@@ -64,14 +66,15 @@ def test_publishing_a_profile_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/development/change", json_payload, headers=headers)
+    conn.request("POST", "/testing/change", json_payload, headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data
 
+
 def test_publishing_profiles_it_should_be_accepted():
     profiles = []
-    for x in range(0, 9):
+    for x in range(0, 3):
         u = fake_profile.FakeUser()
         profiles.append(u.as_json())
     wk = WellKnown()
@@ -81,12 +84,12 @@ def test_publishing_profiles_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/development/changes", json.dumps(profiles), headers=headers)
+    conn.request("POST", "/testing/changes", json.dumps(profiles), headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data
 
 
 if __name__ == "__main__":
-    # print(test_publishing_a_profile_it_should_be_accepted())
+    print(test_publishing_a_profile_it_should_be_accepted())
     print(test_publishing_profiles_it_should_be_accepted())

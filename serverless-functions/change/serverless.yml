@@ -1,16 +1,59 @@
 service: change-service
+custom:
+  changeStage: ${opt:stage, self:provider.stage}
+  changeEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+    DYNAMODB_TABLE:
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
+    IDENTIFIER:
+      production: https://api.sso.mozilla.com
+      development: https://api.sso.allizom.org
+    CIS_KINESIS_ARN:
+      production: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-production
+      development: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+      testing: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-testing
+    CIS_DYNAMODB_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
+    CHANGE_SERVICE_AUTH0_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth-dev.mozilla.auth0.com
+      testing: auth-dev.mozilla.auth0.com
+    CIS_JWT_VALIDATION:
+      production: true
+      development: true
+      testing: false
+    CIS_ENFORCE_PUBLISHER_RULES:
+      production: true
+      development: true
+      testing: false
+    CIS_ENFORCE_SIGNATURES:
+      production: true
+      development: true
+      testing: false
 provider:
   name: aws
   runtime: python3.6
   stage: ${opt:stage, 'dev'}
   environment:
-    CIS_KINESIS_ARN: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
-    CIS_DYNAMODB_ARN: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
-    CIS_ENVIRONMENT: development
-    CIS_STREAM_BYPASS: false
+    CIS_KINESIS_ARN: ${self:custom.changeEnvironment.CIS_KINESIS_ARN.${self:custom.changeStage}}
+    CIS_DYNAMODB_ARN: ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
+    CIS_ENVIRONMENT: ${self:custom.changeEnvironment.CIS_ENVIRONMENT.${self:custom.changeStage}}
+    CIS_STREAM_BYPASS: true
     CIS_ASSUME_ROLE_ARN: None
     CIS_REQUESTS_CACHE_BACKEND: memory
-    CHANGE_SERVICE_AUTH0_DOMAIN: auth-dev.mozilla.auth0.com
+    CIS_DYNAMODB_TRANSACTIONS: true
+    CIS_JWT_VALIDATION: ${self:custom.changeEnvironment.CIS_JWT_VALIDATION.${self:custom.changeStage}}
+    CIS_VERIFY_PUBLISHERS: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
+    CIS_VERIFY_SIGNATURES: ${self:custom.changeEnvironment.CIS_ENFORCE_SIGNATURES.${self:custom.changeStage}}
+    CHANGE_SERVICE_AUTH0_DOMAIN: ${self:custom.changeEnvironment.CHANGE_SERVICE_AUTH0_DOMAIN.${self:custom.changeStage}}
+    CIS_ENFORCE_PUBLISHER_RULES: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
     CHANGE_SERVICE_API_IDENTIFIER: https://api.sso.allizom.org
   iamRoleStatements:
     - Effect: Allow
@@ -19,15 +62,20 @@ provider:
         - "kinesis:PutRecord"
         - "kinesis:PutRecords"
       Resource:
-        - arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
+        - ${self:custom.changeEnvironment.CIS_KINESIS_ARN.${self:custom.changeStage}}
     - Effect: Allow
       Action:
+        - "dynamodb:ConditionCheckItem"
         - "dynamodb:DescribeTable"
         - "dynamodb:Query"
         - "dynamodb:Scan"
         - "dynamodb:GetItem"
+        - "dynamodb:PutItem"
+        - "dynamodb:DeleteItem"
+        - "dynamodb:TransactWriteItems"
+        - "dynamodb:UpdateItem"
       Resource:
-        - arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/index/development-identity-vault-sequence_number
+        - ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
 functions:
   api:
     handler: handler.handle
@@ -38,4 +86,4 @@ functions:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:56
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:67

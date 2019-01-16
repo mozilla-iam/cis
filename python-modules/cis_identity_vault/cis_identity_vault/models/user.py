@@ -8,7 +8,12 @@ user_profile must be passed to this in the form required by dynamodb
 }
 """
 import json
+import logging
 from boto3.dynamodb.conditions import Key
+from botocore.exceptions import ClientError
+
+
+logger = logging.getLogger(__name__)
 
 
 class Profile(object):
@@ -235,19 +240,26 @@ class Profile(object):
     def find_or_create_batch(self, user_profiles):
         updates = []
         creations = []
-        for profile in user_profiles:
+        for user_profile in user_profiles:
             profilev2 = json.loads(user_profile['profile'])
             if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
-                updates.append(profile)
+                updates.append(user_profile)
             else:
-                creations.append(profile)
+                creations.append(user_profile)
+        try:
+            if len(updates) > 0:
+                res_create = self.create_batch(creations)
+            else:
+                res_create = None
 
-        if len(updates) > 0:
-            res_create = create_batch(creations)
-
-        if len(creations) > 0:
-            res_update = update_batch(updates)
-
+            if len(creations) > 0:
+                res_update = self.update_batch(updates)
+            else:
+                res_update = None
+        except ClientError as e:
+            res_create = None
+            res_update = None
+            logger.error('Could not run batch transaction due to: {}'.format(e))
         return [res_create, res_update]
 
     def all_by_page(self, next_page=None, limit=25):

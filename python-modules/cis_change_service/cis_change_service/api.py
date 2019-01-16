@@ -1,6 +1,5 @@
 import json
 import logging
-from botocore.exceptions import ClientError
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -19,14 +18,6 @@ from cis_publisher import operation
 app = Flask(__name__)
 config = get_config()
 logger = logging.getLogger(__name__)
-
-
-try:
-    connection = connect.AWS()
-    connection.session()
-    identity_vault_client = connection.identity_vault_client()
-except ClientError as e:
-    logger.warn('Could not discover the kinesis stream or dynamo table: {}'.format(e))
 
 
 CORS(
@@ -69,6 +60,10 @@ def version():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def change():
+    connection = connect.AWS()
+    connection.session()
+    identity_vault_client = connection.identity_vault_client()
+
     user_profile = request.get_json(silent=True)
 
     if isinstance(user_profile, str):
@@ -76,9 +71,6 @@ def change():
 
     logger.info('A json payload was received for user: {}'.format(user_profile['user_id']['value']))
     logger.debug('User profile received.  Detail: {}'.format(user_profile))
-    publish = operation.Publish()
-    result = publish.to_stream(user_profile)
-    logger.debug('The result of the attempt to publish the profile was: {}'.format(result))
 
     if config('stream_bypass', namespace='cis', default='false') == 'true':
         # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
@@ -88,16 +80,13 @@ def change():
                 user_profile.get('user_id').get('value')
             )
         )
-        vault = profile.Vault(
-            result.get('sequence_number')
-        )
+        vault = profile.Vault()
         vault.identity_vault_client = identity_vault_client
         result = vault.put_profile(user_profile)
-    logger.info('The result of publishing for user: {} is: {}'.format(
-            user_profile['user_id']['value'],
-            result
-        )
-    )
+    else:
+        publish = operation.Publish()
+        result = publish.to_stream(user_profile)
+    logger.info('The result of publishing for user: {} is: {}'.format(user_profile['user_id']['value'], result))
     return jsonify(result)
 
 
@@ -105,9 +94,13 @@ def change():
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def changes():
+    connection = connect.AWS()
+    connection.session()
+    identity_vault_client = connection.identity_vault_client()
     profiles = request.get_json(silent=True)
 
     if config('stream_bypass', namespace='cis', default='false') == 'true':
+        logger.info('A list of profiles has been received: {}'.format(len(profiles)))
         vault = profile.Vault(sequence_number=None)
         vault.identity_vault_client = identity_vault_client
         results = vault.put_profiles(profiles)
