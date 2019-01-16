@@ -1,16 +1,20 @@
-ROOT_DIR	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD := docker run --rm -v ${HOME}/workspace/cis:/var/task:delegated lambci/lambda:build-python3.6
-VENV_COMMAND := virtualenv venv -p python3
-VENV_ACTIVATE := source venv/bin/activate
-CIS_MODULE_PATH := python-modules
-PY_DIR := build/python/lib/python3.6/site-packages
-PIP_CMD := pip install --upgrade
-LAYER_NAME := cis_development
+ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/workspace/cis:/var/task:delegated lambci/lambda:build-python3.6
+VENV_COMMAND		:= virtualenv venv -p python3
+VENV_ACTIVATE		:= source venv/bin/activate
+CIS_MODULE_PATH		:= python-modules
+PY_DIR			:= build/python/lib/python3.6/site-packages
+PIP_CMD			:= pip install --upgrade
+LAYER_NAME		:= cis_development
+STAGE			:= ${STAGE}
+STAGE			:= $(if $(STAGE),$(STAGE),testing)
+AWS_REGION		:= us-west-2
 
 .PHONY:all
 all:
 	@echo 'Available make targets:'
-	@grep '^[^#[:space:]].*:' Makefile
+	@grep '^[^#[:space:]^\.PHONY.*].*:' Makefile
+	@echo $(STAGE)
 
 .PHONY:clean-layer
 clean-layer:
@@ -50,7 +54,7 @@ upload-layer:
 
 .PHONY:deploy-change-service
 deploy-change-service:
-	cd serverless-functions/change && sls deploy --region us-west-2 --stage ${STAGE}
+	cd change && sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:test-change-service
 test-change-service:
@@ -58,12 +62,12 @@ test-change-service:
 
 .PHONY:deploy-ldap-publisher
 deploy-ldap-publisher:
-	cd serverless-functions/ldap-publisher && sls deploy --region us-west-2 --stage ${STAGE}
+	cd ldap-publisher && sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
-	cd serverless-functions/stream-processor && sls deploy --region us-west-2 --stage ${STAGE}
+	cd stream-processor && sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-person-api
 deploy-person-api:
-	cd serverless-functions/profile_retrieval && sls deploy --region us-west-2 --stage ${STAGE}
+	cd profile_retrieval && sls deploy --region $(AWS_REGION) --stage $(STAGE)
