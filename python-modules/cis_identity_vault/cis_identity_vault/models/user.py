@@ -11,6 +11,7 @@ import json
 import logging
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
+from botocore.exceptions import ParamValidationError
 
 
 logger = logging.getLogger(__name__)
@@ -168,6 +169,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
+        logger.info('Attempting to create batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def update_batch(self, list_of_profiles):
@@ -203,6 +205,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
+        logger.info('Attempting to update batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def find_by_id(self, id):
@@ -233,8 +236,10 @@ class Profile(object):
         profilev2 = json.loads(user_profile['profile'])
         if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
             res = self.update(user_profile)
+            logger.info('A user profile exists already for: {}'.format(profilev2['user_id']['value']))
         else:
             res = self.create(user_profile)
+            logger.info('A user profile does not exist for: {}'.format(profilev2['user_id']['value']))
         return res
 
     def find_or_create_batch(self, user_profiles):
@@ -243,23 +248,41 @@ class Profile(object):
         for user_profile in user_profiles:
             profilev2 = json.loads(user_profile['profile'])
             if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
+                logger.info('Adding profile to the list of updates to perform: {}'.format(profilev2))
                 updates.append(user_profile)
             else:
+                logger.info('Adding profile to the list of creations to perform: {}'.format(profilev2))
                 creations.append(user_profile)
+
         try:
-            if len(updates) > 0:
+            if len(creations) > 0:
                 res_create = self.create_batch(creations)
+                logger.info('There are {} creations to perform in this batch.'.format(res_create))
             else:
                 res_create = None
+        except ClientError as e:
+            res_create = None
+            logger.error('Could not run batch transaction due to: {}'.format(e))
+        except ParamValidationError as e:
+            res_create = None
+            logger.error('Could not run batch transaction due to: {}'.format(e))
 
-            if len(creations) > 0:
+        try:
+            if len(updates) > 0:
                 res_update = self.update_batch(updates)
+                logger.info('There are {} updates to perform in this batch.'.format(updates))
             else:
                 res_update = None
         except ClientError as e:
-            res_create = None
             res_update = None
             logger.error('Could not run batch transaction due to: {}'.format(e))
+        except ParamValidationError as e:
+            res_update = None
+            logger.error('Could not run batch transaction due to: {}'.format(e))
+
+        logger.info('Updates were: {}'.format(updates))
+        logger.info('Creates were: {}'.format(creations))
+
         return [res_create, res_update]
 
     def all_by_page(self, next_page=None, limit=25):
