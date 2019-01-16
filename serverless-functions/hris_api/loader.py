@@ -115,6 +115,9 @@ class hris_processor(object):
         def cost_center_convert(cc):
             return str(int(cc.split(' ')[0]))
 
+        def strbool_convert(v):
+          return v.lower() in ("yes", "true", "t", "1")
+
         user_array = []
         for hruser in hris_data.get('Report_Entry'):
             p = cis_profile.User()
@@ -123,8 +126,8 @@ class hris_processor(object):
             p.last_name.value = hruser.get('Preferred_Name_-_Last_Name')
             p.first_name.value = hruser.get('PreferredFirstName')
             p.timezone.value = tz_convert(hruser.get('Time_Zone'))
-            p.staff_information.manager.value = bool(hruser.get('IsManager'))
-            p.staff_information.director.value = bool(hruser.get('isDirectorOrAbove'))
+            p.staff_information.manager.value = strbool_convert(hruser.get('IsManager'))
+            p.staff_information.director.value = strbool_convert(hruser.get('isDirectorOrAbove'))
             if len(hruser.get('EmployeeID')) > 0:
                 p.staff_information.staff.value = True
             else:

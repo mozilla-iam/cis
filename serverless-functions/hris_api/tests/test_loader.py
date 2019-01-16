@@ -12,4 +12,19 @@ class TestLoader(object):
         hris = loader.hris_processor()
         profiles = hris.convert_hris_to_cis_profiles(hris_data)
         print("Parsed {} profiles".format(len(profiles)))
-        print(profiles[0].as_json())
+        c = 0
+        for p in profiles:
+            assert p.first_name.value is not None
+            if hris_data['Report_Entry'][c]['IsManager'] == 'TRUE':
+                assert p.staff_information.manager.value is True
+            else:
+                assert p.staff_information.manager.value is False
+
+            # Just info for debugging
+            d = p.as_dict()
+            si = {}
+            for i in d['staff_information']:
+                si[i] = d['staff_information'][i]['value']
+            print(p.first_name.value, p.last_name.value, d['access_information']['hris']['values'],
+                  si)
+            c = c + 1

@@ -31,6 +31,39 @@
    "WPRDeskNumber": "SF-1337",
    "EgenciaPOSCountry": "FR",
    "PublicEmailAddresses": [{"PublicEmailAddress": "dnoble@mozilla.com"}]
-}]
+},
+{
+   "LastName": "LastNameHere",
+   "Preferred_Name": "PrefNamedHere",
+   "PreferredFirstName": "PrefFirstNameHere",
+   "Preferred_Name_-_Last_Name": "PrefLastNameHere",
+   "LegalFirstName": "FirstNameHEre",
+   "EmployeeID": "E8888",
+   "businessTitle": "Sr Staff Security Engineer",
+   "isBonusEligible": "TRUE",
+   "IsManager": "FALSE",
+   "isDirectorOrAbove": "FALSE",
+   "Management_Level": "Individual Contributor",
+   "HireDate": "2001-01-01",
+   "CurrentlyActive": "1",
+   "Entity": "Mozilla Corporation",
+   "Team": "Test Productivity (Lead Name)",
+   "Cost_Center": "1337 - Team Name Here (Team)",
+   "Cost_Center_Hierarchy": "IT",
+   "WorkerType": "Employee",
+   "DetailedWorkerType": "Regular",
+   "LocationDescription": "San Francisco Office",
+   "Time_Zone": "GMT-08:00 Pacific Time",
+   "LocationCity": "San Francisco",
+   "LocationCountryFull": "United States of America",
+   "LocationCountryISO2": "US",
+   "WorkersManager": "Manager Here",
+   "WorkersManagersEmployeeID": "20000394",
+   "Worker_s_Manager_s_Email_Address": "mhere@mozilla.com",
+   "PrimaryWorkEmail": "flastnamehere@mozilla.com",
+   "WPRDeskNumber": "MTV92838",
+   "EgenciaPOSCountry": "US",
+   "PublicEmailAddresses": [{"PublicEmailAddress": "flastnamehere@mozilla.com"}]
 }
+]}
 
