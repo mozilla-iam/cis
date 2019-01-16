@@ -94,10 +94,7 @@ class User(object):
         return DotDict(json.load(open(path)))
 
     def initialize_timestamps(self):
-        # instruct libc that we want UTC
-        os.environ['TZ'] = 'UTC'
-
-        now = time.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+        now = self._get_current_utc_time()
         logger.debug('Setting all profile metadata fields and profile modification timestamps to now: {}'.format(now))
 
         for item in self.__dict__:
@@ -132,12 +129,19 @@ class User(object):
         if 'metadata' not in attr:
             raise KeyError("This attribute does not have metadata to update")
 
-        # instruct libc that we want UTC
-        os.environ['TZ'] = 'UTC'
-        now = time.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+        now = self._get_current_utc_time()
 
         logger.debug('Updating to metadata.last_modified={} for attribute {}'.format(now, req_attr))
         attr['metadata']['last_modified'] = now
+
+    def _get_current_utc_time(self):
+        """
+        returns str of current time that is valid for the CIS user profiles
+        """
+        # instruct libc that we want UTC
+        os.environ['TZ'] = 'UTC'
+        now = time.strftime('%Y-%m-%dT%H:%M:%S.000Z')
+        return now
 
     def _clean_dict(self):
         """
