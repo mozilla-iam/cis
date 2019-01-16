@@ -17,7 +17,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
     A provider for cis_profiles fake data
     """
 
-    def ldap_identitiy(self):
+    def ldap_identity(self):
         """
         Fake ldap identity generator
         """
@@ -38,7 +38,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         Fake additional identities generator
         """
 
-        def costom():
+        def custom():
             email = self.generator.email()
             return (
                 {"custom_1_primary_email": email},
@@ -255,7 +255,7 @@ class FakeUser(cis_profile.profile.User):
         """
         Generate fields created by ldap
         """
-        identities, user_id, email = fake.ldap_identitiy()
+        identities, user_id, email = fake.ldap_identity()
         self._d("user_id.value", user_id)
         self._d("uuid.value", str(fake.uuid4()))
         self._d("login_method.value", "Mozilla-LDAP")
