@@ -86,4 +86,4 @@ functions:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:67
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:72
