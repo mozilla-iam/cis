@@ -1,0 +1,36 @@
+{
+"Report_Entry": [{
+   "LastName": "Donna",
+   "Preferred_Name": "Noble Donna",
+   "PreferredFirstName": "Noble",
+   "Preferred_Name_-_Last_Name": "Donna",
+   "LegalFirstName": "Noble",
+   "EmployeeID": "31337",
+   "businessTitle": "Chief cat",
+   "isBonusEligible": "FALSE",
+   "IsManager": "FALSE",
+   "isDirectorOrAbove": "TRUE",
+   "Management_Level": "Individual Contributor",
+   "HireDate": "2000-01-01",
+   "CurrentlyActive": "1",
+   "Entity": "Moz US",
+   "Team": "Food Productivity",
+   "Cost_Center": "1337 - Food Integrity",
+   "Cost_Center_Hierarchy": "Food",
+   "WorkerType": "Contractor",
+   "DetailedWorkerType": "Vendor",
+   "LocationDescription": "FR Remote",
+   "Time_Zone": "GMT+01:00 Central European Time (Paris)",
+   "LocationCity": "France",
+   "LocationCountryFull": "France",
+   "LocationCountryISO2": "FR",
+   "WorkersManager": "Joan Crawford",
+   "WorkersManagersEmployeeID": "31338",
+   "Worker_s_Manager_s_Email_Address": "jcrawford@mozilla.com",
+   "PrimaryWorkEmail": "dnoble@mozilla.com",
+   "WPRDeskNumber": "SF-1337",
+   "EgenciaPOSCountry": "FR",
+   "PublicEmailAddresses": [{"PublicEmailAddress": "dnoble@mozilla.com"}]
+}]
+}
+
