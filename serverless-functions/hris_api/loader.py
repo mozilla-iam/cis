@@ -177,5 +177,6 @@ def handle(event=None, context={}):
     hris_data = hris.get_file_from_hris(username, password, hris_url, hris_path)
     hris_as_cis_profiles = hris.convert_hris_to_cis_profiles(hris_data)
 
-    #store_in_s3(s3_bucket, bytes(json.dumps(hris_data).encode('utf-8')))
+    # Compat with person api v1, can be removed when v1 is no longer used XXX
+    hris.store_in_s3(s3_bucket, bytes(json.dumps(hris_data).encode('utf-8')))
     return 200
