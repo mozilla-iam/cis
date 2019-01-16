@@ -1,0 +1,115 @@
+{
+  "oidc_discovery_uri": "https://auth.allizom.org/.well-known/openid-configuration",
+  "access_file": {
+    "endpoint": "https://cdn.sso.allizom.org/apps.yml",
+    "aai_mapping": {
+      "LOW": ["NO_RECENT_AUTH_FAIL", "AUTH_RATE_NORMAL"],
+      "MEDIUM": ["2FA", "HAS_KNOWN_BROWSER_KEY", "HIGH_ASSURANCE_IDP"],
+      "HIGH": ["GEOLOC_NEAR", "SAME_IP_RANGE"],
+      "MAXIMUM": ["KEY_AUTH"]
+    },
+    "jwks": {
+      "keys": {
+        "alg": "RS256",
+        "kty": "RSA",
+        "use": "sig",
+        "x5c": {
+          "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAnU0U8n4zs7Aunu8ZzIGRyYkUjPVL9EP+RAVkCP8ZUglsuGQWAzmv87lt6xkZEhjgrCrnyXqdQAiio9PPpP6/ ygIKBLgRThHKRr4DxgLD+lhpEHDGMen+us/JVgCreDLnEHfm2/+PoYv4RYHuAWJg a58+AgV6FjAFPz543HJi3n/OpxaXTdBNIoY39ibDpnerfJuKBfq2wd+Fjpa+UeO0 ZUgkMV7ihoTz/pRMH5G00B9mslVGucE+N5EfqvbHdzrdtfEMrowod2xv6QKRB5mD rFU+GhvMf+uuICzKgPcjeakWU8n6ICbEj8M6ldL9Kvq2v6mbxavzhYF3TfLPB6cP 0a0bkjldFLLnRFMT0gyRDToLo6/1OCChfyG3nOiB5QdiLiwwoubKOrlNN+LFl1rh qo6NNBWuY4tNEdB4h9wNaZPN+so4S9tVy7tI3G1zRijJYhPZHs3BZdgW78BSvY8D 6+rHj3mk55VYmByHG4BN+IyZnO1nnmoy1mvElMZtcG/Ncs4SvAhoW2yFORAlEQpU GHroL0HY1F5Qt0ewH0yW+SdEKkPntEqlTyFa6gUN+Ftvi9jFUZJW88TlwGbIDQSi 2ewpk4AS2jeBoZWsvdUtFM/zNeG/tOGwAnS4LZ8COLv1fcWV/P3998YFlXSwgkN1 y7gjhN+gKJ8r/+6xUN6AsxkCAwEAAQ=="
+        },
+        "n": "nU0U8n4zs7Aunu8ZzIGRyYkUjPVL9EP-RAVkCP8ZUglsuGQWAzmv87lt6xkZEhjgrCrnyXqdQAiio9PPpP6_ygIKBLgRThHKRr4DxgLD-lhpEHDGMen-us_JVgCreDLnEHfm2_-PoYv4RYHuAWJga58-AgV6FjAFPz543HJi3n_OpxaXTdBNIoY39ibDpnerfJuKBfq2wd-Fjpa-UeO0ZUgkMV7ihoTz_pRMH5G00B9mslVGucE-N5EfqvbHdzrdtfEMrowod2xv6QKRB5mDrFU-GhvMf-uuICzKgPcjeakWU8n6ICbEj8M6ldL9Kvq2v6mbxavzhYF3TfLPB6cP0a0bkjldFLLnRFMT0gyRDToLo6_1OCChfyG3nOiB5QdiLiwwoubKOrlNN-LFl1rhqo6NNBWuY4tNEdB4h9wNaZPN-so4S9tVy7tI3G1zRijJYhPZHs3BZdgW78BSvY8D6-rHj3mk55VYmByHG4BN-IyZnO1nnmoy1mvElMZtcG_Ncs4SvAhoW2yFORAlEQpUGHroL0HY1F5Qt0ewH0yW-SdEKkPntEqlTyFa6gUN-Ftvi9jFUZJW88TlwGbIDQSi2ewpk4AS2jeBoZWsvdUtFM_zNeG_tOGwAnS4LZ8COLv1fcWV_P3998YFlXSwgkN1y7gjhN-gKJ8r_-6xUN6Asxk",
+        "e": "AQAB",
+        "kid": "AccessFile"
+      }
+    }
+  },
+  "api": {
+    "endpoint": "https://api.sso.allizom.org",
+    "profile_schema_combined_uri": "https://api.sso.allizom.org/schema/v2/profile",
+    "scopes_supported": [
+      "write",
+      "read",
+      "class:public",
+      "class:mozilla_confidential",
+      "class:workgroup_confidential:staff_only"
+    ],
+    "publishers_rules_uri": "https://auth.allizom.org/.well-known/mozilla-iam-publisher-rules",
+    "publishers_jwks": {
+        "mozilliansorg": {
+          "keys": [
+              {
+                "alg": "RS256",
+                "kty": "RSA",
+                "use": "sig",
+                "x5c": {
+                  "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA1tqjV+j4DzeKzQAIE2KKgAmcUYT3HndnbHTWmvgUi3cqFi5at05vBnIg68k5B15ZiP4uAOZ/S44c1eDHybwBc6nlEbA47PoB82FOxh1mXoOnY7AFN6GoAt9+Bowp7WXO75D2wzhQsWd3QPTxi19d5dEJwx/aDTMHZ4fU5IaMcTBvuu1bHvsgr4SA/BlJicAAdMT+9tG6vOkrKjv5TMD+hm2VpFuuGikAv79KKgWlZg5CTnsGtExSKaMmX7lmQqdAJTrrv1GyZV3d4B+4hyw5rzxiJuO82YcutINt6652bZWcGr644Xd+Uc8KVmQyUYCqZAqHBl4ynOWP4eRvccXtu5ZJ99mt6Uy8lYo1jZ7/0xKOLkv6j6NC7VGTf/23rv7bcIEuWFcNzJie5n2afhavMyyfR1qb9Gy0uwo4vBxUKU8spMyjTmXtoDFfMnTIrE501zJFg/LgnrD0+GdJTyozD8GrdVrvzAXPo6ObwbqKSzNR77AMfGYBTEtFZsBNttmR1uYskluLSB+HQWKxncd2BxAiOlT+86uMYK6HgkSU46NmyC+3DHraiFgyhceP8pR7lte8q/4UeYnP9yS7AISOlR/bKhbZKP17jYKyWSin1aOK2Bkv8uuNNfE+SVk8O+R7XWVCdWF8F48eSlQb+qR0a2rmBm5/gymx5wIG1FXHdkMCAwEAAQ=="
+                },
+                "n": "1tqjV-j4DzeKzQAIE2KKgAmcUYT3HndnbHTWmvgUi3cqFi5at05vBnIg68k5B15ZiP4uAOZ_S44c1eDHybwBc6nlEbA47PoB82FOxh1mXoOnY7AFN6GoAt9-Bowp7WXO75D2wzhQsWd3QPTxi19d5dEJwx_aDTMHZ4fU5IaMcTBvuu1bHvsgr4SA_BlJicAAdMT-9tG6vOkrKjv5TMD-hm2VpFuuGikAv79KKgWlZg5CTnsGtExSKaMmX7lmQqdAJTrrv1GyZV3d4B-4hyw5rzxiJuO82YcutINt6652bZWcGr644Xd-Uc8KVmQyUYCqZAqHBl4ynOWP4eRvccXtu5ZJ99mt6Uy8lYo1jZ7_0xKOLkv6j6NC7VGTf_23rv7bcIEuWFcNzJie5n2afhavMyyfR1qb9Gy0uwo4vBxUKU8spMyjTmXtoDFfMnTIrE501zJFg_LgnrD0-GdJTyozD8GrdVrvzAXPo6ObwbqKSzNR77AMfGYBTEtFZsBNttmR1uYskluLSB-HQWKxncd2BxAiOlT-86uMYK6HgkSU46NmyC-3DHraiFgyhceP8pR7lte8q_4UeYnP9yS7AISOlR_bKhbZKP17jYKyWSin1aOK2Bkv8uuNNfE-SVk8O-R7XWVCdWF8F48eSlQb-qR0a2rmBm5_gymx5wIG1FXHdkM",
+                "e": "AQAB",
+                "kid": "MozilliansorgKeyId"
+              }
+          ]
+        },
+        "access_provider": {
+          "keys": [
+
+            {
+                "alg": "RS256",
+                "kty": "RSA",
+                "use": "sig",
+                "x5c": {
+                  "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAzLQ/ktKak87G+iULApjXJ+8IzlQDtpecB3uV3HROefaIWpb8eQ9Z1pSn0YBcdVMe9iBaVKQHL01GZlZCrR4nT5fdZfY7GOWaavYtvpofFufRWseMsRMULnrkbCcu0ZBVbbbpWOwkDz64sSUYJGDOwF/efJqeYThshia9a7xJpFCDnEgXfqOjymwoY8luaeujIEX5hu9sDfFz+ZVvgmwFy5pULPRik/ZuMv8QTYGCDrlHHKuXuWIoVBb4mWaLIa6e8XqPjX5zhiEBAEyxUBtWVZ/+yEmfrR8Nx4rWoorE50DYpYGCS1tmWolDXXlb7W6jgh+MYN2C8YiAkNLZXgMgQWPuJoTDtkMhcfVXAYaQNbuDNhET6uNnYQLtZ77/2V8WrLw3foInmTF32oKlyIs+rxtvwyPYdVQ1CYhf5vWM3HW+YQTEoGEvBFaz9Chu7SUDsX8k5wDTZHYLIFjrYZlFxZ3BohPqsnO5m+++bu9rO05BYBm4bP97VgLiHvYjDbU5emdNW66EAK/5UUv4DqIhfNYTV+SOzaJQ78ohPTxW/NjPqOOs6ivC8F3ajSdU3utgNUQh/2H0RQMtw7pIhOL+BhHFo+GTzQOvLqKlLlVKVIzL4c0pBR6eBNBO68qoHB6vBmhHYZA8VWYWnRrpLaGhnSRaeNJRX36Z1Uz8lBuNF20CAwEAAQ=="
+                },
+                "n": "zLQ_ktKak87G-iULApjXJ-8IzlQDtpecB3uV3HROefaIWpb8eQ9Z1pSn0YBcdVMe9iBaVKQHL01GZlZCrR4nT5fdZfY7GOWaavYtvpofFufRWseMsRMULnrkbCcu0ZBVbbbpWOwkDz64sSUYJGDOwF_efJqeYThshia9a7xJpFCDnEgXfqOjymwoY8luaeujIEX5hu9sDfFz-ZVvgmwFy5pULPRik_ZuMv8QTYGCDrlHHKuXuWIoVBb4mWaLIa6e8XqPjX5zhiEBAEyxUBtWVZ_-yEmfrR8Nx4rWoorE50DYpYGCS1tmWolDXXlb7W6jgh-MYN2C8YiAkNLZXgMgQWPuJoTDtkMhcfVXAYaQNbuDNhET6uNnYQLtZ77_2V8WrLw3foInmTF32oKlyIs-rxtvwyPYdVQ1CYhf5vWM3HW-YQTEoGEvBFaz9Chu7SUDsX8k5wDTZHYLIFjrYZlFxZ3BohPqsnO5m---bu9rO05BYBm4bP97VgLiHvYjDbU5emdNW66EAK_5UUv4DqIhfNYTV-SOzaJQ78ohPTxW_NjPqOOs6ivC8F3ajSdU3utgNUQh_2H0RQMtw7pIhOL-BhHFo-GTzQOvLqKlLlVKVIzL4c0pBR6eBNBO68qoHB6vBmhHYZA8VWYWnRrpLaGhnSRaeNJRX36Z1Uz8lBuNF20",
+                "e": "AQAB",
+                "kid": "APKeyId"
+            }
+          ]
+        },
+        "hris": {
+          "keys": [
+            {
+                "alg": "RS256",
+                "kty": "RSA",
+                "use": "sig",
+                "x5c": {
+                  "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEAxariX8XqrJvy+9mZDD+eakzYD6LP9usO78C0ADfaEuG18+xJ/4nASKz+OoczwhmAM/BcAeqApprnyfaEFLueqHF3JSCGVWnFX64+9QczSFmCONSxNgNXtJJCSrD86PFgjZNMFWNZHTuo7AfgaaU1Tv4hBFhYYuI+Wp54ff6BgGAu/Bt5k1n8zTVrCOPkkN04BwKS463uSp28SwtaX1MSGP1fPzYFXMQ2b7agRKmg4MJSuS7P5cbsEIxp059b5c9I8jPFhskSfcvUZH04JGXBwGMYGY2t1DJ0RLkexywCyT3CA7d9C/2Bppet5QFzcPY410pgN5u6WNME7fiUu1tkVwG34YtesOD+O8pP9YchcbQqVb34D5m+9AmwHfcO9hR2vYNGR9DLBV0SpNCa83qBDD0Hrjk+lJ9aNifnTn/VrFjmqpbOC4H447zy2DbB8umS3zbIShyXlXR8z6OL0BVsaXhm8RbBg8XI9YfJLUsodrhGS66Bks90b9hntPyfDxXhfheGZBVYeiLq3YgwjPm+A/jeUJ4qYfkeYuTt5HdbEuBw5DRenKq1HZzlU3gBtzVXMZwXvmiB2T24i82Wf5kY6YeDFS1X6w8NIQVvb5MUKVb4SWGbbbNgbg9aBih/3PQInvj13QeMOWaddxbp9IzKy85Lb0OkH2Y83wAYfLMRyOsCAwEAAQ=="
+                },
+                "n": "xariX8XqrJvy-9mZDD-eakzYD6LP9usO78C0ADfaEuG18-xJ_4nASKz-OoczwhmAM_BcAeqApprnyfaEFLueqHF3JSCGVWnFX64-9QczSFmCONSxNgNXtJJCSrD86PFgjZNMFWNZHTuo7AfgaaU1Tv4hBFhYYuI-Wp54ff6BgGAu_Bt5k1n8zTVrCOPkkN04BwKS463uSp28SwtaX1MSGP1fPzYFXMQ2b7agRKmg4MJSuS7P5cbsEIxp059b5c9I8jPFhskSfcvUZH04JGXBwGMYGY2t1DJ0RLkexywCyT3CA7d9C_2Bppet5QFzcPY410pgN5u6WNME7fiUu1tkVwG34YtesOD-O8pP9YchcbQqVb34D5m-9AmwHfcO9hR2vYNGR9DLBV0SpNCa83qBDD0Hrjk-lJ9aNifnTn_VrFjmqpbOC4H447zy2DbB8umS3zbIShyXlXR8z6OL0BVsaXhm8RbBg8XI9YfJLUsodrhGS66Bks90b9hntPyfDxXhfheGZBVYeiLq3YgwjPm-A_jeUJ4qYfkeYuTt5HdbEuBw5DRenKq1HZzlU3gBtzVXMZwXvmiB2T24i82Wf5kY6YeDFS1X6w8NIQVvb5MUKVb4SWGbbbNgbg9aBih_3PQInvj13QeMOWaddxbp9IzKy85Lb0OkH2Y83wAYfLMRyOs",
+                "e": "AQAB",
+                "kid": "HRISKeyId"
+              }
+          ]
+        },
+        "ldap": {
+          "keys": [
+            {
+                "alg": "RS256",
+                "kty": "RSA",
+                "use": "sig",
+                "x5c": {
+                  "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA3gzfSnUQILnBjFRnaqIV0qJcN7Qqdt47o8vhliLIQGrSyVHZusV6IIaKmWpIwWwTh/k9gJ2IQ9sVM3hnR4xTmfsSK2TE7/egVFzjemgQJ1UDUhv6gP8iBZcFUH35j8ISUwdFyZ90kCbdUVK3bVXZRv2HCkVGMfKGB9cB2Bv86v4BXL5pqDMgbcSd6KmDvVDRoHnS3ovC7kf1pHrCB/1IOQyl05Lh6PNrRGcwqcPh3Q2YEkyGS4WHNotqrsDcDaoNwWVmmBXmRHBjkc2pNVvZLQk3xDi3c885CioZtznnCnM2IBiZDjLiF9JuG22rL4LuDj0a/KQZ7AlgP38IWDZdr3Gj8T1/GFg8aSAAUJFYDypwFAqd7mijrJdIYyOZceaC4km/D+Pc5zulXdDnGloM7HgiZ0QaNMo4iiboY1p/5wcIUt2kj0kzAh6tzdDwlkE8CzpG0SlJZxpM6uECZZi6ybR3b7mIJ652mC3UXmOPenY0kCXeA+ItJTmjKZOP6WWXaxyCG2aNE/7i8Wkd92iO+2zfvs2SI8QCdskRBGqXAB40+sAO5Nr9xVUJkPrcsJ+qNqFZPxbYiMLd2lLlWXSqAdI4HCm7OD0BcpwOTmyNswxy57r4M5HyF5rENmLtczm7WMGDWdPTPLsj91R8e45R/csjT/EOE/aMhJ9NBbIEdv0CAwEAAQ=="
+                },
+                "n": "3gzfSnUQILnBjFRnaqIV0qJcN7Qqdt47o8vhliLIQGrSyVHZusV6IIaKmWpIwWwTh_k9gJ2IQ9sVM3hnR4xTmfsSK2TE7_egVFzjemgQJ1UDUhv6gP8iBZcFUH35j8ISUwdFyZ90kCbdUVK3bVXZRv2HCkVGMfKGB9cB2Bv86v4BXL5pqDMgbcSd6KmDvVDRoHnS3ovC7kf1pHrCB_1IOQyl05Lh6PNrRGcwqcPh3Q2YEkyGS4WHNotqrsDcDaoNwWVmmBXmRHBjkc2pNVvZLQk3xDi3c885CioZtznnCnM2IBiZDjLiF9JuG22rL4LuDj0a_KQZ7AlgP38IWDZdr3Gj8T1_GFg8aSAAUJFYDypwFAqd7mijrJdIYyOZceaC4km_D-Pc5zulXdDnGloM7HgiZ0QaNMo4iiboY1p_5wcIUt2kj0kzAh6tzdDwlkE8CzpG0SlJZxpM6uECZZi6ybR3b7mIJ652mC3UXmOPenY0kCXeA-ItJTmjKZOP6WWXaxyCG2aNE_7i8Wkd92iO-2zfvs2SI8QCdskRBGqXAB40-sAO5Nr9xVUJkPrcsJ-qNqFZPxbYiMLd2lLlWXSqAdI4HCm7OD0BcpwOTmyNswxy57r4M5HyF5rENmLtczm7WMGDWdPTPLsj91R8e45R_csjT_EOE_aMhJ9NBbIEdv0",
+                "e": "AQAB",
+                "kid": "LDAPKeyId"
+            }
+         ]
+        },
+      "cis": {
+        "keys": [
+          {
+              "alg": "RS256",
+              "kty": "RSA",
+              "use": "sig",
+              "x5c": {
+                "0": "MIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEArqM7cx88lF2jngnsZA+cnh9WgFJbXOul2Pfy5byiBzJjJBzgeWOl4yPD53DPFgL4GlT+HL1YXR/uJiMw5ZGad2Atiu/smO4EY6Ql54/j4xCrqWredVNp4BVMB1LVXJabDUsa1YovFtEVQmVle1Uz69wKEVJ0EnVXK8zOGIz+ljUxVAPJB9+U5iATja8jU8HTNbx6tG2FiDWNVKiRmkFzuX/8CU6i0Zvb8xZ4yzo2j46NAKuSz4CiILq4EweplCqAdVf8H2IVV7P8kJjNoQw6V8HgpQTIDKg3XThBya5RDTqX5kqJ7G6S3WEbCCs+4bCLmoSTZZk/oa34TOP9nC4lE5r2aVDvEadvcEfKL5Y/w9Mrm3NfR0hnS2ddqx82Z1R+nY8qAFjJcIgQEdaRHC+G43ZnPwIx03Z7p6N6AIN9S4IqTCjelmP8qq0gU1Oh2WSdGCfnZ2ZaUJDE8TyBzMWcL2pRpraFvp/R2PJSwVDnyt3YBY3dezHH+TcK2ilYczo3aazAR7BFJMou5eA5DcgyOetgTAigxhHsHxNBH3a81l/L+qlyUyNNh5kfk/uoIhBfj/tlQ2ZrwE+jP3c/VlOrq+/cBsjlAxosR8eE/0pUkRkp3022l2LJoNnTSm1O3RkII6WlctPGliX8hYNg9dNlennrt7NPKoRSoEx6B3zux7cCAwEAAQ=="
+              },
+              "n": "rqM7cx88lF2jngnsZA-cnh9WgFJbXOul2Pfy5byiBzJjJBzgeWOl4yPD53DPFgL4GlT-HL1YXR_uJiMw5ZGad2Atiu_smO4EY6Ql54_j4xCrqWredVNp4BVMB1LVXJabDUsa1YovFtEVQmVle1Uz69wKEVJ0EnVXK8zOGIz-ljUxVAPJB9-U5iATja8jU8HTNbx6tG2FiDWNVKiRmkFzuX_8CU6i0Zvb8xZ4yzo2j46NAKuSz4CiILq4EweplCqAdVf8H2IVV7P8kJjNoQw6V8HgpQTIDKg3XThBya5RDTqX5kqJ7G6S3WEbCCs-4bCLmoSTZZk_oa34TOP9nC4lE5r2aVDvEadvcEfKL5Y_w9Mrm3NfR0hnS2ddqx82Z1R-nY8qAFjJcIgQEdaRHC-G43ZnPwIx03Z7p6N6AIN9S4IqTCjelmP8qq0gU1Oh2WSdGCfnZ2ZaUJDE8TyBzMWcL2pRpraFvp_R2PJSwVDnyt3YBY3dezHH-TcK2ilYczo3aazAR7BFJMou5eA5DcgyOetgTAigxhHsHxNBH3a81l_L-qlyUyNNh5kfk_uoIhBfj_tlQ2ZrwE-jP3c_VlOrq-_cBsjlAxosR8eE_0pUkRkp3022l2LJoNnTSm1O3RkII6WlctPGliX8hYNg9dNlennrt7NPKoRSoEx6B3zux7c",
+              "e": "AQAB",
+              "kid": "CISKeyId"
+          }
+        ]
+      }
+    }
+  }
+}

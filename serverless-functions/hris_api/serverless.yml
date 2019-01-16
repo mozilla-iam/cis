@@ -1,0 +1,86 @@
+service: hris-api
+custom:
+  hrisStage: ${opt:stage, self:provider.stage}
+  hrisEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+    CIS_HRIS_JSON_FILE:
+      production: workday.json
+      development: workday.json
+    HRIS_ASSUME_ROLE_ARN:
+      production: arn:aws:iam::371522382791:role/cis-v2-production-hris-publisher
+      development: arn:aws:iam::656532927350:role/cisv2-development-hris-publisher
+    DYNAMODB_TABLE:
+      production: hris_api_production
+      development: hris_api_development
+    IDENTIFIER:
+      production: https://api.sso.mozilla.com
+      development: https://api.sso.allizom.org
+    PARAMETERS_PATH:
+      production: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/production/*
+      development: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/development/*
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage}
+  environment:
+    CIS_ENVIRONMENT: ${self:custom.hrisEnvironment.CIS_ENVIRONMENT.${self:custom.hrisStage}}
+    CIS_HRIS_JSON_FILE: ${self:custom.hrisEnvironment.CIS_HRIS_JSON_FILE.${self:custom.hrisStage}}
+    HRIS_ASSUME_ROLE_ARN: ${self:custom.hrisEnvironment.HRIS_ASSUME_ROLE_ARN.${self:custom.hrisStage}}
+    DYNAMODB_TABLE: ${self:custom.hrisEnvironment.DYNAMODB_TABLE.${self:custom.hrisStage}}
+    IDENTIFIER: ${self:custom.hrisEnvironment.IDENTIFIER.${self:custom.hrisStage}}
+    PARAMETERS_PATH: ${self:custom.hrisEnvironment.PARAMETERS_PATH.${self:custom.hrisStage}}
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - "sts:AssumeRole"
+      Resource:
+        - ${self:custom.hrisEnvironment.HRIS_ASSUME_ROLE_ARN.${self:custom.hrisStage}}
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - ${self:custom.hrisEnvironment.PARAMETERS_PATH.${self:custom.hrisStage}}
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+    - Effect: Allow
+      Action:
+        - dynamodb:GetItem
+        - dynamodb:UpdateItem
+      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:service}-${opt:stage}"
+functions:
+  loader:
+    handler: loader.handle
+    description: Load the data from the hris system to the dynamo table and s3 buckets.
+    memorySize: 1024
+    timeout: 900
+    layers:
+      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:56
+    onError: arn:aws:sns:us-west-2:320464205386:cis-dev-dlq
+    events:
+    - schedule:
+        name: load-hris-every-2-hours-${opt:stage}
+        description: 'Fetch hris data every two hours.'
+        rate: rate(2 hours)
+resources:
+  Resources:
+    hrisTable:
+      Type: 'AWS::DynamoDB::Table'
+      Properties:
+        AttributeDefinitions:
+          - AttributeName: PrimaryWorkEmail
+            AttributeType: S
+        KeySchema:
+          - AttributeName: PrimaryWorkEmail
+            KeyType: HASH
+        ProvisionedThroughput:
+          ReadCapacityUnits: 1
+          WriteCapacityUnits: 1
+        TableName: ${self:service}-${opt:stage}

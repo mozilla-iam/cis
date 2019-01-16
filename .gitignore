@@ -9,7 +9,6 @@ __pycache__/
 # Distribution / packaging
 .Python
 env/
-build/
 develop-eggs/
 dist/
 downloads/
@@ -90,3 +89,7 @@ ENV/
 
 # npm
 node_modules
+
+# Docs/.DSStore
+
+docs/.DS_Store
