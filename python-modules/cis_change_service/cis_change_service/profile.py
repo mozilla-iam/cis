@@ -1,10 +1,16 @@
 """Get the status of an integration from the identity vault and auth0."""
 import json
-import random
+import logging
 import uuid
 from cis_aws import connect
 from cis_change_service import common
 from cis_identity_vault.models import user
+from cis_profile.profile import User
+from cis_profile.exceptions import PublisherVerificationFailure
+from cis_profile.exceptions import SignatureVerificationFailure
+
+
+logger = logging.getLogger(__name__)
 
 
 class Vault(object):
@@ -15,63 +21,79 @@ class Vault(object):
         self.config = common.get_config()
 
         if sequence_number is not None:
-            self.sequence_number = sequence_number
+            self.sequence_number = str(sequence_number)
         else:
-             uuid = uuid.uuid4()
-            self.sequence_number = uuid.int;
+            self.sequence_number = str(uuid.uuid4().int)
 
     def _connect(self):
         self.connection_object.session()
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
+    def _verify(self, profile_json):
+        cis_profile = User(user_structure_json=profile_json)
+        try:
+            if self.config('verify_publishers', namespace='cis') == 'true':
+                cis_profile.verify_all_publishers()
+
+            if self.config('verify_signatures', namespace='cis') == 'true':
+                cis_profile.verify_all_signatures()
+        except SignatureVerificationFailure:
+            return False
+        except PublisherVerificationFailure:
+            return False
+        return True
+
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
         self._connect()
-        user_id = self._get_id(profile_json)
 
         if isinstance(profile_json, str):
             profile_json = json.loads(profile_json)
 
-        if self.config('dynamodb_transactions', namespace='cis') == 'true':
-            profile = user.Profile(
-                self.identity_vault_client.get('table'),
-                self.identity_vault_client.get('client'),
-                transactions=True
+        verified = self._verify(profile_json)
+
+        if verified:
+            if self.config('dynamodb_transactions', namespace='cis') == 'true':
+                vault = user.Profile(
+                    self.identity_vault_client.get('table'),
+                    self.identity_vault_client.get('client'),
+                    transactions=True
+                )
+            else:
+                vault = user.Profile(
+                    self.identity_vault_client.get('table'),
+                    self.identity_vault_client.get('client'),
+                    transactions=False
+                )
+
+            user_profile = dict(
+                id=profile_json['user_id']['value'],
+                primary_email=profile_json['primary_email']['value'],
+                sequence_number=self.sequence_number,
+                profile=json.dumps(profile_json)
             )
+
+            res = vault.find_or_create(user_profile)
+            return res
         else:
-            profile = user.Profile(
-                self.identity_vault_client.get('table'),
-                self.identity_vault_client.get('client'),
-                transactions=False
-            )
-
-        user_profile = dict(
-            id=profile_json['user_id']['value'],
-            primary_email=profile_json['primary_email']['value'],
-            sequence_number=self.sequence_number,
-            profile=json.dumps(profile_json)
-        )
-
-        res = profile.find_or_create(user_profile)
-        return res
+            # XXX TBD do something else.
+            pass
 
     def put_profiles(self, profile_list):
         """Write profile to the identity vault."""
         self._connect()
-        user_id = self._get_id(profile_json)
-
-        if isinstance(profile_json, str):
-            profile_json = json.loads(profile_json)
 
         if self.config('dynamodb_transactions', namespace='cis') == 'true':
-            profile = user.Profile(
+            logger.info('Attempting to put batch of profiles using transacations.')
+            vault = user.Profile(
                 self.identity_vault_client.get('table'),
                 self.identity_vault_client.get('client'),
                 transactions=True
             )
         else:
-            profile = user.Profile(
+            logger.info('Attempting to put batch of profiles without transactions.')
+            vault = user.Profile(
                 self.identity_vault_client.get('table'),
                 self.identity_vault_client.get('client'),
                 transactions=False
@@ -79,16 +101,25 @@ class Vault(object):
 
         user_profiles = []
 
-        for profile in profile_list:
-            user_profile = dict(
-                id=profile_json['user_id']['value'],
-                primary_email=profile_json['primary_email']['value'],
-                sequence_number=self.sequence_number,
-                profile=json.dumps(profile_json)
-            )
-            user_profiles.append(user_profile)
+        for profile_json in profile_list:
+            if isinstance(profile_json, str):
+                profile_json = json.loads(profile_json)
 
-        return profile.find_or_create_batch(user_profiles)
+            verified = self._verify(profile_json)
+            if verified:
+                logger.info('Profiles have been verified. Constructing dictionary for storage.')
+                user_profile = dict(
+                    id=profile_json['user_id']['value'],
+                    primary_email=profile_json['primary_email']['value'],
+                    sequence_number=self.sequence_number,
+                    profile=json.dumps(profile_json)
+                )
+                user_profiles.append(user_profile)
+            else:
+                # XXX TBD Do something else
+                pass
+        logger.info('Attempting to send batch of {} profiles as a transaction.'.format(len(user_profiles)))
+        return vault.find_or_create_batch(user_profiles)
 
     def _get_id(self, profile_json):
         if isinstance(profile_json, str):

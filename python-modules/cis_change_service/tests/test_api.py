@@ -168,8 +168,6 @@ class TestAPI(object):
         )
 
         response = json.loads(result.get_data())
-        assert response.get('sequence_number') is not None
-        assert response.get('status_code') == 200
         assert result.status_code == 200
 
     @mock.patch('cis_change_service.idp.get_jwks')
@@ -220,20 +218,7 @@ class TestAPI(object):
         )
 
         response = json.loads(result.get_data())
-        assert response.get('sequence_number') is not None
-        assert response.get('status_code') == 200
         assert result.status_code == 200
-
-        status_endpoint_result = self.app.get(
-            '/change/status',
-            headers={
-                'Authorization': 'Bearer ' + token
-            },
-            query_string={'sequenceNumber': response.get('sequence_number')},
-            follow_redirects=True
-        )
-
-        assert json.loads(status_endpoint_result.get_data().decode('utf-8')).get('identity_vault') is True
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_change_endpoint_fails_with_invalid_token_and_jwt_validation_false(self, fake_jwks):
