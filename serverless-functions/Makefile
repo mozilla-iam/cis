@@ -51,6 +51,7 @@ upload-layer:
 .PHONY:deploy-change-service
 deploy-change-service:
 	cd serverless-functions/change && sls deploy --region us-west-2 --stage ${STAGE}
+
 .PHONY:test-change-service
 test-change-service:
 	python e2e/test_change_endpoint.py
@@ -65,4 +66,4 @@ deploy-stream-processor:
 
 .PHONY:deploy-person-api
 deploy-person-api:
-	cd serverless-functions/profile-retrieval && sls deploy --region us-west-2 --stage ${STAGE}
+	cd serverless-functions/profile_retrieval && sls deploy --region us-west-2 --stage ${STAGE}

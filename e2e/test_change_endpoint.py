@@ -41,7 +41,6 @@ def exchange_for_access_token():
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = json.loads(res.read())
-    print(data)
     return data['access_token']
 
 
@@ -74,7 +73,7 @@ def test_publishing_a_profile_it_should_be_accepted():
 
 def test_publishing_profiles_it_should_be_accepted():
     profiles = []
-    for x in range(0, 3):
+    for x in range(0, 2):
         u = fake_profile.FakeUser()
         profiles.append(u.as_json())
     wk = WellKnown()

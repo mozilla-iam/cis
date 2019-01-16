@@ -13,6 +13,7 @@ custom:
     IDENTIFIER:
       production: https://api.sso.mozilla.com
       development: https://api.sso.allizom.org
+      testing: https://api.sso.allizom.org
     CIS_KINESIS_ARN:
       production: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-production
       development: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
@@ -54,7 +55,7 @@ provider:
     CIS_VERIFY_SIGNATURES: ${self:custom.changeEnvironment.CIS_ENFORCE_SIGNATURES.${self:custom.changeStage}}
     CHANGE_SERVICE_AUTH0_DOMAIN: ${self:custom.changeEnvironment.CHANGE_SERVICE_AUTH0_DOMAIN.${self:custom.changeStage}}
     CIS_ENFORCE_PUBLISHER_RULES: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
-    CHANGE_SERVICE_API_IDENTIFIER: https://api.sso.allizom.org
+    CHANGE_SERVICE_API_IDENTIFIER: ${self:custom.changeEnvironment.IDENTIFIER.${self:custom.changeStage}}
   iamRoleStatements:
     - Effect: Allow
       Action:
