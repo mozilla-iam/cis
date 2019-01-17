@@ -1,5 +1,6 @@
 import loader
 import json
+from os import getenv
 
 
 class TestLoader(object):
@@ -9,7 +10,7 @@ class TestLoader(object):
         with open('tests/fixtures/workday.json') as fd:
             hris_data = json.load(fd)
 
-        hris = loader.hris_processor()
+        hris = loader.hris_processor(getenv('CIS_ENVIRONMENT', 'development'))
         profiles = hris.convert_hris_to_cis_profiles(hris_data)
         print("Parsed {} profiles".format(len(profiles)))
         c = 0

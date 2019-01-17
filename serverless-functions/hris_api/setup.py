@@ -6,7 +6,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['requests', 'boto3', 'everett', 'cis_profile']
+requirements = ['requests', 'boto3', 'everett', 'cis_profile', 'authzerolib']
 test_requirements = ['pytest', 'pytest-watch', 'pytest-cov']
 setup_requirements = [
     'pytest-runner',
