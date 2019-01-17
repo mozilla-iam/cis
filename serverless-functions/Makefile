@@ -46,7 +46,7 @@ package-single-layer:
 .PHONY:zip-layer
 zip-layer:
 	mkdir -p build
-	cd build/ && zip -r ../serverless-functions/cis.zip .
+	cd build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:upload-layer
 upload-layer:
