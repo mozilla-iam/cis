@@ -86,7 +86,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
             #    "custom_1": custom,
         }
 
-        identities = {"dinopark_id": str(self.generator.uuid4())}
+        identities = {}
 
         if not user_idp or user_idp not in idps.keys():
             user_idp = self.generator.random.choice(list(idps.keys()))

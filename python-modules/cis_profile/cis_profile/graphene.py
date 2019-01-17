@@ -163,13 +163,15 @@ class StaffInformation(StandardProperty):
 class Identities(StandardProperty):
     github_id_v3 = graphene.Field(StandardAttributeString)
     github_id_v4 = graphene.Field(StandardAttributeString)
-    dinopark_id = graphene.Field(StandardAttributeString)
     mozilliansorg_id = graphene.Field(StandardAttributeString)
     bugzilla_mozilla_org_id = graphene.Field(StandardAttributeString)
     mozilla_ldap_id = graphene.Field(StandardAttributeString)
     mozilla_posix_id = graphene.Field(StandardAttributeString)
     google_oauth2_id = graphene.Field(StandardAttributeString)
     firefox_accounts_id = graphene.Field(StandardAttributeString)
+    custom_1_primary_email = graphene.Field(StandardAttributeString)
+    custom_2_primary_email = graphene.Field(StandardAttributeString)
+    custom_3_primary_email = graphene.Field(StandardAttributeString)
 
 
 ## Profiles
@@ -178,6 +180,7 @@ class Profile(graphene.ObjectType):
     IAM Profile v2
     """
     user_id = graphene.Field(StandardAttributeString)
+    uuid = graphene.Field(StandardAttributeString)
     login_method = graphene.Field(StandardAttributeString)
     active = graphene.Field(StandardAttributeBoolean)
     last_modified = graphene.Field(StandardAttributeDateTime)
