@@ -24,7 +24,7 @@ clean-layer:
 
 .PHONY:package-layer
 package-layer:
-	mkdir -p $(PY_DIR)
+	mkdir -p $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_crypto/ -t $(ROOT_DIR)/$(PY_DIR)
@@ -40,7 +40,7 @@ package-layer:
 
 .PHONY:package-single-layer
 package-single-layer:
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(PY_DIR) --upgrade
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(ROOT_DIR)/$(PY_DIR) --upgrade
 
 .PHONY:zip-layer
 zip-layer:
