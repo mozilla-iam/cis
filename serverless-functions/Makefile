@@ -44,7 +44,7 @@ package-single-layer:
 
 .PHONY:zip-layer
 zip-layer:
-	cd build/ && zip -r $(ROOT_DIR)/cis.zip .
+	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:upload-layer
 upload-layer:
