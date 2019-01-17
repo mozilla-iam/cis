@@ -22,8 +22,8 @@ custom:
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
     PERSON_API_AUTH0_DOMAIN:
       production: auth.mozilla.auth0.com
-      development: auth-dev.mozilla.auth0.com
-      testing: auth-dev.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
     CIS_JWT_VALIDATION:
       production: true
       development: true

@@ -24,7 +24,7 @@ clean-layer:
 
 .PHONY:package-layer
 package-layer:
-	mkdir -p $(PY_DIR)
+	mkdir -p $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_crypto/ -t $(ROOT_DIR)/$(PY_DIR)
@@ -40,7 +40,7 @@ package-layer:
 
 .PHONY:package-single-layer
 package-single-layer:
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(PY_DIR) --upgrade
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(ROOT_DIR)/$(PY_DIR) --upgrade
 
 .PHONY:zip-layer
 zip-layer:
@@ -57,7 +57,7 @@ upload-layer:
 
 .PHONY:deploy-change-service
 deploy-change-service:
-	cd change && \
+	cd $(ROOT_DIR)/change && \
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
@@ -67,14 +67,14 @@ test-change-service:
 
 .PHONY:deploy-ldap-publisher
 deploy-ldap-publisher:
-	cd ldap-publisher && sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	cd $(ROOT_DIR)/ldap-publisher && sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
-	cd stream-processor && sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	cd $(ROOT_DIR)/stream-processor && sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-person-api
 deploy-person-api:
-	cd profile_retrieval && \
+	cd $(ROOT_DIR)/profile_retrieval && \
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
