@@ -1,5 +1,5 @@
 ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/.aws:/root/.aws -v ../$(ROOT_DIR):/var/task lambci/lambda:build-python3.6
+LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/.aws:/root/.aws -v $(ROOT_DIR)/..:/var/task lambci/lambda:build-python3.6
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
@@ -37,8 +37,7 @@ layer:
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
-	cd /var/task/serverless-functions/build && \
-	zip -r /var/task/serverless-functions/cis.zip . && \
+	zip -r /var/task/serverless-functions/cis.zip /var/task/serverless-functions/build/ && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
 	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
@@ -50,8 +49,7 @@ layer:
 package-single-layer:
 	$(LAMBDA_PACKAGE_CMD) \
 	$(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t serverless-functions/$(PY_DIR) --upgrade && \
-	cd /var/task/serverless-functions/build && \
-	zip -r /var/task/serverless-functions/ . && \
+	zip -r /var/task/serverless-functions/ /var/task/serverless-functions/build/ && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
 	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
