@@ -18,3 +18,10 @@ class TestFakeProfile(object):
         print('generator: 1337', u.user_id.value)
         assert(u.user_id.value is not None)
         # assert specific result
+
+    def test_batch_create(self):
+        profiles = fake_profile.batch_create_fake_profiles(seed=1337, count=3)
+        assert len(profiles) == 3
+        for i, p in enumerate(profiles, 1):
+            assert p is not None
+            assert p["access_information"]["hris"]["values"]["employee_id"] == i

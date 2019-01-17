@@ -37,7 +37,7 @@ class DisplayFaker(object):
             dirname = os.path.dirname(os.path.realpath(__file__))
             path = dirname + "/" + schema_json_path
         else:
-            schema_json_path
+            path = schema_json_path
         return json.load(open(path))
 
     def _resolve(self, field, level=None, display=None):
