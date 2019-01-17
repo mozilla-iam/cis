@@ -2,12 +2,22 @@ import boto3
 import json
 import jsonschema
 import http.client
+import os
 from cis_profile import fake_profile
 from cis_profile import WellKnown
 
-client_id_name = '/iam/cis/testing/change_client_id'
-client_secret_name = '/iam/cis/testing/change_service_client_secret'
-base_url = 'person.api.test.sso.allizom.org'
+
+cis_environment = os.getenv('CIS_ENVIRONMENT', 'testing')
+client_id_name = '/iam/cis/{}/change_client_id'.format(cis_environment)
+client_secret_name = '/iam/cis/{}/change_service_client_secret'
+
+if cis_environment == 'testing':
+    base_url = 'person.api.test.sso.allizom.org'
+elif cis_environment == 'development':
+    base_url = 'person.api.dev.sso.allizom.org'
+elif cis_environment == 'production':
+    base_url == 'person.api.sso.mozilla.com'
+
 client = boto3.client('ssm')
 
 
