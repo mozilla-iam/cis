@@ -22,15 +22,6 @@ docker-run:
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
 
-setup-codebuild:
-	sudo apt-get update
-	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
-	sudo apt-get install npm -y
-	sudo npm install -g serverless
-	sudo npm install -g serverless-domain-manager
-	sudo pip install boto3
-	sudo pip install awscli
-
 .PHONY: build
 build:
 	$(MAKE) -C serverless-functions package-layer STAGE=$(STAGE)
@@ -41,3 +32,15 @@ release:
 	$(MAKE) -C serverless-functions upload-layer STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
+
+.PHONY: build-ci-container
+build-ci-container:
+	cd ci && docker build . -t 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
+
+.PHONY: upload-ci-container
+push-ci-container:
+	docker push 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
+
+.PHONY: login-to-ecr
+login-to-ecr:
+	aws ecr get-login --no-include-email | bash

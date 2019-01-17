@@ -17,6 +17,7 @@ RUN \
                   net-tools \
                   wget \
                   procps-ng-3.3.10-17.amzn2.2.2.x86_64
+
 RUN echo -n "PS1=\"[cis-dev-preview][\u@\h \W]\$ \"" >> /root/.bashrc
 # Adding Python3
 RUN yum install python3 python3-devel python3-pip python-pip -y
