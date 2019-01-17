@@ -9,7 +9,7 @@ from cis_profile import WellKnown
 
 cis_environment = os.getenv('CIS_ENVIRONMENT', 'testing')
 client_id_name = '/iam/cis/{}/change_client_id'.format(cis_environment)
-client_secret_name = '/iam/cis/{}/change_service_client_secret'
+client_secret_name = '/iam/cis/{}/change_service_client_secret'.format(cis_environment)
 
 if cis_environment == 'testing':
     base_url = 'person.api.test.sso.allizom.org'
