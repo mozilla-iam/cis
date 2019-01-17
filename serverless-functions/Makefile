@@ -18,10 +18,9 @@ all:
 
 .PHONY:clean-layer
 clean-layer:
-	rm -rf layer/*
-	rm -rf build/*
-	rm cis.zip
-	rm serverless-functions/cis.zip
+	rm -rf $(ROOT_DIR)/layer/*
+	rm -rf $(ROOT_DIR)/build/*
+	rm $(ROOT_DIR)/cis.zip
 
 .PHONY:package-layer
 package-layer:
@@ -45,7 +44,6 @@ package-single-layer:
 
 .PHONY:zip-layer
 zip-layer:
-	mkdir -p build
 	cd build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:upload-layer
