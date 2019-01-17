@@ -1,6 +1,7 @@
 #!/bin/bash
 
 echo "Begin deploy of the Mozilla Change Integration Service version 2."
+make login-to-ecr
 
 if [[ "branch/master" == "$CODEBUILD_WEBHOOK_TRIGGER" ]]
 	then
