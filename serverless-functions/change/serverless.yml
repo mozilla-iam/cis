@@ -13,9 +13,9 @@ custom:
       development: development-identity-vault
       testing: testing-identity-vault
     IDENTIFIER:
-      production: https://api.sso.mozilla.com
-      development: https://api.sso.allizom.org
-      testing: https://api.sso.allizom.org
+      production: api.sso.mozilla.com
+      development: api.dev.sso.allizom.org
+      testing: api.test.sso.allizom.org
     CIS_KINESIS_ARN:
       production: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-production
       development: arn:aws:kinesis:us-west-2:320464205386:stream/cis-input-development
@@ -26,8 +26,8 @@ custom:
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
     CHANGE_SERVICE_AUTH0_DOMAIN:
       production: auth.mozilla.auth0.com
-      development: auth-dev.mozilla.auth0.com
-      testing: auth-dev.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
     CIS_JWT_VALIDATION:
       production: true
       development: true
