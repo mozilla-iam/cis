@@ -25,18 +25,18 @@ clean-layer:
 .PHONY:package-layer
 package-layer:
 	mkdir -p $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_crypto/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_fake_well_known/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_identity_vault/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_processor/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile_retrieval_service/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_publisher/ -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) serverless_wsgi -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) flask -t $(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) iam-profile-faker -t $(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_crypto/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_fake_well_known/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_identity_vault/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_processor/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile_retrieval_service/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_publisher/ -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) serverless_wsgi -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) flask -t $(ROOT_DIR)/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) iam-profile-faker -t $(ROOT_DIR)/$(PY_DIR)
 
 .PHONY:package-single-layer
 package-single-layer:
