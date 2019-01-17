@@ -24,6 +24,7 @@ clean-layer:
 
 .PHONY:package-layer
 package-layer:
+	ls -l
 	mkdir -p $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(ROOT_DIR)/$(PY_DIR)
@@ -37,17 +38,17 @@ package-layer:
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) serverless_wsgi -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) flask -t $(ROOT_DIR)/$(PY_DIR)
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) iam-profile-faker -t $(ROOT_DIR)/$(PY_DIR)
+	ls -l $(ROOT_DIR)/$(PY_DIR)
+	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:package-single-layer
 package-single-layer:
 	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(ROOT_DIR)/$(PY_DIR) --upgrade
-
-.PHONY:zip-layer
-zip-layer:
 	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:upload-layer
 upload-layer:
+	ls $(ROOT_DIR)
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
 	--zip-file fileb://$(ROOT_DIR)/cis.zip | \
