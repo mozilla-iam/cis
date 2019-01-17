@@ -146,7 +146,7 @@ class TestAPI(object):
         self.app = api.app.test_client()
 
     def test_index_exists(self):
-        result = self.app.get('/', follow_redirects=True)
+        result = self.app.get('/v2/', follow_redirects=True)
         assert result.status_code == 200
 
     @mock.patch('cis_change_service.idp.get_jwks')
@@ -158,7 +158,7 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.post(
-            '/change',
+            '/v2/user',
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -189,7 +189,7 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.get(
-            '/change',
+            '/v2/user',
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -208,7 +208,7 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.post(
-            '/change',
+            '/v2/user',
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -240,7 +240,7 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.get(
-            '/change',
+            '/v2/user',
             headers={
                 'Authorization': 'Bearer ' + token
             },
