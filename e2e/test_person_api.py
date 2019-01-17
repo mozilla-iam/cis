@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'api.test.sso.allizom.org'
+base_url = 'api.dev.sso.allizom.org'
 client = boto3.client('ssm')
 
 
@@ -32,7 +32,7 @@ def exchange_for_access_token():
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
-        audience="api.test.sso.allizom.org",
+        audience="api.dev.sso.allizom.org",
         grant_type="client_credentials",
         scopes="read:fullprofile"
     )
@@ -49,7 +49,7 @@ def test_paginated_users():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/v2/people/get/users", headers=headers)
+    conn.request("GET", "/v2/users", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data
@@ -59,7 +59,7 @@ def test_get_single_user():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/v2/people/get/user/jeffreygreen%40gmail.com", headers=headers)
+    conn.request("GET", "/v2/user/jeffreygreen%40gmail.com", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data
