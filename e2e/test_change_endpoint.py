@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'api.test.sso.allizom.org'
+base_url = 'api.dev.sso.allizom.org'
 client = boto3.client('ssm')
 
 
@@ -32,7 +32,7 @@ def exchange_for_access_token():
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
-        audience="api.test.sso.allizom.org",
+        audience="api.dev.sso.allizom.org",
         grant_type="client_credentials"
     )
 
@@ -48,7 +48,7 @@ def test_api_is_alive():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/v2/people/change/user/status?sequenceNumber=123456", headers=headers)
+    conn.request("GET", "/v2/user/status?sequenceNumber=123456", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     assert data['identity_vault'] is not None
@@ -65,7 +65,7 @@ def test_publishing_a_profile_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/v2/people/change/user", json_payload, headers=headers)
+    conn.request("POST", "/v2/user", json_payload, headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data
@@ -83,12 +83,12 @@ def test_publishing_profiles_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/v2/people/change/users", json.dumps(profiles), headers=headers)
+    conn.request("POST", "/v2/users", json.dumps(profiles), headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data
 
 
 if __name__ == "__main__":
-    print(test_publishing_a_profile_it_should_be_accepted())
-    print(test_publishing_profiles_it_should_be_accepted())
+    print("test_publishing_a_profile_it_should_be_accepted:", test_publishing_a_profile_it_should_be_accepted())
+    print("test_publishing_profiles_it_should_be_accepted:", test_publishing_profiles_it_should_be_accepted())
