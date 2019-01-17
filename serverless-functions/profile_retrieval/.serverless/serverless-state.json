@@ -132,7 +132,7 @@
                 "S3Bucket": {
                   "Ref": "ServerlessDeploymentBucket"
                 },
-                "S3Key": "serverless/profile-retrieval/testing/1547661239670-2019-01-16T17:53:59.670Z/profile-retrieval.zip"
+                "S3Key": "serverless/profile-retrieval/testing/1547683393746-2019-01-17T00:03:13.746Z/profile-retrieval.zip"
               },
               "FunctionName": "profile-retrieval-testing-api",
               "Handler": "handler.handle",
@@ -157,7 +157,7 @@
                 }
               },
               "Layers": [
-                "arn:aws:lambda:us-west-2:320464205386:layer:cis_development:73"
+                "arn:aws:lambda:us-west-2:320464205386:layer:cis_testing:2"
               ]
             },
             "DependsOn": [
@@ -165,14 +165,14 @@
               "IamRoleLambdaExecution"
             ]
           },
-          "ApiLambdaVersionOUanWxMeWUM9xrv8JpVaIk1AsYbDzGk3tWTJVxc8": {
+          "ApiLambdaVersion9c7D4D0rHIDIFBr3FYdu2fiG6hZTqIBaBLH9bpNMM": {
             "Type": "AWS::Lambda::Version",
             "DeletionPolicy": "Retain",
             "Properties": {
               "FunctionName": {
                 "Ref": "ApiLambdaFunction"
               },
-              "CodeSha256": "gfEX/pozmHRE27PVfmd7yIN9uCQBpUrD66InqBrPh/8=",
+              "CodeSha256": "+TXZoYJ92pXLD2RM9HGR7j4M5bzT3k7A/k2XRIqb+mE=",
               "Description": "serverless-wsgi based endpoint to retrieve profiles aka person-api."
             }
           },
@@ -291,7 +291,7 @@
               "MethodResponses": []
             }
           },
-          "ApiGatewayDeployment1547661239695": {
+          "ApiGatewayDeployment1547683393755": {
             "Type": "AWS::ApiGateway::Deployment",
             "Properties": {
               "RestApiId": {
@@ -361,7 +361,7 @@
           "ApiLambdaFunctionQualifiedArn": {
             "Description": "Current Lambda function version",
             "Value": {
-              "Ref": "ApiLambdaVersionOUanWxMeWUM9xrv8JpVaIk1AsYbDzGk3tWTJVxc8"
+              "Ref": "ApiLambdaVersion9c7D4D0rHIDIFBr3FYdu2fiG6hZTqIBaBLH9bpNMM"
             }
           },
           "ServiceEndpoint": {
@@ -435,9 +435,25 @@
           "production": true,
           "development": true,
           "testing": false
+        },
+        "DOMAIN_NAME": {
+          "production": "person.api.sso.mozilla.com",
+          "development": "person.api.dev.sso.allizom.org",
+          "testing": "person.api.test.sso.allizom.org"
         }
+      },
+      "customDomain": {
+        "domainName": "person.api.test.sso.allizom.org",
+        "basePath": "",
+        "stage": "testing",
+        "endpointType": "edge",
+        "createRoute53Record": true,
+        "certificateName": "person.api.test.sso.allizom.org"
       }
     },
+    "plugins": [
+      "serverless-domain-manager"
+    ],
     "pluginsData": {},
     "functions": {
       "api": {
@@ -454,7 +470,7 @@
           }
         ],
         "layers": [
-          "arn:aws:lambda:us-west-2:320464205386:layer:cis_development:73"
+          "arn:aws:lambda:us-west-2:320464205386:layer:cis_testing:2"
         ],
         "name": "profile-retrieval-testing-api",
         "package": {},
@@ -467,7 +483,7 @@
     "artifact": "/Users/akrug/workspace/cis/serverless-functions/profile_retrieval/.serverless/profile-retrieval.zip"
   },
   "package": {
-    "artifactDirectoryName": "serverless/profile-retrieval/testing/1547661239670-2019-01-16T17:53:59.670Z",
+    "artifactDirectoryName": "serverless/profile-retrieval/testing/1547683393746-2019-01-17T00:03:13.746Z",
     "artifact": "profile-retrieval.zip"
   }
 }

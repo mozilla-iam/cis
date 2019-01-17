@@ -19,3 +19,9 @@ docker-run:
 
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
+
+setup-codebuild:
+	npm install -g serverless
+	npm install -g serverless-domain-manager
+	pip install boto3
+	pip install awscli
