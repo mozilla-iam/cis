@@ -38,10 +38,26 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         Fake additional identities generator
         """
 
-        def custom():
+        def custom1():
             email = self.generator.email()
             return (
                 {"custom_1_primary_email": email},
+                "email|{}".format(self.generator.md5()),
+                email,
+            )
+
+        def custom2():
+            email = self.generator.email()
+            return (
+                {"custom_2_primary_email": email},
+                "email|{}".format(self.generator.md5()),
+                email,
+            )
+
+        def custom3():
+            email = self.generator.email()
+            return (
+                {"custom_2_primary_email": email},
                 "email|{}".format(self.generator.md5()),
                 email,
             )
@@ -83,7 +99,9 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
             "github": github,
             "google": google,
             "firefox_accounts": fxa,
-            #    "custom_1": custom,
+            "custom_1_primary_email": custom1,
+            "custom_2_primary_email": custom2,
+            "custom_3_primary_email": custom3
         }
 
         identities = {}
