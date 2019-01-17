@@ -28,7 +28,7 @@ def get_client_id():
 
 
 def exchange_for_access_token():
-    conn = http.client.HTTPSConnection("auth-dev.mozilla.auth0.com")
+    conn = http.client.HTTPSConnection("auth.mozilla.auth0.com")
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
