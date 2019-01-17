@@ -36,8 +36,8 @@ upload-s3-bucket: test verify
 templatize:
 	@echo Templatizing...
 	cp tpl/* s3/.well-known
-	sed -i 's/$${DOMAIN}/$(DOMAIN)/' s3/.well-known/*
-	sed -i 's/$${STAGE}/$(STAGE)/' s3/.well-known/*
+	sed -i 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
+	sed -i 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
 
 .PHONY: cloudformation
 cloudformation: cloudformation.yml
