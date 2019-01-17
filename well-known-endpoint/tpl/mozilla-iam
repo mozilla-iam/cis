@@ -23,15 +23,15 @@
     }
   },
   "api": {
-    "endpoints": [ "https://change.api.${STAGE}sso.${DOMAIN}", "https://person.api.${STAGE}sso.${DOMAIN}" ],
+    "endpoints": { "change": "https://change.api.${STAGE}sso.${DOMAIN}", "person": "https://person.api.${STAGE}sso.${DOMAIN}" },
     "audience": "api.${STAGE}sso.${DOMAIN}",
     "profile_schema_uri": "https://auth.${DOMAIN}/.well-known/profile.schema",
     "scopes_supported": [
-      "write",
-      "read",
-      "class:public",
-      "class:mozilla_confidential",
-      "class:workgroup_confidential:staff_only"
+      "read:fullprofile",
+      "classification:public",
+      "classification:staff",
+      "classification:workgroup",
+      "classification:individual"
     ],
     "publishers_rules_uri": "https://auth.${DOMAIN}/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {

@@ -23,15 +23,15 @@
     }
   },
   "api": {
-    "endpoints": [ "https://change.api.dev.sso.allizom.org", "https://person.api.dev.sso.allizom.org" ],
+    "endpoints": { "change": "https://change.api.dev.sso.allizom.org", "person": "https://person.api.dev.sso.allizom.org" },
     "audience": "api.dev.sso.allizom.org",
     "profile_schema_combined_uri": "https://api.sso.allizom.org/schema/v2/profile",
     "scopes_supported": [
-      "write",
-      "read",
-      "class:public",
-      "class:mozilla_confidential",
-      "class:workgroup_confidential:staff_only"
+      "read:fullprofile",
+      "classification:public",
+      "classification:staff",
+      "classification:workgroup",
+      "classification:individual"
     ],
     "publishers_rules_uri": "https://auth.allizom.org/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {
