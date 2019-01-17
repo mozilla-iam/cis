@@ -24,12 +24,10 @@ preview-shell:
 
 .PHONY: build
 build:
-	$(MAKE) -C serverless-functions package-layer STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions zip-layer STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions layer STAGE=$(STAGE)
 
 .PHONY: release
 release:
-	$(MAKE) -C serverless-functions upload-layer STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
 
