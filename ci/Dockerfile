@@ -9,5 +9,6 @@ RUN pacman -S --noconfirm make
 RUN pacman -S --noconfirm pacman-contrib
 RUN pacman -S --noconfirm jq
 RUN pacman -S --noconfirm python-pip
+RUN pacman -S --noconfirm zip
 RUN pip install boto3 awscli
 RUN npm -g install serverless
