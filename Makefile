@@ -1,4 +1,6 @@
 ROOT_DIR	:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
+STAGE			:= ${STAGE}
+STAGE			:= $(if $(STAGE),$(STAGE),testing)
 
 all:
 	@echo 'Available make targets:'
@@ -25,3 +27,14 @@ setup-codebuild:
 	npm install -g serverless-domain-manager
 	pip install boto3
 	pip install awscli
+
+.PHONY: build
+build:
+	$(MAKE) -C serverless-functions package-layer STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions zip-layer STAGE=$(STAGE)
+
+.PHONY: release
+release:
+	$(MAKE) -C serverless-functions upload-layer STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)

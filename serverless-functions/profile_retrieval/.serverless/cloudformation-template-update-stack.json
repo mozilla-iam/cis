@@ -105,7 +105,7 @@
           "S3Bucket": {
             "Ref": "ServerlessDeploymentBucket"
           },
-          "S3Key": "serverless/profile-retrieval/testing/1547683393746-2019-01-17T00:03:13.746Z/profile-retrieval.zip"
+          "S3Key": "serverless/profile-retrieval/testing/1547684979703-2019-01-17T00:29:39.703Z/profile-retrieval.zip"
         },
         "FunctionName": "profile-retrieval-testing-api",
         "Handler": "handler.handle",
@@ -130,7 +130,7 @@
           }
         },
         "Layers": [
-          "arn:aws:lambda:us-west-2:320464205386:layer:cis_testing:2"
+          "arn:aws:lambda:us-west-2:320464205386:layer:cis_testing:3"
         ]
       },
       "DependsOn": [
@@ -138,7 +138,7 @@
         "IamRoleLambdaExecution"
       ]
     },
-    "ApiLambdaVersion9c7D4D0rHIDIFBr3FYdu2fiG6hZTqIBaBLH9bpNMM": {
+    "ApiLambdaVersionNTF8h4QVsQqqomzeoUC4WOJDl74uKNLAkGNoIrzKhA": {
       "Type": "AWS::Lambda::Version",
       "DeletionPolicy": "Retain",
       "Properties": {
@@ -264,7 +264,7 @@
         "MethodResponses": []
       }
     },
-    "ApiGatewayDeployment1547683393755": {
+    "ApiGatewayDeployment1547684979715": {
       "Type": "AWS::ApiGateway::Deployment",
       "Properties": {
         "RestApiId": {
@@ -334,7 +334,7 @@
     "ApiLambdaFunctionQualifiedArn": {
       "Description": "Current Lambda function version",
       "Value": {
-        "Ref": "ApiLambdaVersion9c7D4D0rHIDIFBr3FYdu2fiG6hZTqIBaBLH9bpNMM"
+        "Ref": "ApiLambdaVersionNTF8h4QVsQqqomzeoUC4WOJDl74uKNLAkGNoIrzKhA"
       }
     },
     "ServiceEndpoint": {

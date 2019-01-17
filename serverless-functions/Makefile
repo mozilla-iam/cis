@@ -52,14 +52,16 @@ zip-layer:
 upload-layer:
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
-	--zip-file fileb://serverless-functions/cis.zip | \
+	--zip-file fileb://$(ROOT_DIR)/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
 	--overwrite --type String --value
 
 .PHONY:deploy-change-service
 deploy-change-service:
-	cd change && sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	cd change && \
+	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:test-change-service
 test-change-service:
@@ -75,4 +77,6 @@ deploy-stream-processor:
 
 .PHONY:deploy-person-api
 deploy-person-api:
-	cd profile_retrieval && sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	cd profile_retrieval && \
+	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
