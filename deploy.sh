@@ -20,7 +20,6 @@ elif [[ "$CODEBUILD_WEBHOOK_TRIGGER" =~ ^tag\/[0-9]\.[0-9]\.[0-9](\-(prod))?$ ]]
 fi
 
 make build-ci-container
-make login-to-ecr
 make push-ci-container
 
 echo "End deploy of the Mozilla Change Integration Service version 2."
