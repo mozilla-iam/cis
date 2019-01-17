@@ -1,5 +1,5 @@
 ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/workspace/cis:/var/task:delegated lambci/lambda:build-python3.6
+LAMBDA_PACKAGE_CMD	:= docker run --rm -v $(ROOT_DIR)/../:/var/task:delegated lambci/lambda:build-python3.6
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
