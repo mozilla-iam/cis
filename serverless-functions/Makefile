@@ -36,8 +36,8 @@ layer:
 	$(CIS_MODULE_PATH)/cis_publisher/ \
 	serverless_wsgi \
 	flask \
-	iam-profile-faker -t serverless-functions/$(PY_DIR) && \
-	cd serverless-functions/build && \
+	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
+	cd /var/task/serverless-functions/build && \
 	zip -r /var/task/serverless-functions/cis.zip . && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
