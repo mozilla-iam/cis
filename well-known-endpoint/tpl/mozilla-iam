@@ -23,7 +23,8 @@
     }
   },
   "api": {
-    "endpoint": "https://api.sso.${DOMAIN}",
+    "endpoint": "https://api.${STAGE}sso.${DOMAIN}",
+    "audience": "api.${STAGE}sso.${DOMAIN}",
     "profile_schema_uri": "https://auth.${DOMAIN}/.well-known/profile.schema",
     "scopes_supported": [
       "write",
