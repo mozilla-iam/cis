@@ -16,6 +16,7 @@ Always attempt to copy over the original here, these are last-resort-fallback wh
 
 - update data/profile.schema
 - update data/user_profile_null.json
-- update data/well-known/mozilla-iam-publiser-rules
+- update data/well-known/mozilla-iam-publisher-rules
 - update CIS's well-known endpoint repository with these files as well (cis/well-known-endpoint)
+- update the profile faker as needed
 - Ensure all tests run of course

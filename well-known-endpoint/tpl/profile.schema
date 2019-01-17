@@ -626,12 +626,6 @@
             "github_id_v3": { "$ref": "#/definitions/StandardAttributeString" },
             "github_id_v4": { "$ref": "#/definitions/StandardAttributeString" },
             "github_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
-            "dinopark_id": {
-              "allOf": [
-                { "$ref": "#/definitions/StandardAttributeString" },
-                { "$ref": "#/definitions/DisplayPublicOnly" }
-              ]
-            },
             "mozilliansorg_id": { "$ref": "#/definitions/StandardAttributeString" },
             "bugzilla_mozilla_org_id": { "$ref": "#/definitions/StandardAttributeString" },
             "bugzilla_mozilla_org_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
@@ -646,7 +640,10 @@
             "google_oauth2_id": { "$ref": "#/definitions/StandardAttributeString" },
             "google_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
             "firefox_accounts_id": { "$ref": "#/definitions/StandardAttributeString" },
-            "firefox_accounts_primary_email": { "$ref": "#/definitions/StandardAttributeString" }
+            "firefox_accounts_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
+            "custom_1_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
+            "custom_2_primary_email": { "$ref": "#/definitions/StandardAttributeString" },
+            "custom_3_primary_email": { "$ref": "#/definitions/StandardAttributeString" }
           },
           "title": "IdentitiesAttributesValuesArray"
         },
