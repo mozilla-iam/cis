@@ -5,9 +5,9 @@ import http.client
 from cis_profile import fake_profile
 from cis_profile import WellKnown
 
-client_id_name = '/iam/cis/development/change_client_id'
-client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'api.dev.sso.allizom.org'
+client_id_name = '/iam/cis/testing/change_client_id'
+client_secret_name = '/iam/cis/testing/change_service_client_secret'
+base_url = 'person.api.test.sso.allizom.org'
 client = boto3.client('ssm')
 
 
@@ -32,7 +32,7 @@ def exchange_for_access_token():
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
-        audience="api.dev.sso.allizom.org",
+        audience="api.test.sso.allizom.org",
         grant_type="client_credentials",
         scopes="read:fullprofile"
     )
