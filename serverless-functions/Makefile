@@ -1,10 +1,10 @@
 ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/.aws:/root/.aws -v $(ROOT_DIR)/..:/var/task lambci/lambda:build-python3.6
+LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/.aws:/root/.aws -v $(ROOT_DIR)/..:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
-PY_DIR			:= build/python/lib/python3.6/site-packages
-PIP_CMD			:= /var/lang/bin/pip install --upgrade
+PY_DIR			:= /usr/lib/python3.7/site-packages
+PIP_CMD			:= pip install --upgrade
 LAYER_NAME		:= cis
 STAGE			:= ${STAGE}
 STAGE			:= $(if $(STAGE),$(STAGE),testing)
@@ -25,7 +25,7 @@ clean-layer:
 .PHONY:layer
 layer:
 	$(LAMBDA_PACKAGE_CMD) \
-	$(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ \
+	/bin/bash -c "$(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ \
 	$(CIS_MODULE_PATH)/cis_change_service/ \
 	$(CIS_MODULE_PATH)/cis_crypto/ \
 	$(CIS_MODULE_PATH)/cis_fake_well_known/ \
@@ -37,13 +37,14 @@ layer:
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
+	ls /var/task/serverless-functions/build/ && \
 	zip -r /var/task/serverless-functions/cis.zip /var/task/serverless-functions/build/ && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
 	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
-	--overwrite --type String --value
+	--overwrite --type String --value "
 
 .PHONY:package-single-layer
 package-single-layer:
