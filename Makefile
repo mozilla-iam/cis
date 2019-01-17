@@ -22,11 +22,15 @@ docker-run:
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
 
-.PHONY: build
+.PHONY: login-to-ecr
+login-to-ecr:
+	aws ecr get-login --no-include-email | bash
+
+.PHONY: login-to-ecr build
 build:
 	$(MAKE) -C serverless-functions layer STAGE=$(STAGE)
 
-.PHONY: release
+.PHONY: login-to-ecr release
 release:
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
@@ -35,10 +39,6 @@ release:
 build-ci-container:
 	cd ci && docker build . -t 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
 
-.PHONY: upload-ci-container
+.PHONY: login-to-ecr upload-ci-container
 push-ci-container:
 	docker push 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
-
-.PHONY: login-to-ecr
-login-to-ecr:
-	aws ecr get-login --no-include-email | bash
