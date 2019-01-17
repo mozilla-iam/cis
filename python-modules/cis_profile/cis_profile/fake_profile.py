@@ -5,11 +5,30 @@ import cis_profile.profile
 import faker
 import faker.providers
 import logging
+import itertools
 
 from cis_profile.fake_display import DisplayFaker, DisplayFakerPolicy
 
 logger = logging.getLogger(__name__)
 fake = faker.Faker()
+
+
+def create_random_hierarchy_iter(random):
+    """Generate hierarchy iterator with a random pattern"""
+
+    def gen():
+        for i in itertools.count():
+            yield (i + 1, random.randint(0, i))
+
+    return gen()
+
+
+def non_hierarchy_iter():
+    def gen():
+        while True:
+            yield (None, None)
+
+    return gen()
 
 
 class FakeCISProfileProvider(faker.providers.BaseProvider):
@@ -127,9 +146,9 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         return self.generator.random.choice(p)
 
     def usernames(self):
-        u = {"mozilliansorg": fake.user_name()}
+        u = {"mozilliansorg": self.generator.user_name()}
         for _ in range(self.generator.random.randrange(0, 10)):
-            u[self.generator.words(nb=1)[0]] = fake.user_name()
+            u[self.generator.words(nb=1)[0]] = self.generator.user_name()
         return u
 
     def ssh_keys(self):
@@ -197,11 +216,15 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         h = {}
 
         h["employee_id"] = (
-            employee_id if employee_id else self.generator.random.randint(0, 100000)
+            employee_id
+            if employee_id is not None
+            else self.generator.random.randint(0, 100000)
         )
         h["worker_type"] = self.generator.random.choice(["Employee", "Contractor"])
         h["managers_employee_id"] = (
-            manager_id if manager_id else self.generator.random.randint(0, 100000)
+            manager_id
+            if manager_id is not None
+            else self.generator.random.randint(0, 100000)
         )
         h["egencia_pos_country"] = self.generator.country_code(representation="alpha-2")
 
@@ -235,7 +258,7 @@ class FakeUser(cis_profile.profile.User):
     @generator int a static seed to always get the same fake profile back
     """
 
-    def __init__(self, seed=None):
+    def __init__(self, seed=None, fake=fake, hierarchy=non_hierarchy_iter()):
         super().__init__()
         if seed is not None:
             fake.seed_instance(seed)
@@ -247,11 +270,10 @@ class FakeUser(cis_profile.profile.User):
         fake.add_provider(faker.providers.lorem)
         fake.add_provider(faker.providers.address)
         fake.add_provider(faker.providers.job)
-        fake.add_provider(faker.providers.profile)
         fake.add_provider(FakeCISProfileProvider)
 
         self.generate_ldap(fake)
-        self.generate_hris(fake)
+        self.generate_hris(fake, hierarchy)
         self.generate_mozillians(fake)
 
         display_faker = DisplayFaker()
@@ -295,12 +317,13 @@ class FakeUser(cis_profile.profile.User):
         for k, v in identities.items():
             self.__dict__["identities"][k]["value"] = v
 
-    def generate_hris(self, fake):
+    def generate_hris(self, fake, hierarchy):
         """
         Generate fields created by ldap
         """
         staff_information = fake.staff_information()
-        hris = fake.hris()
+        eid, mid = next(hierarchy)
+        hris = fake.hris(eid, mid)
         self._d("first_name.value", fake.first_name())
         self._d("last_name.value", fake.last_name())
         self._d("timezone.value", fake.custom_tz())
@@ -343,3 +366,15 @@ class FakeUser(cis_profile.profile.User):
 
         for k, v in identities.items():
             self.__dict__["identities"][k]["value"] = v
+
+
+def batch_create_fake_profiles(seed, count):
+    fake = faker.Faker()
+    fake.seed(seed)
+    hierarchy = create_random_hierarchy_iter(fake.random)
+    profiles = map(
+        lambda x: x.as_dict(),
+        [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(count)],
+    )
+
+    return list(profiles)
