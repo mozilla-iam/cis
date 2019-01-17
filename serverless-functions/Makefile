@@ -1,5 +1,5 @@
 ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
-LAMBDA_PACKAGE_CMD	:= docker run --rm -v $(ROOT_DIR)/../:/var/task lambci/lambda:build-python3.6
+LAMBDA_PACKAGE_CMD	:= docker run --rm -v ${HOME}/.aws:/root/.aws -v $(ROOT_DIR)/../:/var/task lambci/lambda:build-python3.6
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
@@ -22,39 +22,36 @@ clean-layer:
 	rm -rf $(ROOT_DIR)/build/*
 	rm $(ROOT_DIR)/cis.zip
 
-.PHONY:package-layer
-package-layer:
+.PHONY:layer
+layer:
 	ls -l
-	mkdir -p $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_change_service/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_crypto/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_fake_well_known/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_identity_vault/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_processor/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_profile_retrieval_service/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) $(CIS_MODULE_PATH)/cis_publisher/ -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) serverless_wsgi -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) flask -t $(ROOT_DIR)/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) iam-profile-faker -t $(ROOT_DIR)/$(PY_DIR)
-	ls -l $(ROOT_DIR)/$(PY_DIR)
-	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
-
-.PHONY:package-single-layer
-package-single-layer:
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t $(ROOT_DIR)/$(PY_DIR) --upgrade
-	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
-
-.PHONY:upload-layer
-upload-layer:
-	ls $(ROOT_DIR)
+	mkdir -p serverless-functions/$(PY_DIR)
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v \
+	$(CIS_MODULE_PATH)/cis_aws/ \
+	$(CIS_MODULE_PATH)/cis_change_service/ \
+	$(CIS_MODULE_PATH)/cis_crypto/ \
+	$(CIS_MODULE_PATH)/cis_fake_well_known/ \
+	$(CIS_MODULE_PATH)/cis_identity_vault/ \
+	$(CIS_MODULE_PATH)/cis_processor/ \
+	$(CIS_MODULE_PATH)/cis_profile/ \
+	$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
+	$(CIS_MODULE_PATH)/cis_publisher/ \
+	serverless_wsgi \
+	flask \
+	iam-profile-faker -t serverless-functions/$(PY_DIR) && \
+	cd serverless_functions/build && \
+	zip -r ../cis.zip . && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
-	--zip-file fileb://$(ROOT_DIR)/cis.zip | \
+	--zip-file fileb://serverless-functions/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
 	--overwrite --type String --value
+
+.PHONY:package-single-layer
+package-single-layer:
+	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t serverless-functions/$(PY_DIR) --upgrade
+	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
 
 .PHONY:deploy-change-service
 deploy-change-service:
