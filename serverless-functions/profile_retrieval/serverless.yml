@@ -13,9 +13,9 @@ custom:
       development: development-identity-vault
       testing: testing-identity-vault
     IDENTIFIER:
-      production: https://api.sso.mozilla.com
-      development: https://api.sso.allizom.org
-      testing: https://api.sso.allizom.org
+      production: api.sso.mozilla.com
+      development: api.dev.sso.allizom.org
+      testing: api.test.sso.allizom.org
     CIS_DYNAMODB_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault

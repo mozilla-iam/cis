@@ -32,7 +32,7 @@ def exchange_for_access_token():
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
-        audience="https://api.sso.allizom.org",
+        audience="api.test.sso.allizom.org",
         grant_type="client_credentials"
     )
 

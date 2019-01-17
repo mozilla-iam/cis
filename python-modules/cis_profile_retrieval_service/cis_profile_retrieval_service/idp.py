@@ -15,7 +15,7 @@ logger = logging.getLogger(__name__)
 CONFIG = get_config()
 
 AUTH0_DOMAIN = CONFIG('auth0_domain', namespace='person_api', default='auth-dev.mozilla.auth0.com')
-API_IDENTIFIER = CONFIG('api_identifier', namespace='person_api', default='https://api.sso.allizom.org')
+API_IDENTIFIER = CONFIG('api_identifier', namespace='person_api', default='api.dev.sso.allizom.org')
 ALGORITHMS = CONFIG('algorithms', namespace='change_service', default='RS256')
 
 

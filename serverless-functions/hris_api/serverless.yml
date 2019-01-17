@@ -15,8 +15,8 @@ custom:
       production: hris_api_production
       development: hris_api_development
     IDENTIFIER:
-      production: https://api.sso.mozilla.com
-      development: https://api.sso.allizom.org
+      production: api.sso.mozilla.com
+      development: api.dev.sso.allizom.org
     PARAMETERS_PATH:
       production: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/production/*
       development: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/development/*
