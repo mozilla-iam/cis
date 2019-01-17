@@ -55,7 +55,8 @@ class cisAPI(object):
         token_info = self.az.get_access_token()
         headers = {'authorization': "Bearer {}".format(token_info.access_token),
                    'Content-type': 'application/json'}
-        res = requests.post("{}/v2/users", self.api_curl, headers=headers, data=json.dumps(json_profiles))
+        print("WOULD POST")
+        #res = requests.post("{}/v2/users", self.api_curl, headers=headers, data=json.dumps(json_profiles))
         self._check_http_response(res)
         ret = json.loads(res.read().decode('utf-8'))
         return ret
@@ -175,7 +176,11 @@ class hris_processor(object):
             return tzmap[hris_tz]
 
         def cost_center_convert(cc):
-            return str(int(cc.split(' ')[0]))
+            """
+            Cost centers can have decimal points
+            So it's a float
+            """
+            return str(float(cc.split(' ')[0]))
 
         def strbool_convert(v):
             return v.lower() in ("yes", "true", "t", "1")
@@ -225,6 +230,9 @@ class hris_processor(object):
             except Exception as e:
                 self.logger.critical("Profile signing failed for user {} - skipped signing, verification "
                                      "WILL FAIL ({})".format(p.primary_email.value, e))
+#            print(p.as_json())
+            import sys
+            sys.exit()
             user_array.append(p)
 
         return user_array
