@@ -4,7 +4,7 @@ VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
 PY_DIR			:= build/python/lib/python3.6/site-packages
-PIP_CMD			:= pip install --upgrade
+PIP_CMD			:= /var/lang/bin/pip install --upgrade
 LAYER_NAME		:= cis
 STAGE			:= ${STAGE}
 STAGE			:= $(if $(STAGE),$(STAGE),testing)
@@ -24,9 +24,7 @@ clean-layer:
 
 .PHONY:layer
 layer:
-	ls -l
-	mkdir -p serverless-functions/$(PY_DIR)
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v \
+	$(LAMBDA_PACKAGE_CMD) \
 	$(CIS_MODULE_PATH)/cis_aws/ \
 	$(CIS_MODULE_PATH)/cis_change_service/ \
 	$(CIS_MODULE_PATH)/cis_crypto/ \
@@ -39,19 +37,27 @@ layer:
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t serverless-functions/$(PY_DIR) && \
-	cd serverless_functions/build && \
-	zip -r ../cis.zip . && \
+	cd serverless-functions/build && \
+	zip -r /var/task/serverless-functions/cis.zip . && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
-	--zip-file fileb://serverless-functions/cis.zip | \
+	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
 	--overwrite --type String --value
 
 .PHONY:package-single-layer
 package-single-layer:
-	$(LAMBDA_PACKAGE_CMD) $(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t serverless-functions/$(PY_DIR) --upgrade
-	cd $(ROOT_DIR)/build/ && zip -r $(ROOT_DIR)/cis.zip .
+	$(LAMBDA_PACKAGE_CMD) \
+	$(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t serverless-functions/$(PY_DIR) --upgrade && \
+	cd /var/task/serverless-functions/build && \
+	zip -r /var/task/serverless-functions/ . && \
+	aws lambda publish-layer-version \
+	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
+	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
+	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
+	--name /iam/cis/$(STAGE)/lambda_layer_arn \
+	--overwrite --type String --value
 
 .PHONY:deploy-change-service
 deploy-change-service:
