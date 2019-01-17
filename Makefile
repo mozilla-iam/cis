@@ -28,7 +28,7 @@ login-to-ecr:
 
 .PHONY: login-to-ecr build
 build:
-	$(MAKE) -C serverless-functions layer STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions layer-codebuild STAGE=$(STAGE)
 
 .PHONY: login-to-ecr release
 release:

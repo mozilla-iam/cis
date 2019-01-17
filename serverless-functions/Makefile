@@ -6,6 +6,7 @@ LAMBDA_PACKAGE_CMD	:= docker run --rm \
 	-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
 	-v ${HOME}/.aws:/root/.aws \
 	-v $(ROOT_DIR)/..:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
+
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
@@ -51,6 +52,30 @@ layer:
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
 	--overwrite --type String --value "
+
+.PHONY: layer-codebuild
+layer-codebuild:
+	mkdir -p /tmp/$(PYDIR)
+	$(PIP_CMD) ../$(CIS_MODULE_PATH)/cis_aws/ \
+	../$(CIS_MODULE_PATH)/cis_change_service/ \
+	../$(CIS_MODULE_PATH)/cis_crypto/ \
+	../$(CIS_MODULE_PATH)/cis_fake_well_known/ \
+	../$(CIS_MODULE_PATH)/cis_identity_vault/ \
+	../$(CIS_MODULE_PATH)/cis_processor/ \
+	../$(CIS_MODULE_PATH)/cis_profile/ \
+	../$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
+	../$(CIS_MODULE_PATH)/cis_publisher/ \
+	serverless_wsgi \
+	flask \
+	iam-profile-faker -t /tmp/$(PY_DIR) && \
+	ls /var/task/serverless-functions/build/ && \
+	cd /tmp/build && zip -r /tmp/cis.zip . && \
+	aws lambda publish-layer-version \
+	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
+	--zip-file fileb:///tmp/cis.zip | \
+	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
+	--name /iam/cis/$(STAGE)/lambda_layer_arn \
+	--overwrite --type String --value
 
 .PHONY:package-single-layer
 package-single-layer:
