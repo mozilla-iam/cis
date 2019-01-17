@@ -1,9 +1,9 @@
 ROOT_DIR		:= $(shell dirname $(realpath $(lastword $(MAKEFILE_LIST))))
 LAMBDA_PACKAGE_CMD	:= docker run --rm \
 	-e AWS_DEFAULT_REGION=us-west-2 \
-	-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID}
-	-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY}
-	-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN}
+	-e AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY_ID} \
+	-e AWS_SECRET_ACCESS_KEY=${AWS_SECRET_ACCESS_KEY} \
+	-e AWS_SESSION_TOKEN=${AWS_SESSION_TOKEN} \
 	-v ${HOME}/.aws:/root/.aws \
 	-v $(ROOT_DIR)/..:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
 VENV_COMMAND		:= virtualenv venv -p python3
