@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'ekalhhk7mi.execute-api.us-west-2.amazonaws.com'
+base_url = 'api.test.sso.allizom.org'
 client = boto3.client('ssm')
 
 
@@ -49,7 +49,7 @@ def test_paginated_users():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/testing/v2/users", headers=headers)
+    conn.request("GET", "/v2/people/get/users", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data
@@ -59,7 +59,7 @@ def test_get_single_user():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/testing/v2/user/jeffreygreen%40gmail.com", headers=headers)
+    conn.request("GET", "/v2/people/get/user/jeffreygreen%40gmail.com", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data

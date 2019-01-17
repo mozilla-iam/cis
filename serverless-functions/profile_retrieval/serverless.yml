@@ -1,4 +1,6 @@
 service: profile-retrieval
+plugins:
+  - serverless-domain-manager
 custom:
   profileRetrievalStage: ${opt:stage, self:provider.stage}
   profileRetrievalEnvironment:
@@ -26,6 +28,17 @@ custom:
       production: true
       development: true
       testing: false
+    DOMAIN_NAME:
+      production: person.api.sso.mozilla.com
+      development: person.api.dev.sso.allizom.org
+      testing: person.api.test.sso.allizom.org
+  customDomain:
+    domainName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
+    basePath: ''
+    stage: ${self:custom.profileRetrievalStage}
+    endpointType: edge
+    createRoute53Record: true
+    certificateName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
 provider:
   name: aws
   runtime: python3.6
@@ -56,4 +69,4 @@ functions:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      - arn:aws:lambda:us-west-2:320464205386:layer:cis_development:73
+      -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/lambda_layer_arn}

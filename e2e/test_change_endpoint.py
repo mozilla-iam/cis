@@ -7,7 +7,7 @@ from cis_profile import WellKnown
 
 client_id_name = '/iam/cis/development/change_client_id'
 client_secret_name = '/iam/cis/development/change_service_client_secret'
-base_url = 'nzg21zsxm3.execute-api.us-west-2.amazonaws.com'
+base_url = 'api.test.sso.allizom.org'
 client = boto3.client('ssm')
 
 
@@ -48,7 +48,7 @@ def test_api_is_alive():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {'authorization': "Bearer {}".format(access_token)}
-    conn.request("GET", "/testing/change/status?sequenceNumber=123456", headers=headers)
+    conn.request("GET", "/v2/people/change/user/status?sequenceNumber=123456", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     assert data['identity_vault'] is not None
@@ -65,7 +65,7 @@ def test_publishing_a_profile_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/testing/change", json_payload, headers=headers)
+    conn.request("POST", "/v2/people/change/user", json_payload, headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data
@@ -83,7 +83,7 @@ def test_publishing_profiles_it_should_be_accepted():
         'authorization': "Bearer {}".format(access_token),
         'Content-type': 'application/json'
     }
-    conn.request("POST", "/testing/changes", json.dumps(profiles), headers=headers)
+    conn.request("POST", "/v2/people/change/users", json.dumps(profiles), headers=headers)
     res = conn.getresponse()
     data = res.read()
     return data

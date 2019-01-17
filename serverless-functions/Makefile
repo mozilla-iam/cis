@@ -5,7 +5,7 @@ VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
 PY_DIR			:= build/python/lib/python3.6/site-packages
 PIP_CMD			:= pip install --upgrade
-LAYER_NAME		:= cis_development
+LAYER_NAME		:= cis
 STAGE			:= ${STAGE}
 STAGE			:= $(if $(STAGE),$(STAGE),testing)
 AWS_REGION		:= us-west-2
@@ -50,7 +50,12 @@ zip-layer:
 
 .PHONY:upload-layer
 upload-layer:
-	aws lambda publish-layer-version --layer-name $(LAYER_NAME) --compatible-runtimes python3.6 --zip-file fileb://serverless-functions/cis.zip
+	aws lambda publish-layer-version \
+	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
+	--zip-file fileb://serverless-functions/cis.zip | \
+	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
+	--name /iam/cis/$(STAGE)/lambda_layer_arn \
+	--overwrite --type String --value
 
 .PHONY:deploy-change-service
 deploy-change-service:

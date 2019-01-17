@@ -148,7 +148,7 @@ class TestProfile(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.post(
-            '/change',
+            '/v2/user',
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -190,7 +190,7 @@ class TestProfile(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.post(
-            '/changes',
+            '/v2/users',
             headers={
                 'Authorization': 'Bearer ' + token
             },

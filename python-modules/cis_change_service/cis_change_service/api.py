@@ -45,18 +45,18 @@ def handle_auth_error(ex):
     return response
 
 
-@app.route('/')
+@app.route('/v2/')
 def index():
     return 'Mozilla Change Integration Service Endpoint'
 
 
-@app.route('/version')
+@app.route('/v2/version')
 def version():
     response = __version__
     return jsonify(message=response)
 
 
-@app.route('/change', methods=['GET', 'POST', 'PUT'])
+@app.route('/v2/user', methods=['GET', 'POST', 'PUT'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def change():
@@ -90,7 +90,7 @@ def change():
     return jsonify(result)
 
 
-@app.route('/changes', methods=['GET', 'POST', 'PUT'])
+@app.route('/v2/users', methods=['GET', 'POST', 'PUT'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 @requires_auth
 def changes():
@@ -112,7 +112,7 @@ def changes():
     return jsonify(results)
 
 
-@app.route('/change/status', methods=['GET'])
+@app.route('/v2/status', methods=['GET'])
 @cross_origin(headers=['Content-Type', 'Authorization'])
 def status():
     sequence_number = request.args.get('sequenceNumber')

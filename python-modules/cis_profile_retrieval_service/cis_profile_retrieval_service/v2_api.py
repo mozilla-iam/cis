@@ -165,7 +165,7 @@ api.add_resource(v2Users, '/v2/users')
 api.add_resource(v2User, '/v2/user/<string:user_id>')
 
 
-@app.route('/')
+@app.route('/v2')
 def index():
     return 'Mozilla Profile Retrieval Service Endpoint'
 

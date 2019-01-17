@@ -82,7 +82,7 @@ class TestAPI(object):
 
         # Follow the paginator
         paged_query = self.app.get(
-            '/v2/users?nextPage={}'.format(result.json['nextPage']),
+            '/users?nextPage={}'.format(result.json['nextPage']),
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -107,7 +107,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope('read:profile')
         public_data_class_query = self.app.get(
-            '/v2/users',
+            '/users',
             headers={
                 'Authorization': 'Bearer ' + token
             },
