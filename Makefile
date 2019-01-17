@@ -25,6 +25,7 @@ preview-shell:
 setup-codebuild:
 	sudo apt-get update
 	curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
+	sudo apt-get install npm -y
 	sudo npm install -g serverless
 	sudo npm install -g serverless-domain-manager
 	sudo pip install boto3
