@@ -183,7 +183,7 @@ class TestProfile(object):
 
         vault = profile.Vault(sequence_number)
         res = vault.put_profile(self.user_profile)
-        assert res['ResponseMetadata']['HTTPStatusCode'] == 200
+        assert res.get('status') == 200
 
         # Fetch the sequence number we just inserted to the the vault.
         status_object = profile.Status(sequence_number)

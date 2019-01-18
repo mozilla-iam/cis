@@ -12,9 +12,9 @@ requirements = [
     'everett',
     'everett[ini]',
     'configobj',
-    'boto3==1.7.67',
-    'boto==2.49.0',
-    'botocore==1.10.67',
+    'boto3',
+    'boto',
+    'botocore',
     'requests',
     'pyaml'
 ]

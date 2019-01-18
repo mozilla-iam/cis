@@ -42,12 +42,21 @@ class Profile(object):
             res = self._create_with_transaction(user_profile)
         else:
             res = self._create_without_transaction(user_profile)
-        return res
+
+        if res.get('ResponseMetadata', False):
+            status_code = res['ResponseMetadata']['HTTPStatusCode']
+            sequence_number = user_profile['sequence_number']
+
+        return {'status': status_code, 'sequence_number': sequence_number}
 
     def _create_without_transaction(self, user_profile):
+        if user_profile['sequence_number'] is None:
+            user_profile['sequence_number'] = str(uuid.uuid4().int)
         return self.table.put_item(Item=user_profile)
 
     def _create_with_transaction(self, user_profile):
+        if user_profile['sequence_number'] is None:
+            user_profile['sequence_number'] = str(uuid.uuid4().int)
         transact_items = {
             'Put': {
                 'Item': {
@@ -72,7 +81,6 @@ class Profile(object):
                 'ReturnValuesOnConditionCheckFailure': 'NONE'
             }
         }
-
         return self._run_transaction([transact_items])
 
     def update(self, user_profile):
@@ -142,7 +150,15 @@ class Profile(object):
             res = self._create_items_with_transaction(list_of_profiles)
         else:
             res = self._put_items_without_transaction(list_of_profiles)
-        return res
+
+        sequence_numbers = []
+        for profile in list_of_profiles:
+            sequence_numbers.append(profile['sequence_number'])
+
+        if res.get('ResponseMetadata', False):
+            status_code = res['ResponseMetadata']['HTTPStatusCode']
+
+        return {'status': status_code, 'sequence_numbers': sequence_numbers}
 
     def _put_items_without_transaction(self, list_of_profiles):
         with table.batch_writer() as batch:
@@ -152,6 +168,8 @@ class Profile(object):
     def _create_items_with_transaction(self, list_of_profiles):
         transact_items = []
         for user_profile in list_of_profiles:
+            if user_profile['sequence_number'] is None:
+                user_profile['sequence_number'] = str(uuid.uuid4().int)
             transact_item = {
                 'Put': {
                     'Item': {
