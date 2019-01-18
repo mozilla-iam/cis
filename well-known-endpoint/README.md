@@ -28,6 +28,13 @@ The well-known files are signed using infosec@mozilla.com's GnuPG/PGP key (0x2FC
 The `make` target uploading the files verifies the files are correctly signed before uploading. If that's not the case,
 you may need to regenerate the signature with `make sign`.
 
+
+# Scopes in the authorizer / access provider
+
+Scopes are declared here and used in code  The OAuth2 authorizer (here, Auth0) also needs to know about these scopes.
+In order to deploy them easily, they're recorded in the `auth0_helper` directory and can be used directly with API
+calls, until github.com/mozilla-iam/auth0-ci support this natively.
+
 # Where does Mozilla run this?
 
 Mozilla runs this in the IAM AWS environment: http://sso.mozilla.com/iam-infra
