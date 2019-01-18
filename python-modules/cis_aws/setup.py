@@ -7,9 +7,9 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'boto',
+    'boto3',
+    'botocore',
     'everett',
     'everett[ini]',
     'configobj'
@@ -20,7 +20,15 @@ setup_requirements = [
     'setuptools>=40.5.0'
 ]
 
-test_requirements = ['jsonschema', 'mock', 'moto>=1.3.7', 'pytest', 'pytest-watch', 'pytest-cov', 'flake8']
+test_requirements = [
+    'jsonschema',
+    'mock',
+    'moto',
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'flake8'
+]
 
 extras = {'test': test_requirements}
 

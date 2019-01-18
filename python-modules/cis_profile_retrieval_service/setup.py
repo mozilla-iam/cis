@@ -7,11 +7,11 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose==3.0.1',
-    'cryptography==2.3.1',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'python-jose',
+    'cryptography=',
+    'boto',
+    'boto3',
+    'botocore',
     'everett',
     'everett[ini]',
     'configobj',
@@ -36,7 +36,7 @@ test_requirements = [
     'pytest-watch',
     'pytest-cov',
     'pytest-mock',
-    'moto>=1.3.7',
+    'moto',
     'mock',
     'flake8',
     'iam-profile-faker'

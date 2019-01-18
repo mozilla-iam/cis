@@ -7,8 +7,8 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose[cryptography]==3.0.1',
-    'cryptography==2.3.1',
+    'python-jose[cryptography]',
+    'cryptography',
     'everett',
     'everett[ini]',
     'configobj',
@@ -25,7 +25,13 @@ setup_requirements = [
 ]
 
 test_requirements = [
-    'pytest', 'pytest-watch', 'pytest-cov', 'pytest-mock', 'moto', 'mock', 'flake8'
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'pytest-mock',
+    'moto',
+    'mock',
+    'flake8'
 ]
 
 extras = {'test': test_requirements}

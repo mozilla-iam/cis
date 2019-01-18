@@ -8,9 +8,9 @@ with open("README.md", "r") as fh:
 
 requirements = [
     'everett',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13'
+    'boto',
+    'boto3',
+    'botocore'
 ]
 
 setup_requirements = [
@@ -18,7 +18,15 @@ setup_requirements = [
     'setuptools>=40.5.0'
 ]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8', 'moto>=1.3.7']
+test_requirements = [
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'patch',
+    'mock',
+    'flake8',
+    'moto'
+]
 
 extras = {'test': test_requirements}
 

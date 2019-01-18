@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose[cryptography]==3.0.1',
-    'cryptography==2.3.1',
+    'python-jose[cryptography]',
+    'cryptography',
     'everett',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'boto',
+    'boto3',
+    'botocore',
     'jsonschema',
     'flask',
     'faker'
@@ -23,7 +23,13 @@ setup_requirements = [
     'setuptools>=40.5.0'
 ]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask', 'flake8']
+test_requirements = [
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'pytest-flask',
+    'flake8'
+]
 
 extras = {'test': test_requirements}
 
