@@ -55,8 +55,7 @@ class cisAPI(object):
         token_info = self.az.get_access_token()
         headers = {'authorization': "Bearer {}".format(token_info.access_token),
                    'Content-type': 'application/json'}
-        print("WOULD POST")
-        #res = requests.post("{}/v2/users", self.api_curl, headers=headers, data=json.dumps(json_profiles))
+        res = requests.post("{}/v2/users", self.api_curl, headers=headers, data=json.dumps(json_profiles))
         self._check_http_response(res)
         ret = json.loads(res.read().decode('utf-8'))
         return ret
@@ -125,7 +124,7 @@ class hris_processor(object):
                                                  aws_secret_access_key=credentials['SecretAccessKey'],
                                                  aws_session_token=credentials['SessionToken'])
             s3 = boto_session.resource('s3')
-        bucket = s3.Bucket(self.s3_bucket_name)
+        bucket = s3.Bucket(self.s3_bucket)
         object = bucket.put_object(
             Body=data,
             Key='workday.json'
@@ -154,6 +153,7 @@ class hris_processor(object):
                      "GMT+02:00 South Africa Standard Time (Johannesburg)": "UTC+02:00 Africa/Johannesburg",
                      "GMT+03:00 East Africa Time (Nairobi)": "UTC+03:00 Africa/Nairobi",
                      "GMT+03:00 Moscow Standard Time (Moscow)": "UTC+03:00 Europe/Moscow",
+                     "GMT+05:00 Pakistan Standard Time (Karachi)": "UTC+05:00 Pakistan/Karachi",
                      "GMT+05:30 India Standard Time (Kolkata)": "UTC+05:30 Asia/Kolkata",
                      "GMT+07:00 Western Indonesia Time (Jakarta)": "UTC+07:00 Asia/Jakarta",
                      "GMT+08:00 Australian Western Standard Time (Perth)": "UTC+08:00 Australia/Perth",
@@ -173,6 +173,12 @@ class hris_processor(object):
                      "GMT-08:00 Pacific Time (Los Angeles)": "UTC-0800 America/Los_Angeles",
                      "GMT-08:00 Pacific Time (Tijuana)": "UTC-0800 America/Tijuana",
                      "GMT-08:00 Pacific Time": "UTC-0800 US/Pacific"}
+            try:
+                tz = tzmap[hris_tz]
+            except KeyError:
+                self.logger.warning("Unknown timezone in workday, defaulting to UTC. Timezone from HRIS was"
+                                    " {}.".format(hris_tw))
+                return "UTC+0000 Europe/London"
             return tzmap[hris_tz]
 
         def cost_center_convert(cc):
@@ -230,9 +236,6 @@ class hris_processor(object):
             except Exception as e:
                 self.logger.critical("Profile signing failed for user {} - skipped signing, verification "
                                      "WILL FAIL ({})".format(p.primary_email.value, e))
-#            print(p.as_json())
-            import sys
-            sys.exit()
             user_array.append(p)
 
         return user_array
