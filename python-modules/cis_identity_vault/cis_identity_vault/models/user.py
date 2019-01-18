@@ -54,6 +54,9 @@ class Profile(object):
                     'id': {
                         'S': user_profile['id']
                     },
+                    'uuid': {
+                        'S': user_profile['uuid']
+                    },
                     'profile': {
                         'S': user_profile['profile']
                     },
@@ -89,6 +92,9 @@ class Profile(object):
                     ':p': {
                         'S': user_profile['profile']
                     },
+                    ':u': {
+                        'S': user_profile['uuid']
+                    },
                     ':pe': {
                         'S': user_profile['primary_email']
                     },
@@ -97,12 +103,11 @@ class Profile(object):
                     }
                 },
                 'ConditionExpression': 'attribute_exists(id)',
-                'UpdateExpression': 'SET profile = :p, primary_email = :pe, sequence_number = :sn',
+                'UpdateExpression': 'SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u',
                 'TableName': self.table.name,
                 'ReturnValuesOnConditionCheckFailure': 'NONE'
             }
         }
-
         return self._run_transaction([transact_items])
 
     def _update_without_transaction(self, user_profile):
@@ -153,6 +158,9 @@ class Profile(object):
                         'id': {
                             'S': user_profile['id']
                         },
+                        'uuid': {
+                            'S': user_profile['uuid']
+                        },
                         'profile': {
                             'S': user_profile['profile']
                         },
@@ -191,6 +199,9 @@ class Profile(object):
                         ':p': {
                             'S': user_profile['profile']
                         },
+                        ':u': {
+                            'S': user_profile['uuid']
+                        },
                         ':pe': {
                             'S': user_profile['primary_email']
                         },
@@ -199,7 +210,7 @@ class Profile(object):
                         }
                     },
                     'ConditionExpression': 'attribute_exists(id)',
-                    'UpdateExpression': 'SET profile = :p, primary_email = :pe, sequence_number = :sn',
+                    'UpdateExpression': 'SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u',
                     'TableName': self.table.name,
                     'ReturnValuesOnConditionCheckFailure': 'NONE'
                 }
@@ -218,6 +229,13 @@ class Profile(object):
         result = self.table.query(
             IndexName='{}-primary_email'.format(self.table.table_name),
             KeyConditionExpression=Key('primary_email').eq(primary_email)
+        )
+        return result
+
+    def find_by_uuid(self, uuid):
+        result = self.table.query(
+            IndexName='{}-uuid'.format(self.table.table_name),
+            KeyConditionExpression=Key('uuid').eq(uuid)
         )
         return result
 
