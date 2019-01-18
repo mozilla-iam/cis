@@ -3,6 +3,7 @@
 from cis_profile.common import WellKnown
 from cis_profile.common import DotDict
 from cis_profile.common import MozillaDataClassification
+from cis_profile.common import DisplayLevel
 
 import cis_crypto.operation
 import cis_profile.exceptions
@@ -187,20 +188,15 @@ class User(object):
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
         @scopes list of str
         """
-        todel = []
-        if level is None:
-            level = self.__dict__
-        for attr in level.keys():
-            if attr.startswith("_") or not isinstance(level[attr], dict):
-                continue
-            if "metadata" not in level[attr].keys():
-                self.filter_scopes(scopes=scopes, level=level[attr])
-            elif level[attr]["metadata"]["classification"] not in scopes:
-                todel.append(attr)
+        filter_all(level=self.__dict__, valid=scopes, check="classification")
 
-        for d in todel:
-            logger.debug("Removing attribute {} because it's not in {} scopes".format(attr, scopes))
-            del level[d]
+    def filter_display(self, display_levels=[DisplayLevel.PUBLIC], level=None):
+        """
+        Filter in place/the current user profile object (self) to only contain attributes with display levels listed
+        in @display_levels
+        @display_levels list of str
+        """
+        filter_all(level=self.__dict__, valid=display_levels, check="display")
 
     def validate(self):
         """
@@ -486,3 +482,18 @@ class User(object):
         sigattr["typ"] = "JWS"  # ""
         sigattr["value"] = self.__signop.jws()
         return attr
+
+
+def filter_all(level, valid, check):
+    todel = []
+    for attr in level.keys():
+        if attr.startswith("_") or not isinstance(level[attr], dict):
+            continue
+        if "metadata" not in level[attr].keys():
+            filter_all(valid=valid, level=level[attr], check=check)
+        elif level[attr]["metadata"][check] not in valid:
+            todel.append(attr)
+
+    for d in todel:
+        logger.debug("Removing attribute {} because it's not in {}".format(attr, valid))
+        del level[d]
