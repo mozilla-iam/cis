@@ -188,7 +188,7 @@ class User(object):
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
         @scopes list of str
         """
-        filter(level=self.__dict__, valid=scopes, check="classification")
+        filter_all(level=self.__dict__, valid=scopes, check="classification")
 
     def filter_display(self, display_levels=[DisplayLevel.PUBLIC], level=None):
         """
@@ -196,7 +196,7 @@ class User(object):
         in @display_levels
         @display_levels list of str
         """
-        filter(level=self.__dict__, valid=display_levels, check="display")
+        filter_all(level=self.__dict__, valid=display_levels, check="display")
 
     def validate(self):
         """
@@ -490,7 +490,7 @@ def filter_all(level, valid, check):
         if attr.startswith("_") or not isinstance(level[attr], dict):
             continue
         if "metadata" not in level[attr].keys():
-            filter(valid=valid, level=level[attr], check=check)
+            filter_all(valid=valid, level=level[attr], check=check)
         elif level[attr]["metadata"][check] not in valid:
             todel.append(attr)
 
