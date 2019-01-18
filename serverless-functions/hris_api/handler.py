@@ -21,4 +21,5 @@ def setup_logging():
 
 def handle(event, context):
     logger = setup_logging()
+    logger.debug("serverless handler for hris started")
     return serverless_wsgi.handle_request(api.app, event, context)

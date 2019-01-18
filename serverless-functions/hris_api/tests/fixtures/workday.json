@@ -48,7 +48,7 @@
    "CurrentlyActive": "1",
    "Entity": "Mozilla Corporation",
    "Team": "Test Productivity (Lead Name)",
-   "Cost_Center": "1337 - Team Name Here (Team)",
+   "Cost_Center": "1337.1 - Team Name Here (Team)",
    "Cost_Center_Hierarchy": "IT",
    "WorkerType": "Employee",
    "DetailedWorkerType": "Regular",

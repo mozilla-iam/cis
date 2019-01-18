@@ -32,6 +32,7 @@ venv:
 	flake8 setup.py
 	flake8 tests/*.py
 	flake8 $(MODULE_NAME)/*.py
+	flake8 *.py
 
 watch-test:
 	# Watches for changes and re-test automatically

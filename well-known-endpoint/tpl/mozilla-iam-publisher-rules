@@ -24,7 +24,7 @@
     "fun_title": [ "ldap", "mozilliansorg" ],
     "description": [ "ldap", "mozilliansorg" ],
     "location": [ "ldap", "mozilliansorg" ],
-    "timezone": [ "ldap", "mozilliansorg" ],
+    "timezone": [ "hris", "ldap", "mozilliansorg" ],
     "languages": [ "ldap", "mozilliansorg" ],
     "tags": [ "ldap", "mozilliansorg" ],
     "picture": [ "ldap", "mozilliansorg" ],
