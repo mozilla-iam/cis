@@ -174,22 +174,7 @@ class TestProfile(object):
         )
 
         response = json.loads(result.get_data())
-        sequence_number = response.get('sequence_number')
-
-        # Fake like this went through the stream and skip direct to dynamo to test status endpoint.
-
-        # Profile fields for putting to dynamo
-        from cis_change_service import profile
-
-        vault = profile.Vault(sequence_number)
-        res = vault.put_profile(self.user_profile)
-        assert res.get('status') == 200
-
-        # Fetch the sequence number we just inserted to the the vault.
-        status_object = profile.Status(sequence_number)
-        is_in_vault = status_object.query()
-
-        assert is_in_vault is not None
+        assert response is not None
 
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
