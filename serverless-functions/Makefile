@@ -52,7 +52,7 @@ layer:
 
 .PHONY: layer-codebuild
 layer-codebuild:
-	mkdir -p /tmp/$(PYDIR)
+	mkdir -p /tmp/build/$(PYDIR)
 	$(PIP_CMD) ../$(CIS_MODULE_PATH)/cis_aws/ \
 	../$(CIS_MODULE_PATH)/cis_change_service/ \
 	../$(CIS_MODULE_PATH)/cis_crypto/ \
@@ -64,7 +64,7 @@ layer-codebuild:
 	../$(CIS_MODULE_PATH)/cis_publisher/ \
 	serverless_wsgi \
 	flask \
-	iam-profile-faker -t /tmp/$(PY_DIR) && \
+	iam-profile-faker -t /tmp/build/$(PY_DIR) && \
 	cd /tmp/build && zip -r /tmp/cis.zip . && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \
