@@ -21,12 +21,14 @@ class TestProfile(object):
         assert d is not None
         assert u is not None
 
-    def test_filter_scopes(Self):
+    def test_filter_scopes(self):
         u = profile.User()
         # Make sure a value is non-public
         u.user_id.metadata.classification = MozillaDataClassification.MOZILLA_CONFIDENTIAL[0]
+        u.staff_information.title.metadata.classification = MozillaDataClassification.MOZILLA_CONFIDENTIAL[0]
         u.filter_scopes(MozillaDataClassification.PUBLIC)
-        assert(MozillaDataClassification.MOZILLA_CONFIDENTIAL[0] not in u.__dict__)
+        assert('user_id' not in u.as_dict().keys())
+        assert('title' not in u.as_dict()['staff_information'].keys())
 
     def test_profile_override(self):
         u = profile.User(user_id='test')
