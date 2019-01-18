@@ -91,11 +91,7 @@ class User(object):
         Load the json structure into a 'DotDict' so that attributes appear as addressable object values
         Usually used with load().
         """
-        logger.debug(
-            "Loading default profile JSON structure from {}".format(
-                user_structure_json_path
-            )
-        )
+        logger.debug("Loading default profile JSON structure from {}".format(user_structure_json_path))
         if not os.path.isfile(user_structure_json_path):
             dirname = os.path.dirname(os.path.realpath(__file__))
             path = dirname + "/" + user_structure_json_path
@@ -105,11 +101,7 @@ class User(object):
 
     def initialize_timestamps(self):
         now = self._get_current_utc_time()
-        logger.debug(
-            "Setting all profile metadata fields and profile modification timestamps to now: {}".format(
-                now
-            )
-        )
+        logger.debug("Setting all profile metadata fields and profile modification timestamps to now: {}".format(now))
 
         for item in self.__dict__:
             if type(self.__dict__[item]) is not DotDict:
@@ -121,10 +113,7 @@ class User(object):
                 # This is a 2nd level attribute such as `access_information`
                 # Note that we do not have a 3rd level so this is sufficient
                 for subitem in self.__dict__[item]:
-                    if (
-                        isinstance(self.__dict__[item][subitem], dict)
-                        and "metadata" in self.__dict__[item][subitem]
-                    ):
+                    if isinstance(self.__dict__[item][subitem], dict) and "metadata" in self.__dict__[item][subitem]:
                         self.__dict__[item][subitem]["metadata"]["created"] = now
                         self.__dict__[item][subitem]["metadata"]["last_modified"] = now
 
@@ -137,9 +126,7 @@ class User(object):
         Updates metadata timestamps for that attribute
         @attr a valid user profile attribute
         """
-        req_attrs = req_attr.split(
-            "."
-        )  # Support subitems/subattributes such as 'access_information.ldap'
+        req_attrs = req_attr.split(".")  # Support subitems/subattributes such as 'access_information.ldap'
         if len(req_attrs) == 1:
             attr = self.__dict__[req_attr]
         else:
@@ -150,11 +137,7 @@ class User(object):
 
         now = self._get_current_utc_time()
 
-        logger.debug(
-            "Updating to metadata.last_modified={} for attribute {}".format(
-                now, req_attr
-            )
-        )
+        logger.debug("Updating to metadata.last_modified={} for attribute {}".format(now, req_attr))
         attr["metadata"]["last_modified"] = now
 
     def _get_current_utc_time(self):
@@ -216,11 +199,7 @@ class User(object):
                 todel.append(attr)
 
         for d in todel:
-            logger.debug(
-                "Removing attribute {} because it's not in {} scopes".format(
-                    attr, scopes
-                )
-            )
+            logger.debug("Removing attribute {} because it's not in {} scopes".format(attr, scopes))
             del level[d]
 
     def validate(self):
@@ -246,11 +225,7 @@ class User(object):
                 continue
             try:
                 attr = self.__dict__[item]
-                ret = self.verify_can_publish(
-                    attr,
-                    attr_name=item,
-                    previous_attribute=previous_user.as_dict()[item],
-                )
+                ret = self.verify_can_publish(attr, attr_name=item, previous_attribute=previous_user.as_dict()[item])
             except (AttributeError, KeyError):
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
@@ -262,15 +237,11 @@ class User(object):
                         previous_attribute=previous_user.as_dict()[item][subitem],
                     )
             if ret is not True:
-                logger.warning(
-                    "Verification of publisher failed for attribute {}".format(attr)
-                )
+                logger.warning("Verification of publisher failed for attribute {}".format(attr))
                 return False
         return True
 
-    def verify_can_publish(
-        self, attr, attr_name, parent_name=None, previous_attribute=None
-    ):
+    def verify_can_publish(self, attr, attr_name, parent_name=None, previous_attribute=None):
         """
         Verifies that the selected publisher is allowed to change this attribute.
         This works for both first-time publishers ('created' permission) and subsequent updates ('update' permission).
@@ -290,14 +261,8 @@ class User(object):
 
         Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
-        publisher_name = (
-            attr.signature.publisher.name
-        )  # The publisher that attempts the change is here
-        logger.debug(
-            "Verifying that {} is allowed to publish field {}".format(
-                publisher_name, attr_name
-            )
-        )
+        publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
+        logger.debug("Verifying that {} is allowed to publish field {}".format(publisher_name, attr_name))
         operation = "create"
 
         # Rules JSON structure:
@@ -321,16 +286,10 @@ class User(object):
         # Do we have an attribute to check against?
         if previous_attribute is not None:
             # Creators are only allowed if there is no previous value set
-            if (self._attribute_value_set(previous_attribute) is False) and (
-                self._attribute_value_set(attr) is True
-            ):
+            if (self._attribute_value_set(previous_attribute) is False) and (self._attribute_value_set(attr) is True):
                 operation = "create"
                 if publisher_name in allowed_creators:
-                    logger.debug(
-                        "[create] {} is allowed to publish field {}".format(
-                            publisher_name, attr_name
-                        )
-                    )
+                    logger.debug("[create] {} is allowed to publish field {}".format(publisher_name, attr_name))
                     return True
             else:
                 operation = "update"
@@ -344,35 +303,21 @@ class User(object):
 
                 if attr[value] == previous_attribute[value]:
                     logger.debug(
-                        "[noop] {} skipped verification for  {} (no changes)".format(
-                            publisher_name, attr_name
-                        )
+                        "[noop] {} skipped verification for  {} (no changes)".format(publisher_name, attr_name)
                     )
                     return True
                 elif publisher_name == allowed_updators:
-                    logger.debug(
-                        "[update] {} is allowed to publish field {}".format(
-                            publisher_name, attr_name
-                        )
-                    )
+                    logger.debug("[update] {} is allowed to publish field {}".format(publisher_name, attr_name))
                     return True
 
         # No previous attribute set, just check we're allowed to change the field
         else:
             if not self._attribute_value_set(attr):
                 operation = "create"
-                logger.debug(
-                    "[create] {} is allowed to publish field {}".format(
-                        publisher_name, attr_name
-                    )
-                )
+                logger.debug("[create] {} is allowed to publish field {}".format(publisher_name, attr_name))
                 return True
             elif publisher_name == allowed_updators:
-                logger.debug(
-                    "[update] {} is allowed to publish field {}".format(
-                        publisher_name, attr_name
-                    )
-                )
+                logger.debug("[update] {} is allowed to publish field {}".format(publisher_name, attr_name))
                 return True
 
         # None of the checks allowed this change, bail!
@@ -382,9 +327,7 @@ class User(object):
             )
         )
         raise cis_profile.exceptions.PublisherVerificationFailure(
-            "[{}] {} is NOT allowed to publish field {}".format(
-                operation, publisher_name, attr_name
-            )
+            "[{}] {} is NOT allowed to publish field {}".format(operation, publisher_name, attr_name)
         )
 
     def verify_all_signatures(self):
@@ -414,9 +357,7 @@ class User(object):
         Verify the signature of an attribute
         @req_attr str this is this user's attribute name, which will be looked up and verified in place
         """
-        req_attrs = req_attr.split(
-            "."
-        )  # Support subitems/subattributes such as 'access_information.ldap'
+        req_attrs = req_attr.split(".")  # Support subitems/subattributes such as 'access_information.ldap'
         if len(req_attrs) == 1:
             attr = self.__dict__[req_attr]
         else:
@@ -431,26 +372,16 @@ class User(object):
         publisher_name from the current user structure is used instead and no check is performed.
         """
 
-        if (
-            publisher_name is not None
-            and attr["signature"]["publisher"]["value"] != publisher_name
-        ):
-            raise cis_profile.exceptions.SignatureVerificationFailure(
-                "Incorrect publisher"
-            )
+        if publisher_name is not None and attr["signature"]["publisher"]["value"] != publisher_name:
+            raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
 
         self.__verifyop.load(attr["signature"]["publisher"]["value"])
         try:
             signed = json.loads(self.__verifyop.jws(publisher_name))
         except jose.exceptions.JWSError as e:
-            logger.warning(
-                "Attribute signature verification failure: {} ({})".format(
-                    attr, publisher_name
-                )
-            )
+            logger.warning("Attribute signature verification failure: {} ({})".format(attr, publisher_name))
             raise cis_profile.exceptions.SignatureVerificationFailure(
-                "Attribute signature verification failure for {}"
-                "({}) ({})".format(attr, publisher_name, e)
+                "Attribute signature verification failure for {}" "({}) ({})".format(attr, publisher_name, e)
             )
 
         # Finally check our object matches the stored data
@@ -463,8 +394,7 @@ class User(object):
             )
         elif signed != attrnosig:
             raise cis_profile.exceptions.SignatureVerificationFailure(
-                "Signature data in jws does not match "
-                "attribute data => {} != {}".format(attrnosig, signed)
+                "Signature data in jws does not match " "attribute data => {} != {}".format(attrnosig, signed)
             )
 
     def sign_all(self, publisher_name):
@@ -480,11 +410,7 @@ class User(object):
         @publisher_name str a publisher name (will be set in signature.publisher.name at signing time)
         """
 
-        logger.debug(
-            "Signing all profile fields that have a value set with publisher {}".format(
-                publisher_name
-            )
-        )
+        logger.debug("Signing all profile fields that have a value set with publisher {}".format(publisher_name))
         for item in self.__dict__:
             if type(self.__dict__[item]) is not DotDict:
                 continue
@@ -506,9 +432,7 @@ class User(object):
         @publisher_name str a publisher name (will be set in signature.publisher.name) which corresponds to the
         signing key
         """
-        req_attrs = req_attr.split(
-            "."
-        )  # Support subitems/subattributes such as 'access_information.ldap'
+        req_attrs = req_attr.split(".")  # Support subitems/subattributes such as 'access_information.ldap'
         if len(req_attrs) == 1:
             attr = self.__dict__[req_attr]
         else:
