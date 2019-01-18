@@ -23,5 +23,5 @@ fi
 
 make build-ci-container
 make push-ci-container
-
+echo "$CODEBUILD_WEBHOOK_TRIGGER"
 echo "End deploy of the Mozilla Change Integration Service version 2."
