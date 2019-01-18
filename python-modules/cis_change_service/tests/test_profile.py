@@ -52,6 +52,7 @@ class TestProfile(object):
                 ],
                 AttributeDefinitions=[
                     {'AttributeName': 'id', 'AttributeType': 'S'},
+                    {'AttributeName': 'uuid', 'AttributeType': 'S'},
                     {'AttributeName': 'sequence_number', 'AttributeType': 'S'},
                     {'AttributeName': 'primary_email', 'AttributeType': 'S'},
                 ],
@@ -80,6 +81,22 @@ class TestProfile(object):
                         'KeySchema': [
                             {
                                 'AttributeName': 'primary_email',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
+                        },
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
+                    },
+                    {
+                        'IndexName': '{}-uuid'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'uuid',
                                 'KeyType': 'HASH'
                             },
                         ],

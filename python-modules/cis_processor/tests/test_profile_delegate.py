@@ -3,15 +3,18 @@ import boto3
 import json
 import os
 import random
+import uuid
 from botocore.stub import Stubber
 from moto import mock_dynamodb2
 from cis_profile import fake_profile
+
 
 def profile_to_vault_structure(user_profile):
     return {
         'sequence_number': str(random.randint(100000, 100000000)),
         'primary_email': user_profile['primary_email']['value'],
         'profile': json.dumps(user_profile),
+        'uuid': user_profile['uuid']['value'],
         'id': user_profile['user_id']['value']
     }
 
@@ -58,7 +61,6 @@ class TestProfileDelegate(object):
 
         self.mr_nozilla_tainted_profile = fake_profile.FakeUser(generator=1337).as_dict()
 
-
         from cis_identity_vault.models import user
         vault_interface = user.Profile(self.table)
         vault_interface.create(profile_to_vault_structure(user_profile=self.mr_mozilla_profile))
@@ -89,7 +91,11 @@ class TestProfileDelegate(object):
             },
             'primary_email': {
                 'value': 'newzillian@newzilla.com'
+            },
+            'uuid': {
+                'value': str(uuid.uuid4())
             }
+
         }
 
         kinesis_event = kinesis_event_generate(user_profile=new_user_stub)
