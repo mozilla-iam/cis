@@ -89,6 +89,7 @@ class TestAPI(object):
                 ],
                 AttributeDefinitions=[
                     {'AttributeName': 'id', 'AttributeType': 'S'},
+                    {'AttributeName': 'uuid', 'AttributeType': 'S'},
                     {'AttributeName': 'sequence_number', 'AttributeType': 'S'},
                     {'AttributeName': 'primary_email', 'AttributeType': 'S'},
                     {'AttributeName': 'profile', 'AttributeType': 'S'}
@@ -118,6 +119,22 @@ class TestAPI(object):
                         'KeySchema': [
                             {
                                 'AttributeName': 'primary_email',
+                                'KeyType': 'HASH'
+                            },
+                        ],
+                        'Projection': {
+                            'ProjectionType': 'ALL',
+                        },
+                        'ProvisionedThroughput': {
+                            'ReadCapacityUnits': 5,
+                            'WriteCapacityUnits': 5
+                        }
+                    },
+                    {
+                        'IndexName': '{}-uuid'.format(name),
+                        'KeySchema': [
+                            {
+                                'AttributeName': 'uuid',
                                 'KeyType': 'HASH'
                             },
                         ],
