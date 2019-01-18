@@ -34,7 +34,7 @@
       "classification:workgroup",
       "classification:individual",
       "write",
-      "display:none",
+      "display:all",
       "display:private",
       "display:staff",
       "display:ndaed",
