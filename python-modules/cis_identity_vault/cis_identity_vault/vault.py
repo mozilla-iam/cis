@@ -99,6 +99,7 @@ class IdentityVault(object):
             ],
             AttributeDefinitions=[
                 {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
+                {'AttributeName': 'uuid', 'AttributeType': 'S'},  # uuid formerly dinopark id
                 {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
                 {'AttributeName': 'primary_email', 'AttributeType': 'S'}  # value of the primary_email attribute
             ],
@@ -127,6 +128,26 @@ class IdentityVault(object):
                     'KeySchema': [
                         {
                             'AttributeName': 'primary_email',
+                            'KeyType': 'HASH'
+                        },
+                        {
+                            'AttributeName': 'id',
+                            'KeyType': 'RANGE'
+                        }
+                    ],
+                    'Projection': {
+                        'ProjectionType': 'ALL',
+                    },
+                    'ProvisionedThroughput': {
+                        'ReadCapacityUnits': 5,
+                        'WriteCapacityUnits': 5
+                    }
+                },
+                {
+                    'IndexName': '{}-uuid'.format(self._generate_table_name()),
+                    'KeySchema': [
+                        {
+                            'AttributeName': 'uuid',
                             'KeyType': 'HASH'
                         },
                         {
