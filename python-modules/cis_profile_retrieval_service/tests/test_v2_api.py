@@ -1,4 +1,5 @@
 import boto3
+import json
 import logging
 import os
 from cis_identity_vault import vault
@@ -80,9 +81,10 @@ class TestAPI(object):
         assert result.json['nextPage'] is not None
         assert result.json['nextPage'] != ""
 
+        next_page = result.json['nextPage']
         # Follow the paginator
         paged_query = self.app.get(
-            '/users?nextPage={}'.format(result.json['nextPage']),
+            '/v2/users?nextPage={}'.format(json.dumps(next_page)),
             headers={
                 'Authorization': 'Bearer ' + token
             },
@@ -107,7 +109,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope('read:profile')
         public_data_class_query = self.app.get(
-            '/users',
+            '/v2/users',
             headers={
                 'Authorization': 'Bearer ' + token
             },
