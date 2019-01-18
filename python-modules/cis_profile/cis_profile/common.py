@@ -93,6 +93,19 @@ class MozillaDataClassification(DotDict):
     STAFF_ONLY = ['WORKGROUP CONFIDENTIAL: STAFF ONLY']
 
 
+class DisplayLevel(DotDict):
+    """
+    Display levels for profile v2.
+    """
+    PUBLIC = 'public'
+    AUTHENTICATED = 'authenticated'
+    VOUCHED = 'vouched'
+    NDAED = 'ndaed'
+    STAFF = 'staff'
+    PRIVATE = 'private'
+    NULL = None
+
+
 class WellKnown(object):
     """
     CIS JSON WellKnown and Schema loader with memory and disk cache and builtin fallback support.
