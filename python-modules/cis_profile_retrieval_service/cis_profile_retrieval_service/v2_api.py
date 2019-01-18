@@ -18,6 +18,7 @@ from cis_profile.common import DisplayLevel
 from cis_profile.profile import User
 from cis_profile_retrieval_service.common import get_config
 from cis_profile_retrieval_service.common import initialize_vault
+from cis_profile_retrieval_service.common import get_dynamodb_client
 from cis_profile_retrieval_service.common import get_table_resource
 from cis_profile_retrieval_service.common import seed
 from cis_profile_retrieval_service.schema import Query
@@ -40,6 +41,8 @@ if config("initialize_vault", namespace="person_api", default="false") == "true"
 
 authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()
+dynamodb_client = get_dynamodb_client()
+transactions = config('transactions', namespace='cis', default='false')
 
 
 def load_dirty_json(dirty_json):
@@ -152,7 +155,12 @@ class v2User(Resource):
         args = parser.parse_args()
         scopes = get_scopes(args.get("Authorization"))
         filter_display = args.get("FilterDisplay", None)
-        identity_vault = user.Profile(dynamodb_table)
+
+        if transactions == 'false':
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
+
+        if transactions == 'true':
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.debug("Attempting to locate a user for: {}".format(user_id))
         if "|" in user_id:
@@ -211,7 +219,11 @@ class v2Users(Resource):
         else:
             nextPage = None
 
-        identity_vault = user.Profile(dynamodb_table)
+        if transactions == 'false':
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
+
+        if transactions == 'true':
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         if primary_email is None:
             result = identity_vault.all_by_page(next_page=nextPage, limit=25)

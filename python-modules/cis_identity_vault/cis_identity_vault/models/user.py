@@ -161,7 +161,7 @@ class Profile(object):
         return {'status': status_code, 'sequence_numbers': sequence_numbers}
 
     def _put_items_without_transaction(self, list_of_profiles):
-        with table.batch_writer() as batch:
+        with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
                 batch.put_item(Item=profile)
 

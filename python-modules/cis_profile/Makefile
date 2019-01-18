@@ -30,7 +30,6 @@ venv:
 		npm install kinesalite
 		touch $@
 
-
 .flake:
 	flake8 setup.py
 	flake8 tests/*.py

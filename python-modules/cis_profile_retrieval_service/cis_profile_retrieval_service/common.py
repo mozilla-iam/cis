@@ -5,7 +5,6 @@ from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
 from everett.manager import ConfigOSEnv
 from json import dumps
-from iam_profile_faker.factory import V2ProfileFactory
 from cis_profile.fake_profile import batch_create_fake_profiles
 from cis_identity_vault.models import user
 from cis_identity_vault.vault import IdentityVault
@@ -49,6 +48,29 @@ def get_table_resource():
 
     table = resource.Table(table_name)
     return table
+
+
+def get_dynamodb_client():
+    region = config('dynamodb_region', namespace='cis', default='us-west-2')
+    environment = config('environment', namespace='cis', default='local')
+    table_name = '{}-identity-vault'.format(environment)
+
+    if environment == 'local':
+        dynalite_host = config('dynalite_host', namespace='cis', default='localhost')
+        dynalite_port = config('dynalite_port', namespace='cis', default='4567')
+        session = Stubber(boto3.session.Session(region_name=region)).client
+        client = session.client(
+            'dynamodb',
+            endpoint_url='http://{}:{}'.format(
+                dynalite_host,
+                dynalite_port
+            )
+        )
+    else:
+        session = boto3.session.Session(region_name=region)
+        client = session.client('dynamodb')
+
+    return client
 
 
 def initialize_vault():
