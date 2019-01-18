@@ -42,7 +42,7 @@ if config("initialize_vault", namespace="person_api", default="false") == "true"
 authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()
 dynamodb_client = get_dynamodb_client()
-transactions = config('transactions', namespace='cis', default='false')
+transactions = config("transactions", namespace="cis", default="false")
 
 
 def load_dirty_json(dirty_json):
@@ -151,15 +151,15 @@ class v2User(Resource):
         user_id = urllib.parse.unquote(user_id)
         parser = reqparse.RequestParser()
         parser.add_argument("Authorization", location="headers")
-        parser.add_argument("FilterDisplay", type=str)
+        parser.add_argument("filterDisplay", type=str)
         args = parser.parse_args()
         scopes = get_scopes(args.get("Authorization"))
-        filter_display = args.get("FilterDisplay", None)
+        filter_display = args.get("filterDisplay", None)
 
-        if transactions == 'false':
+        if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
 
-        if transactions == 'true':
+        if transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.debug("Attempting to locate a user for: {}".format(user_id))
@@ -177,13 +177,11 @@ class v2User(Resource):
             v2_profile = User(user_structure_json=json.loads(vault_profile))
             if "read:fullprofile" in scopes:
                 logger.debug("read:fullprofile in token returning the full user profile.")
-                pass
             else:
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
             if "display:all" in scopes:
                 logger.debug("display:all in token not filtering profile.")
-                pass
             else:
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
@@ -206,12 +204,12 @@ class v2Users(Resource):
         parser.add_argument("Authorization", location="headers")
         parser.add_argument("nextPage", type=str)
         parser.add_argument("primaryEmail", type=str)
-        parser.add_argument("FilterDisplay", type=str)
+        parser.add_argument("filterDisplay", type=str)
         args = parser.parse_args()
 
-        filter_display = args.get("FilterDisplay", None)
-        primary_email = args.get("primaryEmail")
-        next_page = args.get("nextPage")
+        filter_display = args.get("filterDisplay", None)
+        primary_email = args.get("primaryEmail", None)
+        next_page = args.get("nextPage", None)
         scopes = get_scopes(args.get("Authorization"))
 
         if next_page is not None:
@@ -219,12 +217,13 @@ class v2Users(Resource):
         else:
             nextPage = None
 
-        if transactions == 'false':
+        if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
 
-        if transactions == 'true':
+        if transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
+        next_page_token = None
         if primary_email is None:
             result = identity_vault.all_by_page(next_page=nextPage, limit=25)
             next_page_token = result.get("LastEvaluatedKey")
@@ -244,7 +243,6 @@ class v2Users(Resource):
 
             if "display:all" in scopes:
                 logger.debug("display:all in token not filtering profile.")
-                pass
             else:
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
@@ -252,7 +250,6 @@ class v2Users(Resource):
                 v2_profile.filter_display(DisplayLevelParms.map(filter_display))
 
             v2_profiles.append(v2_profile.as_dict())
-            next_page_token = result.get("LastEvaluatedKey")
 
         response = {"Items": v2_profiles, "nextPage": next_page_token}
         return jsonify(response)
