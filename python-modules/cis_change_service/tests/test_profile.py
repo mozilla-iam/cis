@@ -139,7 +139,6 @@ class TestProfile(object):
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
         os.environ['CIS_ENVIRONMENT'] = 'local'
-        name = 'local-identity-vault'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service import api
         f = FakeBearer()
@@ -178,7 +177,6 @@ class TestProfile(object):
     @mock.patch('cis_change_service.idp.get_jwks')
     def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
         os.environ['CIS_ENVIRONMENT'] = 'local'
-        name = 'local-identity-vault'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service import api
         f = FakeBearer()

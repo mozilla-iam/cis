@@ -167,7 +167,7 @@ class TestAPI(object):
             follow_redirects=True
         )
 
-        response = json.loads(result.get_data())
+        json.loads(result.get_data())
         assert result.status_code == 200
 
     @mock.patch('cis_change_service.idp.get_jwks')
@@ -217,7 +217,7 @@ class TestAPI(object):
             follow_redirects=True
         )
 
-        response = json.loads(result.get_data())
+        json.loads(result.get_data())
         assert result.status_code == 200
 
     @mock.patch('cis_change_service.idp.get_jwks')
