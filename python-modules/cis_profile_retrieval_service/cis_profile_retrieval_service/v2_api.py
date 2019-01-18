@@ -56,15 +56,16 @@ def scope_to_mozilla_data_classification(scopes):
     if 'classification:staff' in scopes:
         logger.debug('Staff data classification in scope.')
         classifications.append(MozillaDataClassification.STAFF_ONLY)
-    elif 'classification:workgroup' in scopes:
+
+    if 'classification:workgroup' in scopes:
         logger.debug('Workgroup data classification in scope.')
         classifications.append(MozillaDataClassification.WORKGROUP_CONFIDENTIAL)
-    elif 'classification:individual' in scopes:
+
+    if 'classification:individual' in scopes:
         logger.debug('Individual data classification in scope.')
         classifications.append(MozillaDataClassification.INDIVIDUAL_CONFIDENTIAL)
-    else:
-        logger.debug('No data classification in scope returning only public data.')
-        classifications.append(MozillaDataClassification.PUBLIC)
+
+    classifications.append(MozillaDataClassification.PUBLIC)
     return classifications
 
 
@@ -103,7 +104,7 @@ class v2User(Resource):
         if len(result['Items']) > 0:
             vault_profile = result['Items'][0]['profile']
             v2_profile = User(user_structure_json=json.loads(vault_profile))
-            if len(scopes) == 1 and 'read:fullprofile' in scopes:
+            if 'read:fullprofile' in scopes:
                 logger.debug('read:fullprofile in token returning the full user profile.')
                 pass
             else:
@@ -145,7 +146,7 @@ class v2Users(Resource):
         for profile in result.get('Items'):
             vault_profile = json.loads(profile.get('profile'))
             v2_profile = User(user_structure_json=vault_profile)
-            if len(scopes) == 1 and 'read:fullprofile' in scopes:
+            if 'read:fullprofile' in scopes:
                 # Assume someone has asked for all the data.
                 pass
             else:
