@@ -181,6 +181,7 @@ class v2User(Resource):
 
             if filter_display is not None:
                 v2_profile.filter_display(DisplayLevelParms.map(filter_display))
+
             return jsonify(v2_profile.as_dict())
         else:
             return jsonify({})
@@ -197,10 +198,13 @@ class v2Users(Resource):
         parser.add_argument("Authorization", location="headers")
         parser.add_argument("nextPage", type=str)
         parser.add_argument("primaryEmail", type=str)
+        parser.add_argument("FilterDisplay", type=str)
+        args = parser.parse_args()
 
-        primary_email = parser.parse_args().get("primaryEmail")
-        next_page = parser.parse_args().get("nextPage")
-        scopes = get_scopes(parser.parse_args().get("Authorization"))
+        filter_display = args.get("FilterDisplay", None)
+        primary_email = args.get("primaryEmail")
+        next_page = args.get("nextPage")
+        scopes = get_scopes(args.get("Authorization"))
 
         if next_page is not None:
             nextPage = load_dirty_json(next_page)
@@ -225,6 +229,16 @@ class v2Users(Resource):
             else:
                 # Assume the we are filtering falls back to public with no scopes
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
+
+            if "display:all" in scopes:
+                logger.debug("display:all in token not filtering profile.")
+                pass
+            else:
+                v2_profile.filter_display(scope_to_display_level(scopes))
+
+            if filter_display is not None:
+                v2_profile.filter_display(DisplayLevelParms.map(filter_display))
+
             v2_profiles.append(v2_profile.as_dict())
             next_page_token = result.get("LastEvaluatedKey")
 

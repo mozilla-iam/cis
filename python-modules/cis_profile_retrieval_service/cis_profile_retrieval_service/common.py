@@ -6,6 +6,7 @@ from everett.manager import ConfigManager
 from everett.manager import ConfigOSEnv
 from json import dumps
 from iam_profile_faker.factory import V2ProfileFactory
+from cis_profile.fake_profile import batch_create_fake_profiles
 from cis_identity_vault.models import user
 from cis_identity_vault.vault import IdentityVault
 
@@ -62,19 +63,18 @@ def seed(number_of_fake_users=100):
     seed_data = config('seed_api_data', namespace='cis', default='false')
     if seed_data.lower() == 'true':
         table = get_table_resource()
-        user_profile = user.Profile(table)
+        user_profile = user.Profile(table, None, False)
 
         if len(user_profile.all) > 0:
             pass
         else:
-            factory = V2ProfileFactory()
-            factory.create()
-            identities = factory.create_batch(number_of_fake_users)
+            identities = batch_create_fake_profiles(1337, number_of_fake_users)
 
             for identity in identities:
                 identity_vault_data_structure = {
                     'id': identity.get('user_id').get('value'),
                     'primary_email': identity.get('primary_email').get('value'),
+                    'uuid': identity.get('uuid').get('value'),
                     'sequence_number': '1234567890',
                     'profile': dumps(identity)
                 }
