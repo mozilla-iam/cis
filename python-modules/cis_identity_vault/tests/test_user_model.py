@@ -2,8 +2,10 @@ import boto3
 import json
 import os
 import subprocess
+import uuid
 from botocore.stub import Stubber
 from cis_identity_vault import vault
+from cis_profile import FakeUser
 from moto import mock_dynamodb2
 
 
@@ -15,12 +17,12 @@ class TestUsersDynalite(object):
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
         self.vault_client.find_or_create()
-        fh = open('tests/fixture/valid-profile.json')
-        self.user_profile = json.loads(fh.read())
-        fh.close()
 
+        self.user_profile = FakeUser().as_dict()
+        self.uuid = self.user_profile['uuid']['value']
         self.vault_json_datastructure = {
             'id': self.user_profile.get('user_id').get('value'),
+            'uuid': self.uuid,
             'primary_email': self.user_profile.get('primary_email').get('value'),
             'sequence_number': '12345678',
             'profile': json.dumps(self.user_profile)
@@ -49,6 +51,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure = {
             'id': modified_profile.get('user_id').get('value'),
+            'uuid': str(uuid.uuid4()),
             'primary_email': modified_profile.get('primary_email').get('value'),
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
@@ -68,6 +71,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure = {
             'id': modified_profile.get('user_id').get('value'),
+            'uuid': str(uuid.uuid4()),
             'primary_email': modified_profile.get('primary_email').get('value'),
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
@@ -95,6 +99,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_first_id = {
             'id': modified_profile.get('user_id').get('value'),
+            'uuid': str(uuid.uuid4()),
             'primary_email': modified_profile.get('primary_email').get('value'),
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
@@ -110,6 +115,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_second_id = {
             'id': 'foo|mcbar',
+            'uuid': str(uuid.uuid4()),
             'primary_email': modified_profile.get('primary_email').get('value'),
             'sequence_number': '12345678',
             'profile': json.dumps(modified_profile)
@@ -122,4 +128,18 @@ class TestUsersDynalite(object):
         self.user_profile.get('user_id').get('value')
         result_for_email = profile.find_by_email(primary_email)
         assert result_for_email is not None
-        assert len(result_for_email.get('Items')) == 2
+        assert len(result_for_email.get('Items')) > 2
+
+    def test_find_by_uuid(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(
+            self.table,
+            self.dynamodb_client,
+            transactions=False
+        )
+
+        user = json.loads(profile.all[0].get('profile'))
+
+        result_for_uuid = profile.find_by_uuid(user['uuid']['value'])
+        assert len(result_for_uuid.get('Items')) > 0
