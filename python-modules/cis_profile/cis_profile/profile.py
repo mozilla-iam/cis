@@ -484,7 +484,7 @@ class User(object):
         return attr
 
 
-def filter(level, valid, check):
+def filter_all(level, valid, check):
     todel = []
     for attr in level.keys():
         if attr.startswith("_") or not isinstance(level[attr], dict):
