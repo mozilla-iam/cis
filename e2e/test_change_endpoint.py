@@ -17,6 +17,7 @@ elif cis_environment == 'development':
     base_url = 'change.api.dev.sso.allizom.org'
 elif cis_environment == 'production':
     base_url == 'change.api.sso.mozilla.com'
+
 client = boto3.client('ssm')
 
 
