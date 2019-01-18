@@ -29,9 +29,18 @@
     "scopes_supported": [
       "read:fullprofile",
       "classification:public",
-      "classification:staff",
+      "classification:mozilla_confidential",
+      "classification:workgroup:staff_only",
       "classification:workgroup",
-      "classification:individual"
+      "classification:individual",
+      "write",
+      "display:all",
+      "display:private",
+      "display:staff",
+      "display:ndaed",
+      "display:vouched",
+      "display:authenticated",
+      "display:public"
     ],
     "publishers_rules_uri": "https://auth.${DOMAIN}/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {
