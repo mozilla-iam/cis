@@ -51,7 +51,6 @@ setup(
     include_package_data=True,
     packages=find_packages(include=['cis_fake_well_known', 'cis_fake_well_known/keys', 'bin']),
     package_data={'cis_fake_well_known': ['keys/*.pem', 'json/*.json']},
-    scripts=['bin/cis_fake_well_known'],
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
