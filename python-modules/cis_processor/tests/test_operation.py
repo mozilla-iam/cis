@@ -8,8 +8,8 @@ import random
 from botocore.stub import Stubber
 from cis_profile import profile
 from cis_profile import fake_profile
+from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
-from everett.manager import ConfigIniEnv
 from everett.manager import ConfigOSEnv
 from moto import mock_dynamodb2
 from mock import patch
