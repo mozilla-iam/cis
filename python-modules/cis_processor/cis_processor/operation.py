@@ -1,4 +1,3 @@
-import cis_profile
 import json
 from cis_processor import profile
 from cis_processor.common import get_config
@@ -53,7 +52,8 @@ class BaseProcessor(object):
                     self.profiles['new_profile'].as_dict()['user_id']['value'])
                 )
                 signatures_valid = self.profiles['new_profile'].verify_all_signatures()
-                logger.info('The result of signature checking for user: {} resulted in: {}'.format(
+                logger.info(
+                    'The result of signature checking for user: {} resulted in: {}'.format(
                         self.profiles['new_profile'].as_dict()['user_id']['value'],
                         signatures_valid
                     )
@@ -67,7 +67,8 @@ class BaseProcessor(object):
         if signatures_valid is True and publishers_valid is True:
             vault_data_structure = self._profile_to_vault_structure(self.profiles['new_profile'].as_dict())
             identity_vault = user.Profile(self.dynamodb_table)
-            logger.info('Tests pass for the integration.  Proceeding to flush to dynamodb for user: {}'.format(
+            logger.info(
+                'Tests pass for the integration.  Proceeding to flush to dynamodb for user: {}'.format(
                     self.profiles['new_profile'].as_dict()['user_id']['value']
                 )
             )
