@@ -8,9 +8,11 @@ with open("README.md", "r") as fh:
 
 requirements = [
     'everett',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'everett[ini]',
+    'configobj',
+    'boto',
+    'boto3',
+    'botocore',
 ]
 
 setup_requirements = [

@@ -65,8 +65,8 @@ class TestAPI(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 30,
-                'MaxAttempts': 5
+                'Delay': 10,
+                'MaxAttempts': 2
             }
         )
 

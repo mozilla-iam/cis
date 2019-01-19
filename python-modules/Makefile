@@ -1,4 +1,5 @@
-MODULES	:= $(wildcard cis_*)
+MODULES	:= cis_aws cis_change_service cis_crypto cis_identity_vault \
+cis_processor cis_profile cis_profile_retieval_service cis_publisher
 
 all:
 	@echo 'Available make targets:'
@@ -11,7 +12,6 @@ build: $(MODULES)
 test: tests
 tests: $(MODULES)
 
-test-tox: test-tox
 test-tox: $(MODULES)
 
 clean: $(MODULES)

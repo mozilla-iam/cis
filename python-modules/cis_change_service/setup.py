@@ -14,19 +14,26 @@ requirements = [
     'configobj',
     'flask',
     'flask_cors',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'boto',
+    'boto3',
+    'botocore',
     'six'
-    # 'cis_profile>=0.0.3.2'
-    # cis_publisher
 ]
 
 setup_requirements = [
     'pytest-runner',
     'setuptools>=40.5.0'
 ]
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'patch', 'mock', 'flake8', 'moto>=1.3.7']
+
+test_requirements = [
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'patch',
+    'mock',
+    'flake8',
+    'moto'
+]
 
 extras = {'test': test_requirements}
 
@@ -47,7 +54,6 @@ setup(
     license="Mozilla Public License 2.0",
     include_package_data=True,
     packages=find_packages(include=['cis_change_service']),
-    scripts=['bin/cis_change_service'],
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,

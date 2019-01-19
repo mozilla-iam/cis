@@ -146,24 +146,28 @@ class Profile(object):
         return self.table.delete_item(Item=user_profile)
 
     def create_batch(self, list_of_profiles):
-        if self.transactions:
-            res = self._create_items_with_transaction(list_of_profiles)
-        else:
-            res = self._put_items_without_transaction(list_of_profiles)
-
         sequence_numbers = []
         for profile in list_of_profiles:
             sequence_numbers.append(profile['sequence_number'])
+        if self.transactions:
+            res = self._create_items_with_transaction(list_of_profiles)
 
-        if res.get('ResponseMetadata', False):
-            status_code = res['ResponseMetadata']['HTTPStatusCode']
+            if res.get('ResponseMetadata', False):
+                status_code = res['ResponseMetadata']['HTTPStatusCode']
 
-        return {'status': status_code, 'sequence_numbers': sequence_numbers}
+            return {'status': status_code, 'sequence_numbers': sequence_numbers}
+        else:
+            try:
+                res = self._put_items_without_transaction(list_of_profiles)
+                return {'status': '200', 'sequence_numbers': sequence_numbers}
+            except Exception as e:
+                logger.error('Could not write batch due to: {}'.format(e))
+                return {'status': '500', 'sequence_numbers': sequence_numbers}
 
     def _put_items_without_transaction(self, list_of_profiles):
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
-                batch.put_item(Item=profile)
+                res = batch.put_item(Item=profile)
 
     def _create_items_with_transaction(self, list_of_profiles):
         transact_items = []
@@ -195,7 +199,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
-        logger.info('Attempting to create batch of transactions for: {}'.format(transact_items))
+        logger.debug('Attempting to create batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def update_batch(self, list_of_profiles):
@@ -234,7 +238,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
-        logger.info('Attempting to update batch of transactions for: {}'.format(transact_items))
+        logger.debug('Attempting to update batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def find_by_id(self, id):
@@ -284,10 +288,10 @@ class Profile(object):
         for user_profile in user_profiles:
             profilev2 = json.loads(user_profile['profile'])
             if len(self.find_by_id(profilev2['user_id']['value'])['Items']) > 0:
-                logger.info('Adding profile to the list of updates to perform: {}'.format(profilev2))
+                logger.debug('Adding profile to the list of updates to perform: {}'.format(profilev2))
                 updates.append(user_profile)
             else:
-                logger.info('Adding profile to the list of creations to perform: {}'.format(profilev2))
+                logger.debug('Adding profile to the list of creations to perform: {}'.format(profilev2))
                 creations.append(user_profile)
 
         try:
@@ -306,7 +310,7 @@ class Profile(object):
         try:
             if len(updates) > 0:
                 res_update = self.update_batch(updates)
-                logger.info('There are {} updates to perform in this batch.'.format(updates))
+                logger.error('There are {} updates to perform in this batch.'.format(len(updates)))
             else:
                 res_update = None
         except ClientError as e:
@@ -316,8 +320,8 @@ class Profile(object):
             res_update = None
             logger.error('Could not run batch transaction due to: {}'.format(e))
 
-        logger.info('Updates were: {}'.format(updates))
-        logger.info('Creates were: {}'.format(creations))
+        logger.info('Updates were: {}'.format(len(updates)))
+        logger.info('Creates were: {}'.format(len(creations)))
 
         return [res_create, res_update]
 

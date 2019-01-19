@@ -7,12 +7,12 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose[cryptography]==3.0.1',
-    'cryptography==2.3.1',
+    'python-jose[cryptography]',
+    'cryptography',
     'everett',
-    'boto>=2.36.0',
-    'boto3>=1.6.16',
-    'botocore>=1.12.13',
+    'boto',
+    'boto3',
+    'botocore',
     'jsonschema',
     'flask',
     'faker'
@@ -23,7 +23,16 @@ setup_requirements = [
     'setuptools>=40.5.0'
 ]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'pytest-flask', 'flake8']
+test_requirements = [
+    'pytest',
+    'pytest-watch',
+    'pytest-cov',
+    'pytest-flask',
+    'flake8',
+    'everett',
+    'everett[ini]',
+    'configobj'
+]
 
 extras = {'test': test_requirements}
 
@@ -45,7 +54,6 @@ setup(
     include_package_data=True,
     packages=find_packages(include=['cis_fake_well_known', 'cis_fake_well_known/keys', 'bin']),
     package_data={'cis_fake_well_known': ['keys/*.pem', 'json/*.json']},
-    scripts=['bin/cis_fake_well_known'],
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
