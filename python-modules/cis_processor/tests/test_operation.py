@@ -101,33 +101,6 @@ class TestOperation(object):
         vault_interface.create(profile_to_vault_structure(user_profile=self.mr_mozilla_profile))
         self.mr_mozilla_change_event = kinesis_event_generate(self.mr_mozilla_profile)
 
-    def test_base_operation_object_it_should_succeed_and_skip_integration(self):
-        os.environ['CIS_PROCESSOR_VERIFY_SIGNATURES'] = 'False'
-        kinesis_event = kinesis_event_generate(self.mr_mozilla_profile)
-
-        from cis_processor import operation
-        for kinesis_record in kinesis_event['Records']:
-            base_operation = operation.BaseProcessor(
-                event_record=kinesis_record,
-                dynamodb_client=self.dynamodb_client,
-                dynamodb_table=self.table
-            )
-            base_operation._load_profiles()
-            needs_integration = base_operation.needs_integration(
-                base_operation.profiles['new_profile'],
-                base_operation.profiles['old_profile']
-            )
-            assert needs_integration is False
-            assert base_operation.profiles['new_profile'].verify_all_publishers(
-                base_operation.profiles['old_profile']
-            ) is True
-            assert base_operation.process() is True
-
-        from cis_identity_vault.models import user
-
-        p = user.Profile(self.table)
-        p.find_by_id(id=base_operation.profiles['new_profile'].as_dict()['user_id']['value'])
-
     @patch.object(profile.User, 'verify_all_publishers')
     @patch.object(profile.User, 'verify_all_signatures')
     def test_base_operation_object_it_should_succeed(self, verify_sigs, verify_pubs):
