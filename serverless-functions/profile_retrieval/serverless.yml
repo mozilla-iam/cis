@@ -27,7 +27,7 @@ custom:
     CIS_JWT_VALIDATION:
       production: true
       development: true
-      testing: false
+      testing: true
     DOMAIN_NAME:
       production: person.api.sso.mozilla.com
       development: person.api.dev.sso.allizom.org
