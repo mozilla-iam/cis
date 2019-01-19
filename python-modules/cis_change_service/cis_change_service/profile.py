@@ -35,7 +35,7 @@ class Vault(object):
         cis_profile = User(user_structure_json=profile_json)
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
-                cis_profile.verify_all_publishers()
+                cis_profile.verify_all_publishers(User())
 
             if self.config("verify_signatures", namespace="cis") == "true":
                 cis_profile.verify_all_signatures()
