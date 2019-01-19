@@ -7,22 +7,23 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'boto',
-    'boto3',
-    'botocore',
-    'jsonschema',
-    'everett',
-    'everett[ini]',
-    'configobj'
+    "boto",
+    "boto3",
+    "botocore",
+    "jsonschema",
+    "everett",
+    "everett[ini]",
+    "configobj",
+    "authzerolib"
     # 'cis_crypto', # Uncomment when these are published in warehouse
     # 'cis_aws' # Uncomment when these are published in warehouse
 ]
 
-setup_requirements = ['pytest-runner']
+setup_requirements = ["pytest-runner"]
 
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov', 'moto', 'flake8']
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "moto", "flake8"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_publisher",
@@ -40,11 +41,11 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_publisher']),
-    package_data={'cis_publisher': ['profile.schema']},
+    packages=find_packages(include=["cis_publisher"]),
+    package_data={"cis_publisher": ["profile.schema"]},
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

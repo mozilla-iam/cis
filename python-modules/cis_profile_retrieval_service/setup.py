@@ -24,7 +24,6 @@ requirements = [
     "requests",
     "ipdb",
     "aniso8601",
-    "cis_profile",
 ]
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
