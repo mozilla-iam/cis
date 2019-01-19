@@ -8,7 +8,7 @@ with open("README.md", "r") as fh:
 
 requirements = [
     'python-jose',
-    'cryptography=',
+    'cryptography',
     'boto',
     'boto3',
     'botocore',
