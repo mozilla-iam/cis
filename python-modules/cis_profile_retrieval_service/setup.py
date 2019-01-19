@@ -7,42 +7,40 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose',
-    'cryptography',
-    'boto',
-    'boto3',
-    'botocore',
-    'everett',
-    'everett[ini]',
-    'configobj',
-    'flask',
-    'flask_cors',
-    'six',
-    'flask_restful',
-    'flask-graphql',
-    'graphene',
-    'requests',
-    'ipdb',
-    'aniso8601'
+    "python-jose",
+    "cryptography",
+    "boto",
+    "boto3",
+    "botocore",
+    "everett",
+    "everett[ini]",
+    "configobj",
+    "flask",
+    "flask_cors",
+    "six",
+    "flask_restful",
+    "flask-graphql",
+    "graphene",
+    "requests",
+    "ipdb",
+    "aniso8601",
+    "cis_profile",
 ]
 
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
 test_requirements = [
-    'pytest',
-    'pytest-watch',
-    'pytest-cov',
-    'pytest-mock',
-    'moto',
-    'mock',
-    'flake8',
-    'iam-profile-faker'
+    "pytest",
+    "pytest-watch",
+    "pytest-cov",
+    "pytest-mock",
+    "moto",
+    "mock",
+    "flake8",
+    "iam-profile-faker",
 ]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_profile_retrieval_service",
@@ -60,10 +58,10 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_profile_retrieval_service']),
+    packages=find_packages(include=["cis_profile_retrieval_service"]),
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

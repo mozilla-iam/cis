@@ -9,13 +9,12 @@ It is meant to be one component in a loosely coupled signing system leveraging j
 
 ## Development Instructions
 
-Since not all modules are published to python-warehouse yet you'll need to install the cis_fake_well_known module
+Since not all modules are published to python-warehouse yet you'll need to install some modules
 and cis_aws module by hand.  With your virtual environment and also inside the `cis_crypto` directory simply type:
 
 ```bash
 
 python ../cis_aws/setup.py install
-cd ../cis_fake_well_known/ && python setup.py install && cd -
 
 ```
 

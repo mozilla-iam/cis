@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for cis_fake_well_known."""
+"""Top-level package for cis_processor."""
 
 from cis_processor import common
 from cis_processor import operation

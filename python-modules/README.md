@@ -89,14 +89,6 @@ _User Stories_
 
 Contains all code needed to support the output of logs to Cloudwatch consolidated logging.  Provides a `streamHandler` interface and centralized configuration for `DEBUG`, `INFO`, etc.
 
-**cis_fake_well_known**
-
-Contains faking functionality and a dummy server to provide JWKS key material for testing sign/verify operations.
-
-_User Stories_
-
-- As a developer I need a way to retrieve `.well-known` configurations prior to the data being available on auth.mozilla.com
-
 **cis_fake_change_service**
 
 Contains a dummy server that provides mocked responses identical to sending a message successfully to the kinesis stream.

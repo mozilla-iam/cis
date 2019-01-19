@@ -6,29 +6,13 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = [
-    'everett',
-    'boto',
-    'boto3',
-    'botocore'
-]
+requirements = ["everett", "boto", "boto3", "botocore"]
 
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = [
-    'pytest',
-    'pytest-watch',
-    'pytest-cov',
-    'patch',
-    'mock',
-    'flake8',
-    'moto'
-]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto", "cis_profile"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_processor",
@@ -46,10 +30,10 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_processor']),
+    packages=find_packages(include=["cis_processor"]),
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

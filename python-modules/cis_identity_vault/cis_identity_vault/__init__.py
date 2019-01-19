@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-"""Top-level package for cis_fake_well_known."""
+"""Top-level package for cis_identiy_vault."""
 
 from cis_identity_vault import common
 from cis_identity_vault import vault
