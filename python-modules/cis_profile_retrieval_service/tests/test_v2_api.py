@@ -66,7 +66,7 @@ class TestAPI(object):
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
-        token = f.generate_bearer_with_scope('read:fullprofile')
+        token = f.generate_bearer_with_scope('read:fullprofile display:all')
 
         result = self.app.get(
             '/v2/users',
@@ -107,7 +107,7 @@ class TestAPI(object):
 
         assert len(primary_email_query.json['Items']) == 1
 
-        token = f.generate_bearer_with_scope('read:profile')
+        token = f.generate_bearer_with_scope('read:profile display:all')
         public_data_class_query = self.app.get(
             '/v2/users',
             headers={
@@ -117,8 +117,9 @@ class TestAPI(object):
         )
 
         for profile in public_data_class_query.json['Items']:
-            assert profile.get('identities') is None
+            assert not profile.get('identities')
 
+        token = f.generate_bearer_with_scope('read:profile display:all')
         single_user_public_data_class_query = self.app.get(
             '/v2/user/{}'.format(result.json['Items'][0]['user_id']['value']),
             headers={
@@ -127,10 +128,10 @@ class TestAPI(object):
             follow_redirects=True
         )
 
-        assert single_user_public_data_class_query.json.get('identities') is None
+        assert not single_user_public_data_class_query.json.get('identities')
 
-        token = f.generate_bearer_with_scope('read:fullprofile')
-        single_user_public_data_class_query = self.app.get(
+        token = f.generate_bearer_with_scope('read:fullprofile display:all')
+        single_user_all_data_class_query = self.app.get(
             '/v2/user/{}'.format(result.json['Items'][0]['user_id']['value']),
             headers={
                 'Authorization': 'Bearer ' + token
@@ -138,4 +139,88 @@ class TestAPI(object):
             follow_redirects=True
         )
 
-        assert single_user_public_data_class_query.json.get('identities') is not None
+        assert single_user_all_data_class_query.json.get('identities')
+
+    @patch('cis_profile_retrieval_service.idp.get_jwks')
+    def test_test_display_scope_filter(self, fake_jwks):
+        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:all')
+
+        result = self.app.get(
+            '/v2/users',
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:public')
+        display_public_query = self.app.get(
+            '/v2/user/{}'.format(result.json['Items'][0]['user_id']['value']),
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        assert not display_public_query.json.get('identities').get('access_provider')
+        assert not display_public_query.json.get('staff_information').get('cost_center')
+        assert display_public_query.json.get('uuid')
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:staff')
+        display_staff_query = self.app.get(
+            '/v2/user/{}'.format(result.json['Items'][0]['user_id']['value']),
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        assert not display_staff_query.json.get('identities').get('access_provider')
+        assert display_staff_query.json.get('staff_information').get('cost_center')
+        assert display_staff_query.json.get('uuid')
+
+    @patch('cis_profile_retrieval_service.idp.get_jwks')
+    def test_display_paramter_filter(self, fake_jwks):
+        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:all')
+
+        result = self.app.get(
+            '/v2/users',
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:staff')
+        display_staff_query = self.app.get(
+            '/v2/user/{}'.format(result.json['Items'][0]['user_id']['value']),
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        assert not display_staff_query.json.get('identities').get('access_provider')
+        assert display_staff_query.json.get('staff_information').get('cost_center')
+        assert display_staff_query.json.get('uuid')
+
+        token = f.generate_bearer_with_scope('read:fullprofile display:staff')
+        display_staff_with_public_param_query = self.app.get(
+            '/v2/user/{}?filterDisplay=public'.format(result.json['Items'][0]['user_id']['value']),
+            headers={
+                'Authorization': 'Bearer ' + token
+            },
+            follow_redirects=True
+        )
+
+        assert not display_staff_with_public_param_query.json.get('identities').get('access_provider')
+        assert not display_staff_with_public_param_query.json.get('staff_information').get('cost_center')
+        assert display_staff_with_public_param_query.json.get('uuid')
