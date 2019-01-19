@@ -3,8 +3,8 @@
 import os
 
 from base64 import b64encode
+from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
-from everett.manager import ConfigIniEnv
 from everett.manager import ConfigOSEnv
 
 

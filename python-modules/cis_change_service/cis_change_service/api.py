@@ -70,7 +70,6 @@ def change():
         user_profile = json.loads(user_profile)
 
     logger.info('A json payload was received for user: {}'.format(user_profile['user_id']['value']))
-    logger.debug('User profile received.  Detail: {}'.format(user_profile))
 
     if config('stream_bypass', namespace='cis', default='false') == 'true':
         # Plan on stream integration not working an attempt a write directly to discoverable dynamo.

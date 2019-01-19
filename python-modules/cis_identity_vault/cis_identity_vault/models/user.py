@@ -195,7 +195,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
-        logger.info('Attempting to create batch of transactions for: {}'.format(transact_items))
+        logger.debug('Attempting to create batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def update_batch(self, list_of_profiles):
@@ -234,7 +234,7 @@ class Profile(object):
                 }
             }
             transact_items.append(transact_item)
-        logger.info('Attempting to update batch of transactions for: {}'.format(transact_items))
+        logger.debug('Attempting to update batch of transactions for: {}'.format(transact_items))
         return self._run_transaction(transact_items)
 
     def find_by_id(self, id):

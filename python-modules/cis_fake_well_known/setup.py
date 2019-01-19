@@ -28,7 +28,10 @@ test_requirements = [
     'pytest-watch',
     'pytest-cov',
     'pytest-flask',
-    'flake8'
+    'flake8',
+    'everett',
+    'everett[ini]',
+    'configobj'
 ]
 
 extras = {'test': test_requirements}
