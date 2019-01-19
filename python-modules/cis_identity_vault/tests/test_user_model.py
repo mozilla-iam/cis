@@ -1,9 +1,7 @@
 import boto3
 import json
 import os
-import subprocess
 import uuid
-from botocore.stub import Stubber
 from cis_identity_vault import vault
 from cis_profile import FakeUser
 from moto import mock_dynamodb2

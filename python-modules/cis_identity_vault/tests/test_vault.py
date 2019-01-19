@@ -1,6 +1,5 @@
 import os
 import subprocess
-import time
 from moto import mock_dynamodb2
 
 
