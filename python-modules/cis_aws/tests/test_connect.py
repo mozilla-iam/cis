@@ -22,8 +22,10 @@ class TestConnect(object):
         self.kinesalite_port = str(random.randint(32000, 34000))
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
-        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
-        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
+        self.dynalite_host = 'localhost'
+        self.kinesalite_host = 'localhost'
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', self.dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', self.kinesalite_port], preexec_fn=os.setsid)
 
     def test_connect_object_init(self):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
@@ -401,10 +403,10 @@ class TestConnect(object):
             )
         ).client.client(
             'dynamodb',
-            endpoint_url='http://localhost:34569'
+            endpoint_url='http://{}:{}'
             .format(
-                dynalite_host,
-                dynalite_port
+                self.dynalite_host,
+                self.dynalite_port
             )
         )
 
@@ -446,7 +448,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -481,10 +483,10 @@ class TestConnect(object):
             )
         ).client.client(
             'kinesis',
-            endpoint_url='http://localhost:34567'
+            endpoint_url='http://{}:{}'
             .format(
-                kinesalite_host,
-                kinesalite_port
+                self.kinesalite_host,
+                self.kinesalite_port
             )
         )
 
