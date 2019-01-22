@@ -25,4 +25,4 @@ script:
   - echo '[default]' >> ~/.aws/config
   - echo 'output=json'  >> ~/.aws/config
   - echo 'region=us-west-2'  >> ~/.aws/config
-  - cd python-modules && time -p make -j 4 test-tox
+  - cd python-modules && time -p make -j 3 test-tox
