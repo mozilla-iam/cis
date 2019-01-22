@@ -18,23 +18,31 @@ logger = logging.getLogger(__name__)
 
 class TestConnect(object):
     def setup(self):
-        dynalite_port = str(random.randint(32000, 34000))
-        kinesalite_port = str(random.randint(32000, 34000))
+        self.dynalite_port = str(random.randint(32000, 34000))
+        self.kinesalite_port = str(random.randint(32000, 34000))
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
         self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
     def test_connect_object_init(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         assert c is not None
 
     def test_botocore_client_initialization(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         tested_session = c.session(region_name='us-east-1')
         assert tested_session is not None
 
     def test_botocore_client_initialization_without_region(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         tested_session = c.session()
@@ -42,6 +50,8 @@ class TestConnect(object):
         assert tested_session.region_name == 'us-west-2'
 
     def test_botocore_client_returns_session_if_inited(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         tested_session = c.session(region_name='eu-west-1')
@@ -54,6 +64,8 @@ class TestConnect(object):
 
     @mock_sts
     def test_assume_role(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
         from cis_aws import connect
         c = connect.AWS()
@@ -73,6 +85,8 @@ class TestConnect(object):
 
     @mock_sts
     def test_assume_role_expiry(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
@@ -106,6 +120,8 @@ class TestConnect(object):
         assert c._assume_role_is_expired() is False
 
     def test_discover_cis_environment(self):
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
         c = connect.AWS()
         os.environ['CIS_ENVIRONMENT'] = 'local'
@@ -373,12 +389,10 @@ class TestConnect(object):
 
     def test_dynamodb_local_with_dynalite(self):
         name = 'local-identity-vault'
-        dynalite_port = '34569'
-        dynalite_host = '127.0.0.1'
 
         os.environ['CIS_ENVIRONMENT'] = 'local'
-        os.environ['CIS_DYNALITE_HOST'] = dynalite_host
-        os.environ['CIS_DYNALITE_PORT'] = dynalite_port
+        os.environ['CIS_DYNALITE_HOST'] = self.dynalite_host
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
 
         dynalite_session = Stubber(
@@ -456,12 +470,11 @@ class TestConnect(object):
     def test_kinesis_client_with_local(self):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         name = 'local-stream'
-        kinesalite_port = '34567'
-        kinesalite_host = '127.0.0.1'
+        os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
+        os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
+        os.environ['CIS_KINESALITE_HOST'] = self.kinesalite_host
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
 
-        os.environ['CIS_KINESALITE_HOST'] = kinesalite_host
-        os.environ['CIS_KINESALITE_PORT'] = kinesalite_port
         conn = Stubber(
             boto3.session.Session(
                 region_name='us-west-2'
@@ -501,17 +514,6 @@ class TestConnect(object):
         result = c.input_stream_client()
         assert result is not None
         assert result.get('arn').endswith(name)
-
-    def test_pyconfig_support(self):
-        os.environ['CIS_ENVIRONMENT'] = 'local'
-        os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
-
-        from cis_aws.common import get_config
-
-        config = get_config()
-
-        test_port = config('dynalite_port', namespace='cis', default='4567')
-        assert test_port == '34567'
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
