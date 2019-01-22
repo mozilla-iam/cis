@@ -31,6 +31,7 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         assert c is not None
 
@@ -38,6 +39,7 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         tested_session = c.session(region_name='us-east-1')
         assert tested_session is not None
@@ -46,6 +48,7 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         tested_session = c.session()
         assert tested_session is not None
@@ -55,11 +58,10 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         tested_session = c.session(region_name='eu-west-1')
-        c._boto_session = Stubber(boto3.session.Session(
-            region_name='eu-west-1'
-        )).client
+        c._boto_session = Stubber(boto3.session.Session(region_name='eu-west-1')).client
 
         tested_session = c.session()
         assert tested_session == c._boto_session
@@ -70,12 +72,11 @@ class TestConnect(object):
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
         from cis_aws import connect
+
         c = connect.AWS()
 
         # Stub around the session because we are not testing sessions.
-        c._boto_session = Stubber(boto3.session.Session(
-            region_name='us-west-2'
-        )).client
+        c._boto_session = Stubber(boto3.session.Session(region_name='us-west-2')).client
 
         result = c.assume_role()
 
@@ -90,15 +91,15 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
         from cis_aws import connect
+
         c = connect.AWS()
 
         # Stub around the session because we are not testing sessions.
-        c._boto_session = Stubber(boto3.session.Session(
-            region_name='us-west-2'
-        )).client
+        c._boto_session = Stubber(boto3.session.Session(region_name='us-west-2')).client
 
         result = c.assume_role()
         assert result is not None
@@ -125,6 +126,7 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_KINESALITE_PORT'] = self.kinesalite_port
         from cis_aws import connect
+
         c = connect.AWS()
         os.environ['CIS_ENVIRONMENT'] = 'local'
 
@@ -136,34 +138,23 @@ class TestConnect(object):
     def test_discover_dynamodb_table_local(self):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         name = 'local-identity-vault'
-        conn = boto3.client('dynamodb',
-                            region_name='us-west-2',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('dynamodb', region_name='us-west-2', aws_access_key_id="ak", aws_secret_access_key="sk")
 
         conn.create_table(
             TableName=name,
-            KeySchema=[
-                {'AttributeName': 'id', 'KeyType': 'HASH'}
-            ],
-            AttributeDefinitions=[
-                {'AttributeName': 'id', 'AttributeType': 'S'}
-            ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
-            }
+            KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
+            AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
         )
 
         table_description = conn.describe_table(TableName=name)
         arn = table_description['Table']['TableArn']
 
-        tags = [
-            {'Key': 'cis_environment', 'Value': 'unittest'},
-            {'Key': 'application', 'Value': 'identity-vault'}
-        ]
+        tags = [{'Key': 'cis_environment', 'Value': 'unittest'}, {'Key': 'application', 'Value': 'identity-vault'}]
         conn.tag_resource(ResourceArn=arn, Tags=tags)
 
         from cis_aws import connect
+
         c = connect.AWS()
 
         res = c._discover_dynamo_table(conn)
@@ -173,16 +164,13 @@ class TestConnect(object):
     def test_discover_dynamodb_table_mock_cloud(self):
         os.environ['CIS_ENVIRONMENT'] = 'testing'
         name = 'testing-identity-vault'
-        conn = boto3.client('dynamodb',
-                            region_name='us-east-1',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('dynamodb', region_name='us-east-1', aws_access_key_id="ak", aws_secret_access_key="sk")
 
         conn.create_table(
             TableName=name,
             KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
             AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
-            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
         )
 
         table_description = conn.describe_table(TableName=name)
@@ -191,20 +179,12 @@ class TestConnect(object):
         assert arn is not None
 
         waiter = conn.get_waiter('table_exists')
-        waiter.wait(
-            TableName='testing-identity-vault',
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(TableName='testing-identity-vault', WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
-        tags = [
-            {'Key': 'cis_environment', 'Value': 'testing'},
-            {'Key': 'application', 'Value': 'identity-vault'}
-        ]
+        tags = [{'Key': 'cis_environment', 'Value': 'testing'}, {'Key': 'application', 'Value': 'identity-vault'}]
         conn.tag_resource(ResourceArn=arn, Tags=tags)
         from cis_aws import connect
+
         c = connect.AWS()
 
         res = c._discover_dynamo_table(conn)
@@ -215,26 +195,13 @@ class TestConnect(object):
     def test_discover_kinesis_stream_local(self):
         os.environ['CIS_ENVIRONMENT'] = 'local'
         name = 'local-stream'
-        conn = boto3.client('kinesis',
-                            region_name='us-east-1',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('kinesis', region_name='us-east-1', aws_access_key_id="ak", aws_secret_access_key="sk")
 
-        response = conn.create_stream(
-            StreamName=name,
-            ShardCount=1
-        )
+        response = conn.create_stream(StreamName=name, ShardCount=1)
 
         waiter = conn.get_waiter('stream_exists')
 
-        waiter.wait(
-            StreamName=name,
-            Limit=100,
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(StreamName=name, Limit=100, WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
         tags_1 = {'Key': 'cis_environment', 'Value': 'local'}
         tags_2 = {'Key': 'application', 'Value': 'change-stream'}
@@ -244,6 +211,7 @@ class TestConnect(object):
         assert response is not None
 
         from cis_aws import connect
+
         c = connect.AWS()
 
         result = c._discover_kinesis_stream(conn)
@@ -254,26 +222,13 @@ class TestConnect(object):
     def test_discover_kinesis_mock_cloud(self):
         os.environ['CIS_ENVIRONMENT'] = 'testing'
         name = 'testing-stream'
-        conn = boto3.client('kinesis',
-                            region_name='us-east-1',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('kinesis', region_name='us-east-1', aws_access_key_id="ak", aws_secret_access_key="sk")
 
-        response = conn.create_stream(
-            StreamName=name,
-            ShardCount=1
-        )
+        response = conn.create_stream(StreamName=name, ShardCount=1)
 
         waiter = conn.get_waiter('stream_exists')
 
-        waiter.wait(
-            StreamName=name,
-            Limit=100,
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(StreamName=name, Limit=100, WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
         tags_1 = {'cis_environment': 'testing'}
         tags_2 = {'application': 'change-stream'}
@@ -283,6 +238,7 @@ class TestConnect(object):
         assert response is not None
 
         from cis_aws import connect
+
         c = connect.AWS()
 
         result = c._discover_kinesis_stream(conn)
@@ -294,16 +250,13 @@ class TestConnect(object):
     def test_role_arn_is_none(self):
         os.environ['CIS_ENVIRONMENT'] = 'inalambda'
         name = 'inalambda-identity-vault'
-        conn = boto3.client('dynamodb',
-                            region_name='us-west-2',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('dynamodb', region_name='us-west-2', aws_access_key_id="ak", aws_secret_access_key="sk")
 
         conn.create_table(
             TableName=name,
             KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
             AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
-            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
         )
 
         table_description = conn.describe_table(TableName=name)
@@ -312,23 +265,15 @@ class TestConnect(object):
         assert arn is not None
 
         waiter = conn.get_waiter('table_exists')
-        waiter.wait(
-            TableName='inalambda-identity-vault',
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(TableName='inalambda-identity-vault', WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
-        tags = [
-            {'Key': 'cis_environment', 'Value': 'inalambda'},
-            {'Key': 'application', 'Value': 'identity-vault'}
-        ]
+        tags = [{'Key': 'cis_environment', 'Value': 'inalambda'}, {'Key': 'application', 'Value': 'identity-vault'}]
 
         conn.tag_resource(ResourceArn=arn, Tags=tags)
 
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'None'
         from cis_aws import connect
+
         c = connect.AWS()
         c._boto_session = boto3.session.Session(region_name='us-west-2')
         c.assume_role()
@@ -344,16 +289,13 @@ class TestConnect(object):
     def test_dynamodb_full_client_with_mock_cloud(self):
         os.environ['CIS_ENVIRONMENT'] = 'testing'
         name = 'testing-identity-vault'
-        conn = boto3.client('dynamodb',
-                            region_name='us-east-1',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('dynamodb', region_name='us-east-1', aws_access_key_id="ak", aws_secret_access_key="sk")
 
         conn.create_table(
             TableName=name,
             KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
             AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
-            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
         )
 
         table_description = conn.describe_table(TableName=name)
@@ -362,23 +304,15 @@ class TestConnect(object):
         assert arn is not None
 
         waiter = conn.get_waiter('table_exists')
-        waiter.wait(
-            TableName='testing-identity-vault',
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(TableName='testing-identity-vault', WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
-        tags = [
-            {'Key': 'cis_environment', 'Value': 'testing'},
-            {'Key': 'application', 'Value': 'identity-vault'}
-        ]
+        tags = [{'Key': 'cis_environment', 'Value': 'testing'}, {'Key': 'application', 'Value': 'identity-vault'}]
 
         conn.tag_resource(ResourceArn=arn, Tags=tags)
 
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
         from cis_aws import connect
+
         c = connect.AWS()
         c._boto_session = boto3.session.Session(region_name='us-east-1')
         c.assume_role()
@@ -397,26 +331,18 @@ class TestConnect(object):
         os.environ['CIS_DYNALITE_PORT'] = self.dynalite_port
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
 
-        dynalite_session = Stubber(
-            boto3.session.Session(
-                region_name='us-west-2'
-            )
-        ).client.client(
-            'dynamodb',
-            endpoint_url='http://{}:{}'
-            .format(
-                self.dynalite_host,
-                self.dynalite_port
-            )
+        dynalite_session = Stubber(boto3.session.Session(region_name='us-west-2')).client.client(
+            'dynamodb', endpoint_url='http://{}:{}'.format(self.dynalite_host, self.dynalite_port)
         )
 
         dynalite_session.create_table(
             TableName=name,
             KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
             AttributeDefinitions=[{'AttributeName': 'id', 'AttributeType': 'S'}],
-            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5}
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
         )
         from cis_aws import connect
+
         c = connect.AWS()
         c.session()
 
@@ -432,26 +358,13 @@ class TestConnect(object):
         os.environ['CIS_ENVIRONMENT'] = 'testing'
         name = 'testing-stream'
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
-        conn = boto3.client('kinesis',
-                            region_name='us-east-1',
-                            aws_access_key_id="ak",
-                            aws_secret_access_key="sk")
+        conn = boto3.client('kinesis', region_name='us-east-1', aws_access_key_id="ak", aws_secret_access_key="sk")
 
-        response = conn.create_stream(
-            StreamName=name,
-            ShardCount=1
-        )
+        response = conn.create_stream(StreamName=name, ShardCount=1)
 
         waiter = conn.get_waiter('stream_exists')
 
-        waiter.wait(
-            StreamName=name,
-            Limit=100,
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(StreamName=name, Limit=100, WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
         tags_1 = {'cis_environment': 'testing'}
         tags_2 = {'application': 'change-stream'}
@@ -461,6 +374,7 @@ class TestConnect(object):
         assert response is not None
 
         from cis_aws import connect
+
         c = connect.AWS()
         c.session(region_name='us-east-1')
         c.assume_role()
@@ -477,38 +391,20 @@ class TestConnect(object):
         os.environ['CIS_KINESALITE_HOST'] = self.kinesalite_host
         os.environ['CIS_ASSUME_ROLE_ARN'] = 'arn:aws:iam::123456789000:role/demo-assume-role'
 
-        conn = Stubber(
-            boto3.session.Session(
-                region_name='us-west-2'
-            )
-        ).client.client(
-            'kinesis',
-            endpoint_url='http://{}:{}'
-            .format(
-                self.kinesalite_host,
-                self.kinesalite_port
-            )
+        conn = Stubber(boto3.session.Session(region_name='us-west-2')).client.client(
+            'kinesis', endpoint_url='http://{}:{}'.format(self.kinesalite_host, self.kinesalite_port)
         )
 
-        response = conn.create_stream(
-            StreamName=name,
-            ShardCount=1
-        )
+        response = conn.create_stream(StreamName=name, ShardCount=1)
 
         waiter = conn.get_waiter('stream_exists')
 
-        waiter.wait(
-            StreamName=name,
-            Limit=100,
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(StreamName=name, Limit=100, WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
         assert response is not None
 
         from cis_aws import connect
+
         c = connect.AWS()
         c.session(region_name='us-west-2')
         c.assume_role()
