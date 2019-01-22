@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 from boto.kinesis.exceptions import ResourceInUseException
+from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from datetime import timedelta
 from datetime import tzinfo
@@ -43,10 +44,12 @@ class TestFullPublish(object):
         except ResourceInUseException:
             # This just means we tried too many tests too fast.
             pass
+        except ClientError:
+            pass
 
         waiter = conn.get_waiter("stream_exists")
 
-        waiter.wait(StreamName=name, Limit=100, WaiterConfig={"Delay": 30, "MaxAttempts": 5})
+        waiter.wait(StreamName=name, Limit=100, WaiterConfig={"Delay": 5, "MaxAttempts": 5})
 
         tags_1 = {"Key": "cis_environment", "Value": "local"}
         tags_2 = {"Key": "application", "Value": "change-stream"}

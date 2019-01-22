@@ -142,8 +142,8 @@ class TestProfile(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 10,
-                'MaxAttempts': 2
+                'Delay': 5,
+                'MaxAttempts': 5
             }
         )
 
