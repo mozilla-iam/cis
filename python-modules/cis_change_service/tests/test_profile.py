@@ -31,16 +31,16 @@ class TestProfile(object):
         name = 'local-identity-vault'
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         config = get_config()
-        kinesalite_port = config('kinesalite_port', namespace='cis')
-        kinesalite_host = config('kinesalite_host', namespace='cis')
-        dynalite_port = config('dynalite_port', namespace='cis')
-        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
-        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
+        self.kinesalite_port = config('kinesalite_port', namespace='cis')
+        self.kinesalite_host = config('kinesalite_host', namespace='cis')
+        self.dynalite_port = config('dynalite_port', namespace='cis')
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', self.dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', self.kinesalite_port], preexec_fn=os.setsid)
         conn = boto3.client('dynamodb',
                             region_name='us-west-2',
                             aws_access_key_id="ak",
                             aws_secret_access_key="sk",
-                            endpoint_url='http://localhost:{}'.format(dynalite_port))
+                            endpoint_url='http://localhost:{}'.format(self.dynalite_port))
 
         # XXX TBD this will eventually be replaced by logic from the vault module
         # The vault module will have the authoritative definitions for Attributes and GSI
@@ -119,9 +119,9 @@ class TestProfile(object):
             )
         ).client.client(
             'kinesis',
-            endpoint_url='http://localhost:{}'.format(kinesalite_port).format(
-                kinesalite_host,
-                kinesalite_port
+            endpoint_url='http://{}:{}'.format(
+                self.kinesalite_host,
+                self.kinesalite_port
             )
         )
 
