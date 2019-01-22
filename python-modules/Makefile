@@ -14,6 +14,8 @@ tests: $(MODULES)
 
 test-tox: $(MODULES)
 
+.flake: $(MODULES)
+
 clean: $(MODULES)
 
 $(MODULES):

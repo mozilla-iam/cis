@@ -33,11 +33,11 @@ class TestAPI(object):
         config = get_config()
         os.environ['CIS_DYNALITE_PORT'] = str(random.randint(32000, 34000))
         os.environ['CIS_KINESALITE_PORT'] = str(random.randint(32000, 34000))
-        kinesalite_port = config('kinesalite_port', namespace='cis')
-        kinesalite_host = config('kinesalite_host', namespace='cis')
-        dynalite_port = config('dynalite_port', namespace='cis')
-        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
-        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
+        self.kinesalite_port = config('kinesalite_port', namespace='cis')
+        self.kinesalite_host = config('kinesalite_host', namespace='cis')
+        self.dynalite_port = config('dynalite_port', namespace='cis')
+        self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', self.dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', self.kinesalite_port], preexec_fn=os.setsid)
 
         conn = Stubber(
             boto3.session.Session(
@@ -45,9 +45,9 @@ class TestAPI(object):
             )
         ).client.client(
             'kinesis',
-            endpoint_url='http://localhost:{}'.format(kinesalite_port).format(
-                kinesalite_host,
-                kinesalite_port
+            endpoint_url='http://{}:{}'.format(
+                self.kinesalite_host,
+                self.kinesalite_port
             )
         )
 
@@ -83,7 +83,7 @@ class TestAPI(object):
                             region_name='us-west-2',
                             aws_access_key_id="ak",
                             aws_secret_access_key="sk",
-                            endpoint_url='http://localhost:{}'.format(dynalite_port))
+                            endpoint_url='http://localhost:{}'.format(self.dynalite_port))
         try:
             conn.create_table(
                 TableName=name,
