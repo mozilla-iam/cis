@@ -3,6 +3,7 @@ import json
 import logging
 import mock
 import os
+import random
 import subprocess
 from botocore.stub import Stubber
 from cis_profile import FakeUser
@@ -30,6 +31,8 @@ class TestAPI(object):
         os.environ['CIS_CONFIG_INI'] = 'tests/mozilla-cis.ini'
         from cis_change_service.common import get_config
         config = get_config()
+        os.environ['CIS_DYNALITE_PORT'] = str(random.randint(32000, 34000))
+        os.environ['CIS_KINESALITE_PORT'] = str(random.randint(32000, 34000))
         kinesalite_port = config('kinesalite_port', namespace='cis')
         kinesalite_host = config('kinesalite_host', namespace='cis')
         dynalite_port = config('dynalite_port', namespace='cis')

@@ -2,6 +2,7 @@
 import boto3
 import logging
 import os
+import random
 import subprocess
 from boto.kinesis.exceptions import ResourceInUseException
 from botocore.exceptions import ClientError
@@ -30,9 +31,10 @@ class TestFullPublish(object):
     def setup_class(self):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         from cis_publisher.common import get_config
+        os.environ['CIS_KINESALITE_PORT'] = str(random.randint(32000, 34000))
 
         config = get_config()
-        kinesalite_port = config("kinesalite_port", namespace="cis")
+        kinesalite_port = config('kinesalite_port', namespace='cis')
         self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", kinesalite_port], preexec_fn=os.setsid)
 
         stub = Stubber(boto3.session.Session(region_name="us-west-2"))

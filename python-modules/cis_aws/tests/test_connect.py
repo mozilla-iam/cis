@@ -1,6 +1,7 @@
 import boto3
 import logging
 import os
+import random
 import subprocess
 
 from botocore.stub import Stubber
@@ -15,10 +16,11 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+
 class TestConnect(object):
     def setup(self):
-        dynalite_port = '34569'
-        kinesalite_port = '34567'
+        dynalite_port = str(random.randint(32000, 34000))
+        kinesalite_port = str(random.randint(32000, 34000))
         self.dynaliteprocess = subprocess.Popen(['dynalite', '--port', dynalite_port], preexec_fn=os.setsid)
         self.kinesaliteprocess = subprocess.Popen(['kinesalite', '--port', kinesalite_port], preexec_fn=os.setsid)
 
