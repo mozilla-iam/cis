@@ -3,6 +3,8 @@ dist: xenial
 cache:
   - pip
   - npm
+  directories:
+    - /home/travis/build/mozilla-iam/cis/python-modules/.cis-env/
 python:
   - 3.7
 env:
