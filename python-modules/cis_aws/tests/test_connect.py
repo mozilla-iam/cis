@@ -175,7 +175,7 @@ class TestConnect(object):
         waiter.wait(
             TableName='testing-identity-vault',
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -212,7 +212,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -251,7 +251,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -296,7 +296,7 @@ class TestConnect(object):
         waiter.wait(
             TableName='inalambda-identity-vault',
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -346,7 +346,7 @@ class TestConnect(object):
         waiter.wait(
             TableName='testing-identity-vault',
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )
@@ -485,7 +485,7 @@ class TestConnect(object):
             StreamName=name,
             Limit=100,
             WaiterConfig={
-                'Delay': 30,
+                'Delay': 5,
                 'MaxAttempts': 5
             }
         )

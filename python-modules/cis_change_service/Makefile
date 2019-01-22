@@ -43,10 +43,10 @@ tests: .install-test .flake
 	PATH=$(PATH):$(shell npm bin) \
 	python setup.py test
 
-test-tox: test-tox
+.PHONY test-tox:
 test-tox: .flake
 	PATH=$(PATH):$(shell npm bin) \
-	tox -r
+	tox -p all --parallel-live
 
 clean:
 	rm -rf venv

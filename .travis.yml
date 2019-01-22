@@ -4,7 +4,7 @@ cache:
   - pip
   - npm
 python:
-  - 3.6
+  - 3.7
 env:
   - "AWS_DEFAULT_REGION=us-west-2 BOTO_CONFIG=/dev/null"
 before_install:
@@ -24,4 +24,4 @@ script:
   - echo '[default]' >> ~/.aws/config
   - echo 'output=json'  >> ~/.aws/config
   - echo 'region=us-west-2'  >> ~/.aws/config
-  - cd python-modules && make test-tox
+  - cd python-modules && time -p make -j 2 test-tox
