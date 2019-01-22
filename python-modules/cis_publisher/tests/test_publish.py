@@ -4,6 +4,7 @@ import logging
 import os
 import subprocess
 from boto.kinesis.exceptions import ResourceInUseException
+from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from datetime import timedelta
 from datetime import tzinfo
@@ -42,6 +43,8 @@ class TestFullPublish(object):
             conn.create_stream(StreamName=name, ShardCount=1)
         except ResourceInUseException:
             # This just means we tried too many tests too fast.
+            pass
+        except ClientError:
             pass
 
         waiter = conn.get_waiter("stream_exists")
