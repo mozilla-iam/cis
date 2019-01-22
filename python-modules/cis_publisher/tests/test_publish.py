@@ -38,7 +38,7 @@ class TestFullPublish(object):
         self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
 
         stub = Stubber(boto3.session.Session(region_name="us-west-2"))
-        conn = stub.client.client("kinesis", endpoint_url="http://localhost:{}".format(kinesalite_port))
+        conn = stub.client.client("kinesis", endpoint_url="http://localhost:{}".format(self.kinesalite_port))
 
         try:
             name = "local-stream"
