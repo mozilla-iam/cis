@@ -19,10 +19,7 @@ class IdentityVault(object):
                 dynalite_port = self.config('dynalite_port', namespace='cis', default='4567')
                 dynalite_host = self.config('dynalite_host', namespace='cis', default='localhost')
                 self.dynamodb_client = self.boto_session.client(
-                    'dynamodb', endpoint_url='http://{}:{}'.format(
-                        dynalite_host,
-                        dynalite_port
-                    )
+                    'dynamodb', endpoint_url='http://{}:{}'.format(dynalite_host, dynalite_port)
                 )
             else:
                 self.dynamodb_client = self.boto_session.client('dynamodb')
@@ -47,10 +44,7 @@ class IdentityVault(object):
         self.connect()
         result = self.dynamodb_client.update_table(
             TableName=self._generate_table_name(),
-            StreamSpecification={
-                'StreamEnabled': True,
-                'StreamViewType': 'NEW_AND_OLD_IMAGES'
-            }
+            StreamSpecification={'StreamEnabled': True, 'StreamViewType': 'NEW_AND_OLD_IMAGES'},
         )
         return result
 
@@ -62,10 +56,7 @@ class IdentityVault(object):
     def tag_vault(self):
         self.connect()
         arn = self.find()
-        tags = [
-            {'Key': 'cis_environment', 'Value': 'testing'},
-            {'Key': 'application', 'Value': 'identity-vault'}
-        ]
+        tags = [{'Key': 'cis_environment', 'Value': 'testing'}, {'Key': 'application', 'Value': 'identity-vault'}]
         return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
 
     def find(self):
@@ -76,9 +67,7 @@ class IdentityVault(object):
                 return self.dynamodb_client.describe_table(TableName='local-identity-vault')['Table']['TableArn']
             else:
                 # Assume that we are in AWS and list tables, describe tables, and check tags.
-                tables = self.dynamodb_client.list_tables(
-                    Limit=100
-                )
+                tables = self.dynamodb_client.list_tables(Limit=100)
 
                 for table in tables.get('TableNames'):
                     table_arn = self.dynamodb_client.describe_table(TableName=table)['Table']['TableArn']
@@ -94,93 +83,49 @@ class IdentityVault(object):
     def create(self):
         result = self.dynamodb_client.create_table(
             TableName=self._generate_table_name(),
-            KeySchema=[
-                {'AttributeName': 'id', 'KeyType': 'HASH'}
-            ],
+            KeySchema=[{'AttributeName': 'id', 'KeyType': 'HASH'}],
             AttributeDefinitions=[
                 {'AttributeName': 'id', 'AttributeType': 'S'},  # auth0 user_id
                 {'AttributeName': 'uuid', 'AttributeType': 'S'},  # uuid formerly dinopark id
                 {'AttributeName': 'sequence_number', 'AttributeType': 'S'},  # sequence number for the last integration
-                {'AttributeName': 'primary_email', 'AttributeType': 'S'}  # value of the primary_email attribute
+                {'AttributeName': 'primary_email', 'AttributeType': 'S'},  # value of the primary_email attribute
             ],
-            ProvisionedThroughput={
-                'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5
-            },
+            ProvisionedThroughput={'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
             GlobalSecondaryIndexes=[
                 {
                     'IndexName': '{}-sequence_number'.format(self._generate_table_name()),
-                    'KeySchema': [
-                        {
-                            'AttributeName': 'sequence_number',
-                            'KeyType': 'HASH'
-                        },
-                    ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
-                    },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
-                    }
+                    'KeySchema': [{'AttributeName': 'sequence_number', 'KeyType': 'HASH'}],
+                    'Projection': {'ProjectionType': 'ALL'},
+                    'ProvisionedThroughput': {'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
                 },
                 {
                     'IndexName': '{}-primary_email'.format(self._generate_table_name()),
                     'KeySchema': [
-                        {
-                            'AttributeName': 'primary_email',
-                            'KeyType': 'HASH'
-                        },
-                        {
-                            'AttributeName': 'id',
-                            'KeyType': 'RANGE'
-                        }
+                        {'AttributeName': 'primary_email', 'KeyType': 'HASH'},
+                        {'AttributeName': 'id', 'KeyType': 'RANGE'},
                     ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
-                    },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
-                    }
+                    'Projection': {'ProjectionType': 'ALL'},
+                    'ProvisionedThroughput': {'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
                 },
                 {
                     'IndexName': '{}-uuid'.format(self._generate_table_name()),
                     'KeySchema': [
-                        {
-                            'AttributeName': 'uuid',
-                            'KeyType': 'HASH'
-                        },
-                        {
-                            'AttributeName': 'id',
-                            'KeyType': 'RANGE'
-                        }
+                        {'AttributeName': 'uuid', 'KeyType': 'HASH'},
+                        {'AttributeName': 'id', 'KeyType': 'RANGE'},
                     ],
-                    'Projection': {
-                        'ProjectionType': 'ALL',
-                    },
-                    'ProvisionedThroughput': {
-                        'ReadCapacityUnits': 5,
-                        'WriteCapacityUnits': 5
-                    }
-                }
-            ]
+                    'Projection': {'ProjectionType': 'ALL'},
+                    'ProvisionedThroughput': {'ReadCapacityUnits': 5, 'WriteCapacityUnits': 5},
+                },
+            ],
         )
 
         waiter = self.dynamodb_client.get_waiter('table_exists')
-        waiter.wait(
-            TableName=self._generate_table_name(),
-            WaiterConfig={
-                'Delay': 5,
-                'MaxAttempts': 5
-            }
-        )
+        waiter.wait(TableName=self._generate_table_name(), WaiterConfig={'Delay': 1, 'MaxAttempts': 5})
 
         return result
 
     def destroy(self):
-        result = self.dynamodb_client.delete_table(
-            TableName=self._generate_table_name()
-        )
+        result = self.dynamodb_client.delete_table(TableName=self._generate_table_name())
 
         return result
 
@@ -192,11 +137,7 @@ class IdentityVault(object):
             dynalite_host = self.config('dynalite_host', namespace='cis', default='localhost')
 
             dynamodb_resource = self.boto_session.resource(
-                'dynamodb',
-                endpoint_url='http://{}:{}'.format(
-                    dynalite_host,
-                    dynalite_port
-                )
+                'dynamodb', endpoint_url='http://{}:{}'.format(dynalite_host, dynalite_port)
             )
             table = dynamodb_resource.Table(self._generate_table_name())
         else:
