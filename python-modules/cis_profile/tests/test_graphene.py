@@ -25,7 +25,7 @@ class TestGraphene(object):
                 return {}
 
         schema = graphene.Schema(query=Query)
-        r = schema.execute('{}')
+        r = schema.execute("{}")
         assert r.data is None
 
     def test_schema_initializes_core(self):
@@ -36,7 +36,7 @@ class TestGraphene(object):
                 return {}
 
         schema = graphene.Schema(query=Query)
-        r = schema.execute('{}')
+        r = schema.execute("{}")
         assert r.data is None
 
     def test_graphql_query(self):
@@ -44,32 +44,34 @@ class TestGraphene(object):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
             def resolve_profile(self, info, **kwargs):
-                fh = open('cis_profile/data/user_profile_null.json')
+                fh = open("cis_profile/data/user_profile_null.json")
                 user_profile = fh.read()
                 fh.close()
                 tmp = json2obj(user_profile)
-                tmp.first_name.value = 'Hello'
-                tmp.user_id.value = 'my_user_id'
+                tmp.first_name.value = "Hello"
+                tmp.user_id.value = "my_user_id"
                 return tmp
 
         schema = graphene.Schema(Query, auto_camelcase=False)
-        result = schema.execute('query getProfile($user_id: String!) {profile(user_id:$user_id) {first_name{value}}}',
-                                variables={'user_id': 'my_user_id'})
+        result = schema.execute(
+            "query getProfile($user_id: String!) {profile(user_id:$user_id) {first_name{value}}}",
+            variables={"user_id": "my_user_id"},
+        )
         print(result.errors, result.data)
         assert result.errors is None
-        assert result.data['profile']['first_name']['value'] == 'Hello'
+        assert result.data["profile"]["first_name"]["value"] == "Hello"
 
     def test_flask_graphql_query(self):
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
             def resolve_profile(self, info, **kwargs):
-                fh = open('cis_profile/data/user_profile_null.json')
+                fh = open("cis_profile/data/user_profile_null.json")
                 user_profile = fh.read()
                 fh.close()
                 tmp = json2obj(user_profile)
-                tmp.first_name.value = 'Hello'
-                tmp.user_id.value = 'ad|Mozilla-LDAP-Dev|dummymcdummy'
+                tmp.first_name.value = "Hello"
+                tmp.user_id.value = "ad|Mozilla-LDAP-Dev|dummymcdummy"
                 return tmp
 
         # The following code may be used to test for scopes in the JWT token
@@ -86,11 +88,10 @@ class TestGraphene(object):
         app.testing = True
         app = app.test_client()
         payload = 'query {profile (user_id:"ad|Mozilla-LDAP-Dev|dummymcdummy") {first_name{value}}}'
-        result = app.get('/graphql?query={}'.format(payload),
-                         follow_redirects=True)
+        result = app.get("/graphql?query={}".format(payload), follow_redirects=True)
 
         assert result.status_code == 200
         response = json.loads(result.get_data())
         print(response)
-        assert response.get('errors') is None
-        assert response['data']['profile']['first_name']['value'] == "Hello"
+        assert response.get("errors") is None
+        assert response["data"]["profile"]["first_name"]["value"] == "Hello"

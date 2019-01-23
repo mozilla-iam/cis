@@ -7,34 +7,23 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose[cryptography]',
-    'cryptography',
-    'everett',
-    'everett[ini]',
-    'configobj',
-    'boto3',
-    'boto',
-    'botocore',
-    'requests',
-    'pyaml'
+    "python-jose[cryptography]",
+    "cryptography",
+    "everett",
+    "everett[ini]",
+    "configobj",
+    "boto3",
+    "boto",
+    "botocore",
+    "requests",
+    "pyaml",
 ]
 
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = [
-    'pytest',
-    'pytest-watch',
-    'pytest-cov',
-    'pytest-mock',
-    'moto',
-    'mock',
-    'flake8'
-]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "pytest-mock", "moto", "mock", "flake8"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_crypto",
@@ -52,11 +41,11 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_crypto', 'bin']),
-    scripts=['bin/cis_crypto'],
+    packages=find_packages(include=["cis_crypto", "bin"]),
+    scripts=["bin/cis_crypto"],
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

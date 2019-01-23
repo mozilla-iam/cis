@@ -7,14 +7,7 @@ from everett.manager import ConfigOSEnv
 
 def get_config():
     return ConfigManager(
-        [
-            ConfigIniEnv([
-                os.environ.get('CIS_CONFIG_INI'),
-                '~/.mozilla-cis.ini',
-                '/etc/mozilla-cis.ini'
-            ]),
-            ConfigOSEnv()
-        ]
+        [ConfigIniEnv([os.environ.get("CIS_CONFIG_INI"), "~/.mozilla-cis.ini", "/etc/mozilla-cis.ini"]), ConfigOSEnv()]
     )
 
 
@@ -24,6 +17,6 @@ def load_file(file_path):
 
 
 def write_file(file_content, file_name):
-    with open(file_name, 'w') as fh:
+    with open(file_name, "w") as fh:
         fh.write(file_content)
         fh.close()

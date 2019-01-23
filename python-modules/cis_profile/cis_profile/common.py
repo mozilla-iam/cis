@@ -15,14 +15,7 @@ logger = logging.getLogger(__name__)
 
 def get_config():
     return ConfigManager(
-        [
-            ConfigIniEnv([
-                os.environ.get('CIS_CONFIG_INI'),
-                '~/.mozilla-cis.ini',
-                '/etc/mozilla-cis.ini'
-            ]),
-            ConfigOSEnv()
-        ]
+        [ConfigIniEnv([os.environ.get("CIS_CONFIG_INI"), "~/.mozilla-cis.ini", "/etc/mozilla-cis.ini"]), ConfigOSEnv()]
     )
 
 
@@ -32,6 +25,7 @@ class DotDict(dict):
     test = dict({"test": {"value": 1}})
     test.test.value = 2
     """
+
     def __init__(self, *args, **kwargs):
         dict.__init__(self, *args, **kwargs)
         try:
@@ -83,26 +77,28 @@ class MozillaDataClassification(DotDict):
     Just a simple object-enum - it returns all valid labels per level
     as a list/array.
     """
-    UNKNOWN = ['UNKNOWN']
-    PUBLIC = ['PUBLIC']
-    MOZILLA_CONFIDENTIAL = ['MOZILLA CONFIDENTIAL', 'Mozilla Confidential - Staff and NDA\'d Mozillians Only']
-    WORKGROUP_CONFIDENTIAL = ['WORKGROUP CONFIDENTIAL', 'Mozilla Confidential - Specific Work Groups Only']
-    INDIVIDUAL_CONFIDENTIAL = ['INDIVIDUAL CONFIDENTIAL', 'Mozilla Confidential - Specific Individuals Only']
+
+    UNKNOWN = ["UNKNOWN"]
+    PUBLIC = ["PUBLIC"]
+    MOZILLA_CONFIDENTIAL = ["MOZILLA CONFIDENTIAL", "Mozilla Confidential - Staff and NDA'd Mozillians Only"]
+    WORKGROUP_CONFIDENTIAL = ["WORKGROUP CONFIDENTIAL", "Mozilla Confidential - Specific Work Groups Only"]
+    INDIVIDUAL_CONFIDENTIAL = ["INDIVIDUAL CONFIDENTIAL", "Mozilla Confidential - Specific Individuals Only"]
     # Well-known Workgroups:
-    WELL_KNOWN_WORKGROUPS = ['STAFF_ONLY']
-    STAFF_ONLY = ['WORKGROUP CONFIDENTIAL: STAFF ONLY']
+    WELL_KNOWN_WORKGROUPS = ["STAFF_ONLY"]
+    STAFF_ONLY = ["WORKGROUP CONFIDENTIAL: STAFF ONLY"]
 
 
 class DisplayLevel(DotDict):
     """
     Display levels for profile v2.
     """
-    PUBLIC = 'public'
-    AUTHENTICATED = 'authenticated'
-    VOUCHED = 'vouched'
-    NDAED = 'ndaed'
-    STAFF = 'staff'
-    PRIVATE = 'private'
+
+    PUBLIC = "public"
+    AUTHENTICATED = "authenticated"
+    VOUCHED = "vouched"
+    NDAED = "ndaed"
+    STAFF = "staff"
+    PRIVATE = "private"
     NULL = None
 
 
@@ -125,19 +121,19 @@ class WellKnown(object):
     <Dict: schema>
     """
 
-    def __init__(self, discovery_url='https://auth.mozilla.com/.well-known/mozilla-iam'):
-        self._request_cache = '/var/tmp/cis_request_cache'  # XXX use `get_config` to configure that
+    def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam"):
+        self._request_cache = "/var/tmp/cis_request_cache"  # XXX use `get_config` to configure that
         self._request_cache_ttl = 3600
         # Memory cached copies
         self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
         self.config = get_config()
-        logger.debug('Initializing requests_cache TTL={} at {}'.format(self._request_cache_ttl, self._request_cache))
+        logger.debug("Initializing requests_cache TTL={} at {}".format(self._request_cache_ttl, self._request_cache))
         requests_cache.install_cache(
             self._request_cache,
             expire_after=self._request_cache_ttl,
-            backend=self.config('requests_cache_backend', namespace='cis', default='sqlite')
+            backend=self.config("requests_cache_backend", namespace="cis", default="sqlite"),
         )
 
     def get_publisher_rules(self):
@@ -145,7 +141,7 @@ class WellKnown(object):
         Public wrapper for _load_rules
         """
         self._well_known_json = self._load_well_known()
-        rules_url = self._well_known_json.get('publishers_rules_uri')
+        rules_url = self._well_known_json.get("publishers_rules_uri")
         return self._load_publisher_rules(rules_url)
 
     def get_schema(self):
@@ -153,8 +149,8 @@ class WellKnown(object):
         Public wrapper for _load_well_known()
         """
         self._well_known_json = self._load_well_known()
-        schema_url = self._well_known_json.get('api').get('data/profile_schema')
-        return self._load_schema(schema_url, stype='data/profile.schema')
+        schema_url = self._well_known_json.get("api").get("data/profile_schema")
+        return self._load_schema(schema_url, stype="data/profile.schema")
 
     def get_core_schema(self):
         """ Deprecated """
@@ -180,16 +176,16 @@ class WellKnown(object):
                 r = requests.get(rules_url)
                 rules = r.json()
                 if r.from_cache:
-                    logger.debug('Loaded rules data from requests cache')
+                    logger.debug("Loaded rules data from requests cache")
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug('Failed to load rules data from rules_url {} ({})'.format(rules_url, e))
+                logger.debug("Failed to load rules data from rules_url {} ({})".format(rules_url, e))
 
         # Fall-back to built-in copy
         if rules is None:
-            rules_file = 'data/well-known/mozilla-iam-publisher-rules'
+            rules_file = "data/well-known/mozilla-iam-publisher-rules"
             if not os.path.isfile(rules_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
-                path = dirname + '/' + rules_file
+                path = dirname + "/" + rules_file
             else:
                 path = rules_file
 
@@ -209,21 +205,21 @@ class WellKnown(object):
             r = requests.get(self.discovery_url)
             self._well_known_json = r.json()
             if r.from_cache:
-                logger.debug('Loaded well-known url from requests cache')
+                logger.debug("Loaded well-known url from requests cache")
         except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-            logger.debug('Failed to fetch schema url from discovery {} ({})'.format(self.discovery_url, e))
-            logger.debug('Using builtin copy')
-            well_known_file = 'data/well-known/mozilla-iam'  # Local fall-back
+            logger.debug("Failed to fetch schema url from discovery {} ({})".format(self.discovery_url, e))
+            logger.debug("Using builtin copy")
+            well_known_file = "data/well-known/mozilla-iam"  # Local fall-back
             if not os.path.isfile(well_known_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
-                path = dirname + '/' + well_known_file
+                path = dirname + "/" + well_known_file
             else:
                 path = well_known_file
             self._well_known_json = json.load(open(path))
 
         return self._well_known_json
 
-    def _load_schema(self, schema_url, stype='data/profile.schema'):
+    def _load_schema(self, schema_url, stype="data/profile.schema"):
         """
         Loads JSON Schema from an URL
         @schema_url: str,None the schema URL
@@ -236,9 +232,9 @@ class WellKnown(object):
                 r = requests.get(schema_url)
                 schema = r.json()
                 if r.from_cache:
-                    logger.debug('Loaded schema data from requests cache')
+                    logger.debug("Loaded schema data from requests cache")
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug('Failed to load schema from schema_url {} ({})'.format(schema_url, e))
+                logger.debug("Failed to load schema from schema_url {} ({})".format(schema_url, e))
 
         # That did not work, fall-back to local, built-in copy
         if schema is None:
@@ -246,7 +242,7 @@ class WellKnown(object):
             schema_file = stype
             if not os.path.isfile(schema_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
-                path = dirname + '/' + schema_file
+                path = dirname + "/" + schema_file
             else:
                 path = schema_file
 

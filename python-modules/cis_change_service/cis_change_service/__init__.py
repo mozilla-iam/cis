@@ -2,7 +2,7 @@
 
 """Flaks application for publishing changes."""
 
-__version__ = '0.0.1'
+__version__ = "0.0.1"
 
 from cis_change_service import api
 from cis_change_service import common

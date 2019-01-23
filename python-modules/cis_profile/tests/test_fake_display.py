@@ -22,10 +22,6 @@ class TestFakeDisplay(object):
 
     def test_fake_display_nested(self):
         f = fake_display.DisplayFaker()
-        profile = {
-            "staff_information": {"title": {"metadata": {"display": "staff"}}}
-        }
+        profile = {"staff_information": {"title": {"metadata": {"display": "staff"}}}}
         f.populate(profile, policy=fake_display.DisplayFakerPolicy.max_display())
-        assert (
-            profile["staff_information"]["title"]["metadata"]["display"] == "ndaed"
-        )
+        assert profile["staff_information"]["title"]["metadata"]["display"] == "ndaed"

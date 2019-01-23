@@ -2,16 +2,10 @@ import click
 import json
 import sys
 
-from cis_profile.fake_profile import (
-    FakeUser,
-    batch_create_fake_profiles,
-    FakeProfileConfig,
-)
+from cis_profile.fake_profile import FakeUser, batch_create_fake_profiles, FakeProfileConfig
 
 CONFIG_OPTIONS = [
-    f
-    for f in dir(FakeProfileConfig)
-    if callable(getattr(FakeProfileConfig, f)) and not f.startswith("__")
+    f for f in dir(FakeProfileConfig) if callable(getattr(FakeProfileConfig, f)) and not f.startswith("__")
 ]
 
 
@@ -22,9 +16,7 @@ def main():
 
 
 @click.command()
-@click.option(
-    "--seed", "-s", type=int, help="seed to create random profile", default=None
-)
+@click.option("--seed", "-s", type=int, help="seed to create random profile", default=None)
 @click.option(
     "--config",
     "-c",
@@ -43,9 +35,7 @@ def create(seed, config):
 
 
 @click.command()
-@click.option(
-    "--seed", "-s", type=int, help="seed to create random profile", default=1337
-)
+@click.option("--seed", "-s", type=int, help="seed to create random profile", default=1337)
 @click.option("--number", "-n", type=int, help="how many profiles to create")
 def batch(seed, count):
     """Create many IAM profile v2 objects."""

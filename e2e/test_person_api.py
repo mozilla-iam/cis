@@ -7,26 +7,23 @@ from cis_profile import fake_profile
 from cis_profile import WellKnown
 
 
-cis_environment = os.getenv('CIS_ENVIRONMENT', 'testing')
-client_id_name = '/iam/cis/{}/change_client_id'.format(cis_environment)
-client_secret_name = '/iam/cis/{}/change_service_client_secret'.format(cis_environment)
+cis_environment = os.getenv("CIS_ENVIRONMENT", "testing")
+client_id_name = "/iam/cis/{}/change_client_id".format(cis_environment)
+client_secret_name = "/iam/cis/{}/change_service_client_secret".format(cis_environment)
 
-if cis_environment == 'testing':
-    base_url = 'person.api.test.sso.allizom.org'
-elif cis_environment == 'development':
-    base_url = 'person.api.dev.sso.allizom.org'
-elif cis_environment == 'production':
-    base_url == 'person.api.sso.mozilla.com'
+if cis_environment == "testing":
+    base_url = "person.api.test.sso.allizom.org"
+elif cis_environment == "development":
+    base_url = "person.api.dev.sso.allizom.org"
+elif cis_environment == "production":
+    base_url == "person.api.sso.mozilla.com"
 
-client = boto3.client('ssm')
+client = boto3.client("ssm")
 
 
 def get_secure_parameter(parameter_name):
-    response = client.get_parameter(
-        Name=parameter_name,
-        WithDecryption=True
-    )
-    return response['Parameter']['Value']
+    response = client.get_parameter(Name=parameter_name, WithDecryption=True)
+    return response["Parameter"]["Value"]
 
 
 def get_client_secret():
@@ -44,21 +41,21 @@ def exchange_for_access_token():
         client_secret=get_client_secret(),
         audience="api.test.sso.allizom.org",
         grant_type="client_credentials",
-        scopes="read:fullprofile"
+        scopes="read:fullprofile",
     )
 
     payload = json.dumps(payload_dict)
-    headers = {'content-type': "application/json"}
+    headers = {"content-type": "application/json"}
     conn.request("POST", "/oauth/token", payload, headers)
     res = conn.getresponse()
     data = json.loads(res.read())
-    return data['access_token']
+    return data["access_token"]
 
 
 def test_paginated_users():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
-    headers = {'authorization': "Bearer {}".format(access_token)}
+    headers = {"authorization": "Bearer {}".format(access_token)}
     conn.request("GET", "/v2/users", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
@@ -68,7 +65,7 @@ def test_paginated_users():
 def test_get_single_user():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
-    headers = {'authorization': "Bearer {}".format(access_token)}
+    headers = {"authorization": "Bearer {}".format(access_token)}
     conn.request("GET", "/v2/user/jeffreygreen%40gmail.com", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
@@ -77,5 +74,6 @@ def test_get_single_user():
 
 if __name__ == "__main__":
     import pprint
+
     print(pprint.pprint(test_paginated_users()))
     print(pprint.pprint(test_get_single_user()))

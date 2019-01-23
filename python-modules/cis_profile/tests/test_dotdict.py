@@ -2,7 +2,6 @@ from cis_profile.common import DotDict
 
 
 class TestDotDict(object):
-
     def test_dotdict(self):
         x = DotDict({"test": "test"})
         print(x.test)

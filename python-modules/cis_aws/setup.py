@@ -6,31 +6,13 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = [
-    'boto',
-    'boto3',
-    'botocore',
-    'everett',
-    'everett[ini]',
-    'configobj'
-]
+requirements = ["boto", "boto3", "botocore", "everett", "everett[ini]", "configobj"]
 
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = [
-    'jsonschema',
-    'mock',
-    'moto',
-    'pytest',
-    'pytest-watch',
-    'pytest-cov',
-    'flake8'
-]
+test_requirements = ["jsonschema", "mock", "moto", "pytest", "pytest-watch", "pytest-cov", "flake8"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_aws",
@@ -48,10 +30,10 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_aws']),
+    packages=find_packages(include=["cis_aws"]),
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

@@ -9,7 +9,7 @@ This file is maintained at https://github.com/mozilla-iam/mozilla-iam/blob/maste
 | PR       | Pull-Request          | A request to merge commits/code into a repository.                                                                                 |
 | r+ r-    | Review granted/denied | A Mozilla shortcut to mention that a code review resulted in the acceptance or refusal of the code.                                |
 | Branch   | Branch                |  A branch is a view of the repository's commit history. `master` is the development branch, `production` is the production branch. |
-   
+
 ## Code quality
 Code quality/review is really deep in our culture here in Mozilla and should **not** be treated as a nice to have.
 
@@ -40,6 +40,15 @@ The purpose of doing reviews is not to check if code changes work (this should b
 Here are some guidelines that we recommend to also follow:
 * https://mozweb.readthedocs.io/en/latest/1
 
+## Black Formatter
+
+Note this project uses the black formatter at a standard:
+* https://black.readthedocs.io
+
+To get up and running with black simply do the following:
+
+`pip3 install pre-commit`
+`pre-commit install black`
 
 ### Pull-requests (PR)
 
@@ -48,8 +57,8 @@ Here are some guidelines that we recommend to also follow:
 * If commits for the same change are spread over several commits due to development, reviews, etc. it is acceptable to squash the commits on merge during a PR.
 * An attempt to make commits reasonably atomic (one type of change per commit) should be made.
 * Commit messages should be reasonably clear, for example: http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html
-        
-        
+
+
 ### Push
 
 Push is only allowed for POC repos. Any repos with a `production` branch should therefore disable push to branches in the GitHub settings.
