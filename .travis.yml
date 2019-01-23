@@ -4,6 +4,9 @@ cache:
   directories:
     - /home/travis/build/mozilla-iam/cis/python-modules/.cis-env/
     - $HOME/.cache/pip
+before_cache:
+  - rm -f $HOME/.cache/pip/log/debug.log
+  - rm -f /home/travis/build/mozilla-iam/cis/python-modules/.cis-env/*/log/*
 python:
   - 3.7
 env:
@@ -25,4 +28,4 @@ script:
   - echo '[default]' >> ~/.aws/config
   - echo 'output=json'  >> ~/.aws/config
   - echo 'region=us-west-2'  >> ~/.aws/config
-  - cd python-modules && make -j 4 test-tox
+  - cd python-modules && make -j 7 test-tox
