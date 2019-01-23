@@ -33,6 +33,7 @@ class TestFullPublish(object):
         from cis_publisher.common import get_config
 
         os.environ["CIS_KINESALITE_PORT"] = str(random.randint(32000, 34000))
+        os.environ["CIS_REQUESTS_CACHE_BACKEND"] = "memory"
 
         config = get_config()
         self.kinesalite_port = config("kinesalite_port", namespace="cis")
