@@ -1,4 +1,5 @@
 # CIS - Change Integration Service
+[![Build Status](https://travis-ci.org/mozilla-iam/cis.svg?branch=master)](https://travis-ci.org/mozilla-iam/cis)
 
 # THIS IS A WIP BRANCH FOR PROFILE v2
 
