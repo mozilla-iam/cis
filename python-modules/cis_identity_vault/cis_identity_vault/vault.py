@@ -1,6 +1,5 @@
 """Create, destroy, and configure the appropriate vault for the environment."""
 import boto3
-import uuid
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from cis_identity_vault import autoscale
