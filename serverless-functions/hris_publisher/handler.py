@@ -12,7 +12,7 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = '%(message)s'
+    FORMAT = "%(message)s"
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)

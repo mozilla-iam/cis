@@ -12,7 +12,7 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = '%(message)s'
+    FORMAT = "%(message)s"
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
@@ -21,4 +21,5 @@ def setup_logging():
 
 def handle(event, context):
     logger = setup_logging()
+    logger.info("Change Service Initialized.")
     return serverless_wsgi.handle_request(cis_change_service.api.app, event, context)

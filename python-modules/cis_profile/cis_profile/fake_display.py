@@ -58,9 +58,7 @@ class DisplayFaker(object):
                 entry = properties[head]
                 if "$ref" in entry.keys():
                     # We recurse into the definition.
-                    return self._resolve(
-                        tail, self._definition(extract_definition(entry)), display
-                    )
+                    return self._resolve(tail, self._definition(extract_definition(entry)), display)
                 return self._resolve(tail, entry, display)
         return display
 
@@ -70,13 +68,7 @@ class DisplayFaker(object):
     def _definition(self, definition):
         return self.schema["definitions"][definition]
 
-    def populate(
-        self,
-        profile_data,
-        level=None,
-        display=None,
-        policy=DisplayFakerPolicy.min_display(),
-    ):
+    def populate(self, profile_data, level=None, display=None, policy=DisplayFakerPolicy.min_display()):
         if level is None:
             level = self._top_level()
         if "allOf" in level.keys():
@@ -101,6 +93,7 @@ def extract_display_levels(definition):
     return definition["properties"]["metadata"]["properties"]["display"]["enum"]
 
 
+# fmt: off
 def extract_definition(definition):
     s = definition["$ref"]
     return s[s.rfind("/") + 1:]

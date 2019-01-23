@@ -6,14 +6,11 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ['requests', 'boto3', 'everett', 'cis_profile', 'authzerolib']
-test_requirements = ['pytest', 'pytest-watch', 'pytest-cov']
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+requirements = ["requests", "boto3", "everett", "cis_profile", "authzerolib"]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov"]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="serverless_hris_loader",
@@ -34,6 +31,6 @@ setup(
     setup_requires=setup_requirements,
     tests_require=test_requirements,
     extras_require=extras,
-    test_suite='tests',
-    zip_safe=True
+    test_suite="tests",
+    zip_safe=True,
 )

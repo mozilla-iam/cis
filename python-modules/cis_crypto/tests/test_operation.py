@@ -8,15 +8,12 @@ class TestOperation(object):
     def test_sign_operation_benchmark(self):
         from cis_crypto import operation
         import time
-        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
-        os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
 
-        sample_payload = {
-            'values': {
-                'test_key': 'test_data'
-            }
-        }
+        os.environ["CIS_SECRET_MANAGER_FILE_PATH"] = "tests/fixture"
+        os.environ["CIS_SECRET_MANAGER"] = "file"
+        os.environ["CIS_SIGNING_KEY_NAME"] = "fake-access-file-key.priv.pem"
+
+        sample_payload = {"values": {"test_key": "test_data"}}
 
         o = operation.Sign()
         o.load(sample_payload)
@@ -28,17 +25,20 @@ class TestOperation(object):
         stop = time.time()
         taken = stop - start
         taken_per_sig = taken / 10
-        print('test_sign_operation_benchmark() has taken {} seconds to run, or {} second per '
-              'Sign operation'.format(taken, taken_per_sig))
+        print(
+            "test_sign_operation_benchmark() has taken {} seconds to run, or {} second per "
+            "Sign operation".format(taken, taken_per_sig)
+        )
         # On a recent ULV laptop (2018) taken_per_sig is 0.006s, thus we're being very conservative here in case CI is
         # slow, but this would catch anything crazy slow
-        assert(taken_per_sig < 1)
+        assert taken_per_sig < 1
 
     def test_sign_operation(self):
         from cis_crypto import operation
-        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
-        os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
+
+        os.environ["CIS_SECRET_MANAGER_FILE_PATH"] = "tests/fixture"
+        os.environ["CIS_SECRET_MANAGER"] = "file"
+        os.environ["CIS_SIGNING_KEY_NAME"] = "fake-access-file-key.priv.pem"
 
         # Taken from the profile v2 specification
         # https://github.com/mozilla-iam/cis/blob/profilev2/docs/profile_data/user_profile_core_plus_extended.json
@@ -75,16 +75,14 @@ class TestOperation(object):
 
         # Assumption : we only want to sign values and not metadata.
         sample_payload = {
-            'metadata': {
-                'classification': 'PUBLIC',
-                'last_modified': '2018-01-01T00:00:00Z',
-                'created': '2018-01-01T00:00:00Z',
-                'publisher_authority': 'mozilliansorg',
-                'verified': 'false'
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "2018-01-01T00:00:00Z",
+                "created": "2018-01-01T00:00:00Z",
+                "publisher_authority": "mozilliansorg",
+                "verified": "false",
             },
-            'values': {
-                'my blog': 'https://example.net/blog'
-            }
+            "values": {"my blog": "https://example.net/blog"},
         }
 
         o = operation.Sign()
@@ -106,14 +104,15 @@ class TestOperation(object):
 
     def test_verify_operation_without_dict(self):
         from cis_crypto import operation
-        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
-        os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'fake-access-file-key.priv.pem'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
-        os.environ['CIS_WELL_KNOWN_MODE'] = 'file'
 
-        fh = open('tests/fixture/good-signature')
-        fixture_signature = fh.read().rstrip('\n').encode('utf-8')
+        os.environ["CIS_SECRET_MANAGER_FILE_PATH"] = "tests/fixture"
+        os.environ["CIS_SECRET_MANAGER"] = "file"
+        os.environ["CIS_SIGNING_KEY_NAME"] = "fake-access-file-key.priv.pem"
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "fake-access-file-key.pub.pem"
+        os.environ["CIS_WELL_KNOWN_MODE"] = "file"
+
+        fh = open("tests/fixture/good-signature")
+        fixture_signature = fh.read().rstrip("\n").encode("utf-8")
 
         o = operation.Verify()
         o.load(fixture_signature)
@@ -126,24 +125,22 @@ class TestOperation(object):
         from cis_crypto import operation
         from jose.exceptions import JWSError
 
-        os.environ['CIS_SECRET_MANAGER_FILE_PATH'] = 'tests/fixture'
-        os.environ['CIS_SECRET_MANAGER'] = 'file'
-        os.environ['CIS_SIGNING_KEY_NAME'] = 'evil-signing-key.priv.pem'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'fake-access-file-key.pub.pem'
-        os.environ['CIS_WELL_KNOWN_MODE'] = 'file'
+        os.environ["CIS_SECRET_MANAGER_FILE_PATH"] = "tests/fixture"
+        os.environ["CIS_SECRET_MANAGER"] = "file"
+        os.environ["CIS_SIGNING_KEY_NAME"] = "evil-signing-key.priv.pem"
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "fake-access-file-key.pub.pem"
+        os.environ["CIS_WELL_KNOWN_MODE"] = "file"
 
         # Assumption : we only want to sign values and not metadata.
         sample_payload = {
-            'metadata': {
-                'classification': 'PUBLIC',
-                'last_modified': '2018-01-01T00:00:00Z',
-                'created': '2018-01-01T00:00:00Z',
-                'publisher_authority': 'mozilliansorg',
-                'verified': 'false'
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "2018-01-01T00:00:00Z",
+                "created": "2018-01-01T00:00:00Z",
+                "publisher_authority": "mozilliansorg",
+                "verified": "false",
             },
-            'values': {
-                'my blog': 'https://example.net/blog'
-            }
+            "values": {"my blog": "https://example.net/blog"},
         }
 
         s = operation.Sign()
@@ -161,12 +158,7 @@ class TestOperation(object):
         with pytest.raises(JWSError):
             o.jws()
 
-    def _mock_response(
-            self,
-            status=200,
-            content="CONTENT",
-            json_data=None,
-            raise_for_status=None):
+    def _mock_response(self, status=200, content="CONTENT", json_data=None, raise_for_status=None):
         """
         since we typically test a bunch of different
         requests calls for a service, we are going to do
@@ -183,7 +175,5 @@ class TestOperation(object):
         mock_resp.content = content
         # add json data if provided
         if json_data:
-            mock_resp.json = mock.Mock(
-                return_value=json_data
-            )
+            mock_resp.json = mock.Mock(return_value=json_data)
         return mock_resp

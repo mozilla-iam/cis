@@ -7,35 +7,24 @@ with open("README.md", "r") as fh:
     long_description = fh.read()
 
 requirements = [
-    'python-jose',
-    'cryptography',
-    'everett',
-    'everett[ini]',
-    'configobj',
-    'flask',
-    'flask_cors',
-    'boto',
-    'boto3',
-    'botocore',
-    'six'
+    "python-jose",
+    "cryptography",
+    "everett",
+    "everett[ini]",
+    "configobj",
+    "flask",
+    "flask_cors",
+    "boto",
+    "boto3",
+    "botocore",
+    "six",
 ]
 
-setup_requirements = [
-    'pytest-runner',
-    'setuptools>=40.5.0'
-]
+setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = [
-    'pytest',
-    'pytest-watch',
-    'pytest-cov',
-    'patch',
-    'mock',
-    'flake8',
-    'moto'
-]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto"]
 
-extras = {'test': test_requirements}
+extras = {"test": test_requirements}
 
 setup(
     name="cis_change_service",
@@ -53,10 +42,10 @@ setup(
     install_requires=requirements,
     license="Mozilla Public License 2.0",
     include_package_data=True,
-    packages=find_packages(include=['cis_change_service']),
+    packages=find_packages(include=["cis_change_service"]),
     setup_requires=setup_requirements,
-    test_suite='tests',
+    test_suite="tests",
     tests_require=test_requirements,
     extras_require=extras,
-    zip_safe=False
+    zip_safe=False,
 )

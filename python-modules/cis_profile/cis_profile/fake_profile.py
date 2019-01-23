@@ -81,11 +81,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         user_name = self.generator.user_name()
         email = "{}@{}".format(user_name, self.generator.domain_name())
         return (
-            {
-                "mozilla_posix_id": user_name,
-                "mozilla_ldap_id": email,
-                "mozilla_ldap_primary_email": email,
-            },
+            {"mozilla_posix_id": user_name, "mozilla_ldap_id": email, "mozilla_ldap_primary_email": email},
             "ad|Mozilla-LDAP|{}".format(user_name),
             email,
         )
@@ -97,27 +93,15 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
 
         def custom1():
             email = self.generator.email()
-            return (
-                {"custom_1_primary_email": email},
-                "email|{}".format(self.generator.md5()),
-                email,
-            )
+            return ({"custom_1_primary_email": email}, "email|{}".format(self.generator.md5()), email)
 
         def custom2():
             email = self.generator.email()
-            return (
-                {"custom_2_primary_email": email},
-                "email|{}".format(self.generator.md5()),
-                email,
-            )
+            return ({"custom_2_primary_email": email}, "email|{}".format(self.generator.md5()), email)
 
         def custom3():
             email = self.generator.email()
-            return (
-                {"custom_2_primary_email": email},
-                "email|{}".format(self.generator.md5()),
-                email,
-            )
+            return ({"custom_2_primary_email": email}, "email|{}".format(self.generator.md5()), email)
 
         def github():
             id = self.generator.pyint()
@@ -125,9 +109,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
             return (
                 {
                     "github_id_v3": str(id),
-                    "github_id_v4": base64.urlsafe_b64encode(
-                        str.encode("04:User{}".format(id))
-                    ).decode("utf-8"),
+                    "github_id_v4": base64.urlsafe_b64encode(str.encode("04:User{}".format(id))).decode("utf-8"),
                     "github_primary_email": email,
                 },
                 "github|{}".format(id),
@@ -137,11 +119,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         def google():
             id = self.generator.pyint()
             email = self.generator.email()
-            return (
-                {"google_oauth2_id": str(id), "google_primary_email": email},
-                "google-oauth2|{}".format(id),
-                email,
-            )
+            return ({"google_oauth2_id": str(id), "google_primary_email": email}, "google-oauth2|{}".format(id), email)
 
         def fxa():
             id = self.generator.pystr(min_chars=20, max_chars=20)
@@ -247,24 +225,14 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         return self.generator.random.choice(list(r))
 
     def custom_tz(self):
-        return "UTC{:0=+3}00 {}".format(
-            self.generator.random.randint(-12, 12), self.generator.timezone()
-        )
+        return "UTC{:0=+3}00 {}".format(self.generator.random.randint(-12, 12), self.generator.timezone())
 
     def hris(self, employee_id=None, manager_id=None):
         h = {}
 
-        h["employee_id"] = (
-            employee_id
-            if employee_id is not None
-            else self.generator.random.randint(0, 100000)
-        )
+        h["employee_id"] = employee_id if employee_id is not None else self.generator.random.randint(0, 100000)
         h["worker_type"] = self.generator.random.choice(["Employee", "Contractor"])
-        h["managers_employee_id"] = (
-            manager_id
-            if manager_id is not None
-            else self.generator.random.randint(0, 100000)
-        )
+        h["managers_employee_id"] = manager_id if manager_id is not None else self.generator.random.randint(0, 100000)
         h["egencia_pos_country"] = self.generator.country_code(representation="alpha-2")
 
         return h
@@ -277,14 +245,10 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         s["title"] = self.generator.job()
         s["team"] = self.generator.sentence(nb_words=2)
         s["cost_center"] = "{} - {}".format(
-            self.generator.random.randint(1000, 9999),
-            self.generator.sentence(nb_words=2),
+            self.generator.random.randint(1000, 9999), self.generator.sentence(nb_words=2)
         )
         s["office_location"] = self.generator.random.choice(
-            [
-                "{} Office".format(self.generator.city()),
-                "{} Remote".format(self.generator.country()),
-            ]
+            ["{} Office".format(self.generator.city()), "{} Remote".format(self.generator.country())]
         )
         s["wpr_desk_number"] = str(self.generator.random.randint(10000, 99999))
 
@@ -297,13 +261,7 @@ class FakeUser(cis_profile.profile.User):
     @generator int a static seed to always get the same fake profile back
     """
 
-    def __init__(
-        self,
-        seed=None,
-        fake=fake,
-        hierarchy=non_hierarchy_iter(),
-        config=FakeProfileConfig().default(),
-    ):
+    def __init__(self, seed=None, fake=fake, hierarchy=non_hierarchy_iter(), config=FakeProfileConfig().default()):
         super().__init__()
         if seed is not None:
             fake.seed_instance(seed)
@@ -323,9 +281,7 @@ class FakeUser(cis_profile.profile.User):
         self.generate_mozillians(fake, config)
 
         display_faker = DisplayFaker()
-        display_faker.populate(
-            self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random)
-        )
+        display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
         super().initialize_timestamps()
 
@@ -357,9 +313,7 @@ class FakeUser(cis_profile.profile.User):
 
         self._d("user_id.value", user_id)
         self._d("login_method.value", "Mozilla-LDAP")
-        self._d(
-            "active.value", fake.boolean(chance_of_getting_true=config._active_percent)
-        )
+        self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("created.value", fake.iso8601())
         self._d("primary_email.value", email)
 
@@ -395,9 +349,7 @@ class FakeUser(cis_profile.profile.User):
         self._d("last_name.value", fake.last_name())
         self._d("timezone.value", fake.custom_tz())
         self._d("created.value", fake.iso8601())
-        self._d(
-            "active.value", fake.boolean(chance_of_getting_true=config._active_percent)
-        )
+        self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self.__dict__["access_information"]["hris"]["values"].update(hris)
 
         for k, v in staff_information.items():
@@ -410,15 +362,11 @@ class FakeUser(cis_profile.profile.User):
         if not config._mozillians:
             return
 
-        identities, user_id, email = fake.mozillians_identities(
-            additional=not config._mozillians
-        )
+        identities, user_id, email = fake.mozillians_identities(additional=not config._mozillians)
 
         self._d("user_id.value", user_id)
         self._d("login_method.value", fake.login_method())
-        self._d(
-            "active.value", fake.boolean(chance_of_getting_true=config._active_percent)
-        )
+        self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("last_modified.value", fake.iso8601())
         self._d("created.value", fake.iso8601())
         self._d("usernames.values", fake.usernames(additional=not config._minimal))
@@ -460,9 +408,6 @@ def batch_create_fake_profiles(seed, count):
     fake = faker.Faker()
     fake.seed(seed)
     hierarchy = create_random_hierarchy_iter(fake.random)
-    profiles = map(
-        lambda x: x.as_dict(),
-        [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(count)],
-    )
+    profiles = map(lambda x: x.as_dict(), [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(count)])
 
     return list(profiles)

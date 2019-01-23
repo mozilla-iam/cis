@@ -12,7 +12,7 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = '%(message)s'
+    FORMAT = "%(message)s"
     h.setFormatter(logging.Formatter(FORMAT))
     logger.addHandler(h)
     logger.setLevel(logging.DEBUG)
@@ -21,4 +21,5 @@ def setup_logging():
 
 def handle(event, context):
     logger = setup_logging()
+    logger.info("Profile retrieval initialized.")
     return serverless_wsgi.handle_request(cis_profile_retrieval_service.v2_api.app, event, context)

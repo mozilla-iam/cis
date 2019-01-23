@@ -24,6 +24,7 @@ class DateTime(Scalar):
     """
     Graphene Scaler for our date time format
     """
+
     @staticmethod
     def serialize(dt):
         return dt.isoformat()
@@ -31,8 +32,7 @@ class DateTime(Scalar):
     @staticmethod
     def parse_literal(node):
         if isinstance(node, ast.StringValue):
-            return datetime.datetime.strptime(
-                node.value, "%Y-%m-%dT%H:%M:%S.%f")
+            return datetime.datetime.strptime(node.value, "%Y-%m-%dT%H:%M:%S.%f")
 
     @staticmethod
     def parse_value(value):
@@ -44,29 +44,32 @@ class Alg(graphene.Enum):
     """
     Supported signature algorithms
     """
-    HS256 = 'HS256'
-    RS256 = 'RS256'
-    RSA = 'RSA'
-    ED25519 = 'ED25519'
+
+    HS256 = "HS256"
+    RS256 = "RS256"
+    RSA = "RSA"
+    ED25519 = "ED25519"
 
 
 class Typ(graphene.Enum):
     """
     Supported signature types
     """
-    JWT = 'JWT'
-    PGP = 'PGP'
+
+    JWT = "JWT"
+    PGP = "PGP"
 
 
 class Classification(graphene.Enum):
     """
     Mozilla data classification
     """
-    MOZILLA_CONFIDENTIAL = 'MOZILLA CONFIDENTIAL'
-    PUBLIC = 'PUBLIC'
-    WORKGROUP_CONFIDENTIAL = 'WORKGROUP CONFIDENTIAL'
-    STAFF_ONLY = 'WORKGROUP CONFIDENTIAL: STAFF ONLY'
-    INDIVIDUAL_CONFIDENTIAL = 'INDIVIDUAL CONFIDENTIAL'
+
+    MOZILLA_CONFIDENTIAL = "MOZILLA CONFIDENTIAL"
+    PUBLIC = "PUBLIC"
+    WORKGROUP_CONFIDENTIAL = "WORKGROUP CONFIDENTIAL"
+    STAFF_ONLY = "WORKGROUP CONFIDENTIAL: STAFF ONLY"
+    INDIVIDUAL_CONFIDENTIAL = "INDIVIDUAL CONFIDENTIAL"
 
 
 # Standard properties
@@ -74,13 +77,14 @@ class Display(graphene.Enum):
     """
     DinoPark visibility/display intent
     """
-    public = 'public'
-    authenticated = 'authenticated'
-    vouched = 'vouched'
-    ndaed = 'ndaed'
-    staff = 'staff'
-    private = 'private'
-    null = 'null'
+
+    public = "public"
+    authenticated = "authenticated"
+    vouched = "vouched"
+    ndaed = "ndaed"
+    staff = "staff"
+    private = "private"
+    null = "null"
 
 
 class Metadata(graphene.ObjectType):
@@ -129,10 +133,11 @@ class StandardAttributeFieldList(StandardProperty):
     graphene requires Fields (dicts) to have well-known keys
     work-around this by providing a list of fields through a graphene List
     """
+
     values = graphene.List(graphene.String)
 
     def resolve_values(self, info, *kwargs):
-        values = self.get('values')
+        values = self.get("values")
         if values:
             return values.items()
         else:
@@ -179,6 +184,7 @@ class Profile(graphene.ObjectType):
     """
     IAM Profile v2
     """
+
     user_id = graphene.Field(StandardAttributeString)
     uuid = graphene.Field(StandardAttributeString)
     login_method = graphene.Field(StandardAttributeString)

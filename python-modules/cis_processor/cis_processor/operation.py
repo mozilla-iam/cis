@@ -49,7 +49,9 @@ class BaseProcessor(object):
 
             if self.config("processor_verify_signatures", namespace="cis", default="True") == "True":
                 logger.info(
-                    "Testing signatures for user: {}".format(self.profiles["new_profile"].as_dict()["user_id"]["value"])
+                    "Testing signatures for user: {}".format(
+                        self.profiles["new_profile"].as_dict()["user_id"]["value"]
+                    )
                 )
                 signatures_valid = self.profiles["new_profile"].verify_all_signatures()
                 logger.info(

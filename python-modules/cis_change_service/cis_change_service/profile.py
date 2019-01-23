@@ -57,7 +57,9 @@ class Vault(object):
         if verified:
             if self.config("dynamodb_transactions", namespace="cis") == "true":
                 vault = user.Profile(
-                    self.identity_vault_client.get("table"), self.identity_vault_client.get("client"), transactions=True
+                    self.identity_vault_client.get("table"),
+                    self.identity_vault_client.get("client"),
+                    transactions=True,
                 )
             else:
                 vault = user.Profile(

@@ -16,33 +16,31 @@ class ProfileDelegate(object):
 
     @property
     def profiles(self):
-        return dict(
-            old_profile=self.load_old_user_profile(), new_profile=self.load_new_user_profile()
-        )
+        return dict(old_profile=self.load_old_user_profile(), new_profile=self.load_new_user_profile())
 
     def _get_user_id_from_stream(self):
-        kinesis_data = self.event_record['kinesis']['data']
+        kinesis_data = self.event_record["kinesis"]["data"]
         user_profile = json.loads(base64.b64decode(kinesis_data))
         profile_v2_data = user_profile
-        return profile_v2_data['user_id']['value']
+        return profile_v2_data["user_id"]["value"]
 
     def load_old_user_profile(self):
         user_id = self._get_user_id_from_stream()
         vault_user = DynamoDbUser(self.dynamodb_table)
         search_result = vault_user.find_by_id(user_id)
-        if len(search_result.get('Items')) > 0:
-            profile_data = search_result.get('Items')[0]
-            user_object = User(user_structure_json=json.loads(profile_data['profile']))
-            logger.info('A prior integration has been found for user: {}'.format(user_id))
+        if len(search_result.get("Items")) > 0:
+            profile_data = search_result.get("Items")[0]
+            user_object = User(user_structure_json=json.loads(profile_data["profile"]))
+            logger.info("A prior integration has been found for user: {}".format(user_id))
             return user_object
         else:
-            logger.info('No user_id was matched for user: {}'.format(user_id))
+            logger.info("No user_id was matched for user: {}".format(user_id))
             # Return an empty cis_profile.user.User()
             return User()
 
     def load_new_user_profile(self):
         """Return an instance of cis_profile User."""
-        kinesis_data = self.event_record['kinesis']['data']
+        kinesis_data = self.event_record["kinesis"]["data"]
         user_profile = json.loads(base64.b64decode(kinesis_data))
         profile_v2_data = user_profile
         user_object = User(user_structure_json=profile_v2_data)
