@@ -93,9 +93,10 @@ def extract_display_levels(definition):
     return definition["properties"]["metadata"]["properties"]["display"]["enum"]
 
 
+# fmt: off
 def extract_definition(definition):
     s = definition["$ref"]
-    return s[s.rfind("/") + 1 :]
+    return s[s.rfind("/") + 1:]
 
 
 def is_display_definition(s):
