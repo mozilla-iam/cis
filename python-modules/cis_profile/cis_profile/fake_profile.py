@@ -161,11 +161,16 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         p = ["Mozilla-LDAP", "google-oauth2", "github", "firefoxaccounts", "email"]
         return self.generator.random.choice(p)
 
-    def usernames(self, additional=True):
-        u = {"mozilliansorg": self.generator.user_name()}
-        if additional:
-            for _ in range(self.generator.random.randrange(0, 10)):
-                u[self.generator.words(nb=1)[0]] = self.generator.user_name()
+    def primary_username(self):
+        if self.generator.boolean():
+            return "r--{}".format(base64.urlsafe_b64decode(fake.uuid4()))
+        else:
+            return self.generator.user_name()
+
+    def usernames(self):
+        u = {}
+        for _ in range(self.generator.random.randrange(0, 10)):
+            u[self.generator.words(nb=1)[0]] = self.generator.user_name()
         return u
 
     def ssh_keys(self):
@@ -312,7 +317,7 @@ class FakeUser(cis_profile.profile.User):
         identities, user_id, email = fake.ldap_identity()
 
         self._d("user_id.value", user_id)
-        self._d("primary_username.value", "r--{}".format(base64.urlsafe_b64decode(fake.uuid4())))
+        self._d("primary_username.value", fake.primary_username())
         self._d("login_method.value", "Mozilla-LDAP")
         self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("created.value", fake.iso8601())
@@ -370,7 +375,6 @@ class FakeUser(cis_profile.profile.User):
         self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("last_modified.value", fake.iso8601())
         self._d("created.value", fake.iso8601())
-        self._d("usernames.values", fake.usernames(additional=not config._minimal))
         self._d("first_name.value", fake.first_name())
         self._d("primary_email.value", email)
 
@@ -380,6 +384,7 @@ class FakeUser(cis_profile.profile.User):
         if config._minimal:
             return
 
+        self._d("usernames.values", fake.usernames())
         self._d("last_name.value", fake.last_name())
         self._d("ssh_public_keys.values", fake.ssh_keys())
         self._d("pgp_public_keys.values", fake.pgp_keys())

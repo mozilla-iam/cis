@@ -67,7 +67,7 @@
                 },
                 "usernames": {
                     "allOf": [
-                      { "$ref": "#/definitions/DisplayPublicOnly" },
+                      { "$ref": "#/definitions/DisplayAnyValue" },
                       { "$ref": "#/definitions/StandardAttributeValues" },
                       { "$ref": "#/definitions/ClassificationWorkgroupConfidential" }
                     ],
