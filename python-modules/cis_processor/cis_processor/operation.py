@@ -26,6 +26,7 @@ class BaseProcessor(object):
         return {
             "sequence_number": self.event_record["kinesis"]["sequenceNumber"],
             "primary_email": user_profile["primary_email"]["value"],
+            "primary_username": user_profile["primary_username"]["value"],
             "uuid": user_profile["uuid"]["value"],
             "profile": json.dumps(user_profile),
             "id": user_profile["user_id"]["value"],

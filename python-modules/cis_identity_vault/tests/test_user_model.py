@@ -22,6 +22,7 @@ class TestUsersDynalite(object):
             "id": self.user_profile.get("user_id").get("value"),
             "uuid": self.uuid,
             "primary_email": self.user_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(self.user_profile),
         }
@@ -47,6 +48,7 @@ class TestUsersDynalite(object):
             "id": modified_profile.get("user_id").get("value"),
             "uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
         }
@@ -57,13 +59,15 @@ class TestUsersDynalite(object):
     def test_find_user(self):
         from cis_identity_vault.models import user
 
+        primary_email = "dummy@zxy.foo"
         modified_profile = self.user_profile
-        modified_profile["primary_email"]["value"] = "dummy@zxy.foo"
+        modified_profile["primary_email"]["value"] = primary_email
 
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
             "uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
         }
@@ -71,7 +75,6 @@ class TestUsersDynalite(object):
 
         profile.update(vault_json_datastructure)
 
-        primary_email = "dummy@zxy.foo"
         profile = user.Profile(self.table)
         user_id = self.user_profile.get("user_id").get("value")
         result_for_user_id = profile.find_by_id(user_id)
@@ -82,13 +85,15 @@ class TestUsersDynalite(object):
     def test_find_user_multi_id_for_email(self):
         from cis_identity_vault.models import user
 
+        primary_email = "dummy@zxy.foo"
         modified_profile = self.user_profile
-        modified_profile["primary_email"]["value"] = "dummy@zxy.foo"
+        modified_profile["primary_email"]["value"] = primary_email
 
         vault_json_datastructure_first_id = {
             "id": modified_profile.get("user_id").get("value"),
             "uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
         }
@@ -101,18 +106,55 @@ class TestUsersDynalite(object):
             "id": "foo|mcbar",
             "uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
         }
 
         profile.update(vault_json_datastructure_second_id)
 
-        primary_email = "dummy@zxy.foo"
         profile = user.Profile(self.table)
         self.user_profile.get("user_id").get("value")
         result_for_email = profile.find_by_email(primary_email)
         assert result_for_email is not None
         assert len(result_for_email.get("Items")) > 2
+
+    def test_find_user_multi_id_for_username(self):
+        from cis_identity_vault.models import user
+
+        primary_username = "foomcbar123"
+        modified_profile = self.user_profile
+        modified_profile["primary_username"]["value"] = primary_username
+
+        vault_json_datastructure_first_id = {
+            "id": modified_profile.get("user_id").get("value"),
+            "uuid": str(uuid.uuid4()),
+            "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
+            "sequence_number": "12345678",
+            "profile": json.dumps(modified_profile),
+        }
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+
+        profile.update(vault_json_datastructure_first_id)
+
+        vault_json_datastructure_second_id = {
+            "id": "foo|mcbar",
+            "uuid": str(uuid.uuid4()),
+            "primary_email": modified_profile.get("primary_email").get("value"),
+            "primary_username": self.user_profile.get("primary_username").get("value"),
+            "sequence_number": "12345678",
+            "profile": json.dumps(modified_profile),
+        }
+
+        profile.update(vault_json_datastructure_second_id)
+
+        profile = user.Profile(self.table)
+        self.user_profile.get("user_id").get("value")
+        result_for_username = profile.find_by_username(primary_username)
+        assert result_for_username is not None
+        assert len(result_for_username.get("Items")) == 2
 
     def test_find_by_uuid(self):
         from cis_identity_vault.models import user
@@ -123,3 +165,13 @@ class TestUsersDynalite(object):
 
         result_for_uuid = profile.find_by_uuid(user["uuid"]["value"])
         assert len(result_for_uuid.get("Items")) > 0
+
+    def test_find_by_username(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+
+        user = json.loads(profile.all[0].get("profile"))
+
+        result_for_username = profile.find_by_username(user["primary_username"]["value"])
+        assert len(result_for_username.get("Items")) > 0

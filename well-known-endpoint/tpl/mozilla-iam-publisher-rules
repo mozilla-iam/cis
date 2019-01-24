@@ -2,6 +2,7 @@
   "create": {
     "uuid": [ "ldap", "hris", "cis", "access_provider" ],
     "user_id": [ "ldap", "hris", "access_provider" ],
+    "primary_username": [ "ldap", "hris", "cis", "access_provider" ],
     "login_method": [ "ldap", "hris", "access_provider" ],
     "active": [ "ldap", "hris", "access_provider" ],
     "last_modified": [ "ldap", "hris", "access_provider" ],
@@ -35,6 +36,7 @@
   "update": {
     "uuid": "cis",
     "user_id": "access_provider",
+    "primary_username": "mozilliansorg",
     "login_method": "access_provider",
     "active": "cis",
     "last_modified": "cis",

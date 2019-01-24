@@ -2,8 +2,10 @@
 user_profile must be passed to this in the form required by dynamodb
 {
     'id': 'ad|foo',
+    'uuid': 'dc8cbad4-4426-406f-998e-9d95edb06bdc',
     'primary_email': 'foo@xyz.com',
     'sequence_number': '123456',
+    'primary_email': 'foomcbar',
     'profile': 'jsondumpofuserfullprofile'
 }
 """
@@ -58,6 +60,7 @@ class Profile(object):
                     "uuid": {"S": user_profile["uuid"]},
                     "profile": {"S": user_profile["profile"]},
                     "primary_email": {"S": user_profile["primary_email"]},
+                    "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
@@ -82,10 +85,11 @@ class Profile(object):
                     ":p": {"S": user_profile["profile"]},
                     ":u": {"S": user_profile["uuid"]},
                     ":pe": {"S": user_profile["primary_email"]},
+                    ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u, primariy_username = :pe",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -153,6 +157,7 @@ class Profile(object):
                         "uuid": {"S": user_profile["uuid"]},
                         "profile": {"S": user_profile["profile"]},
                         "primary_email": {"S": user_profile["primary_email"]},
+                        "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
@@ -181,10 +186,11 @@ class Profile(object):
                         ":p": {"S": user_profile["profile"]},
                         ":u": {"S": user_profile["uuid"]},
                         ":pe": {"S": user_profile["primary_email"]},
+                        ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u, primary_username = : pn",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -207,6 +213,13 @@ class Profile(object):
     def find_by_uuid(self, uuid):
         result = self.table.query(
             IndexName="{}-uuid".format(self.table.table_name), KeyConditionExpression=Key("uuid").eq(uuid)
+        )
+        return result
+
+    def find_by_username(self, primary_username):
+        result = self.table.query(
+            IndexName="{}-primary_username".format(self.table.table_name),
+            KeyConditionExpression=Key("primary_username").eq(primary_username),
         )
         return result
 

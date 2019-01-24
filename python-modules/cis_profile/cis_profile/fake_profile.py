@@ -312,6 +312,7 @@ class FakeUser(cis_profile.profile.User):
         identities, user_id, email = fake.ldap_identity()
 
         self._d("user_id.value", user_id)
+        self._d("primary_username.value", "r--{}".format(base64.urlsafe_b64decode(fake.uuid4())))
         self._d("login_method.value", "Mozilla-LDAP")
         self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("created.value", fake.iso8601())

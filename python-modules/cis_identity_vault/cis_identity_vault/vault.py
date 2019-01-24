@@ -89,12 +89,22 @@ class IdentityVault(object):
                 {"AttributeName": "uuid", "AttributeType": "S"},  # uuid formerly dinopark id
                 {"AttributeName": "sequence_number", "AttributeType": "S"},  # sequence number for the last integration
                 {"AttributeName": "primary_email", "AttributeType": "S"},  # value of the primary_email attribute
+                {"AttributeName": "primary_username", "AttributeType": "S"},  # value of the primary_username attribute
             ],
             ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
             GlobalSecondaryIndexes=[
                 {
                     "IndexName": "{}-sequence_number".format(self._generate_table_name()),
                     "KeySchema": [{"AttributeName": "sequence_number", "KeyType": "HASH"}],
+                    "Projection": {"ProjectionType": "ALL"},
+                    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                },
+                {
+                    "IndexName": "{}-primary_username".format(self._generate_table_name()),
+                    "KeySchema": [
+                        {"AttributeName": "primary_username", "KeyType": "HASH"},
+                        {"AttributeName": "id", "KeyType": "RANGE"},
+                    ],
                     "Projection": {"ProjectionType": "ALL"},
                     "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },

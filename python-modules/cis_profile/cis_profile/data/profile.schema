@@ -25,6 +25,14 @@
                     ],
                     "$comment": "This is the UUID for the user and may or may not be opaque."
                 },
+                "primary_username": {
+                    "allOf": [
+                      { "$ref": "#/definitions/StandardAttributeString" },
+                      { "$ref": "#/definitions/DisplayPublicOnly" },
+                      { "$ref": "#/definitions/ClassificationPublic" }
+                    ],
+                    "$comment": "This is the unique but changeable user defined or generated username for the user."
+                },
                 "login_method": {
                     "allOf": [
                       { "$ref": "#/definitions/StandardAttributeString" },
@@ -209,6 +217,8 @@
             "required": [
                 "schema",
                 "user_id",
+                "uuid",
+                "primary_username",
                 "login_method",
                 "active",
                 "last_modified",
