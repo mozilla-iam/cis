@@ -10,7 +10,10 @@ Demonstrate a sample flow of using the cis_dev_preview docker container.
 ```
 http://127.0.0.1/change
 http://127.0.0.1/change/status?sequenceNumber=123456
-http://127.0.0.1/v2/user
+http://127.0.0.1/v2/user/user_id
+http://127.0.0.1/v2/user/uuid
+http://127.0.0.1/v2/user/primary_email
+http://127.0.0.1/v2/user/primary_username
 http://127.0.0.1/v2/users
 http://127.0.0.1/.well-known/mozilla-iam
 ```
@@ -32,7 +35,7 @@ http://127.0.0.1/.well-known/mozilla-iam
 5. publisher POST to /change endpoint with the json payload.  If the schema is valid the publisher will receive a sequence number in exchange.
 6. In production the message would enter kinesis, signatures and publisher authority will be checked, then integrated.  In development the messages will use a mocked kinesis to generated a sequenceNumber and bypass directly to dynamodb without these tests to facilitate connector development.  __Future:__ add an option to test the publisher rules using cis_profile here if there is no performance impact.
 7. The publisher can poll the `/change/status?sequenceNumber` endpoint to see if the message has been integrated.  The change should be integrated in < 1 second or the integration should be considered to have failed and needs to retry. __Future:__ replaced/supplemented by supporting a webhook back. 
-8. Finally the `/v2/user/<string:user_id>` endpoint can be queried to see the fully integrated profile.
+8. Finally the `/v2/user/user_id/<string:user_id>` endpoint can be queried to see the fully integrated profile.
 
 
 ## Recommended pattern
