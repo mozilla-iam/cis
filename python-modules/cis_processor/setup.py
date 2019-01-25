@@ -10,7 +10,7 @@ requirements = ["everett", "boto", "boto3", "botocore"]
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto", "cis_profile"]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto"]
 
 extras = {"test": test_requirements}
 

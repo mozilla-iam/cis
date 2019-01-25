@@ -187,6 +187,7 @@ class Profile(graphene.ObjectType):
 
     user_id = graphene.Field(StandardAttributeString)
     uuid = graphene.Field(StandardAttributeString)
+    username = graphene.Field(StandardAttributeString)
     login_method = graphene.Field(StandardAttributeString)
     active = graphene.Field(StandardAttributeBoolean)
     last_modified = graphene.Field(StandardAttributeDateTime)

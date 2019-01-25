@@ -52,6 +52,7 @@ class TestProfile(object):
                     {"AttributeName": "uuid", "AttributeType": "S"},
                     {"AttributeName": "sequence_number", "AttributeType": "S"},
                     {"AttributeName": "primary_email", "AttributeType": "S"},
+                    {"AttributeName": "primary_username", "AttributeType": "S"},
                 ],
                 ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 GlobalSecondaryIndexes=[
@@ -64,6 +65,12 @@ class TestProfile(object):
                     {
                         "IndexName": "{}-primary_email".format(name),
                         "KeySchema": [{"AttributeName": "primary_email", "KeyType": "HASH"}],
+                        "Projection": {"ProjectionType": "ALL"},
+                        "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    },
+                    {
+                        "IndexName": "{}-primary_username".format(name),
+                        "KeySchema": [{"AttributeName": "primary_username", "KeyType": "HASH"}],
                         "Projection": {"ProjectionType": "ALL"},
                         "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                     },
