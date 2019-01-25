@@ -163,6 +163,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
 
     def primary_username(self):
         if self.generator.boolean():
+            # Random primary_usernames are prefixed with r-- for displaying purposes.
             return "r--{}".format(base64.urlsafe_b64decode(fake.uuid4()))
         else:
             return self.generator.user_name()
