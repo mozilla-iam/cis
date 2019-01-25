@@ -141,56 +141,83 @@ def graphql_view():
     return requires_auth(view_func)
 
 
-class v2User(Resource):
-    """Return a single user."""
+class v2UserByUserId(Resource):
+    """Return a single user by user_id."""
 
     decorators = [requires_auth]
 
     def get(self, user_id):
-        """Return a single user with id `user_id`."""
-        user_id = urllib.parse.unquote(user_id)
-        parser = reqparse.RequestParser()
-        parser.add_argument("Authorization", location="headers")
-        parser.add_argument("filterDisplay", type=str)
-        args = parser.parse_args()
-        scopes = get_scopes(args.get("Authorization"))
-        filter_display = args.get("filterDisplay", None)
+        logger.debug("Attempting to locate a user for user_id: {}".format(user_id))
+        return getUser(user_id, user.Profile.find_by_id)
 
-        if transactions == "false":
-            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
 
-        if transactions == "true":
-            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+class v2UserByUuid(Resource):
+    """Return a single user by uuid."""
 
-        logger.debug("Attempting to locate a user for: {}".format(user_id))
-        if "|" in user_id:
-            logger.debug("Searching the vault by user_id for: {}".format(user_id))
-            result = identity_vault.find_by_id(user_id)
-        elif "@" in user_id:
-            logger.debug("Searching the vault by primary_email for: {}".format(user_id))
-            result = identity_vault.find_by_email(user_id)
+    decorators = [requires_auth]
+
+    def get(self, uuid):
+        logger.debug("Attempting to locate a user for uuid: {}".format(uuid))
+        return getUser(uuid, user.Profile.find_by_uuid)
+
+
+class v2UserByPrimaryEmail(Resource):
+    """Return a single user by primary_email."""
+
+    decorators = [requires_auth]
+
+    def get(self, primary_email):
+        logger.debug("Attempting to locate a user for primary_email: {}".format(primary_email))
+        return getUser(primary_email, user.Profile.find_by_email)
+
+
+class v2UserByPrimaryUsername(Resource):
+    """Return a single user by primary_username."""
+
+    decorators = [requires_auth]
+
+    def get(self, primary_username):
+        logger.debug("Attempting to locate a user for primary_username: {}".format(primary_username))
+        return getUser(primary_username, user.Profile.find_by_username)
+
+
+def getUser(id, find_by):
+    """Return a single user with identifier using find_by."""
+    id = urllib.parse.unquote(id)
+    parser = reqparse.RequestParser()
+    parser.add_argument("Authorization", location="headers")
+    parser.add_argument("filterDisplay", type=str)
+    args = parser.parse_args()
+    scopes = get_scopes(args.get("Authorization"))
+    filter_display = args.get("filterDisplay", None)
+
+    if transactions == "false":
+        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
+
+    if transactions == "true":
+        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+
+    result = find_by(identity_vault, id)
+
+    if len(result["Items"]) > 0:
+        vault_profile = result["Items"][0]["profile"]
+        v2_profile = User(user_structure_json=json.loads(vault_profile))
+        if "read:fullprofile" in scopes:
+            logger.debug("read:fullprofile in token returning the full user profile.")
         else:
-            return jsonify({})
+            v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
-        if len(result["Items"]) > 0:
-            vault_profile = result["Items"][0]["profile"]
-            v2_profile = User(user_structure_json=json.loads(vault_profile))
-            if "read:fullprofile" in scopes:
-                logger.debug("read:fullprofile in token returning the full user profile.")
-            else:
-                v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
-
-            if "display:all" in scopes:
-                logger.debug("display:all in token not filtering profile.")
-            else:
-                v2_profile.filter_display(scope_to_display_level(scopes))
-
-            if filter_display is not None:
-                v2_profile.filter_display(DisplayLevelParms.map(filter_display))
-
-            return jsonify(v2_profile.as_dict())
+        if "display:all" in scopes:
+            logger.debug("display:all in token not filtering profile.")
         else:
-            return jsonify({})
+            v2_profile.filter_display(scope_to_display_level(scopes))
+
+        if filter_display is not None:
+            v2_profile.filter_display(DisplayLevelParms.map(filter_display))
+
+        return jsonify(v2_profile.as_dict())
+    else:
+        return jsonify({})
 
 
 class v2Users(Resource):
@@ -259,7 +286,10 @@ if config("graphql", namespace="person_api", default="false") == "true":
     app.add_url_rule("/graphql", view_func=graphql_view())
 
 api.add_resource(v2Users, "/v2/users")
-api.add_resource(v2User, "/v2/user/<string:user_id>")
+api.add_resource(v2UserByUserId, "/v2/user/user_id/<string:user_id>")
+api.add_resource(v2UserByUuid, "/v2/user/uuid/<string:uuid>")
+api.add_resource(v2UserByPrimaryEmail, "/v2/user/primary_email/<string:primary_email>")
+api.add_resource(v2UserByPrimaryUsername, "/v2/user/primary_username/<string:primary_username>")
 
 
 @app.route("/v2")

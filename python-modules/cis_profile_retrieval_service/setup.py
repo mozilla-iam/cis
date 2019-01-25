@@ -36,7 +36,6 @@ test_requirements = [
     "moto",
     "mock",
     "flake8",
-    "iam-profile-faker",
 ]
 
 extras = {"test": test_requirements}

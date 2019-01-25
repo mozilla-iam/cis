@@ -101,7 +101,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:profile display:all")
         single_user_public_data_class_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -110,7 +110,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:fullprofile display:all")
         single_user_all_data_class_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -129,7 +129,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:fullprofile display:public")
         display_public_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -140,7 +140,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:fullprofile display:staff")
         display_staff_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -161,7 +161,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:fullprofile display:staff")
         display_staff_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -172,7 +172,7 @@ class TestAPI(object):
 
         token = f.generate_bearer_with_scope("read:fullprofile display:staff")
         display_staff_with_public_param_query = self.app.get(
-            "/v2/user/{}?filterDisplay=public".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}?filterDisplay=public".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -180,3 +180,39 @@ class TestAPI(object):
         assert not display_staff_with_public_param_query.json.get("identities").get("access_provider")
         assert not display_staff_with_public_param_query.json.get("staff_information").get("cost_center")
         assert display_staff_with_public_param_query.json.get("uuid")
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        profile = result.json["Items"][0]
+        fields = ["user_id", "uuid", "primary_email", "primary_username"]
+        for field in fields:
+
+            token = f.generate_bearer_with_scope("read:fullprofile display:staff")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert not query.json.get("identities").get("access_provider")
+            assert query.json.get("staff_information").get("cost_center")
+            assert query.json.get("uuid")
+
+            token = f.generate_bearer_with_scope("read:fullprofile display:staff")
+            query = self.app.get(
+                "/v2/user/{}/{}?filterDisplay=public".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert not query.json.get("identities").get("access_provider")
+            assert not query.json.get("staff_information").get("cost_center")
+            assert query.json.get("uuid")
