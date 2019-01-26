@@ -153,9 +153,12 @@ class User(object):
             try:
                 # current_attr is the original user attr
                 # level is the patch/merged in user attr
-                current_attr[_]["value"] = level[_]["value"]
+                # We skip null/None attributes even if the original/current user does not match (ie is not null)
+                if level[_]["value"] is not None:
+                    current_attr[_]["value"] = level[_]["value"]
             except KeyError:
-                current_attr[_]["values"] = level[_]["values"]
+                if level[_]["values"] is not None:
+                    current_attr[_]["values"] = level[_]["values"]
 
     def initialize_timestamps(self):
         now = self._get_current_utc_time()
