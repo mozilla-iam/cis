@@ -5,6 +5,7 @@ import os
 import mock
 import subprocess
 from botocore.stub import Stubber
+from boto3.dynamodb.conditions import Key
 from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
@@ -127,6 +128,20 @@ class TestProfile(object):
         )
 
         response = json.loads(result.get_data())
+
+        dynamodb = boto3.resource(
+            "dynamodb",
+            region_name="us-west-2",
+            aws_access_key_id="ak",
+            aws_secret_access_key="sk",
+            endpoint_url="http://localhost:{}".format(self.dynalite_port),
+        )
+
+        table = dynamodb.Table("local-identity-vault")
+        resp = table.query(KeyConditionExpression=Key("id").eq(json.loads(self.user_profile)["user_id"]["value"]))
+        user_from_vault = json.loads(resp["Items"][0]["profile"])
+        assert user_from_vault["last_modified"]["value"] is not None
+        assert user_from_vault["last_modified"]["signature"]["publisher"]["value"] is not None
         assert response is not None
 
     @mock.patch("cis_change_service.idp.get_jwks")
