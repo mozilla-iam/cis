@@ -104,7 +104,7 @@ provider:
         - "ssm:GetParameters"
         - "ssm:GetParameter"
       Resource:
-        - ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}
+        - ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/*
     - Effect: Allow
       Action:
         - "kms:Decrypt"
