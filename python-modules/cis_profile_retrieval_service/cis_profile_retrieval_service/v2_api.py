@@ -61,21 +61,21 @@ def scope_to_mozilla_data_classification(scopes):
     classifications = []
     if "classification:mozilla_confidential" in scopes:
         logger.debug("Mozilla confidential data classification in scope.")
-        classifications.append(MozillaDataClassification.MOZILLA_CONFIDENTIAL)
+        classifications.extend(MozillaDataClassification.MOZILLA_CONFIDENTIAL)
 
     if "classification:workgroup:staff_only" in scopes:
         logger.debug("Workgroup: staff only data classification in scope.")
-        classifications.append(MozillaDataClassification.STAFF_ONLY)
+        classifications.extend(MozillaDataClassification.STAFF_ONLY)
 
     if "classification:workgroup" in scopes:
         logger.debug("Workgroup data classification in scope.")
-        classifications.append(MozillaDataClassification.WORKGROUP_CONFIDENTIAL)
+        classifications.extend(MozillaDataClassification.WORKGROUP_CONFIDENTIAL)
 
     if "classification:individual" in scopes:
         logger.debug("Individual data classification in scope.")
-        classifications.append(MozillaDataClassification.INDIVIDUAL_CONFIDENTIAL)
+        classifications.extend(MozillaDataClassification.INDIVIDUAL_CONFIDENTIAL)
 
-    classifications.append(MozillaDataClassification.PUBLIC)
+    classifications.extend(MozillaDataClassification.PUBLIC)
     return classifications
 
 
