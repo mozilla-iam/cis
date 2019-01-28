@@ -40,6 +40,10 @@ custom:
       production: true
       development: true
       testing: false
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/
+      development: /iam/cis/development/
+      testing: /iam/cis/testing/
     DOMAIN_NAME:
       production: change.api.sso.mozilla.com
       development: change.api.dev.sso.allizom.org
@@ -69,6 +73,9 @@ provider:
     CHANGE_SERVICE_AUTH0_DOMAIN: ${self:custom.changeEnvironment.CHANGE_SERVICE_AUTH0_DOMAIN.${self:custom.changeStage}}
     CIS_ENFORCE_PUBLISHER_RULES: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
     CHANGE_SERVICE_API_IDENTIFIER: ${self:custom.changeEnvironment.IDENTIFIER.${self:custom.changeStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}
+    CIS_SIGNING_KEY_NAME: change_service_signing_key
+    CIS_SECRET_MANAGER: ssm
   iamRoleStatements:
     - Effect: Allow
       Action:
@@ -90,6 +97,19 @@ provider:
         - "dynamodb:UpdateItem"
       Resource:
         - ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
 functions:
   api:
     handler: handler.handle
