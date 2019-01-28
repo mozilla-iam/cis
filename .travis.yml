@@ -1,12 +1,5 @@
 language: python
 dist: xenial
-cache:
-  directories:
-    - /home/travis/build/mozilla-iam/cis/python-modules/.cis-env/
-    - $HOME/.cache/pip
-before_cache:
-  - rm -f $HOME/.cache/pip/log/debug.log
-  - rm -f /home/travis/build/mozilla-iam/cis/python-modules/.cis-env/*/log/*
 python:
   - 3.7
 env:
