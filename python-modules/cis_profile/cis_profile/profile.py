@@ -131,6 +131,8 @@ class User(object):
         # Default to top level
         if level is None:
             level = user_to_merge_in.__dict__
+        if _internal_level is None:
+            _internal_level = self.__dict__
 
         for attr in level.keys():
             # If this is an internal class object, skip it
@@ -138,25 +140,21 @@ class User(object):
                 continue
             # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
             if "signature" not in level[attr].keys():
-                self.merge(user_to_merge_in, publisher=publisher, level=level[attr], _internal_level=attr)
+                self.merge(
+                    user_to_merge_in, publisher=publisher, level=level[attr], _internal_level=_internal_level[attr]
+                )
             # Check if this is an attribute we want to merge back
             elif level[attr]["signature"]["publisher"]["name"] == publisher:
                 tomerge.append(attr)
 
         for _ in tomerge:
             logger.debug("Merging in attribute {} for publisher {}".format(_, publisher))
-            print("==>", _, _internal_level)
-            current_attr = self.__dict__
-            if _internal_level is not None:
-                current_attr = current_attr[_internal_level]
 
-            # current_attr is the original user attr
+            # _internal_level is the original user attr
             # level is the patch/merged in user attr
             # We skip null/None attributes even if the original/current user does not match (ie is not null)
-            if level[_].get("value") is not None:
-                current_attr[_]["value"] = level[_]["value"]
-            elif level[_].get("values") is not None:
-                current_attr[_]["values"] = level[_]["values"]
+            if level[_].get("value") is not None or level[_].get("values") is not None:
+                _internal_level[_] = level[_]
 
     def initialize_timestamps(self):
         now = self._get_current_utc_time()
