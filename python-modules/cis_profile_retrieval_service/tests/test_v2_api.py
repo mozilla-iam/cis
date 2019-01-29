@@ -19,6 +19,8 @@ logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 logger = logging.getLogger(__name__)
 
+indexed_fields = ["user_id", "uuid", "primary_email", "primary_username"]
+
 
 @mock_dynamodb2
 @mock_sts
@@ -97,60 +99,104 @@ class TestAPI(object):
         )
 
         for profile in public_data_class_query.json["Items"]:
-            assert not profile.get("identities")
+            assert profile.get("access_information").get("hris") is None
 
         token = f.generate_bearer_with_scope("read:profile display:all")
         single_user_public_data_class_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
 
-        assert not single_user_public_data_class_query.json.get("identities")
+        assert single_user_public_data_class_query.json.get("access_information").get("hris") is None
 
         token = f.generate_bearer_with_scope("read:fullprofile display:all")
         single_user_all_data_class_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
+            "/v2/user/user_id/{}".format(result.json["Items"][0]["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
 
-        assert single_user_all_data_class_query.json.get("identities")
+        assert single_user_all_data_class_query.json.get("access_information")
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
-    def test_test_display_scope_filter(self, fake_jwks):
+    def test_users_with_all(self, fake_jwks):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
 
+        # data classification: ALL, display scope: ALL
         token = f.generate_bearer_with_scope("read:fullprofile display:all")
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
 
-        result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is not None
+            assert profile.get("staff_information").get("cost_center") is not None
+            assert profile.get("uuid") is not None
 
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_users_with_dispaly_level_params_and_scopes(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        # data classification: ALL, display scope: PUBLIC
         token = f.generate_bearer_with_scope("read:fullprofile display:public")
-        display_public_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
-            headers={"Authorization": "Bearer " + token},
-            follow_redirects=True,
-        )
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
 
-        assert not display_public_query.json.get("identities").get("access_provider")
-        assert not display_public_query.json.get("staff_information").get("cost_center")
-        assert display_public_query.json.get("uuid")
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is None
+            assert profile.get("staff_information").get("cost_center") is None
+            assert profile.get("uuid") is not None
 
+        # data classification: ALL, display scope: STAFF
         token = f.generate_bearer_with_scope("read:fullprofile display:staff")
-        display_staff_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
-            headers={"Authorization": "Bearer " + token},
-            follow_redirects=True,
-        )
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
 
-        assert not display_staff_query.json.get("identities").get("access_provider")
-        assert display_staff_query.json.get("staff_information").get("cost_center")
-        assert display_staff_query.json.get("uuid")
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is None
+            assert profile.get("staff_information").get("cost_center") is not None
+            assert profile.get("uuid") is not None
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
-    def test_display_paramter_filter(self, fake_jwks):
+    def test_users_with_scopes(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        # data classification: PUBLIC, display scope: ALL
+        token = f.generate_bearer_with_scope("display:all")
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is None
+            assert profile.get("staff_information").get("cost_center") is None
+            assert profile.get("uuid") is not None
+
+        # data classification: STAFF, display scope: ALL
+        token = f.generate_bearer_with_scope("classification:workgroup:staff_only display:all")
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is None
+            assert profile.get("staff_information").get("cost_center") is not None
+            assert profile.get("staff_information").get("title") is None
+            assert profile.get("uuid") is not None
+
+        # data classification: STAFF + MOZILLA_CONFIDENTIAL, display scope: ALL
+        token = f.generate_bearer_with_scope(
+            "classification:workgroup:staff_only classification:mozilla_confidential display:all"
+        )
+        query = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        for profile in query.json["Items"]:
+            assert profile.get("access_information").get("access_provider") is None
+            assert profile.get("staff_information").get("cost_center") is not None
+            assert profile.get("staff_information").get("title") is not None
+            assert profile.get("uuid") is not None
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x(self, fake_jwks):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -159,24 +205,127 @@ class TestAPI(object):
 
         result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
 
-        token = f.generate_bearer_with_scope("read:fullprofile display:staff")
-        display_staff_query = self.app.get(
-            "/v2/user/{}".format(result.json["Items"][0]["user_id"]["value"]),
-            headers={"Authorization": "Bearer " + token},
-            follow_redirects=True,
-        )
+        profile = result.json["Items"][0]
+        for field in indexed_fields:
 
-        assert not display_staff_query.json.get("identities").get("access_provider")
-        assert display_staff_query.json.get("staff_information").get("cost_center")
-        assert display_staff_query.json.get("uuid")
+            # data classification: ALL, display scope: ALL, display parameter: -
+            token = f.generate_bearer_with_scope("read:fullprofile display:all")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
 
-        token = f.generate_bearer_with_scope("read:fullprofile display:staff")
-        display_staff_with_public_param_query = self.app.get(
-            "/v2/user/{}?filterDisplay=public".format(result.json["Items"][0]["user_id"]["value"]),
-            headers={"Authorization": "Bearer " + token},
-            follow_redirects=True,
-        )
+            assert query.json.get("access_information").get("access_provider") is not None
+            assert query.json.get("staff_information").get("cost_center") is not None
+            assert query.json.get("uuid") is not None
 
-        assert not display_staff_with_public_param_query.json.get("identities").get("access_provider")
-        assert not display_staff_with_public_param_query.json.get("staff_information").get("cost_center")
-        assert display_staff_with_public_param_query.json.get("uuid")
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x_with_data_classification_scopes(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        profile = result.json["Items"][0]
+        for field in indexed_fields:
+
+            # data classification: PUBLIC, display scope: ALL, display parameter: -
+            token = f.generate_bearer_with_scope("display:all")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is None
+            assert query.json.get("staff_information").get("cost_center") is None
+            assert query.json.get("uuid") is not None
+
+            # data classification: STAFF, display scope: ALL, display parameter: -
+            token = f.generate_bearer_with_scope("classification:workgroup:staff_only display:all")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is None
+            assert query.json.get("staff_information").get("cost_center") is not None
+            assert query.json.get("uuid") is not None
+
+            # data classification: STAFF, display scope: PUBLIC, display parameter: -
+            token = f.generate_bearer_with_scope("classification:workgroup:staff_only display:public")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert not query.json.get("access_information").get("access_provider")
+            assert not query.json.get("staff_information").get("cost_center")
+            assert query.json.get("uuid")
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x_with_dispaly_level_params_and_scopes(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        profile = result.json["Items"][0]
+        for field in indexed_fields:
+
+            # data classification: ALL, display scope: PUBLIC, display parameter: -
+            token = f.generate_bearer_with_scope("read:fullprofile display:public")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is None
+            assert query.json.get("staff_information").get("cost_center") is None
+            assert query.json.get("uuid") is not None
+
+            # data classification: ALL, display scope: STAFF, display parameter: -
+            token = f.generate_bearer_with_scope("read:fullprofile display:staff")
+            query = self.app.get(
+                "/v2/user/{}/{}".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is None
+            assert query.json.get("staff_information").get("cost_center") is not None
+            assert query.json.get("uuid") is not None
+
+            # data classification: ALL, display scope: STAFF, display parameter: PUBLIC
+            token = f.generate_bearer_with_scope("read:fullprofile display:staff")
+            query = self.app.get(
+                "/v2/user/{}/{}?filterDisplay=public".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert not query.json.get("access_information").get("access_provider")
+            assert not query.json.get("staff_information").get("cost_center")
+            assert query.json.get("uuid")
+
+            # data classification: ALL, display scope: PUBLIC, display parameter: STAFF
+            token = f.generate_bearer_with_scope("read:fullprofile display:public")
+            query = self.app.get(
+                "/v2/user/{}/{}?filterDisplay=staff".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert not query.json.get("access_information").get("access_provider")
+            assert not query.json.get("staff_information").get("cost_center")
+            assert query.json.get("uuid")

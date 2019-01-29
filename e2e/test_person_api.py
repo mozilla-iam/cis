@@ -66,7 +66,7 @@ def test_get_single_user():
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
     headers = {"authorization": "Bearer {}".format(access_token)}
-    conn.request("GET", "/v2/user/jeffreygreen%40gmail.com", headers=headers)
+    conn.request("GET", "/v2/user/primary_email/jeffreygreen%40gmail.com", headers=headers)
     res = conn.getresponse()
     data = json.loads(res.read())
     return data

@@ -20,7 +20,7 @@ class TestFakeProfile(object):
         assert a.uuid.value != c.uuid.value
 
     def test_batch_create(self):
-        profiles = fake_profile.batch_create_fake_profiles(seed=1337, count=3)
+        profiles = fake_profile.batch_create_fake_profiles(seed=1337, number=3)
         assert len(profiles) == 3
         for i, p in enumerate(profiles, 1):
             assert p is not None

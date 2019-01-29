@@ -163,7 +163,6 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
 
     def primary_username(self):
         if self.generator.boolean():
-            # Random primary_usernames are prefixed with r-- for displaying purposes.
             return "r--{}".format(base64.urlsafe_b64decode(fake.uuid4()))
         else:
             return self.generator.user_name()
@@ -411,10 +410,10 @@ class FakeUser(cis_profile.profile.User):
         self._d("access_information.access_provider.values", fake.ai())
 
 
-def batch_create_fake_profiles(seed, count):
+def batch_create_fake_profiles(seed, number):
     fake = faker.Faker()
     fake.seed(seed)
     hierarchy = create_random_hierarchy_iter(fake.random)
-    profiles = map(lambda x: x.as_dict(), [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(count)])
+    profiles = map(lambda x: x.as_dict(), [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(number)])
 
     return list(profiles)

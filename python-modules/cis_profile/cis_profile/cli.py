@@ -37,9 +37,9 @@ def create(seed, config):
 @click.command()
 @click.option("--seed", "-s", type=int, help="seed to create random profile", default=1337)
 @click.option("--number", "-n", type=int, help="how many profiles to create")
-def batch(seed, count):
+def batch(seed, number):
     """Create many IAM profile v2 objects."""
-    profiles = batch_create_fake_profiles(seed, count)
+    profiles = batch_create_fake_profiles(seed, number)
     click.echo(json.dumps(profiles, indent=2))
 
 
