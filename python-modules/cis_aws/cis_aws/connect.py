@@ -242,7 +242,7 @@ class AWS(object):
         appropriate tagging configuration."""
         dynamodb_arn = self.config("dynamodb_arn", namespace="cis", default="None")
 
-        if dynamodb_arn is not "None":
+        if dynamodb_arn != "None":
             return dynamodb_arn
 
         if self._discover_cis_environment() == "local":
