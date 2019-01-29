@@ -215,7 +215,7 @@ class AWS(object):
         configuration."""
         kinesis_arn = self.config("kinesis_arn", namespace="cis", default="None")
 
-        if kinesis_arn is not "None":
+        if kinesis_arn != "None":
             return kinesis_arn
 
         if self._discover_cis_environment() == "local":
