@@ -100,6 +100,62 @@ class User(object):
             path = user_structure_json_path
         return DotDict(json.load(open(path)))
 
+    def merge(self, user_to_merge_in, publisher, level=None, _internal_level=None):
+        """
+        Recursively merge user attributes:
+        Merge a User object with another User object. This will override all fields from the current user by non-null
+        (non-None) fields from `user_to_merge_in` which have a publisher set to `publisher`.
+        Ex:
+        u_orig = User()
+        u_patch = User()
+        u_patch.timezone.value = "GMT -07:00 America/Los Angeles"
+
+        u_orig.merge(u_patch, publisher="hris")
+        print(u_orig.timezone.value)
+        # >>> GMT -07:00 America/Los Angeles
+
+        This is useful when updating existing users, rather than manually matching fields. Passing the publisher ensures
+        that we only patch the fields that are allowed for this publisher, as a safeguard, which ensures validation will
+        work
+
+        @user_to_merge_in User object the user to merge into the current user object
+        @publisher str the publisher name that attempts to merge data in. any data from `user_to_merge_in` that is not
+        originating from this publisher will be ignored
+        @level dict of an attribute. This can be user_to_merge_in.__dict__ for the top level (recurses through all
+        attributes). The level MUST be from user_to_merge_in, not from the original/current user.
+        @_internal_level str attribute name  of previous level attribute from the current user. Used internally.
+
+        This function always returns None and is always successful.
+        """
+        tomerge = []
+        # Default to top level
+        if level is None:
+            level = user_to_merge_in.__dict__
+        if _internal_level is None:
+            _internal_level = self.__dict__
+
+        for attr in level.keys():
+            # If this is an internal class object, skip it
+            if attr.startswith("_") or not isinstance(level[attr], dict):
+                continue
+            # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
+            if "signature" not in level[attr].keys():
+                self.merge(
+                    user_to_merge_in, publisher=publisher, level=level[attr], _internal_level=_internal_level[attr]
+                )
+            # Check if this is an attribute we want to merge back
+            elif level[attr]["signature"]["publisher"]["name"] == publisher:
+                tomerge.append(attr)
+
+        for _ in tomerge:
+            logger.debug("Merging in attribute {} for publisher {}".format(_, publisher))
+
+            # _internal_level is the original user attr
+            # level is the patch/merged in user attr
+            # We skip null/None attributes even if the original/current user does not match (ie is not null)
+            if level[_].get("value") is not None or level[_].get("values") is not None:
+                _internal_level[_] = level[_]
+
     def initialize_timestamps(self):
         now = self._get_current_utc_time()
         logger.debug("Setting all profile metadata fields and profile modification timestamps to now: {}".format(now))
@@ -188,7 +244,7 @@ class User(object):
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
         @scopes list of str
         """
-        User._filter_all(level=self.__dict__, valid=scopes, check="classification")
+        self._filter_all(level=self.__dict__, valid=scopes, check="classification")
 
     def filter_display(self, display_levels=[DisplayLevel.PUBLIC], level=None):
         """
@@ -196,7 +252,7 @@ class User(object):
         in @display_levels
         @display_levels list of str
         """
-        User._filter_all(level=self.__dict__, valid=display_levels, check="display")
+        self._filter_all(level=self.__dict__, valid=display_levels, check="display")
 
     def validate(self):
         """
@@ -483,17 +539,22 @@ class User(object):
         sigattr["value"] = self.__signop.jws()
         return attr
 
-    @staticmethod
-    def _filter_all(level, valid, check):
+    def _filter_all(self, level, valid, check):
+        """
+        Recursively filters out (i.e. deletes) attribute values.
+        @level dict of an attribute. This can be self.__dict__ for the top level (recurses through all attributes)
+        @valid list of valid attributes values, i.e. attribute values that will be retained
+        @check str the attribute to check
+        """
         todel = []
         for attr in level.keys():
             if attr.startswith("_") or not isinstance(level[attr], dict):
                 continue
             if "metadata" not in level[attr].keys():
-                User._filter_all(valid=valid, level=level[attr], check=check)
+                self._filter_all(valid=valid, level=level[attr], check=check)
             elif level[attr]["metadata"][check] not in valid:
                 todel.append(attr)
 
-        for d in todel:
-            logger.debug("Removing attribute {} because it's not in {}".format(attr, valid))
-            del level[d]
+        for _ in todel:
+            logger.debug("Removing attribute {} because it's not in {}".format(_, valid))
+            del level[_]
