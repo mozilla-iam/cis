@@ -188,7 +188,7 @@ class User(object):
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
         @scopes list of str
         """
-        filter_all(level=self.__dict__, valid=scopes, check="classification")
+        User._filter_all(level=self.__dict__, valid=scopes, check="classification")
 
     def filter_display(self, display_levels=[DisplayLevel.PUBLIC], level=None):
         """
@@ -196,7 +196,7 @@ class User(object):
         in @display_levels
         @display_levels list of str
         """
-        filter_all(level=self.__dict__, valid=display_levels, check="display")
+        User._filter_all(level=self.__dict__, valid=display_levels, check="display")
 
     def validate(self):
         """
@@ -483,17 +483,17 @@ class User(object):
         sigattr["value"] = self.__signop.jws()
         return attr
 
+    @staticmethod
+    def _filter_all(level, valid, check):
+        todel = []
+        for attr in level.keys():
+            if attr.startswith("_") or not isinstance(level[attr], dict):
+                continue
+            if "metadata" not in level[attr].keys():
+                User._filter_all(valid=valid, level=level[attr], check=check)
+            elif level[attr]["metadata"][check] not in valid:
+                todel.append(attr)
 
-def filter_all(level, valid, check):
-    todel = []
-    for attr in level.keys():
-        if attr.startswith("_") or not isinstance(level[attr], dict):
-            continue
-        if "metadata" not in level[attr].keys():
-            filter_all(valid=valid, level=level[attr], check=check)
-        elif level[attr]["metadata"][check] not in valid:
-            todel.append(attr)
-
-    for d in todel:
-        logger.debug("Removing attribute {} because it's not in {}".format(attr, valid))
-        del level[d]
+        for d in todel:
+            logger.debug("Removing attribute {} because it's not in {}".format(attr, valid))
+            del level[d]
