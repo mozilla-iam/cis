@@ -51,16 +51,6 @@ def exchange_for_access_token():
     return data["access_token"]
 
 
-def test_api_is_alive():
-    access_token = exchange_for_access_token()
-    conn = http.client.HTTPSConnection(base_url)
-    headers = {"authorization": "Bearer {}".format(access_token)}
-    conn.request("GET", "/v2/user/status?sequenceNumber=123456", headers=headers)
-    res = conn.getresponse()
-    data = json.loads(res.read())
-    assert data["identity_vault"] is not None
-
-
 def test_publishing_a_profile_it_should_be_accepted():
     u = fake_profile.FakeUser()
     json_payload = u.as_json()
@@ -72,9 +62,11 @@ def test_publishing_a_profile_it_should_be_accepted():
     conn.request("POST", "/v2/user", json_payload, headers=headers)
     res = conn.getresponse()
     data = res.read()
-    return data
+    print(data)
+    assert 0
+    assert data is not None
 
-
+"""
 def test_publishing_profiles_it_should_be_accepted():
     profiles = []
     for x in range(0, 4):
@@ -87,9 +79,5 @@ def test_publishing_profiles_it_should_be_accepted():
     conn.request("POST", "/v2/users", json.dumps(profiles), headers=headers)
     res = conn.getresponse()
     data = res.read()
-    return data
-
-
-if __name__ == "__main__":
-    print("test_publishing_a_profile_it_should_be_accepted:", test_publishing_a_profile_it_should_be_accepted())
-    print("test_publishing_profiles_it_should_be_accepted:", test_publishing_profiles_it_should_be_accepted())
+    assert data is not None
+"""
