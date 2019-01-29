@@ -55,7 +55,6 @@ layer-codebuild:
 	$(PIP_CMD) ../$(CIS_MODULE_PATH)/cis_aws/ \
 	../$(CIS_MODULE_PATH)/cis_change_service/ \
 	../$(CIS_MODULE_PATH)/cis_crypto/ \
-	../$(CIS_MODULE_PATH)/cis_fake_well_known/ \
 	../$(CIS_MODULE_PATH)/cis_identity_vault/ \
 	../$(CIS_MODULE_PATH)/cis_processor/ \
 	../$(CIS_MODULE_PATH)/cis_profile/ \
