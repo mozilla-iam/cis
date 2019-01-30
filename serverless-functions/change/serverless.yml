@@ -41,9 +41,9 @@ custom:
       development: true
       testing: false
     CIS_SECRET_MANAGER_SSM_PATH:
-      production: /iam/cis/production/
-      development: /iam/cis/development/
-      testing: /iam/cis/testing/
+      production: /iam/cis/production
+      development: /iam/cis/development
+      testing: /iam/cis/testing
     DOMAIN_NAME:
       production: change.api.sso.mozilla.com
       development: change.api.dev.sso.allizom.org
@@ -104,7 +104,7 @@ provider:
         - "ssm:GetParameters"
         - "ssm:GetParameter"
       Resource:
-        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}change_service_signing_key
+        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/change_service_signing_key
     - Effect: Allow
       Action:
         - "kms:Decrypt"
