@@ -75,7 +75,7 @@ provider:
     CHANGE_SERVICE_API_IDENTIFIER: ${self:custom.changeEnvironment.IDENTIFIER.${self:custom.changeStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}
     CIS_SIGNING_KEY_NAME: change_service_signing_key
-    CIS_SECRET_MANAGER: ssm
+    CIS_SECRET_MANAGER: aws-ssm
   iamRoleStatements:
     - Effect: Allow
       Action:
