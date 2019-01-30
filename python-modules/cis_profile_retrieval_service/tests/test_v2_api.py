@@ -2,10 +2,10 @@ import boto3
 import json
 import logging
 import os
+import random
+import subprocess
 from cis_identity_vault import vault
 from mock import patch
-from moto import mock_dynamodb2
-from moto import mock_sts
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
@@ -22,11 +22,19 @@ logger = logging.getLogger(__name__)
 indexed_fields = ["user_id", "uuid", "primary_email", "primary_username"]
 
 
-@mock_dynamodb2
-@mock_sts
+
 class TestAPI(object):
     def setup_class(self):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        self.dynalite_port = str(random.randint(32000, 34000))
+        self.kinesalite_port = str(random.randint(32000, 34000))
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
+        self.dynalite_host = "localhost"
+        self.kinesalite_host = "localhost"
+        self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
+        self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
+
         from cis_profile_retrieval_service.common import seed
 
         vault_client = vault.IdentityVault()
@@ -36,14 +44,19 @@ class TestAPI(object):
         vault_client.find_or_create()
 
         self.dynamodb_client = boto3.client(
-            "dynamodb", region_name="us-west-2", aws_access_key_id="ak", aws_secret_access_key="sk"
+            "dynamodb", region_name="us-west-2", aws_access_key_id="ak", aws_secret_access_key="sk",
+            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port)
+
         )
 
         self.dynamodb_resource = boto3.resource(
-            "dynamodb", region_name="us-west-2", aws_access_key_id="ak", aws_secret_access_key="sk"
+            "dynamodb", region_name="us-west-2",
+            aws_access_key_id="ak",
+            aws_secret_access_key="sk",
+            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port)
         )
         seed(number_of_fake_users=100)
-        self.table = self.dynamodb_resource.Table("blue-identity-vault")
+        self.table = self.dynamodb_resource.Table("local-identity-vault")
         from cis_profile_retrieval_service import v2_api as api
 
         api.app.testing = True
