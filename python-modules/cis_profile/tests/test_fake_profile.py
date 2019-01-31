@@ -11,6 +11,7 @@ class TestFakeProfile(object):
         assert d is not None
         assert u.user_id.value is not None
         u.validate()
+        u.verify_all_publishers(u)
 
     def test_same_fake_user(self):
         a = fake_profile.FakeUser(seed=1337)
