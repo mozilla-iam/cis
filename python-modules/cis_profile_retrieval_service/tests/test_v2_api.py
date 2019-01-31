@@ -22,7 +22,6 @@ logger = logging.getLogger(__name__)
 indexed_fields = ["user_id", "uuid", "primary_email", "primary_username"]
 
 
-
 class TestAPI(object):
     def setup_class(self):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
@@ -44,16 +43,19 @@ class TestAPI(object):
         vault_client.find_or_create()
 
         self.dynamodb_client = boto3.client(
-            "dynamodb", region_name="us-west-2", aws_access_key_id="ak", aws_secret_access_key="sk",
-            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port)
-
+            "dynamodb",
+            region_name="us-west-2",
+            aws_access_key_id="ak",
+            aws_secret_access_key="sk",
+            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port),
         )
 
         self.dynamodb_resource = boto3.resource(
-            "dynamodb", region_name="us-west-2",
+            "dynamodb",
+            region_name="us-west-2",
             aws_access_key_id="ak",
             aws_secret_access_key="sk",
-            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port)
+            endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port),
         )
         seed(number_of_fake_users=100)
         self.table = self.dynamodb_resource.Table("local-identity-vault")
