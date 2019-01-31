@@ -2,6 +2,7 @@ import boto3
 import json
 import jsonschema
 import http.client
+import logging
 import os
 from cis_profile import fake_profile
 from cis_profile import WellKnown
@@ -13,12 +14,18 @@ client_secret_name = "/iam/cis/{}/change_service_client_secret".format(cis_envir
 
 if cis_environment == "testing":
     base_url = "change.api.test.sso.allizom.org"
+    audience = "api.test.sso.allizom.org"
 elif cis_environment == "development":
     base_url = "change.api.dev.sso.allizom.org"
+    audience = "api.dev.sso.allizom.org"
 elif cis_environment == "production":
     base_url == "change.api.sso.mozilla.com"
+    audience = "api.prod.sso.allizom.org"
+
 
 client = boto3.client("ssm")
+logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
+logger = logging.getLogger(__name__)
 
 
 def get_secure_parameter(parameter_name):
@@ -39,7 +46,7 @@ def exchange_for_access_token():
     payload_dict = dict(
         client_id=get_client_id(),
         client_secret=get_client_secret(),
-        audience="api.test.sso.allizom.org",
+        audience=audience,
         grant_type="client_credentials",
     )
 
@@ -58,6 +65,7 @@ def test_publishing_a_profile_it_should_be_accepted():
     jsonschema.validate(json.loads(json_payload), wk.get_schema())
     access_token = exchange_for_access_token()
     conn = http.client.HTTPSConnection(base_url)
+    logger.info('Attempting connection for: {}'.format(base_url))
     headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
     conn.request("POST", "/v2/user", json_payload, headers=headers)
     res = conn.getresponse()

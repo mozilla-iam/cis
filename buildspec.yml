@@ -7,5 +7,6 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
+      - cd python-modules && make -j 7 test-tox
       - mkdir -p serverless-functions/build/python/lib/python3.6/site-packages
       - bash deploy.sh

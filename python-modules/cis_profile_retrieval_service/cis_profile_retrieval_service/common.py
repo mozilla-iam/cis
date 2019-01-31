@@ -56,6 +56,7 @@ def get_dynamodb_client():
 def initialize_vault():
     if config("environment", namespace="cis", default="local") == "local":
         identity_vault = IdentityVault()
+        identity_vault.connect()
         identity_vault.find_or_create()
     else:
         return None
