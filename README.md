@@ -28,7 +28,7 @@ It uses a specific set of signing and verifications keys.
 URLs:
 - https://change.api.sso.mozilla.com
 - https://person.api.sso.mozilla.com
-- https://auth.mozilla.com/.well-known/mozilla-iam
+- https://auth.mozilla.com/.well-known/mozilla-iam (contains all necessary information, URLs, audience, keys, etc.)
 
 Audience:
 - api.sso.mozilla.com
@@ -43,7 +43,7 @@ Tagged releases (SemVer pre-releases, e.g. 1.2.3-pre) from this repository are w
 URLs:
 - https://change.api.test.sso.allizom.org
 - https://person.api.test.sso.allizom.org
-- https://auth.allizom.org/.well-known/mozilla-iam
+- https://auth.allizom.org/.well-known/mozilla-iam (contains all necessary information, URLs, audience, keys, etc.)
 
 Audience:
 - api.test.sso.allizom.org
@@ -56,7 +56,7 @@ It uses a development set of keys for signing and verification.
 URLs:
 - https://change.api.dev.sso.allizom.org
 - https://person.api.dev.sso.allizom.org
-- https://auth.allizom.org/.well-known/mozilla-iam
+- https://auth.allizom.org/.well-known/mozilla-iam (contains all necessary information, URLs, audience, keys, etc.)
 
 Audience:
 - api.dev.sso.allizom.org
