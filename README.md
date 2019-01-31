@@ -7,40 +7,32 @@ This is a work in progress for updating docs and design concepts for profile v2.
 
 ## Documentation & Resources
 
-- [CIS Person-API](https://github.com/mozilla-iam/person-api)
 - [CIS Security](docs/Security.md)
-- [CIS Event format for publishers](docs/Event.md)
 - [User Profiles](docs/Profiles.md)
 
 ## Draft-RFCs & Proposals (informational-only)
-- [RFCs preamble](docs/rfcs/README.md)
-- [API](docs/API.md) (Now Person-API)
-- [Automatic Access Expiration](docs/AutomaticAccessExpiration.md)
-- [User profile v2](docs/rfcs/UserProfilesv2.md), [User profile schema v2](docs/rfcs/UserProfilesv2_schema.json)
+- [RFCs](docs/rfcs/)
 
 ## Summary
 
 CIS is the Mozilla IAM Change Integration Service.
 
-This is a stream-based system that validates user identity-{change,creation,etc} events from a set of event
-`publishers`, stores the resulting user database in what we call the `identity vault`, and provision or signals
-consumers through what we call `identity drivers`.
+TODO: Better summary :)
 
-Example: Mozillians.org user profile editor sends a modified t-shirt size for
-user A to CIS. CIS validates the change, stores it in the `identity vault` and
-triggers updates to Auth0, LDAP, etc.
+## Environments
+### Production (prod)
 
-![Publisher=>CIS Vault=>ID Driver](/docs/images/CIS-AWS-Stencils.png?raw=true
-"CIS Diagram")
+This is what you expect. Tagged releases (SemVer, e.g. 1.2.3) from this repository are what run in production.
+It uses a specific set of signing and verifications keys.
 
-## Technologies
+### Testing (testing)
 
-- Stream Publishers (sends identity change events to CIS): Python lambda
-  functions
-- Stream Identity Drivers (deliver/propagate identity changes from CIS): Python
-  lamba and webtask functions
-- Identity Vault (source of truth for identity data): AWS DynamoDB
-- Stream itself: AWS Kinesis
+This is what is usually called staging. It contains code and data similar to production and is used to ensure that the production deployment will work.
+It uses the same set of keys as production.
 
-See also <https://github.com/mozilla-iam/cis_functions/> to find the serverless
-code of the stream publishers/identity drivers.
+Tagged releases (SemVer pre-releases, e.g. 1.2.3-pre) from this repository are what run in testing.
+
+### Development (dev)
+
+This is for local testing and development. This is also what is in the `master` branch of this repository.
+It uses a development set of keys for signing and verification.
