@@ -190,8 +190,8 @@ class TestProfile(object):
 
         results = json.loads(result.get_data())
         expected_result = {
-            'code': 'invalid_publisher',
-            'description': '[create] mozilliansorg is NOT allowed to publish field first_name'
+            "code": "invalid_publisher",
+            "description": "[create] mozilliansorg is NOT allowed to publish field first_name",
         }
 
         assert result.status_code == 403
@@ -217,6 +217,7 @@ class TestProfile(object):
         )
 
         results = json.loads(result.get_data())
+        assert results is not None
         assert result.status_code == 200
 
     def teardown(self):

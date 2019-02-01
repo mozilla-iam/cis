@@ -119,7 +119,11 @@ class Profile(object):
         return self._run_transaction([transact_items])
 
     def _delete_without_transaction(self, user_profile):
-        return self.table.delete_item(Item=user_profile)
+        return self.table.delete_item(
+            Key={
+                'id': user_profile["id"]
+            }
+        )
 
     def create_batch(self, list_of_profiles):
         sequence_numbers = []

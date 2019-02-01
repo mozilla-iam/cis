@@ -45,39 +45,24 @@ class Vault(object):
             if self.config("verify_signatures", namespace="cis") == "true":
                 cis_profile.verify_all_signatures()
         except SignatureVerificationFailure as e:
-            logger.error("The profile vailed to pass signature verification for user: {}".format(user_id),
-                extra={
-                    'user_id': user_id,
-                    'profile': cis_profile.as_dict(),
-                    'reason': e
-                }
+            logger.error(
+                "The profile vailed to pass signature verification for user: {}".format(user_id),
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
             )
 
-            raise VerificationError(
-                {"code": "invalid_signature", "description": "{}".format(e)}, 403
-            )
+            raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
         except PublisherVerificationFailure as e:
-            logger.error("The profile vailed to pass publisher verification for user: {}".format(user_id),
-                extra={
-                    'user_id': user_id,
-                    'profile': cis_profile.as_dict(),
-                    'reason': e
-                }
+            logger.error(
+                "The profile vailed to pass publisher verification for user: {}".format(user_id),
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
             )
-            raise VerificationError(
-                {"code": "invalid_publisher", "description": "{}".format(e)}, 403
-            )
+            raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
         except Exception as e:
-            logger.error("The profile produced an unknown error and is not trusted for user: {}".format(user_id),
-                extra={
-                    'user_id': user_id,
-                    'profile': cis_profile.as_dict(),
-                    'reason': e
-                }
+            logger.error(
+                "The profile produced an unknown error and is not trusted for user: {}".format(user_id),
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
             )
-            raise VerificationError(
-                {"code": "unknown_error", "description": "{}".format(e)}, 500
-            )
+            raise VerificationError({"code": "unknown_error", "description": "{}".format(e)}, 500)
         return True
 
     def _update_attr_owned_by_cis(self, profile_json):
@@ -126,24 +111,16 @@ class Vault(object):
                 )
 
                 res = vault.find_or_create(user_profile)
-                logger.debug('The result of writing the profile to the identity vault was: {}'.format(res),
-                    extra={
-                        'user_id': profile_json["user_id"]["value"],
-                        'profile': profile_json,
-                        'result': res
-                    }
+                logger.debug(
+                    "The result of writing the profile to the identity vault was: {}".format(res),
+                    extra={"user_id": profile_json["user_id"]["value"], "profile": profile_json, "result": res},
                 )
                 return res
         except ClientError as e:
-            logger.error('An error occured writing this profile to dynamodb',
-                extras={
-                    'profile': profile_json,
-                    'error': e
-                }
+            logger.error(
+                "An error occured writing this profile to dynamodb", extras={"profile": profile_json, "error": e}
             )
-            raise IntegrationError(
-                {"code": "integration_exception", "description": "{}".format(e)}, 500
-            )
+            raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
 
     def put_profiles(self, profile_list):
         """Write profile to the identity vault."""
@@ -158,7 +135,9 @@ class Vault(object):
             else:
                 logger.info("Attempting to put batch of profiles without transactions.")
                 vault = user.Profile(
-                    self.identity_vault_client.get("table"), self.identity_vault_client.get("client"), transactions=False
+                    self.identity_vault_client.get("table"),
+                    self.identity_vault_client.get("client"),
+                    transactions=False,
                 )
 
             user_profiles = []
@@ -182,19 +161,16 @@ class Vault(object):
                     )
                     user_profiles.append(user_profile)
 
-            logger.debug("Attempting to send a list numbering: {} profiles as a transaction.".format(len(user_profiles)))
+            logger.debug(
+                "Attempting to send a list numbering: {} profiles as a transaction.".format(len(user_profiles))
+            )
             result = vault.find_or_create_batch(user_profiles)
         except ClientError as e:
-            logger.error('An error occured writing these profiles to dynamodb',
-                extras={
-                    'profiles': profile_list,
-                    'error': e
-                }
+            logger.error(
+                "An error occured writing these profiles to dynamodb", extras={"profiles": profile_list, "error": e}
             )
-            raise IntegrationError(
-                {"code": "integration_exception", "description": "{}".format(e)}, 500
-            )
-        return {'creates': result[0], 'updates': result[1]}
+            raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
+        return {"creates": result[0], "updates": result[1]}
 
     def delete_profile(self, profile_json):
         try:
@@ -215,21 +191,18 @@ class Vault(object):
             else:
                 logger.info("Attempting to put batch of profiles without transactions.")
                 vault = user.Profile(
-                    self.identity_vault_client.get("table"), self.identity_vault_client.get("client"), transactions=False
+                    self.identity_vault_client.get("table"),
+                    self.identity_vault_client.get("client"),
+                    transactions=False,
                 )
 
             vault.delete(user_profile)
         except ClientError as e:
-            logger.error('An error occured removing this profile from dynamodb',
-                extras={
-                    'profile': profile_json,
-                    'error': e
-                }
+            logger.error(
+                "An error occured removing this profile from dynamodb", extras={"profile": profile_json, "error": e}
             )
-            raise IntegrationError(
-                {"code": "integration_exception", "description": "{}".format(e)}, 500
-            )
-        return {'status': 200, 'message': 'user profile deleted for user: {}'.format(profile_json['user_id']['value'])}
+            raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
+        return {"status": 200, "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"])}
 
     def _get_id(self, profile_json):
         if isinstance(profile_json, str):

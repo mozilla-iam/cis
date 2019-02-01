@@ -1,5 +1,5 @@
 import cis_change_service
-import cis_logging
+import cis_logger
 import logging
 import serverless_wsgi
 import socket
@@ -22,5 +22,5 @@ def setup_logging():
 
 def handle(event, context):
     logger = setup_logging()
-    logger.info("Change Service Initialized.")
+    logger.debug("Change Service Initialized.")
     return serverless_wsgi.handle_request(cis_change_service.api.app, event, context)

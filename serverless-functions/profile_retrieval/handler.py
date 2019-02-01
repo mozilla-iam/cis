@@ -1,6 +1,8 @@
-import cis_profile_retrieval_service
+import cis_logger
 import logging
+import cis_profile_retrieval_service
 import serverless_wsgi
+import socket
 import sys
 
 
@@ -12,14 +14,13 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = "%(message)s"
-    h.setFormatter(logging.Formatter(FORMAT))
+    h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     return logger
 
 
 def handle(event, context):
     logger = setup_logging()
-    logger.info("Profile retrieval initialized.")
+    logger.debug("Profile retrieval service Initialized.")
     return serverless_wsgi.handle_request(cis_profile_retrieval_service.v2_api.app, event, context)

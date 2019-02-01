@@ -85,18 +85,13 @@ def change():
         user_profile = json.loads(user_profile)
 
     user_id = user_profile["user_id"]["value"]
-    logger.info("A json payload was received for user: {}".format(user_id), extra={
-            'user_id': user_id
-        }
-    )
+    logger.info("A json payload was received for user: {}".format(user_id), extra={"user_id": user_id})
 
-    if request.method in ['POST', 'PUT', 'GET']:
+    if request.method in ["POST", "PUT", "GET"]:
         if config("stream_bypass", namespace="cis", default="false") == "true":
             # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
             logger.debug(
-                "Stream bypass activated.  Integrating user profile directly to dynamodb for: {}".format(
-                    user_id
-                )
+                "Stream bypass activated.  Integrating user profile directly to dynamodb for: {}".format(user_id)
             )
             vault = profile.Vault()
             vault.identity_vault_client = identity_vault_client
@@ -104,20 +99,15 @@ def change():
         else:
             publish = operation.Publish()
             result = publish.to_stream(user_profile)
-        logger.info("The result of publishing for user: {} is: {}".format(user_id, result), extra={
-                'user_id': user_id
-            }
-        )
+        logger.info("The result of publishing for user: {} is: {}".format(user_id, result), extra={"user_id": user_id})
     if config("allow_delete", namespace="cis", default="false") == "true":
-        if request.method in ['DELETE']:
+        if request.method in ["DELETE"]:
             vault = profile.Vault()
             vault.identity_vault_client = identity_vault_client
             result = vault.delete_profile(user_profile)
-            logger.info('A delete operation was performed for user: {}'.format(user_id),
-                extra={
-                    'user_id': user_id,
-                    'result': result
-                }
+            logger.info(
+                "A delete operation was performed for user: {}".format(user_id),
+                extra={"user_id": user_id, "result": result},
             )
     return jsonify(result)
 

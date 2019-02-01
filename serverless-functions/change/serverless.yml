@@ -48,6 +48,10 @@ custom:
       production: change.api.sso.mozilla.com
       development: change.api.dev.sso.allizom.org
       testing: change.api.test.sso.allizom.org
+    CIS_ALLOW_DELETE:
+      production: false
+      development: true
+      testing: true
   customDomain:
     domainName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
     basePath: ''
@@ -74,6 +78,7 @@ provider:
     CIS_ENFORCE_PUBLISHER_RULES: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
     CHANGE_SERVICE_API_IDENTIFIER: ${self:custom.changeEnvironment.IDENTIFIER.${self:custom.changeStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}
+    CIS_ALLOW_DELETE: ${self:custom.changeEnvironment.CIS_ALLOW_DELETE.${self:custom.changeStage}}
     CIS_SIGNING_KEY_NAME: change_service_signing_key
     CIS_SECRET_MANAGER: aws-ssm
   iamRoleStatements:

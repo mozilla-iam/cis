@@ -22,8 +22,6 @@ docker-run:
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
 
-
-
 .PHONY: login-to-ecr
 login-to-ecr:
 	aws ecr get-login --no-include-email | bash
