@@ -5,11 +5,15 @@ import ssl
 
 
 class JsonFormatter(jsonlogger.JsonFormatter, object):
-    def __init__(self,
-                 fmt="%(asctime) %(name) %(processName) %(filename) %(funcName) %(levelname) %(lineno) %(module) %(threadName) %(message)",
-                 datefmt="%Y-%m-%dT%H:%M:%SZ%z",
-                 style='%',
-                 extra={}, *args, **kwargs):
+    def __init__(
+        self,
+        fmt="%(asctime) %(name) %(processName) %(filename) %(funcName) %(levelname) %(lineno) %(module) %(threadName) %(message)",
+        datefmt="%Y-%m-%dT%H:%M:%SZ%z",
+        style="%",
+        extra={},
+        *args,
+        **kwargs
+    ):
         self._extra = extra
         jsonlogger.JsonFormatter.__init__(self, fmt=fmt, datefmt=datefmt, *args, **kwargs)
 
@@ -26,8 +30,13 @@ class JsonFormatter(jsonlogger.JsonFormatter, object):
 
 
 class SysLogJsonHandler(logging.handlers.SysLogHandler, object):
-    def __init__(self, address=('localhost', logging.handlers.SYSLOG_UDP_PORT),
-                 facility=logging.handlers.SysLogHandler.LOG_USER, socktype=None, prefix=""):
+    def __init__(
+        self,
+        address=("localhost", logging.handlers.SYSLOG_UDP_PORT),
+        facility=logging.handlers.SysLogHandler.LOG_USER,
+        socktype=None,
+        prefix="",
+    ):
         super(SysLogJsonHandler, self).__init__(address, facility, socktype)
         self._prefix = prefix
         if self._prefix != "":

@@ -1,6 +1,8 @@
 import cis_change_service
+import cis_logging
 import logging
 import serverless_wsgi
+import socket
 import sys
 
 
@@ -12,8 +14,7 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = "%(message)s"
-    h.setFormatter(logging.Formatter(FORMAT))
+    h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
     return logger

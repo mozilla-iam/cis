@@ -10,7 +10,7 @@ class TestLogger(object):
         self.logger = logging.getLogger()
 
         handler = logging.StreamHandler()
-        handler.setFormatter(cis_logger.JsonFormatter(extra={"hello": "world","hostname":socket.gethostname()}))
+        handler.setFormatter(cis_logger.JsonFormatter(extra={"hello": "world", "hostname": socket.gethostname()}))
 
         self.logger.addHandler(handler)
         self.logger.setLevel(logging.INFO)
@@ -24,6 +24,6 @@ class TestLogger(object):
         test_logger = logging.getLogger("test")
 
         try:
-            raise Exception('test')
+            raise Exception("test")
         except Exception:
             test_logger.exception("This is a fake exception")
