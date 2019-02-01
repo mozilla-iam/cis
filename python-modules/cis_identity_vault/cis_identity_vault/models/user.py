@@ -100,23 +100,8 @@ class Profile(object):
         return self.table.put_item(Item=user_profile)
 
     def delete(self, user_profile):
-        if self.transactions:
-            res = self._delete_with_transaction(user_profile)
-        else:
-            res = self._delete_without_transaction(user_profile)
+        res = self._delete_without_transaction(user_profile)
         return res
-
-    def _delete_with_transaction(self, user_profile):
-        transact_items = {
-            "Delete": {
-                "Key": {"id": {"S": user_profile["id"]}},
-                "ConditionExpression": "attribute_exists(id)",
-                "TableName": self.table.name,
-                "ReturnValuesOnConditionCheckFailure": "NONE",
-            }
-        }
-
-        return self._run_transaction([transact_items])
 
     def _delete_without_transaction(self, user_profile):
         return self.table.delete_item(
