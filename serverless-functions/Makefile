@@ -37,7 +37,7 @@ layer:
 	$(CIS_MODULE_PATH)/cis_profile/ \
 	$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
 	$(CIS_MODULE_PATH)/cis_publisher/ \
-	$(CIS_MODULE_PATH)/cis_logging/ \
+	$(CIS_MODULE_PATH)/cis_logger/ \
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
@@ -61,6 +61,7 @@ layer-codebuild:
 	../$(CIS_MODULE_PATH)/cis_profile/ \
 	../$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
 	../$(CIS_MODULE_PATH)/cis_publisher/ \
+	../$(CIS_MODULE_PATH)/cis_logger/ \
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /tmp/build/$(PY_DIR) && \
