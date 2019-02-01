@@ -52,6 +52,10 @@ custom:
       production: false
       development: true
       testing: true
+    CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
+      development: https://auth.allizom.org/.well-known/mozilla-iam
+      testing: https://auth.mozilla.com/.well-known/mozilla-iam
   customDomain:
     domainName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
     basePath: ''
@@ -81,6 +85,8 @@ provider:
     CIS_ALLOW_DELETE: ${self:custom.changeEnvironment.CIS_ALLOW_DELETE.${self:custom.changeStage}}
     CIS_SIGNING_KEY_NAME: change_service_signing_key
     CIS_SECRET_MANAGER: aws-ssm
+    CIS_WELL_KNOWN_MODE: https
+    CIS_DISCOVERY_URL: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
   iamRoleStatements:
     - Effect: Allow
       Action:
