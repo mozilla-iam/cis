@@ -169,6 +169,56 @@ class TestProfile(object):
         results = json.loads(result.get_data())
         assert results is not None
 
+    @mock.patch("cis_change_service.idp.get_jwks")
+    def test_post_profiles_it_should_fail(self, fake_jwks):
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        from cis_change_service import api
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(self.user_profile),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        results = json.loads(result.get_data())
+        expected_result = {
+            'code': 'invalid_publisher',
+            'description': '[create] mozilliansorg is NOT allowed to publish field first_name'
+        }
+
+        assert result.status_code == 403
+        assert results == expected_result
+
+    @mock.patch("cis_change_service.idp.get_jwks")
+    def test_delete_profile(self, fake_jwks):
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        from cis_change_service import api
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.delete(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(self.user_profile),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        results = json.loads(result.get_data())
+        assert result.status_code == 200
+
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
