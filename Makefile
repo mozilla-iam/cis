@@ -22,9 +22,16 @@ docker-run:
 preview-shell:
 	docker run -ti mozillaiam/cis-dev-preview:latest /bin/bash
 
+
+
 .PHONY: login-to-ecr
 login-to-ecr:
 	aws ecr get-login --no-include-email | bash
+
+.PHONY: login-to-ecr deploy-shell
+deploy-shell:
+	docker pull 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
+	docker run -ti -v ~/.aws:/root/.aws -v ${PWD}:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest /bin/bash
 
 .PHONY: login-to-ecr build
 build:
