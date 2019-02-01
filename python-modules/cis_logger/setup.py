@@ -6,11 +6,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = [
-    "python-json-logger",
-    "everett",
-    "everett[ini]",
-]
+requirements = ["python-json-logger", "everett", "everett[ini]"]
 test_requirements = ["pytest", "pytest-watch", "pytest-cov", "flake8", "flask", "flask_graphql", "flask_restful"]
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
@@ -37,5 +33,5 @@ setup(
     tests_require=test_requirements,
     extras_require=extras,
     test_suite="tests",
-    zip_safe=True
+    zip_safe=True,
 )

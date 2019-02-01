@@ -37,6 +37,7 @@ layer:
 	$(CIS_MODULE_PATH)/cis_profile/ \
 	$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
 	$(CIS_MODULE_PATH)/cis_publisher/ \
+	$(CIS_MODULE_PATH)/cis_logging/ \
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
