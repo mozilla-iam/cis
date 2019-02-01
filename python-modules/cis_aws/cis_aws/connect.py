@@ -70,7 +70,7 @@ class AWS(object):
         logger.debug("Role arn provided is: {}".format(role_arn))
 
         if role_arn == "none" or role_arn == "None":
-            logger.info("Assume role arn not present.  Skipping assume role operation.")
+            logger.debug("Assume role arn not present.  Skipping assume role operation.")
             res = None
         else:
             sts = self._boto_session.client("sts")

@@ -26,9 +26,9 @@ class Sign(object):
         try:
             data = yaml.safe_load(data)
         except yaml.scanner.ScannerError:
-            logger.info("This file is likely not YAML.  Attempting JSON load.")
+            logger.debug("This file is likely not YAML.  Attempting JSON load.")
         except AttributeError:
-            logger.info("This file is likely not YAML.  Attempting JSON load.")
+            logger.debug("This file is likely not YAML.  Attempting JSON load.")
 
         if isinstance(data, str):
             data = json.loads(data)

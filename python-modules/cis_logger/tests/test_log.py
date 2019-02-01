@@ -1,5 +1,4 @@
 import logging
-import sys
 import socket
 
 import cis_logger
