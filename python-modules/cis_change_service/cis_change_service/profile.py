@@ -11,6 +11,7 @@ from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from cis_profile.exceptions import PublisherVerificationFailure
 from cis_profile.exceptions import SignatureVerificationFailure
+from traceback import format_exc
 
 
 logger = logging.getLogger(__name__)
@@ -47,20 +48,20 @@ class Vault(object):
         except SignatureVerificationFailure as e:
             logger.error(
                 "The profile vailed to pass signature verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
             )
 
             raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
         except PublisherVerificationFailure as e:
             logger.error(
                 "The profile vailed to pass publisher verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
         except Exception as e:
             logger.error(
                 "The profile produced an unknown error and is not trusted for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e},
+                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "unknown_error", "description": "{}".format(e)}, 500)
         return True
@@ -118,7 +119,8 @@ class Vault(object):
                 return res
         except ClientError as e:
             logger.error(
-                "An error occured writing this profile to dynamodb", extra={"profile": profile_json, "error": e}
+                "An error occured writing this profile to dynamodb",
+                extra={"profile": profile_json, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
 
@@ -167,7 +169,8 @@ class Vault(object):
             result = vault.find_or_create_batch(user_profiles)
         except ClientError as e:
             logger.error(
-                "An error occured writing these profiles to dynamodb", extra={"profiles": profile_list, "error": e}
+                "An error occured writing these profiles to dynamodb",
+                extra={"profiles": profile_list, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
         return {"creates": result[0], "updates": result[1]}
@@ -199,7 +202,8 @@ class Vault(object):
             vault.delete(user_profile)
         except ClientError as e:
             logger.error(
-                "An error occured removing this profile from dynamodb", extra={"profile": profile_json, "error": e}
+                "An error occured removing this profile from dynamodb",
+                extra={"profile": profile_json, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
         return {"status": 200, "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"])}

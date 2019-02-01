@@ -514,7 +514,7 @@ class User(object):
             elif not strict and len(attr["values"]) == 0:
                 return False
         else:
-            raise KeyError(attr)
+            raise KeyError("Did not find value in atttribute", attr)
         return True
 
     def _sign_attribute(self, attr, publisher_name):
