@@ -80,6 +80,7 @@ class Verify(object):
             key_construct = jwk.construct(key_content, "RS256")
             return [key_construct.to_dict()]
         elif self.well_known_mode == "http" or self.well_known_mode == "https":
+            logger.info('Well known mode engaged.  Reducing key structure.', extra={'well_known': self.well_known})
             return self._reduce_keys(keyname)
 
     def _reduce_keys(self, keyname=None):
@@ -112,5 +113,10 @@ class Verify(object):
                     logger.info("Matched a verified signature for: {}".format(key))
                     return sig
                 except JWSError as e:
+                    logger.error('The signature was not valid for the payload.',
+                        extras={
+                            'signature': self.jws_signature
+                        }
+                    )
                     logger.error(e)
         raise JWSError("The signature could not be verified for any trusted key.")
