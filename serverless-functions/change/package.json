@@ -10,6 +10,7 @@
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "serverless-domain-manager": "^2.6.11"
+    "serverless-domain-manager": "^2.6.13",
+    "serverless-plugin-tracing": "^2.0.0"
   }
 }

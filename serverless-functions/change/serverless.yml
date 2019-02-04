@@ -1,6 +1,7 @@
 service: change-service
 plugins:
   - serverless-domain-manager
+  - serverless-plugin-tracing
 custom:
   changeStage: ${opt:stage, self:provider.stage}
   changeEnvironment:
@@ -67,6 +68,7 @@ provider:
   name: aws
   runtime: python3.6
   stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
   environment:
     CIS_KINESIS_ARN: ${self:custom.changeEnvironment.CIS_KINESIS_ARN.${self:custom.changeStage}}
     CIS_DYNAMODB_ARN: ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
@@ -88,6 +90,12 @@ provider:
     CIS_WELL_KNOWN_MODE: https
     CIS_DISCOVERY_URL: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
   iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
     - Effect: Allow
       Action:
         - "kinesis:DescribeStream"

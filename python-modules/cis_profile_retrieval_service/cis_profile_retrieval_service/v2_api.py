@@ -33,6 +33,12 @@ CORS(app)
 config = get_config()
 logger = getLogger(__name__)
 
+cis_environment = config('environment', namespace='cis')
+
+if cis_environment != 'local':
+    xray_recorder.configure(service='{}_profile_retrieval_service'.format(cis_environment))
+    XRayMiddleware(app, xray_recorder)
+
 if config("initialize_vault", namespace="person_api", default="false") == "true":
     logger.debug("Initializing vault and pre-seeding it, this will take some time...")
     initialize_vault()

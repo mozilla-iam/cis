@@ -1,6 +1,7 @@
 service: profile-retrieval
 plugins:
   - serverless-domain-manager
+  - serverless-plugin-tracing
 custom:
   profileRetrievalStage: ${opt:stage, self:provider.stage}
   profileRetrievalEnvironment:
@@ -42,6 +43,7 @@ custom:
 provider:
   name: aws
   runtime: python3.6
+  tracing: true # enable tracing
   environment:
     CIS_DYNAMODB_ARN: ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
     CIS_ENVIRONMENT: ${self:custom.profileRetrievalEnvironment.CIS_ENVIRONMENT.${self:custom.profileRetrievalStage}}
@@ -50,6 +52,12 @@ provider:
     PERSON_API_AUTH0_DOMAIN: ${self:custom.profileRetrievalEnvironment.PERSON_API_AUTH0_DOMAIN.${self:custom.profileRetrievalStage}}
     PERSON_API_API_IDENTIFIER: ${self:custom.profileRetrievalEnvironment.IDENTIFIER.${self:custom.profileRetrievalStage}}
   iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
     - Effect: Allow
       Action:
         - "dynamodb:DescribeTable"
