@@ -424,7 +424,7 @@ class User(object):
         publisher_name from the current user structure is used instead and no check is performed.
         """
 
-        if publisher_name is not None and attr["signature"]["publisher"]["value"] != publisher_name:
+        if publisher_name is not None and attr["signature"]["publisher"]["name"] != publisher_name:
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
 
         self.__verifyop.load(attr["signature"]["publisher"]["value"])
