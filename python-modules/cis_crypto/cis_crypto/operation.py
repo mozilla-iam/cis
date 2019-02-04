@@ -83,8 +83,8 @@ class Verify(object):
             return self._reduce_keys(keyname)
 
     def _reduce_keys(self, keyname=None):
-        access_file_keys = self.well_known["access_file"]["jwks_keys"]
-        publishers_supported = self.well_known["publishers_supported"]
+        access_file_keys = self.well_known["access_file"]["jwks"]["keys"]
+        publishers_supported = self.well_known["api"]["publishers_jwks"]
 
         keys = []
 
@@ -92,7 +92,7 @@ class Verify(object):
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
-            keys = publishers_supported[keyname]["jwks_keys"]
+            keys = publishers_supported[keyname]["keys"]
             for key in range(len(keys)):
                 keys.append(key)
         return keys
