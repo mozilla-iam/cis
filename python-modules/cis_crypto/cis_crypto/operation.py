@@ -96,8 +96,6 @@ class Verify(object):
             # If not an access key verification this will attempt to verify against any listed publisher.
             logger.info("This is a publisher based verification.")
             keys = publishers_supported[keyname]["keys"]
-            for key in range(len(keys)):
-                keys.append(key)
         return keys
 
     def jws(self, keyname=None):
