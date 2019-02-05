@@ -57,6 +57,10 @@ custom:
       production: https://auth.mozilla.com/.well-known/mozilla-iam
       development: https://auth.allizom.org/.well-known/mozilla-iam
       testing: https://auth.mozilla.com/.well-known/mozilla-iam
+    CIS_PUBLIC_KEY_NAME:
+      production: publisher
+      development: publisher
+      testing: publisher
   customDomain:
     domainName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
     basePath: ''
@@ -89,6 +93,7 @@ provider:
     CIS_SECRET_MANAGER: aws-ssm
     CIS_WELL_KNOWN_MODE: https
     CIS_DISCOVERY_URL: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
+    CIS_PUBLIC_KEY_NAME: ${self:custom.changeEnvironment.CIS_PUBLIC_KEY_NAME.${self:custom.changeStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:
