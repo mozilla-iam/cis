@@ -83,18 +83,18 @@ class Verify(object):
             logger.info("Well known mode engaged.  Reducing key structure.", extra={"well_known": self.well_known})
             return self._reduce_keys(keyname)
 
-    def _reduce_keys(self, keyname=None):
+    def _reduce_keys(self, keyname):
         access_file_keys = self.well_known["access_file"]["jwks"]["keys"]
         publishers_supported = self.well_known["api"]["publishers_jwks"]
 
         keys = []
 
         if "access-file-key" in self.config("public_key_name", namespace="cis"):
-            logger.info('This is an access file verification.')
+            logger.info("This is an access file verification.")
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
-            logger.info('This is a publisher based verification.')
+            logger.info("This is a publisher based verification.")
             keys = publishers_supported[keyname]["keys"]
             for key in range(len(keys)):
                 keys.append(key)
@@ -105,7 +105,7 @@ class Verify(object):
         key_material = self._get_public_key(keyname)
 
         logger.info(
-            'The key material for the payload was loaded for: {}'.format(keyname), extra={'key_material': key_material}
+            "The key material for the payload was loaded for: {}".format(keyname), extra={"key_material": key_material}
         )
 
         if isinstance(key_material, list):
@@ -115,13 +115,13 @@ class Verify(object):
                     key.pop("x5t", None)
                     key.pop("x5c", None)
                 except AttributeError:
-                    logger.warn('x5t and x5c attrs do not exist in key material.')
+                    logger.warn("x5t and x5c attrs do not exist in key material.")
 
                 logger.info("Attempting to match against: {}".format(key))
                 try:
                     sig = jws.verify(self.jws_signature, key, algorithms="RS256", verify=True)
                     logger.info(
-                        "Matched a verified signature for: {}".format(key), extra={'signature': self.jws_signature}
+                        "Matched a verified signature for: {}".format(key), extra={"signature": self.jws_signature}
                     )
                     return sig
                 except JWSError as e:

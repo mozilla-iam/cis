@@ -428,7 +428,7 @@ class User(object):
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
 
         logger.debug(
-            "Attempting signature verification for publisher: {} and attribute: {}".format(attr, publisher_name)
+            "Attempting signature verification for publisher: {} and attribute: {}".format(publisher_name, attr)
         )
         self.__verifyop.load(attr["signature"]["publisher"]["value"])
         try:
