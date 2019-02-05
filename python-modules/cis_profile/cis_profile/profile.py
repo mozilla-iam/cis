@@ -427,6 +427,9 @@ class User(object):
         if publisher_name is not None and attr["signature"]["publisher"]["name"] != publisher_name:
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
 
+        logger.debug(
+            "Attempting signature verification for publisher: {} and attribute: {}".format(attr, publisher_name)
+        )
         self.__verifyop.load(attr["signature"]["publisher"]["value"])
         try:
             signed = json.loads(self.__verifyop.jws(publisher_name))
