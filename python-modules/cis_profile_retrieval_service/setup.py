@@ -24,7 +24,7 @@ requirements = [
     "requests",
     "ipdb",
     "aniso8601",
-    "aws-xray-sdk"
+    "aws-xray-sdk",
 ]
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]

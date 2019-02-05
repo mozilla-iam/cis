@@ -25,13 +25,11 @@ config = get_config()
 logger = logging.getLogger(__name__)
 
 
-cis_environment = config('environment', namespace='cis')
+cis_environment = config("environment", namespace="cis")
 
-if cis_environment != 'local':
+if cis_environment != "local":
     patch_all()
-    xray_recorder.configure(
-        service='{}_change_service'.format(cis_environment), sampling=False, context=Context()
-    )
+    xray_recorder.configure(service="{}_change_service".format(cis_environment), sampling=False, context=Context())
     XRayMiddleware(app, xray_recorder)
     xray_recorder.configure()
 

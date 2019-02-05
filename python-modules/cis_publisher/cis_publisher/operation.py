@@ -72,9 +72,7 @@ class Publish(object):
             logger.debug("Profile publishing failed for batch. Could not find the kinesis stream in the account.")
             status = 404
             sequence_number = None
-            status.append(
-                {"status_code": result.get("ErrorCode", 200), "sequence_number": result.get(sequence_number)}
-            )
+            status.append({"status_code": result.get("ErrorCode", 200), "sequence_number": result.get(sequence_number)})
         return status + rejected_profiles
 
     def to_stream(self, profile_json):

@@ -18,8 +18,7 @@ requirements = [
     "boto3",
     "botocore",
     "six",
-    "aws-xray-sdk"
-
+    "aws-xray-sdk",
 ]
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]

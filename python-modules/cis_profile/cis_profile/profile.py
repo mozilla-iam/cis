@@ -54,7 +54,7 @@ class User(object):
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        self.__well_known = WellKnown()
+        self.__well_known = WellKnown(discovery_url)
 
         if user_structure_json is not None:
             self.load(user_structure_json)
@@ -514,7 +514,7 @@ class User(object):
             elif not strict and len(attr["values"]) == 0:
                 return False
         else:
-            raise KeyError("Did not find value in atttribute", attr)
+            raise KeyError("Did not find value in attribute", attr)
         return True
 
     def _sign_attribute(self, attr, publisher_name):

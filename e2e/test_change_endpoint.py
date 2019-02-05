@@ -44,8 +44,15 @@ class TestChangeEndpoint(object):
 
     def test_publishing_a_profile_it_should_be_accepted(self):
         base_url = helpers.get_url_dict().get("change")
-        wk = WellKnown()
+        wk = WellKnown(discovery_url='https://auth.allizom.org/.well-known/mozilla-iam')
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
+        os.environ['CIS_WELL_KNOWN_MODE'] = 'https'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'publisher'
+        user = profile.User(
+            user_structure_json=json.loads(self.durable_profile),
+            discovery_url='https://auth.allizom.org/.well-known/mozilla-iam'
+        )
+        #user.verify_all_signatures()
         access_token = self.exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
         logger.info("Attempting connection for: {}".format(base_url))
@@ -57,7 +64,7 @@ class TestChangeEndpoint(object):
         assert data.get("status") == 200
         assert data.get("sequence_number") is not None
 
-
+"""
     def test_publishing_profiles_it_should_be_accepted(self):
         os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}".format(os.getenv("CIS_ENVIRONMENT", "development"))
         base_url = helpers.get_url_dict().get("change")
@@ -92,3 +99,4 @@ class TestChangeEndpoint(object):
             logger.info(data)
         else:
             pass
+"""

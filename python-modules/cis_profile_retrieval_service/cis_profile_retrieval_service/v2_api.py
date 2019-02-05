@@ -1,6 +1,9 @@
 import json
 import re
 
+from aws_xray_sdk.core import xray_recorder, patch_all
+from aws_xray_sdk.core.context import Context
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from flask import Flask
 from flask_cors import CORS
 from flask_graphql import GraphQLView
@@ -33,17 +36,22 @@ CORS(app)
 config = get_config()
 logger = getLogger(__name__)
 
-cis_environment = config('environment', namespace='cis')
+cis_environment = config("environment", namespace="cis")
 
-if cis_environment != 'local':
-    xray_recorder.configure(service='{}_profile_retrieval_service'.format(cis_environment))
+
+if cis_environment != "local":
+    patch_all()
+    xray_recorder.configure(service="{}_change_service".format(cis_environment), sampling=False, context=Context())
     XRayMiddleware(app, xray_recorder)
+    xray_recorder.configure()
+
 
 if config("initialize_vault", namespace="person_api", default="false") == "true":
     logger.debug("Initializing vault and pre-seeding it, this will take some time...")
     initialize_vault()
     seed()
     logger.debug("Vault is seeded and ready to go!")
+
 
 authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()
