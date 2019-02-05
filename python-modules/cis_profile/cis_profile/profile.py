@@ -426,6 +426,9 @@ class User(object):
 
         if publisher_name is not None and attr["signature"]["publisher"]["name"] != publisher_name:
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
+        else:
+            # If publisher name is not passed, we default to the attribute's built-in publisher
+            publisher_name = attr["signature"]["publisher"]["name"]
 
         logger.debug(
             "Attempting signature verification for publisher: {} and attribute: {}".format(publisher_name, attr)
