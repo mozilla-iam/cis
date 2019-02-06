@@ -111,7 +111,7 @@ class TestOperation(object):
 
         with open("tests/fixture/fake-publisher-key_0.pub.jwks") as fd:
             fake_jwks = fd.read()
-        mock_verify.return_value = fake_jwks
+        mock_verify.return_value = [fake_jwks]
 
         # Note: does not include the signature object
         sample_payload = {
