@@ -2,8 +2,12 @@
 import boto3
 import json
 import os
+import logging
 from cis_crypto import common
 from jose import jwk
+
+
+logger = logging.getLogger(__name__)
 
 
 class Manager(object):
@@ -17,6 +21,7 @@ class Manager(object):
         return provider.key(key_name)
 
     def _load_provider(self):
+        logger.debug("Using secret manager provider type: {}".format(self.provider_type))
         if self.provider_type.lower() == "file":
             return FileProvider()
         elif self.provider_type.lower() == "aws-ssm":
@@ -37,6 +42,7 @@ class FileProvider(object):
             default=("{}/.mozilla-iam/keys/".format(os.path.expanduser("~"))),
         )
         file_name = "{}".format(key_name)
+        logger.debug("Secret manager file provider loading key file: {}/{}".format(key_dir, key_name))
         fh = open((os.path.join(key_dir, file_name)), "rb")
         key_content = fh.read()
         key_construct = jwk.construct(key_content, "RS256")
@@ -55,6 +61,8 @@ class AWSParameterstoreProvider(object):
     def key(self, key_name):
         ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
         ssm_response = self.ssm_client.get_parameter(Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True)
+
+        logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
 
         result = ssm_response.get("Parameter")
         try:
