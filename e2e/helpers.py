@@ -97,17 +97,6 @@ def ensure_appropriate_publishers_and_sign(fake_profile, condition):
                     if attr == "staff_information" or attr == "identities":
                         successful_random_publisher = random.choice(publisher_rules[condition][attr])
 
-                    if successful_random_publisher == "mozilliansorg":
-                        os.environ["CIS_SIGNING_KEY_NAME"] == "mozilliansorg_signing_key"
-                    if successful_random_publisher == "hris":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "hris_signing_key"
-                    if successful_random_publisher == "ldap":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "ldap_signing_key"
-                    if successful_random_publisher == "cis":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "change_service_signing_key"
-                    if successful_random_publisher == "access_provider":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "auth0_signing_key"
-
                     temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                     u = profile.User(user_structure_json=temp_profile)
 

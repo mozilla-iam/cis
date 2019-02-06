@@ -43,8 +43,8 @@ class Sign(object):
         # Override key name
         if keyname is not None:
             self.key_name = keyname
-        jwk = self._get_key()
-        sig = jws.sign(self.payload, jwk.to_dict(), algorithm="RS256")
+        key_jwk = self._get_key()
+        sig = jws.sign(self.payload, key_jwk.to_dict(), algorithm="RS256")
         return sig
 
     def _get_key(self):
