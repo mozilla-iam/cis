@@ -1,6 +1,8 @@
 import json
 import os
 import pytest
+import cis_crypto
+from mock import patch
 
 
 class TestOperation(object):
@@ -100,6 +102,46 @@ class TestOperation(object):
 
         signature = o.jws()
         assert isinstance(signature, str) is True
+
+    @patch("cis_crypto.operation.Verify._get_public_key", autospec=True)
+    def test_sign_verify_operation_jwks(self, mock_verify):
+        from cis_crypto import operation
+        from cis_profile import WellKnown
+        import json
+
+        with open("tests/fixture/fake-publisher-key_0.pub.jwks") as fd:
+            fake_jwks = fd.read()
+        mock_verify.return_value = fake_jwks
+
+        # Note: does not include the signature object
+        sample_payload = {
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "1970-01-01T00:00:00Z",
+                "created": "1970-01-01T00:00:00Z",
+                "verified": True,
+                "display": "public",
+            },
+            "value": "test",
+        }
+
+        o = operation.Sign()
+        test_valid_payload = o.load(sample_payload)
+        assert isinstance(test_valid_payload, dict) is True
+        signature = o.jws()
+        assert isinstance(signature, str) is True
+
+        # verify
+        o2 = operation.Verify()
+        test_valid_payload["signature"] = {
+            "publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": signature}
+        }
+        wk = WellKnown()
+        o2.well_known = wk.get_well_known()
+        o2.load(test_valid_payload["signature"]["publisher"]["value"])
+        sig = o2.jws("hris")
+        jsig = json.loads(sig)
+        assert isinstance(jsig, dict) is True
 
     def test_verify_operation_without_dict(self):
         from cis_crypto import operation
