@@ -2,6 +2,9 @@ import json
 import os
 import pytest
 
+logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
+logger = logging.getLogger(__name__)
+
 
 class TestOperation(object):
     def test_sign_operation_benchmark(self):

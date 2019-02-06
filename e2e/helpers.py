@@ -59,7 +59,9 @@ def get_complex_structures():
 
 def ensure_appropriate_publishers_and_sign(fake_profile, condition):
     os.environ["CIS_SECRET_MANAGER"] = "aws-ssm"
-    os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}".format(os.getenv("CIS_ENVIRONMENT", "development"))
+    os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{env}/keys/".format(
+        env=os.getenv("CIS_ENVIRONMENT", "development")
+    )
 
     publisher_rules = common.WellKnown().get_publisher_rules()
     complex_structures = get_complex_structures()

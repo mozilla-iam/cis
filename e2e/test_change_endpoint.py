@@ -15,7 +15,7 @@ from cis_profile.exceptions import PublisherVerificationFailure
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
-logging.getLogger("botocore").setLevel(logging.DEBUG)
+logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 
 class TestChangeEndpoint(object):

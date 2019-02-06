@@ -129,6 +129,7 @@ provider:
         - "ssm:GetParameter"
       Resource:
         - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/change_service_signing_key
+        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/keys/*
     - Effect: Allow
       Action:
         - "kms:Decrypt"
