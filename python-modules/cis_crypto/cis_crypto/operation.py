@@ -38,8 +38,11 @@ class Sign(object):
         self.payload = data
         return self.payload
 
-    def jws(self):
+    def jws(self, keyname=None):
         """Assumes you loaded a payload.  Returns a jws."""
+        # Override key name
+        if keyname is not None:
+            self.key_name = keyname
         jwk = self._get_key()
         sig = jws.sign(self.payload, jwk.to_dict(), algorithm="RS256")
         return sig
