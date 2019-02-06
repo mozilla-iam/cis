@@ -542,7 +542,7 @@ class User(object):
         sigattr["name"] = publisher_name
         sigattr["alg"] = "RS256"  # Currently hardcoded in cis_crypto
         sigattr["typ"] = "JWS"  # ""
-        sigattr["value"] = self.__signop.jws()
+        sigattr["value"] = self.__signop.jws(publisher_name)
         return attr
 
     def _filter_all(self, level, valid, check):
