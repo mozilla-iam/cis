@@ -198,3 +198,21 @@ class TestOperation(object):
         # Expect verification to fail
         with pytest.raises(JWSError):
             o.jws()
+
+    def test_jwks_verification(self):
+        # This jws sig is signed with the allizom.org mozilliansorg publisher key
+        from cis_crypto import operation
+
+        jws_signature = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTA1VDEyOjExOjUyLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0wNVQxMjoxMTo1Mi4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJhOTg2MTM1My1jODRkLTQ5NTktOWI4Ni04ZTAxZTBmZDQ1MmIifQ.aFzcm6rq1AaOpUymvZkzvDNwVLaQsaVakUrw_VZilXHuY9WwZAC1mXd0pPoZpjeeQY9kq7pWsCwVe5PkBu7_6YfEcToKbkpPlID3EmW2qeUIbby7GpiAT1Alnj0PWcfOH_P1E8_DLh7quwOhu8SA1ekmAME6ty0OCd7o6QUUrY4eVozFux2qAFpDd6Oqo-HK2dkFxRbLZivEZFzAURHN8G7EN3bzicI72R_QDDO_rBEa_QSMmkkhs3M9DB3hBAgzRExNah0NHH6mpcuQl9QnMocR2Moj_pmbKJhpr6wZuoTidZyW_sX5ZG5guja7FkwK960yLlwl1AgCXzMUlJ5zZqwuuiWCV5n8f3Cbwd-IUQaiTklAJWunydqcxM32LRUfJ7kR16D2O7LkQf96ZKBgyH-YyRflFuYtjL6PEmCETOYTJ58m8y4BTWlXicWCv0w7R8tGIQ0AOjdUYh0wIBAvnL_dV2UeENc2f4hrcK_OgDynYeYixVOH-lb0EQRm2-x-xcVc3aco6W80Z0GooTKT40TYffyt6rEhg0og4cluPX9IQGdd5PD9QfKh5ecoECUQ0nhGNUkAMlqC-bPMgT2a2kxd04p-gZuVre-laBVWh6NnRird-11fncRyMhJ8HSaZr1ETLzOegR7cFQ5DZhWKAuvcjpBayWUJ2Y1qq4Begjk'
+        os.environ['CIS_PUBLIC_KEY_NAME'] = 'publisher'
+        o = operation.Verify()
+        o.load(jws_signature)
+        o.well_known_mode = 'https'
+
+        fh = open('tests/fixture/well-known.json')
+        o.well_known = json.loads(fh.read())
+        fh.close()
+
+        key_material = o._get_public_key(keyname='mozilliansorg')
+        assert key_material is not None
+        res = o.jws(keyname='mozilliansorg')
