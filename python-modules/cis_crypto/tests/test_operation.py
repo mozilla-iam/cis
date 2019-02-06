@@ -2,7 +2,6 @@ import json
 import os
 import pytest
 import cis_crypto
-from mock import patch
 
 
 class TestOperation(object):
@@ -103,46 +102,6 @@ class TestOperation(object):
         signature = o.jws()
         assert isinstance(signature, str) is True
 
-    @patch("cis_crypto.operation.Verify._get_public_key", autospec=True)
-    def test_sign_verify_operation_jwks(self, mock_verify):
-        from cis_crypto import operation
-        from cis_profile import WellKnown
-        import json
-
-        with open("tests/fixture/fake-publisher-key_0.pub.jwks") as fd:
-            fake_jwks = fd.read()
-        mock_verify.return_value = [fake_jwks]
-
-        # Note: does not include the signature object
-        sample_payload = {
-            "metadata": {
-                "classification": "PUBLIC",
-                "last_modified": "1970-01-01T00:00:00Z",
-                "created": "1970-01-01T00:00:00Z",
-                "verified": True,
-                "display": "public",
-            },
-            "value": "test",
-        }
-
-        o = operation.Sign()
-        test_valid_payload = o.load(sample_payload)
-        assert isinstance(test_valid_payload, dict) is True
-        signature = o.jws()
-        assert isinstance(signature, str) is True
-
-        # verify
-        o2 = operation.Verify()
-        test_valid_payload["signature"] = {
-            "publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": signature}
-        }
-        wk = WellKnown()
-        o2.well_known = wk.get_well_known()
-        o2.load(test_valid_payload["signature"]["publisher"]["value"])
-        sig = o2.jws("hris")
-        jsig = json.loads(sig)
-        assert isinstance(jsig, dict) is True
-
     def test_verify_operation_without_dict(self):
         from cis_crypto import operation
 
@@ -199,20 +158,66 @@ class TestOperation(object):
         with pytest.raises(JWSError):
             o.jws()
 
+    def test_sign_verify_operation_jwks(self):
+        # This test is a sign + verify operation with fake local keys ("full chain" test)
+        from cis_crypto import operation
+        from jose import jwk
+        import json
+
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "publisher"
+        with open("tests/fixture/fake-well-known.json") as fd:
+            fake_wk = json.loads(fd.read())
+
+        with open("tests/fixture/fake-publisher-key_0.priv.jwk") as fd:
+            fake_jwk_priv = json.loads(fd.read())
+            fake_jwk_priv_jose = jwk.construct(fake_jwk_priv, "RS256")
+
+        # Note: does not include the signature object
+        sample_payload = {
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "1970-01-01T00:00:00Z",
+                "created": "1970-01-01T00:00:00Z",
+                "verified": True,
+                "display": "public",
+            },
+            "value": "test",
+        }
+
+        o = operation.Sign()
+        test_valid_payload = o.load(sample_payload)
+        assert isinstance(test_valid_payload, dict) is True
+        o._jwk = fake_jwk_priv_jose
+        signature = o.jws()
+        assert isinstance(signature, str) is True
+
+        # verify
+        o2 = operation.Verify()
+        test_valid_payload["signature"] = {
+            "publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": signature}
+        }
+        o2.well_known_mode = "https"
+        o2.well_known = fake_wk
+        o2.load(test_valid_payload["signature"]["publisher"]["value"])
+        sig = o2.jws(keyname="hris")
+        jsig = json.loads(sig)
+        assert isinstance(jsig, dict) is True
+
     def test_jwks_verification(self):
         # This jws sig is signed with the allizom.org mozilliansorg publisher key
+        # It uses a copy of the dev well-known
         from cis_crypto import operation
 
-        jws_signature = 'eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTA1VDEyOjExOjUyLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0wNVQxMjoxMTo1Mi4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJhOTg2MTM1My1jODRkLTQ5NTktOWI4Ni04ZTAxZTBmZDQ1MmIifQ.aFzcm6rq1AaOpUymvZkzvDNwVLaQsaVakUrw_VZilXHuY9WwZAC1mXd0pPoZpjeeQY9kq7pWsCwVe5PkBu7_6YfEcToKbkpPlID3EmW2qeUIbby7GpiAT1Alnj0PWcfOH_P1E8_DLh7quwOhu8SA1ekmAME6ty0OCd7o6QUUrY4eVozFux2qAFpDd6Oqo-HK2dkFxRbLZivEZFzAURHN8G7EN3bzicI72R_QDDO_rBEa_QSMmkkhs3M9DB3hBAgzRExNah0NHH6mpcuQl9QnMocR2Moj_pmbKJhpr6wZuoTidZyW_sX5ZG5guja7FkwK960yLlwl1AgCXzMUlJ5zZqwuuiWCV5n8f3Cbwd-IUQaiTklAJWunydqcxM32LRUfJ7kR16D2O7LkQf96ZKBgyH-YyRflFuYtjL6PEmCETOYTJ58m8y4BTWlXicWCv0w7R8tGIQ0AOjdUYh0wIBAvnL_dV2UeENc2f4hrcK_OgDynYeYixVOH-lb0EQRm2-x-xcVc3aco6W80Z0GooTKT40TYffyt6rEhg0og4cluPX9IQGdd5PD9QfKh5ecoECUQ0nhGNUkAMlqC-bPMgT2a2kxd04p-gZuVre-laBVWh6NnRird-11fncRyMhJ8HSaZr1ETLzOegR7cFQ5DZhWKAuvcjpBayWUJ2Y1qq4Begjk'
-        os.environ['CIS_PUBLIC_KEY_NAME'] = 'publisher'
+        jws_signature = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTA1VDEyOjExOjUyLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0wNVQxMjoxMTo1Mi4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJhOTg2MTM1My1jODRkLTQ5NTktOWI4Ni04ZTAxZTBmZDQ1MmIifQ.aFzcm6rq1AaOpUymvZkzvDNwVLaQsaVakUrw_VZilXHuY9WwZAC1mXd0pPoZpjeeQY9kq7pWsCwVe5PkBu7_6YfEcToKbkpPlID3EmW2qeUIbby7GpiAT1Alnj0PWcfOH_P1E8_DLh7quwOhu8SA1ekmAME6ty0OCd7o6QUUrY4eVozFux2qAFpDd6Oqo-HK2dkFxRbLZivEZFzAURHN8G7EN3bzicI72R_QDDO_rBEa_QSMmkkhs3M9DB3hBAgzRExNah0NHH6mpcuQl9QnMocR2Moj_pmbKJhpr6wZuoTidZyW_sX5ZG5guja7FkwK960yLlwl1AgCXzMUlJ5zZqwuuiWCV5n8f3Cbwd-IUQaiTklAJWunydqcxM32LRUfJ7kR16D2O7LkQf96ZKBgyH-YyRflFuYtjL6PEmCETOYTJ58m8y4BTWlXicWCv0w7R8tGIQ0AOjdUYh0wIBAvnL_dV2UeENc2f4hrcK_OgDynYeYixVOH-lb0EQRm2-x-xcVc3aco6W80Z0GooTKT40TYffyt6rEhg0og4cluPX9IQGdd5PD9QfKh5ecoECUQ0nhGNUkAMlqC-bPMgT2a2kxd04p-gZuVre-laBVWh6NnRird-11fncRyMhJ8HSaZr1ETLzOegR7cFQ5DZhWKAuvcjpBayWUJ2Y1qq4Begjk"
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "publisher"
         o = operation.Verify()
         o.load(jws_signature)
-        o.well_known_mode = 'https'
+        o.well_known_mode = "https"
 
-        fh = open('tests/fixture/well-known.json')
+        fh = open("tests/fixture/well-known.json")
         o.well_known = json.loads(fh.read())
         fh.close()
 
-        key_material = o._get_public_key(keyname='mozilliansorg')
+        key_material = o._get_public_key(keyname="mozilliansorg")
         assert key_material is not None
-        res = o.jws(keyname='mozilliansorg')
+        res = o.jws(keyname="mozilliansorg")
