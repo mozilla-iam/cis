@@ -28,6 +28,7 @@ login-to-ecr:
 
 .PHONY: login-to-ecr deploy-shell
 deploy-shell:
+	aws ecr get-login --no-include-email --region us-west-2  | grep -v MFA | bash
 	docker pull 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
 	docker run -ti -v ~/.aws:/root/.aws -v ${PWD}:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest /bin/bash
 
