@@ -88,6 +88,7 @@ package-single-layer:
 .PHONY:deploy-change-service
 deploy-change-service:
 	cd $(ROOT_DIR)/change && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
@@ -106,5 +107,6 @@ deploy-stream-processor:
 .PHONY:deploy-person-api
 deploy-person-api:
 	cd $(ROOT_DIR)/profile_retrieval && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)

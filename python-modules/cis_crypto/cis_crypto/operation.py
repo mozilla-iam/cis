@@ -38,10 +38,13 @@ class Sign(object):
         self.payload = data
         return self.payload
 
-    def jws(self):
+    def jws(self, keyname=None):
         """Assumes you loaded a payload.  Returns a jws."""
-        jwk = self._get_key()
-        sig = jws.sign(self.payload, jwk.to_dict(), algorithm="RS256")
+        # Override key name
+        if keyname is not None:
+            self.key_name = keyname
+        key_jwk = self._get_key()
+        sig = jws.sign(self.payload, key_jwk.to_dict(), algorithm="RS256")
         return sig
 
     def _get_key(self):
@@ -80,43 +83,51 @@ class Verify(object):
             key_construct = jwk.construct(key_content, "RS256")
             return [key_construct.to_dict()]
         elif self.well_known_mode == "http" or self.well_known_mode == "https":
-            logger.info('Well known mode engaged.  Reducing key structure.', extra={'well_known': self.well_known})
+            logger.info("Well known mode engaged.  Reducing key structure.", extra={"well_known": self.well_known})
             return self._reduce_keys(keyname)
 
-    def _reduce_keys(self, keyname=None):
+    def _reduce_keys(self, keyname):
         access_file_keys = self.well_known["access_file"]["jwks"]["keys"]
         publishers_supported = self.well_known["api"]["publishers_jwks"]
 
         keys = []
 
-        if "access-file-key" in self.config("public_key_name", namespace="cis", default="access-file-key"):
+        if "access-file-key" in self.config("public_key_name", namespace="cis"):
+            logger.info("This is an access file verification.")
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
+            logger.info("This is a publisher based verification.")
             keys = publishers_supported[keyname]["keys"]
-            for key in range(len(keys)):
-                keys.append(key)
         return keys
 
     def jws(self, keyname=None):
         """Assumes you loaded a payload.  Return the same jws or raise a custom exception."""
         key_material = self._get_public_key(keyname)
 
+        logger.info(
+            "The key material for the payload was loaded for: {}".format(keyname), extra={"key_material": key_material}
+        )
+
         if isinstance(key_material, list):
             logger.debug("Multiple keys returned.  Attempting match.")
             for key in key_material:
-                key.pop("x5t", None)
-                key.pop("x5c", None)
+                try:
+                    key.pop("x5t", None)
+                    key.pop("x5c", None)
+                except AttributeError:
+                    logger.warn("x5t and x5c attrs do not exist in key material.")
+
                 logger.info("Attempting to match against: {}".format(key))
                 try:
                     sig = jws.verify(self.jws_signature, key, algorithms="RS256", verify=True)
-                    logger.info("Matched a verified signature for: {}".format(key))
+                    logger.info(
+                        "Matched a verified signature for: {}".format(key), extra={"signature": self.jws_signature}
+                    )
                     return sig
                 except JWSError as e:
-                    logger.error('The signature was not valid for the payload.',
-                        extras={
-                            'signature': self.jws_signature
-                        }
+                    logger.error(
+                        "The signature was not valid for the payload.", extra={"signature": self.jws_signature}
                     )
                     logger.error(e)
         raise JWSError("The signature could not be verified for any trusted key.")

@@ -54,7 +54,7 @@ class User(object):
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        self.__well_known = WellKnown()
+        self.__well_known = WellKnown(discovery_url)
 
         if user_structure_json is not None:
             self.load(user_structure_json)
@@ -424,9 +424,15 @@ class User(object):
         publisher_name from the current user structure is used instead and no check is performed.
         """
 
-        if publisher_name is not None and attr["signature"]["publisher"]["value"] != publisher_name:
+        if publisher_name is not None and attr["signature"]["publisher"]["name"] != publisher_name:
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
+        else:
+            # If publisher name is not passed, we default to the attribute's built-in publisher
+            publisher_name = attr["signature"]["publisher"]["name"]
 
+        logger.debug(
+            "Attempting signature verification for publisher: {} and attribute: {}".format(publisher_name, attr)
+        )
         self.__verifyop.load(attr["signature"]["publisher"]["value"])
         try:
             signed = json.loads(self.__verifyop.jws(publisher_name))
@@ -514,7 +520,7 @@ class User(object):
             elif not strict and len(attr["values"]) == 0:
                 return False
         else:
-            raise KeyError("Did not find value in atttribute", attr)
+            raise KeyError("Did not find value in attribute", attr)
         return True
 
     def _sign_attribute(self, attr, publisher_name):
@@ -536,7 +542,7 @@ class User(object):
         sigattr["name"] = publisher_name
         sigattr["alg"] = "RS256"  # Currently hardcoded in cis_crypto
         sigattr["typ"] = "JWS"  # ""
-        sigattr["value"] = self.__signop.jws()
+        sigattr["value"] = self.__signop.jws(publisher_name)
         return attr
 
     def _filter_all(self, level, valid, check):

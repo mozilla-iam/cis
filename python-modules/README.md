@@ -85,7 +85,7 @@ _User Stories_
 - As a publisher like mozillians.org I need to send a profile change and receive an ID for the change record.
 - As a publisher like mozillians.org I need to know the status of a single event and if it failed or succeeded.
 
-**cis_logging**
+**cis_logger**
 
 Contains all code needed to support the output of logs to Cloudwatch consolidated logging.  Provides a `streamHandler` interface and centralized configuration for `DEBUG`, `INFO`, etc.
 
@@ -121,4 +121,3 @@ _User Stories_
 * Modules will only support Python 3 or greater.
 * Publisher / processor modules will expose a common business object layer in the form of a standardized object used in batch processing.
 * Authorizer exchanges for access tokens tokens will happen outside of batch processing to reduce the use of tokens.
-

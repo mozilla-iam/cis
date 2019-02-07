@@ -59,7 +59,9 @@ def get_complex_structures():
 
 def ensure_appropriate_publishers_and_sign(fake_profile, condition):
     os.environ["CIS_SECRET_MANAGER"] = "aws-ssm"
-    os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}".format(os.getenv("CIS_ENVIRONMENT", "development"))
+    os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{env}/keys".format(
+        env=os.getenv("CIS_ENVIRONMENT", "development")
+    )
 
     publisher_rules = common.WellKnown().get_publisher_rules()
     complex_structures = get_complex_structures()
@@ -74,18 +76,7 @@ def ensure_appropriate_publishers_and_sign(fake_profile, condition):
         if attr not in complex_structures:
             successful_random_publisher = random.choice(publisher_rules[condition][attr])
             temp_profile[attr]["signature"]["publisher"]["name"] = successful_random_publisher
-            os.environ["CIS_SIGNING_KEY_NAME"] = "mozilliansorg_signing_key"
             u = profile.User(user_structure_json=temp_profile)
-            if successful_random_publisher == "mozilliansorg":
-                os.environ["CIS_SIGNING_KEY_NAME"] == "mozilliansorg_signing_key"
-            if successful_random_publisher == "hris":
-                os.environ["CIS_SIGNING_KEY_NAME"] = "hris_signing_key"
-            if successful_random_publisher == "ldap":
-                os.environ["CIS_SIGNING_KEY_NAME"] = "ldap_signing_key"
-            if successful_random_publisher == "cis":
-                os.environ["CIS_SIGNING_KEY_NAME"] = "change_service_signing_key"
-            if successful_random_publisher == "access_provider":
-                os.environ["CIS_SIGNING_KEY_NAME"] = "auth0_signing_key"
             u.sign_attribute(attr, successful_random_publisher)
             temp_profile = u.as_dict()
         else:
@@ -96,17 +87,6 @@ def ensure_appropriate_publishers_and_sign(fake_profile, condition):
 
                     if attr == "staff_information" or attr == "identities":
                         successful_random_publisher = random.choice(publisher_rules[condition][attr])
-
-                    if successful_random_publisher == "mozilliansorg":
-                        os.environ["CIS_SIGNING_KEY_NAME"] == "mozilliansorg_signing_key"
-                    if successful_random_publisher == "hris":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "hris_signing_key"
-                    if successful_random_publisher == "ldap":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "ldap_signing_key"
-                    if successful_random_publisher == "cis":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "change_service_signing_key"
-                    if successful_random_publisher == "access_provider":
-                        os.environ["CIS_SIGNING_KEY_NAME"] = "auth0_signing_key"
 
                     temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                     u = profile.User(user_structure_json=temp_profile)

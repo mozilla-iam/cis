@@ -1,6 +1,7 @@
 service: change-service
 plugins:
   - serverless-domain-manager
+  - serverless-plugin-tracing
 custom:
   changeStage: ${opt:stage, self:provider.stage}
   changeEnvironment:
@@ -41,9 +42,9 @@ custom:
       development: true
       testing: false
     CIS_SECRET_MANAGER_SSM_PATH:
-      production: /iam/cis/production
-      development: /iam/cis/development
-      testing: /iam/cis/testing
+      production: /iam/cis/production/keys
+      development: /iam/cis/development/keys
+      testing: /iam/cis/testing/keys
     DOMAIN_NAME:
       production: change.api.sso.mozilla.com
       development: change.api.dev.sso.allizom.org
@@ -56,6 +57,10 @@ custom:
       production: https://auth.mozilla.com/.well-known/mozilla-iam
       development: https://auth.allizom.org/.well-known/mozilla-iam
       testing: https://auth.mozilla.com/.well-known/mozilla-iam
+    CIS_PUBLIC_KEY_NAME:
+      production: publisher
+      development: publisher
+      testing: publisher
   customDomain:
     domainName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
     basePath: ''
@@ -67,6 +72,7 @@ provider:
   name: aws
   runtime: python3.6
   stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
   environment:
     CIS_KINESIS_ARN: ${self:custom.changeEnvironment.CIS_KINESIS_ARN.${self:custom.changeStage}}
     CIS_DYNAMODB_ARN: ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
@@ -87,7 +93,14 @@ provider:
     CIS_SECRET_MANAGER: aws-ssm
     CIS_WELL_KNOWN_MODE: https
     CIS_DISCOVERY_URL: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
+    CIS_PUBLIC_KEY_NAME: ${self:custom.changeEnvironment.CIS_PUBLIC_KEY_NAME.${self:custom.changeStage}}
   iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
     - Effect: Allow
       Action:
         - "kinesis:DescribeStream"
@@ -115,7 +128,7 @@ provider:
         - "ssm:GetParameters"
         - "ssm:GetParameter"
       Resource:
-        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/change_service_signing_key
+        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/*
     - Effect: Allow
       Action:
         - "kms:Decrypt"

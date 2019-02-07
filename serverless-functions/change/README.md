@@ -1,0 +1,24 @@
+# Change
+
+## About SSM parameter (secrets)
+
+Add them:
+
+```
+env=development
+for i in ldap hris access_provider cis mozilliansorg;do
+  echo "Enter secret for: $i"
+  read s
+  aws ssm put-parameter --overwrite --type SecureString --name /iam/cis/$env/keys/${i} --value $s
+  unset s
+done
+```
+
+Remove them:
+```
+env=development
+for i in ldap hris access_provider cis mozilliansorg;do
+  echo "Deleting $i..."
+  aws ssm delete-parameter --name /iam/cis/$env/keys/${i}
+done
+```

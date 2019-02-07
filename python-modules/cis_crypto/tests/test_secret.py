@@ -2,9 +2,13 @@ import boto3
 import json
 import os
 import pytest
+import logging
 
 from jose import jwk
 from moto import mock_ssm
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
+logger = logging.getLogger(__name__)
 
 
 class TestSecretManager(object):

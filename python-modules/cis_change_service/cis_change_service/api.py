@@ -1,5 +1,8 @@
 import json
 import logging
+from aws_xray_sdk.core import xray_recorder, patch_all
+from aws_xray_sdk.core.context import Context
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -21,6 +24,14 @@ app = Flask(__name__)
 config = get_config()
 logger = logging.getLogger(__name__)
 
+
+cis_environment = config("environment", namespace="cis")
+
+if cis_environment != "local":
+    patch_all()
+    xray_recorder.configure(service="{}_change_service".format(cis_environment), sampling=False, context=Context())
+    XRayMiddleware(app, xray_recorder)
+    xray_recorder.configure()
 
 CORS(
     app,

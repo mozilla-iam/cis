@@ -4,7 +4,7 @@ STAGE			:= $(if $(STAGE),$(STAGE),testing)
 
 all:
 	@echo 'Available make targets:'
-	@grep '^[^#[:space:]].*:' Makefile
+	@grep '^[^#[:space:]^\.PHONY.*].*:' Makefile
 
 docker-build:
 	docker build -t mozillaiam/cis-dev-preview:latest .
@@ -26,16 +26,16 @@ preview-shell:
 login-to-ecr:
 	aws ecr get-login --no-include-email | bash
 
-.PHONY: login-to-ecr deploy-shell
-deploy-shell:
+.PHONY: deploy-shell
+deploy-shell: login-to-ecr
 	docker pull 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
 	docker run -ti -v ~/.aws:/root/.aws -v ${PWD}:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest /bin/bash
 
-.PHONY: login-to-ecr build
+.PHONY: build
 build:
 	$(MAKE) -C serverless-functions layer-codebuild STAGE=$(STAGE)
 
-.PHONY: login-to-ecr release
+.PHONY: release
 release:
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)

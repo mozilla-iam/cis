@@ -79,27 +79,20 @@ class Vault(object):
     def _search(self, user_id):
         self._connect()
 
-        vault = user.Profile(
-            self.identity_vault_client.get("table"),
-            self.identity_vault_client.get("client"),
-        )
+        vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
 
         res = vault.find_by_id(user_id)
 
-        if len(res['Items']) > 0:
+        if len(res["Items"]) > 0:
             logger.info(
-                'A record already exists in the identity vault for user: {}.'.format(
-                    user_id
-                ),
-                extra={'user_id': user_id}
+                "A record already exists in the identity vault for user: {}.".format(user_id),
+                extra={"user_id": user_id},
             )
-            return User(user_structure_json=json.loads(res['Items'][0]['profile']))
+            return User(user_structure_json=json.loads(res["Items"][0]["profile"]))
         else:
             logger.info(
-                'A record does not exist in the identity vault for user: {}.'.format(
-                    user_id
-                ),
-                extra={'user_id': user_id}
+                "A record does not exist in the identity vault for user: {}.".format(user_id),
+                extra={"user_id": user_id},
             )
             return User(user_structure_json=None)
 

@@ -15,7 +15,7 @@ from cis_profile.exceptions import PublisherVerificationFailure
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
-logging.getLogger('botocore').setLevel(logging.CRITICAL)
+logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 
 class TestChangeEndpoint(object):
@@ -41,11 +41,17 @@ class TestChangeEndpoint(object):
         data = json.loads(res.read())
         return data["access_token"]
 
-
     def test_publishing_a_profile_it_should_be_accepted(self):
         base_url = helpers.get_url_dict().get("change")
-        wk = WellKnown()
+        wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
+        os.environ["CIS_WELL_KNOWN_MODE"] = "https"
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "publisher"
+        user = profile.User(
+            user_structure_json=json.loads(self.durable_profile),
+            discovery_url="https://auth.allizom.org/.well-known/mozilla-iam",
+        )
+        user.verify_all_signatures()
         access_token = self.exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
         logger.info("Attempting connection for: {}".format(base_url))
@@ -58,8 +64,9 @@ class TestChangeEndpoint(object):
         assert data.get("sequence_number") is not None
 
 
+"""
     def test_publishing_profiles_it_should_be_accepted(self):
-        os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}".format(os.getenv("CIS_ENVIRONMENT", "development"))
+        os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}/keys".format(os.getenv("CIS_ENVIRONMENT", "development"))
         base_url = helpers.get_url_dict().get("change")
         profiles = []
         publishers = ["ldap", "cis", "access_provider", "mozilliansorg", "hris"]
@@ -92,3 +99,4 @@ class TestChangeEndpoint(object):
             logger.info(data)
         else:
             pass
+"""
