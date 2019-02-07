@@ -13,6 +13,8 @@ S3_BUCKET_URI   := s3://$(S3_BUCKET_NAME)/
 ## Change to mozilla.com for prod - make sure there's no comments or spaces
 ## after this value (that's why this comment is above it and not inline)
 DOMAIN		:= allizom.org
+## This is for the {prod,dev}.mozilla-iam template, its set automagically
+STAGE_FN	:= $(if $(STAGE),$(STAGE).,dev.)
 ## Change to test. or empty string (prod) as needed (see also DOMAIN above)
 STAGE		:= dev.
 INFOSEC_FP	:= 85D77543B3D624B63CEA9E6DBC17301B491B3F21
@@ -36,6 +38,8 @@ upload-s3-bucket: test verify
 templatize:
 	@echo Templatizing...
 	cp tpl/* s3/.well-known
+	mv s3/.well-known/$(STAGE_FN)mozilla-iam  s3/.well-known/mozilla-iam
+	rm s3/.well-known/*.mozilla-iam
 	sed -i 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
 	sed -i 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
 
