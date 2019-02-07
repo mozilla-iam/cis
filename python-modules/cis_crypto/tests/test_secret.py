@@ -2,6 +2,7 @@ import boto3
 import json
 import os
 import pytest
+import logging
 
 from jose import jwk
 from moto import mock_ssm
