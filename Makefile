@@ -4,7 +4,7 @@ STAGE			:= $(if $(STAGE),$(STAGE),testing)
 
 all:
 	@echo 'Available make targets:'
-	@grep '^[^#[:space:]].*:' Makefile
+	@grep '^[^#[:space:]^\.PHONY.*].*:' Makefile
 
 docker-build:
 	docker build -t mozillaiam/cis-dev-preview:latest .
