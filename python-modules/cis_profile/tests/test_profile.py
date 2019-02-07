@@ -143,9 +143,11 @@ class TestProfile(object):
     def test_merge_profiles(self):
         u_orig = profile.User()
         u_orig.access_information.ldap.values = {"test": None}
+        u_orig.uuid.value = "31337"
 
         u_patch = profile.User()
         u_patch.access_information.ldap.values = {"test_replacement": None}
 
-        u_orig.merge(u_patch, "ldap")
+        u_orig.merge(u_patch)
         assert u_orig.as_dict()["access_information"]["ldap"]["values"] == {"test_replacement": None}
+        assert u_orig.uuid.value == "31337"  # This has not changed because it was null/None in the patched profile

@@ -100,27 +100,30 @@ class User(object):
             path = user_structure_json_path
         return DotDict(json.load(open(path)))
 
-    def merge(self, user_to_merge_in, publisher, level=None, _internal_level=None):
+    def merge(self, user_to_merge_in, level=None, _internal_level=None):
         """
         Recursively merge user attributes:
         Merge a User object with another User object. This will override all fields from the current user by non-null
-        (non-None) fields from `user_to_merge_in` which have a publisher set to `publisher`.
+        (non-None) fields from `user_to_merge_in`.
         Ex:
         u_orig = User()
         u_patch = User()
         u_patch.timezone.value = "GMT -07:00 America/Los Angeles"
+        print(u_patch.uuid.value)
+        # >>> None
 
-        u_orig.merge(u_patch, publisher="hris")
+        u_orig.merge(u_patch)
         print(u_orig.timezone.value)
         # >>> GMT -07:00 America/Los Angeles
+        print(u_orig.uuid.value)
+        # >>> None # <= unchanged because null/None
 
-        This is useful when updating existing users, rather than manually matching fields. Passing the publisher ensures
-        that we only patch the fields that are allowed for this publisher, as a safeguard, which ensures validation will
-        work
+        This is useful when updating existing users, rather than manually matching fields
+
+        !!! WARNING !!! This function will not do a validation of signatures or publishers. YOU must perform these tasks
+        by calling the appropriate functions.
 
         @user_to_merge_in User object the user to merge into the current user object
-        @publisher str the publisher name that attempts to merge data in. any data from `user_to_merge_in` that is not
-        originating from this publisher will be ignored
         @level dict of an attribute. This can be user_to_merge_in.__dict__ for the top level (recurses through all
         attributes). The level MUST be from user_to_merge_in, not from the original/current user.
         @_internal_level str attribute name  of previous level attribute from the current user. Used internally.
@@ -140,19 +143,18 @@ class User(object):
                 continue
             # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
             if "signature" not in level[attr].keys():
-                self.merge(
-                    user_to_merge_in, publisher=publisher, level=level[attr], _internal_level=_internal_level[attr]
-                )
-            # Check if this is an attribute we want to merge back
-            elif level[attr]["signature"]["publisher"]["name"] == publisher:
+                self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
+            # We will merge this attribute back (granted its not null/None)
+            else:
                 tomerge.append(attr)
 
         for _ in tomerge:
-            logger.debug("Merging in attribute {} for publisher {}".format(_, publisher))
+            logger.debug("Merging in attribute {}".format(_))
 
             # _internal_level is the original user attr
             # level is the patch/merged in user attr
-            # We skip null/None attributes even if the original/current user does not match (ie is not null)
+            # This is where wee skip null/None attributes even if the original/current
+            # user does not match (ie is not null)
             if level[_].get("value") is not None or level[_].get("values") is not None:
                 _internal_level[_] = level[_]
 
