@@ -66,7 +66,7 @@ class TestChangeEndpoint(object):
 
 """
     def test_publishing_profiles_it_should_be_accepted(self):
-        os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}".format(os.getenv("CIS_ENVIRONMENT", "development"))
+        os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}/keys".format(os.getenv("CIS_ENVIRONMENT", "development"))
         base_url = helpers.get_url_dict().get("change")
         profiles = []
         publishers = ["ldap", "cis", "access_provider", "mozilliansorg", "hris"]
