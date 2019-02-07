@@ -26,17 +26,16 @@ preview-shell:
 login-to-ecr:
 	aws ecr get-login --no-include-email | bash
 
-.PHONY: login-to-ecr deploy-shell
-deploy-shell:
-	aws ecr get-login --no-include-email --region us-west-2  | grep -v MFA | bash
+.PHONY: deploy-shell
+deploy-shell: login-to-ecr
 	docker pull 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest
 	docker run -ti -v ~/.aws:/root/.aws -v ${PWD}:/var/task 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci:latest /bin/bash
 
-.PHONY: login-to-ecr build
+.PHONY: build
 build:
 	$(MAKE) -C serverless-functions layer-codebuild STAGE=$(STAGE)
 
-.PHONY: login-to-ecr release
+.PHONY: release
 release:
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
