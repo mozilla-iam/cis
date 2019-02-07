@@ -35,13 +35,13 @@ class Vault(object):
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
-    def _verify(self, profile_json):
+    def _verify(self, profile_json, old_profile=None):
         cis_profile = User(user_structure_json=profile_json)
         user_id = cis_profile.user_id.value
 
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
-                cis_profile.verify_all_publishers(User())
+                cis_profile.verify_all_publishers(self._search(user_id))
 
             if self.config("verify_signatures", namespace="cis") == "true":
                 cis_profile.verify_all_signatures()
@@ -75,6 +75,33 @@ class Vault(object):
         user.update_timestamp("last_modified")
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
+
+    def _search(self, user_id):
+        self._connect()
+
+        vault = user.Profile(
+            self.identity_vault_client.get("table"),
+            self.identity_vault_client.get("client"),
+        )
+
+        res = vault.find_by_id(user_id)
+
+        if len(res['Items']) > 0:
+            logger.info(
+                'A record already exists in the identity vault for user: {}.'.format(
+                    user_id
+                ),
+                extra={'user_id': user_id}
+            )
+            return User(user_structure_json=json.loads(res['Items'][0]['profile']))
+        else:
+            logger.info(
+                'A record does not exist in the identity vault for user: {}.'.format(
+                    user_id
+                ),
+                extra={'user_id': user_id}
+            )
+            return User(user_structure_json=None)
 
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
