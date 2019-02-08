@@ -33,6 +33,7 @@ def non_hierarchy_iter():
 
 class FakeProfileConfig(object):
     def __init__(self):
+        self._create = False
         self._mozillians = False
         self._hris = False
         self._ldap = False
@@ -43,6 +44,10 @@ class FakeProfileConfig(object):
 
     def default(self):
         return self.mozillians().hris().ldap().auth0().uuid()
+
+    def create(self):
+        self._create = True
+        return self
 
     def minimal(self):
         self._minimal = True
@@ -163,7 +168,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
 
     def primary_username(self):
         if self.generator.boolean():
-            return "r--{}".format(base64.urlsafe_b64decode(fake.uuid4()))
+            return "r--{}".format(base64.urlsafe_b64encode(fake.uuid4(cast_to=lambda x: x.bytes)).decode("utf-8"))
         else:
             return self.generator.user_name()
 
@@ -267,7 +272,10 @@ class FakeUser(cis_profile.profile.User):
     """
 
     def __init__(self, seed=None, fake=fake, hierarchy=non_hierarchy_iter(), config=FakeProfileConfig().default()):
-        super().__init__()
+        user_structure_json_file = (
+            "data/user_profile_null_create.json" if config._create else "data/user_profile_null.json"
+        )
+        super().__init__(user_structure_json_file=user_structure_json_file)
         if seed is not None:
             fake.seed_instance(seed)
 
