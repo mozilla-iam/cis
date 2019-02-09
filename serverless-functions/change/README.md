@@ -37,5 +37,5 @@ var fs = require('fs');
 var rsaPemToJwk = require('rsa-pem-to-jwk');
 
 # private or public, depending what key you need
-var jwk = rsaPemToJwk(fs.readFileSync('privateKey.pem'), {use: 'sig'}, 'private');
+JSON.stringify(rsaPemToJwk(fs.readFileSync('privateKey.pem'), {use: 'sig'}, 'private'));
 ```
