@@ -5,7 +5,7 @@
 Add them:
 
 ```
-env=development
+export env=development
 for i in ldap hris access_provider cis mozilliansorg;do
   echo "Enter secret for: $i"
   read s
@@ -16,7 +16,7 @@ done
 
 Remove them:
 ```
-env=development
+export env=development
 for i in ldap hris access_provider cis mozilliansorg;do
   echo "Deleting $i..."
   aws ssm delete-parameter --name /iam/cis/$env/keys/${i}
