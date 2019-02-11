@@ -1,6 +1,4 @@
 from tests import fake_flask_app
-from cis_profile.common import DotDict
-from cis_profile.common import DisplayLevel
 from cis_profile import fake_profile
 
 import cis_profile.graphene as cis_g
