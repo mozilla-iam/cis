@@ -35,13 +35,50 @@ class TestGraphene(object):
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
-            def resolve_profile(self, info, **kwargs):
-                return fake_user
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
 
         schema = graphene.Schema(Query, auto_camelcase=False)
         result = schema.execute(
             "query getProfile($user_id: String!) {profile(user_id:$user_id) {uuid{value}}}",
             variables={"user_id": fake_user.user_id.value},
+        )
+        assert result.errors is None
+        assert result.data["profile"]["uuid"]["value"] == fake_user.uuid.value
+
+    def test_graphql_gdict(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
+
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute(
+            "query getProfile($user_id: String!) {profile(user_id:$user_id) {tags{values}}}",
+            variables={"user_id": fake_user.user_id.value},
+        )
+        assert result.errors is None
+        assert result.data["profile"]["tags"]["values"].keys() == fake_user.tags["values"].keys()
+
+    def test_graphql_gdict_as_argument(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, tags=cis_g.GDict())
+
+            def resolve_profile(self, info, tags):
+                if fake_user.tags["values"] == tags:
+                    return fake_user
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute(
+            "query getProfile($tags: GDict!) {profile(tags:$tags) {uuid{value}}}",
+            variables={"tags": json.dumps(fake_user.tags["values"])},
         )
         assert result.errors is None
         assert result.data["profile"]["uuid"]["value"] == fake_user.uuid.value
@@ -53,8 +90,9 @@ class TestGraphene(object):
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, uuid=graphene.String(required=True))
 
-            def resolve_profile(self, info, **kwargs):
-                return fake_user
+            def resolve_profile(self, info, uuid):
+                if fake_user.uuid.value == uuid:
+                    return fake_user
 
         schema = graphene.Schema(Query, auto_camelcase=False)
         result = schema.execute(
@@ -67,13 +105,13 @@ class TestGraphene(object):
 
     def test_flask_graphql_query(self):
         fake_user = fake_profile.FakeUser(seed=1337)
-        print(fake_user.user_id.value)
 
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
-            def resolve_profile(self, info, **kwargs):
-                return fake_user
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
 
         # The following code may be used to test for scopes in the JWT token
         # However, we're not doing this right now (and we may never need it, but if we do, it's here!)
@@ -93,6 +131,5 @@ class TestGraphene(object):
 
         assert result.status_code == 200
         response = json.loads(result.get_data())
-        print(response)
         assert response.get("errors") is None
         assert response["data"]["profile"]["first_name"]["value"] == fake_user.first_name.value

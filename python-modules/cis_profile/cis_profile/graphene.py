@@ -5,6 +5,7 @@ Object have to be loaded into a `graphene.Schema(graphene.Query(OurTopLevelObjec
 """
 import datetime
 import graphene
+import json
 
 from graphene.types import Scalar
 from graphql.language import ast
@@ -22,7 +23,7 @@ from graphql.language import ast
 # Required non-scalar to scalar transforms
 class DateTime(Scalar):
     """
-    Graphene Scaler for our date time format
+    Graphene Scalar for our date time format
     """
 
     @staticmethod
@@ -38,6 +39,24 @@ class DateTime(Scalar):
     def parse_value(value):
         return datetime.datetime.strptime(value, "%Y-%m-%dT%H:%M:%S.%f")
 
+
+class GDict(Scalar):
+    """
+    Graphene Scalar for dictionaries
+    """
+
+    @staticmethod
+    def serialize(gdict):
+        return gdict
+
+    @staticmethod
+    def parse_literal(node):
+        if isinstance(node, ast.ObjectValue):
+            return node
+
+    @staticmethod
+    def parse_value(value):
+        return json.loads(value)
 
 # Profile enums
 class Alg(graphene.Enum):
@@ -116,10 +135,6 @@ class StandardAttributeString(StandardProperty):
     value = graphene.String()
 
 
-class StandardAttributeList(StandardProperty):
-    values = graphene.List(graphene.String)
-
-
 class StandardAttributeBoolean(StandardProperty):
     value = graphene.Boolean()
 
@@ -128,28 +143,24 @@ class StandardAttributeDateTime(StandardProperty):
     value = DateTime()
 
 
-class StandardAttributeFieldList(StandardProperty):
+class StandardAttributeDict(StandardProperty):
     """
     graphene requires Fields (dicts) to have well-known keys
-    work-around this by providing a list of fields through a graphene List
+    we define a custom dict scalar to solve for this.
     """
 
-    values = graphene.List(graphene.String)
+    values = GDict()
 
-    def resolve_values(self, info, *kwargs):
-        values = self.get("values")
-        if values:
-            return values.items()
-        else:
-            return None
+    def resolve_values(self, *args, **kwargs):
+        return self["values"]
 
 
 # Profile advanced properties
 class AccessInformation(StandardProperty):
-    ldap = graphene.Field(StandardAttributeFieldList)
-    mozilliansorg = graphene.Field(StandardAttributeFieldList)
-    hris = graphene.Field(StandardAttributeFieldList)
-    access_provider = graphene.Field(StandardAttributeFieldList)
+    ldap = graphene.Field(StandardAttributeDict)
+    mozilliansorg = graphene.Field(StandardAttributeDict)
+    hris = graphene.Field(StandardAttributeDict)
+    access_provider = graphene.Field(StandardAttributeDict)
 
 
 # Profiles
@@ -192,23 +203,23 @@ class Profile(graphene.ObjectType):
     active = graphene.Field(StandardAttributeBoolean)
     last_modified = graphene.Field(StandardAttributeDateTime)
     created = graphene.Field(StandardAttributeDateTime)
-    usernames = graphene.Field(StandardAttributeList)
+    usernames = graphene.Field(StandardAttributeDict)
     first_name = graphene.Field(StandardAttributeString)
     last_name = graphene.Field(StandardAttributeString)
     primary_email = graphene.Field(StandardAttributeString)
     identities = graphene.Field(Identities)
-    ssh_public_keys = graphene.Field(StandardAttributeFieldList)
-    pgp_public_keys = graphene.Field(StandardAttributeFieldList)
+    ssh_public_keys = graphene.Field(StandardAttributeDict)
+    pgp_public_keys = graphene.Field(StandardAttributeDict)
     access_information = graphene.Field(AccessInformation)
     fun_title = graphene.Field(StandardAttributeString)
     description = graphene.Field(StandardAttributeString)
     location = graphene.Field(StandardAttributeString)
     timezone = graphene.Field(StandardAttributeString)
     language = graphene.Field(StandardAttributeString)
-    tags = graphene.Field(StandardAttributeList)
+    tags = graphene.Field(StandardAttributeDict)
     pronouns = graphene.Field(StandardAttributeString)
     picture = graphene.Field(StandardAttributeString)
-    uris = graphene.Field(StandardAttributeFieldList)
-    phone_numbers = graphene.Field(StandardAttributeFieldList)
+    uris = graphene.Field(StandardAttributeDict)
+    phone_numbers = graphene.Field(StandardAttributeDict)
     alternative_name = graphene.Field(StandardAttributeString)
     staff_information = graphene.Field(StaffInformation)
