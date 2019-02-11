@@ -1,4 +1,7 @@
+import pytest
 from cis_profile import fake_profile
+from cis_profile import profile
+from cis_profile import exceptions
 
 
 class TestFakeProfile(object):
@@ -34,3 +37,13 @@ class TestFakeProfile(object):
         assert a.uuid.value is not None
         b = fake_profile.FakeUser(seed=23, config=c_without_uuid)
         assert b.uuid.value is None
+
+    def test_null_create_profile(self):
+        empty_profile = profile.User()
+        create_profile = fake_profile.FakeUser(seed=1337, config=fake_profile.FakeProfileConfig().default().create())
+        update_profile = fake_profile.FakeUser(seed=1337, config=fake_profile.FakeProfileConfig().default())
+
+        with pytest.raises(exceptions.PublisherVerificationFailure):
+            update_profile.verify_all_publishers(empty_profile)
+        assert create_profile.verify_all_publishers(empty_profile) is True
+        assert update_profile.verify_all_publishers(create_profile) is True

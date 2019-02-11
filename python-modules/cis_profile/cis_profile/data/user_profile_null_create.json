@@ -1,0 +1,1391 @@
+{
+  "schema": "https://auth.mozilla.com/.well-known/profile.schema",
+  "uuid": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": "public"
+    },
+    "value": null
+  },
+  "user_id": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "primary_username": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": "public"
+    },
+    "value": null
+  },
+  "login_method": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "active": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "last_modified": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "created": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "cis",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "usernames": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": "public"
+    },
+    "values": null
+  },
+  "first_name": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "last_name": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "primary_email": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "access_provider",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "identities": {
+    "github_id_v3": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "github_id_v4": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "github_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "custom_1_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "public"
+      },
+      "value": null
+    },
+    "custom_2_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "public"
+      },
+      "value": null
+    },
+    "custom_3_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "public"
+      },
+      "value": null
+    },
+    "mozilliansorg_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "bugzilla_mozilla_org_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "bugzilla_mozilla_org_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "mozilla_ldap_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "mozilla_ldap_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "mozilla_posix_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "google_oauth2_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "google_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "firefox_accounts_id": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    },
+    "firefox_accounts_primary_email": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "value": null
+    }
+  },
+  "ssh_public_keys": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "pgp_public_keys": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "access_information": {
+    "ldap": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "ldap",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "PUBLIC",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "values": {
+      }
+    },
+    "mozilliansorg": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "mozilliansorg",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "PUBLIC",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "values": {
+      }
+    },
+    "hris": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "values": {
+      }
+    },
+    "access_provider": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "access_provider",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": null
+      },
+      "values": {
+      }
+    }
+  },
+  "fun_title": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "description": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "location": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "timezone": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "languages": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "tags": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "pronouns": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "picture": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "PUBLIC",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "uris": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "phone_numbers": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "values": null
+  },
+  "alternative_name": {
+    "signature": {
+      "publisher": {
+        "alg": "RS256",
+        "typ": "JWS",
+        "name": "mozilliansorg",
+        "value": ""
+      },
+      "additional": [
+        {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": null,
+          "value": ""
+        }
+      ]
+    },
+    "metadata": {
+      "classification": "WORKGROUP CONFIDENTIAL",
+      "last_modified": "1970-01-01T00:00:00Z",
+      "created": "1970-01-01T00:00:00Z",
+      "verified" : true,
+      "display": null
+    },
+    "value": null
+  },
+  "staff_information": {
+    "manager": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "director": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "staff": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "title": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "team": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "cost_center": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "worker_type": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "staff"
+      },
+      "value": null
+    },
+    "wpr_desk_number": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    },
+    "office_location": {
+      "signature": {
+        "publisher": {
+          "alg": "RS256",
+          "typ": "JWS",
+          "name": "hris",
+          "value": ""
+        },
+        "additional": [
+          {
+            "alg": "RS256",
+            "typ": "JWS",
+            "name": null,
+            "value": ""
+          }
+        ]
+      },
+      "metadata": {
+        "classification": "MOZILLA CONFIDENTIAL",
+        "last_modified": "1970-01-01T00:00:00Z",
+        "created": "1970-01-01T00:00:00Z",
+        "verified" : true,
+        "display": "ndaed"
+      },
+      "value": null
+    }
+  }
+}
