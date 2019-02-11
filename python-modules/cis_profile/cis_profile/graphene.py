@@ -58,6 +58,7 @@ class GDict(Scalar):
     def parse_value(value):
         return json.loads(value)
 
+
 # Profile enums
 class Alg(graphene.Enum):
     """
