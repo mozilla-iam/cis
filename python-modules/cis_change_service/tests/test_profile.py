@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 class TestProfile(object):
     def setup(self):
         from cis_change_service.common import get_config
-
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         name = "local-identity-vault"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
@@ -112,6 +112,7 @@ class TestProfile(object):
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         from cis_change_service import api
 
         f = FakeBearer()
@@ -148,6 +149,7 @@ class TestProfile(object):
     def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         from cis_change_service import api
 
         f = FakeBearer()
@@ -173,6 +175,7 @@ class TestProfile(object):
     def test_post_profiles_it_should_fail(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         from cis_change_service import api
 
         f = FakeBearer()
@@ -201,6 +204,7 @@ class TestProfile(object):
     def test_delete_profile(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         from cis_change_service import api
 
         f = FakeBearer()

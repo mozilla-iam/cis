@@ -24,6 +24,7 @@ class Vault(object):
         self.connection_object = connect.AWS()
         self.identity_vault_client = None
         self.config = common.get_config()
+        condition = 'unknown'
 
         if sequence_number is not None:
             self.sequence_number = str(sequence_number)
@@ -41,7 +42,10 @@ class Vault(object):
 
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
-                cis_profile.verify_all_publishers(self._search(user_id))
+                cis_profile.verify_all_publishers(self._search_and_merge(cis_profile))
+            else:
+                # Search for the user without verification to set condition.
+                user = self._search_and_merge(cis_profile)
 
             if self.config("verify_signatures", namespace="cis") == "true":
                 cis_profile.verify_all_signatures()
@@ -63,8 +67,9 @@ class Vault(object):
                 "The profile produced an unknown error and is not trusted for user: {}".format(user_id),
                 extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
             )
+            print(e)
             raise VerificationError({"code": "unknown_error", "description": "{}".format(e)}, 500)
-        return True
+        return user
 
     def _update_attr_owned_by_cis(self, profile_json):
         """Updates the attributes owned by cisv2.  Takes profiles profile_json
@@ -76,20 +81,25 @@ class Vault(object):
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
 
-    def _search(self, user_id):
+    def _search_and_merge(self, cis_profile):
         self._connect()
 
+        user_id = cis_profile.user_id.value
         vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
-
         res = vault.find_by_id(user_id)
 
         if len(res["Items"]) > 0:
+            self.condition = 'update'
             logger.info(
                 "A record already exists in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
-            return User(user_structure_json=json.loads(res["Items"][0]["profile"]))
+
+            old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
+            print(cis_profile.merge(old_user_profile))
+            return cis_profile
         else:
+            self.condition = 'create'
             logger.info(
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
@@ -136,6 +146,8 @@ class Vault(object):
                     "The result of writing the profile to the identity vault was: {}".format(res),
                     extra={"user_id": profile_json["user_id"]["value"], "profile": profile_json, "result": res},
                 )
+
+                res['condition'] = self.condition
                 return res
         except ClientError as e:
             logger.error(
@@ -196,6 +208,7 @@ class Vault(object):
         return {"creates": result[0], "updates": result[1]}
 
     def delete_profile(self, profile_json):
+        condition = 'delete'
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
@@ -226,7 +239,11 @@ class Vault(object):
                 extra={"profile": profile_json, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
-        return {"status": 200, "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"])}
+        return {
+            "status": 200,
+            "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"]),
+            "condition": condition
+        }
 
     def _get_id(self, profile_json):
         if isinstance(profile_json, str):

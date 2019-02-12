@@ -86,6 +86,7 @@ class TestChangeEndpoint(object):
         assert data[0].get("sequence_numbers") is not None
         assert data[0].get("status") == 200
 
+
     def test_deleting_a_profile(self):
         base_url = helpers.get_url_dict().get("change")
         if os.getenv("CIS_ENVIRONMENT", "development") == 'development':
