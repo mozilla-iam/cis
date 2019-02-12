@@ -85,6 +85,9 @@ class Vault(object):
         self._connect()
 
         user_id = cis_profile.user_id.value
+
+        print(cis_profile.user_id)
+        logger.info('Attempting to locate user: {}'.format(user_id))
         vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
         res = vault.find_by_id(user_id)
 
@@ -96,8 +99,8 @@ class Vault(object):
             )
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
-            print(cis_profile.merge(old_user_profile))
-            return cis_profile
+            old_user_profile.merge(cis_profile)
+            return old_user_profile
         else:
             self.condition = 'create'
             logger.info(
@@ -116,39 +119,42 @@ class Vault(object):
 
             # Run some code that updates attrs and metadata for attributes cis is trusted to assert
             self._update_attr_owned_by_cis(profile_json)
-            verified = self._verify(profile_json)
 
-            if verified:
-                if self.config("dynamodb_transactions", namespace="cis") == "true":
-                    vault = user.Profile(
-                        self.identity_vault_client.get("table"),
-                        self.identity_vault_client.get("client"),
-                        transactions=True,
-                    )
-                else:
-                    vault = user.Profile(
-                        self.identity_vault_client.get("table"),
-                        self.identity_vault_client.get("client"),
-                        transactions=False,
-                    )
+            profile_json = self._verify(profile_json).as_dict()
 
-                user_profile = dict(
-                    id=profile_json["user_id"]["value"],
-                    primary_email=profile_json["primary_email"]["value"],
-                    uuid=profile_json["uuid"]["value"],
-                    primary_username=profile_json["primary_username"]["value"],
-                    sequence_number=self.sequence_number,
-                    profile=json.dumps(profile_json),
+            logger.debug(profile_json)
+
+
+            if self.config("dynamodb_transactions", namespace="cis") == "true":
+                vault = user.Profile(
+                    self.identity_vault_client.get("table"),
+                    self.identity_vault_client.get("client"),
+                    transactions=True,
+                )
+            else:
+                vault = user.Profile(
+                    self.identity_vault_client.get("table"),
+                    self.identity_vault_client.get("client"),
+                    transactions=False,
                 )
 
-                res = vault.find_or_create(user_profile)
-                logger.debug(
-                    "The result of writing the profile to the identity vault was: {}".format(res),
-                    extra={"user_id": profile_json["user_id"]["value"], "profile": profile_json, "result": res},
-                )
+            user_profile = dict(
+                id=profile_json["user_id"]["value"],
+                primary_email=profile_json["primary_email"]["value"],
+                uuid=profile_json["uuid"]["value"],
+                primary_username=profile_json["primary_username"]["value"],
+                sequence_number=self.sequence_number,
+                profile=json.dumps(profile_json),
+            )
 
-                res['condition'] = self.condition
-                return res
+            res = vault.find_or_create(user_profile)
+            logger.debug(
+                "The result of writing the profile to the identity vault was: {}".format(res),
+                extra={"user_id": profile_json["user_id"]["value"], "profile": profile_json, "result": res},
+            )
+
+            res['condition'] = self.condition
+            return res
         except ClientError as e:
             logger.error(
                 "An error occured writing this profile to dynamodb",

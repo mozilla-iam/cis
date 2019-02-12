@@ -15,11 +15,11 @@ from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
 
-logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
+logging.basicConfig(level=logging.DEBUG, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 
-logging.getLogger("boto").setLevel(logging.CRITICAL)
-logging.getLogger("boto3").setLevel(logging.CRITICAL)
-logging.getLogger("botocore").setLevel(logging.CRITICAL)
+#logging.getLogger("boto").setLevel(logging.CRITICAL)
+#logging.getLogger("boto3").setLevel(logging.CRITICAL)
+#logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 
 logger = logging.getLogger(__name__)
@@ -294,7 +294,9 @@ class TestAPI(object):
 
         # Now let's try a partial update :)
         null_profile = profile.User(user_structure_json=None)
-        null_profile.user_id = fake_new_user.user_id
+        null_profile.user_id.value = fake_new_user.user_id.value
+        #null_profile.uuid.value = fake_new_user.uuid.value
+        #null_profile.primary_email.value = fake_new_user.primary_email.value
         null_profile.last_name.value = 'iamanewpreferredlastname'
         null_profile.sign_attribute('last_name', 'mozilliansorg')
 
