@@ -1,19 +1,9 @@
 from tests import fake_flask_app
-from cis_profile.common import DotDict
+from cis_profile import fake_profile
 
 import cis_profile.graphene as cis_g
 import json
 import graphene
-
-
-def json2obj(d):
-    # ATTENTION ATTENTION!
-    # This looks like nothing but this returns an Object (type: <class '__main__.DotDict'>) because of the `object_hook`
-    # not a dict which is a core class (type: <class 'dict'>)
-    # graphql will only try to resolve methods IF it's not a dict, so this step is required
-    # This trick ensures that the object returned has real methods (while a Dict or a class that is based on dict, like
-    # the DotDict does, does not. It uses __getattr__ instead)
-    return json.loads(d, object_hook=DotDict)
 
 
 class TestGraphene(object):
@@ -40,39 +30,88 @@ class TestGraphene(object):
         assert r.data is None
 
     def test_graphql_query(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
-            def resolve_profile(self, info, **kwargs):
-                fh = open("cis_profile/data/user_profile_null.json")
-                user_profile = fh.read()
-                fh.close()
-                tmp = json2obj(user_profile)
-                tmp.first_name.value = "Hello"
-                tmp.user_id.value = "my_user_id"
-                return tmp
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
 
         schema = graphene.Schema(Query, auto_camelcase=False)
         result = schema.execute(
-            "query getProfile($user_id: String!) {profile(user_id:$user_id) {first_name{value}}}",
-            variables={"user_id": "my_user_id"},
+            "query getProfile($user_id: String!) {profile(user_id:$user_id) {uuid{value}}}",
+            variables={"user_id": fake_user.user_id.value},
         )
-        print(result.errors, result.data)
         assert result.errors is None
-        assert result.data["profile"]["first_name"]["value"] == "Hello"
+        assert result.data["profile"]["uuid"]["value"] == fake_user.uuid.value
 
-    def test_flask_graphql_query(self):
+    def test_graphql_gdict(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
         class Query(graphene.ObjectType):
             profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
 
-            def resolve_profile(self, info, **kwargs):
-                fh = open("cis_profile/data/user_profile_null.json")
-                user_profile = fh.read()
-                fh.close()
-                tmp = json2obj(user_profile)
-                tmp.first_name.value = "Hello"
-                tmp.user_id.value = "ad|Mozilla-LDAP-Dev|dummymcdummy"
-                return tmp
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute(
+            "query getProfile($user_id: String!) {profile(user_id:$user_id) {tags{values}}}",
+            variables={"user_id": fake_user.user_id.value},
+        )
+        assert result.errors is None
+        assert result.data["profile"]["tags"]["values"].keys() == fake_user.tags["values"].keys()
+
+    def test_graphql_gdict_as_argument(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, tags=cis_g.GDict())
+
+            def resolve_profile(self, info, tags):
+                if fake_user.tags["values"] == tags:
+                    return fake_user
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute(
+            "query getProfile($tags: GDict!) {profile(tags:$tags) {uuid{value}}}",
+            variables={"tags": json.dumps(fake_user.tags["values"])},
+        )
+        assert result.errors is None
+        assert result.data["profile"]["uuid"]["value"] == fake_user.uuid.value
+
+    def test_graphql_query_filtered(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+        fake_user.filter_display()
+
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, uuid=graphene.String(required=True))
+
+            def resolve_profile(self, info, uuid):
+                if fake_user.uuid.value == uuid:
+                    return fake_user
+
+        schema = graphene.Schema(Query, auto_camelcase=False)
+        result = schema.execute(
+            "query getProfile($uuid: String!) {profile(uuid:$uuid) {uuid{value} staff_information{title{value}}}}",
+            variables={"uuid": fake_user.uuid.value},
+        )
+        assert result.errors is None
+        assert result.data["profile"]["uuid"]["value"] == fake_user.uuid.value
+        assert result.data["profile"]["staff_information"]["title"] is None
+
+    def test_flask_graphql_query(self):
+        fake_user = fake_profile.FakeUser(seed=1337)
+
+        class Query(graphene.ObjectType):
+            profile = graphene.Field(cis_g.Profile, user_id=graphene.String(required=True))
+
+            def resolve_profile(self, info, user_id):
+                if fake_user.user_id.value == user_id:
+                    return fake_user
 
         # The following code may be used to test for scopes in the JWT token
         # However, we're not doing this right now (and we may never need it, but if we do, it's here!)
@@ -87,11 +126,10 @@ class TestGraphene(object):
         fake_flask_app.add_rule(Query)
         app.testing = True
         app = app.test_client()
-        payload = 'query {profile (user_id:"ad|Mozilla-LDAP-Dev|dummymcdummy") {first_name{value}}}'
+        payload = 'query {{profile (user_id:"{}") {{first_name{{value}}}}}}'.format(fake_user.user_id.value)
         result = app.get("/graphql?query={}".format(payload), follow_redirects=True)
 
         assert result.status_code == 200
         response = json.loads(result.get_data())
-        print(response)
         assert response.get("errors") is None
-        assert response["data"]["profile"]["first_name"]["value"] == "Hello"
+        assert response["data"]["profile"]["first_name"]["value"] == fake_user.first_name.value
