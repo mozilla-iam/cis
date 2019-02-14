@@ -63,31 +63,45 @@ class TestChangeEndpoint(object):
         assert data.get("status") == 200
         assert data.get("sequence_number") is not None
 
-    def test_publishing_profiles_it_should_be_accepted(self):
-        os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}/keys".format(os.getenv("CIS_ENVIRONMENT", "development"))
+    def test_publishing_a_profile_using_a_partial_update(self):
         base_url = helpers.get_url_dict().get("change")
-        profiles = []
-        publishers = ["ldap", "cis", "access_provider", "mozilliansorg", "hris"]
-        while len(profiles) != 5:
-            u = fake_profile.FakeUser()
-            u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
-            u.verify_all_publishers(previous_user=profile.User())
-            profiles.append(u.as_dict())
-        wk = WellKnown()
+        wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
+        jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
+        os.environ["CIS_WELL_KNOWN_MODE"] = "https"
+        os.environ["CIS_PUBLIC_KEY_NAME"] = "publisher"
+        user = profile.User(
+            user_structure_json=json.loads(self.durable_profile),
+            discovery_url="https://auth.allizom.org/.well-known/mozilla-iam",
+        )
+        user.verify_all_signatures()
         access_token = self.exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
+        logger.info("Attempting connection for: {}".format(base_url))
         headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
-        conn.request("POST", "/v2/users", json.dumps(profiles), headers=headers)
+        conn.request("POST", "/v2/user", self.durable_profile, headers=headers)
         res = conn.getresponse()
         data = json.loads(res.read().decode())
         logger.info(data)
-        assert data[0].get("sequence_numbers") is not None
-        assert data[0].get("status") == 200
 
+        partial_update = profile.User(user_structure_json=None)
+        partial_update.user_id = user.user_id
+        partial_update.uuid = user.uuid
+        partial_update.primary_email = user.primary_email
+        partial_update.primary_username = user.primary_username
+        partial_update.first_name.value = "anewfirstname"
+        partial_update.sign_attribute("first_name", "mozilliansorg")
+
+        logger.info("Attempting connection for: {}".format(base_url))
+        headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
+        conn.request("POST", "/v2/user", partial_update.as_json(), headers=headers)
+        res = conn.getresponse()
+        data = json.loads(res.read().decode())
+        assert data.get("status") == 200
+        assert data.get("sequence_number") is not None
 
     def test_deleting_a_profile(self):
         base_url = helpers.get_url_dict().get("change")
-        if os.getenv("CIS_ENVIRONMENT", "development") == 'development':
+        if os.getenv("CIS_ENVIRONMENT", "development") == "development":
             wk = WellKnown()
             access_token = self.exchange_for_access_token()
             conn = http.client.HTTPSConnection(base_url)
