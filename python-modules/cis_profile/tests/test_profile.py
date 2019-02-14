@@ -95,12 +95,14 @@ class TestProfile(object):
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
         u.sign_all(publisher_name="ldap")
-        u.verify_all_signatures()
+        ret = u.verify_all_signatures()
+        assert ret is True
 
     def test_single_attribute_signing_verification(self):
         u = profile.User(user_id="test")
         u.sign_attribute("user_id", publisher_name="ldap")
-        u.verify_attribute_signature("user_id")
+        ret = u.verify_attribute_signature("user_id")
+        assert ret is not None
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature("fun_title")  # Unsigned, so should raise and fail
 
