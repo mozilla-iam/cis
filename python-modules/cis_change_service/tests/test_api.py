@@ -271,7 +271,10 @@ class TestAPI(object):
 
         # Now let's try a partial update :)
         null_profile = profile.User(user_structure_json=None)
-        null_profile.user_id.value = fake_new_user.user_id.value
+        null_profile.user_id = fake_new_user.user_id
+        null_profile.uuid = fake_new_user.uuid
+        null_profile.primary_email = fake_new_user.primary_email
+        null_profile.primary_username = fake_new_user.primary_username
 
         null_profile.last_name.value = "iamanewpreferredlastname"
         null_profile.sign_attribute("last_name", "mozilliansorg")
