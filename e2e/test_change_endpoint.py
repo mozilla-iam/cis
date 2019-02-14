@@ -63,8 +63,6 @@ class TestChangeEndpoint(object):
         assert data.get("status") == 200
         assert data.get("sequence_number") is not None
 
-
-"""
     def test_publishing_profiles_it_should_be_accepted(self):
         os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{}/keys".format(os.getenv("CIS_ENVIRONMENT", "development"))
         base_url = helpers.get_url_dict().get("change")
@@ -100,4 +98,3 @@ class TestChangeEndpoint(object):
             logger.info(data)
         else:
             pass
-"""

@@ -99,7 +99,7 @@ def change():
     logger.info("A json payload was received for user: {}".format(user_id), extra={"user_id": user_id})
 
     if request.method in ["POST", "PUT", "GET"]:
-        if config("stream_bypass", namespace="cis", default="false") == "true":
+        if config("stream_bypass", namespace="cis", default="true") == "true":
             # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
             logger.debug(
                 "Stream bypass activated.  Integrating user profile directly to dynamodb for: {}".format(user_id)

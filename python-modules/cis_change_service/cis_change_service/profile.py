@@ -24,7 +24,7 @@ class Vault(object):
         self.connection_object = connect.AWS()
         self.identity_vault_client = None
         self.config = common.get_config()
-        condition = 'unknown'
+        self.condition = "unknown"
 
         if sequence_number is not None:
             self.sequence_number = str(sequence_number)
@@ -37,39 +37,41 @@ class Vault(object):
         return self.identity_vault_client
 
     def _verify(self, profile_json, old_profile=None):
-        cis_profile = User(user_structure_json=profile_json)
-        user_id = cis_profile.user_id.value
+        cis_profile_object = User(user_structure_json=profile_json)
+        user_id = cis_profile_object.as_dict()["user_id"].get("value", "")
 
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
-                cis_profile.verify_all_publishers(self._search_and_merge(cis_profile))
+                logger.info("Verifying publishers.")
+                user = self._search_and_merge(cis_profile_object)
+                cis_profile_object.verify_all_publishers(user)
             else:
                 # Search for the user without verification to set condition.
-                user = self._search_and_merge(cis_profile)
+                user = self._search_and_merge(cis_profile_object)
 
             if self.config("verify_signatures", namespace="cis") == "true":
-                cis_profile.verify_all_signatures()
+                cis_profile_object.verify_all_signatures()
         except SignatureVerificationFailure as e:
             logger.error(
                 "The profile vailed to pass signature verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
+                extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
 
             raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
         except PublisherVerificationFailure as e:
             logger.error(
                 "The profile vailed to pass publisher verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
+                extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
         except Exception as e:
             logger.error(
                 "The profile produced an unknown error and is not trusted for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile.as_dict(), "reason": e, "trace": format_exc()},
+                extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
-            print(e)
+            logger.error("The error causing a trust problem is: {}".format(e))
             raise VerificationError({"code": "unknown_error", "description": "{}".format(e)}, 500)
-        return user
+        return cis_profile_object
 
     def _update_attr_owned_by_cis(self, profile_json):
         """Updates the attributes owned by cisv2.  Takes profiles profile_json
@@ -81,33 +83,38 @@ class Vault(object):
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
 
-    def _search_and_merge(self, cis_profile):
+    def _search_and_merge(self, cis_profile_object):
         self._connect()
 
-        user_id = cis_profile.user_id.value
+        user_id = cis_profile_object.user_id.value
 
-        print(cis_profile.user_id)
-        logger.info('Attempting to locate user: {}'.format(user_id))
+        logger.info("Attempting to locate user: {}".format(user_id))
         vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
-        res = vault.find_by_id(user_id)
+
+        try:
+            res = vault.find_by_id(user_id)
+            logger.info("The result of the search contained: {}".format(len(res["Items"])))
+        except Exception as e:
+            logger.error("Problem finding user profile in identity vault due to: {}".format(e))
+            res = {"Items": [0]}
 
         if len(res["Items"]) > 0:
-            self.condition = 'update'
+            self.condition = "update"
             logger.info(
                 "A record already exists in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
-            old_user_profile.merge(cis_profile)
+            old_user_profile.merge(cis_profile_object)
             return old_user_profile
         else:
-            self.condition = 'create'
+            self.condition = "create"
             logger.info(
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
-            return User(user_structure_json=None)
+            return User()
 
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
@@ -122,14 +129,9 @@ class Vault(object):
 
             profile_json = self._verify(profile_json).as_dict()
 
-            logger.debug(profile_json)
-
-
             if self.config("dynamodb_transactions", namespace="cis") == "true":
                 vault = user.Profile(
-                    self.identity_vault_client.get("table"),
-                    self.identity_vault_client.get("client"),
-                    transactions=True,
+                    self.identity_vault_client.get("table"), self.identity_vault_client.get("client"), transactions=True
                 )
             else:
                 vault = user.Profile(
@@ -148,18 +150,18 @@ class Vault(object):
             )
 
             res = vault.find_or_create(user_profile)
-            logger.debug(
+            logger.info(
                 "The result of writing the profile to the identity vault was: {}".format(res),
                 extra={"user_id": profile_json["user_id"]["value"], "profile": profile_json, "result": res},
             )
 
-            res['condition'] = self.condition
-            return res
+            return dict(sequence_number=self.sequence_number, status_code=200, condition=self.condition)
         except ClientError as e:
             logger.error(
                 "An error occured writing this profile to dynamodb",
                 extra={"profile": profile_json, "error": e, "trace": format_exc()},
             )
+            logger.error("The error blocking write is: {}".format(e))
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
 
     def put_profiles(self, profile_list):
@@ -214,7 +216,7 @@ class Vault(object):
         return {"creates": result[0], "updates": result[1]}
 
     def delete_profile(self, profile_json):
-        condition = 'delete'
+        condition = "delete"
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
@@ -248,7 +250,7 @@ class Vault(object):
         return {
             "status": 200,
             "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"]),
-            "condition": condition
+            "condition": condition,
         }
 
     def _get_id(self, profile_json):

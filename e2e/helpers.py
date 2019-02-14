@@ -1,6 +1,7 @@
 import boto3
 import os
 import random
+import string
 import cis_crypto
 from cis_profile import common
 from cis_profile import profile
