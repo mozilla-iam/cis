@@ -1,4 +1,6 @@
 from cis_profile.common import WellKnown
+from cis_profile.profile import User
+import os
 
 
 class Test_WellKnown(object):
@@ -18,3 +20,8 @@ class Test_WellKnown(object):
         data = wk.get_publisher_rules()
         assert isinstance(data, dict)
         assert isinstance(data.get("create"), dict)
+
+    def test_profile_env(self):
+        os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
+        u = User()
+        assert u._User__well_known.discovery_url == "https://auth.allizom.org/.well-known/mozilla-iam"
