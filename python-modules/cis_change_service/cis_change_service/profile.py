@@ -53,14 +53,14 @@ class Vault(object):
                 cis_profile_object.verify_all_signatures()
         except SignatureVerificationFailure as e:
             logger.error(
-                "The profile vailed to pass signature verification for user: {}".format(user_id),
+                "The profile failed to pass signature verification for user: {}".format(user_id),
                 extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
 
             raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
         except PublisherVerificationFailure as e:
             logger.error(
-                "The profile vailed to pass publisher verification for user: {}".format(user_id),
+                "The profile failed to pass publisher verification for user: {}".format(user_id),
                 extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
