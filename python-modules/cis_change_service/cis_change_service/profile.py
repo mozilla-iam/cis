@@ -89,7 +89,6 @@ class Vault(object):
         # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
         # publishers
         if (
-            user.active.value is False
             and user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]
             and user.verify_attribute_signature("active")
         ):
