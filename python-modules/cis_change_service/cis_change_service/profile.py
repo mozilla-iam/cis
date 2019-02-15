@@ -78,7 +78,7 @@ class Vault(object):
         and returns a profile dict with updated values and sigs."""
 
         # New up a a cis_profile object
-        user = User(user_structure_json=json.loads(profile_json))
+        user = User(user_structure_json=profile_json)
         user.update_timestamp("last_modified")
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")

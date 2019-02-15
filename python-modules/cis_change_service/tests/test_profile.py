@@ -250,8 +250,7 @@ class TestProfile(object):
         u.active.value = False
         u.active.signature.publisher.name = "ldap"
         u.active.signature.value = "invalid"
-        uj = v._update_attr_owned_by_cis(u.as_json())
-        ud = json.loads(uj)
+        ud = v._update_attr_owned_by_cis(u.as_json())
         print(ud)
         assert ud["active"]["signature"]["publisher"]["name"] == "cis"
 
