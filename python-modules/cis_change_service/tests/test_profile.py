@@ -242,6 +242,19 @@ class TestProfile(object):
         assert results is not None
         assert result.status_code == 200
 
+    def test_rewrite(self):
+        from cis_change_service import profile
+
+        v = profile.Vault()
+        u = FakeUser()
+        u.active.value = False
+        u.active.signature.publisher.name = "ldap"
+        u.active.signature.value = "invalid"
+        uj = v._update_attr_owned_by_cis(u.as_json())
+        ud = json.loads(uj)
+        print(ud)
+        assert ud["active"]["signature"]["publisher"]["name"] == "cis"
+
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
         os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

@@ -54,7 +54,11 @@ class User(object):
         self.__well_known = WellKnown(discovery_url)
 
         if user_structure_json is not None:
-            self.load(user_structure_json)
+            # Auto-detect if the passed struct is a JSON string or JSON dict
+            if isinstance(user_structure_json, str):
+                self.load(json.loads(user_structure_json))
+            else:
+                self.load(user_structure_json)
         elif user_structure_json_file is not None:
             self.load(self.get_profile_from_file(user_structure_json_file))
         else:
