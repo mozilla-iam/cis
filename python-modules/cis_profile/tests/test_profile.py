@@ -70,11 +70,16 @@ class TestProfile(object):
 
     def test_full_profile_signing(self):
         u = profile.User(user_id="test")
-        u.sign_all(publisher_name="ldap")
+        u.fun_title.value = "test title"
+        for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
+            u.sign_all(publisher_name=_)
+        # assert 2 different publisher attributes are signed properly
         assert u.user_id.signature.publisher.value is not None
         assert len(u.user_id.signature.publisher.value) > 0
+        assert u.fun_title.signature.publisher.value is not None
+        assert len(u.fun_title.signature.publisher.value) > 0
         # Empty attributes should not be signed
-        assert u.fun_title.value is None
+        assert u.last_name.value is None
 
     def test_single_attribute_signing(self):
         u = profile.User(user_id="test")
@@ -94,13 +99,16 @@ class TestProfile(object):
 
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
-        u.sign_all(publisher_name="ldap")
-        u.verify_all_signatures()
+        for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
+            u.sign_all(publisher_name=_)
+        ret = u.verify_all_signatures()
+        assert ret is True
 
     def test_single_attribute_signing_verification(self):
         u = profile.User(user_id="test")
         u.sign_attribute("user_id", publisher_name="ldap")
-        u.verify_attribute_signature("user_id")
+        ret = u.verify_attribute_signature("user_id")
+        assert ret is not None
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature("fun_title")  # Unsigned, so should raise and fail
 

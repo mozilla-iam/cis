@@ -401,7 +401,7 @@ class User(object):
                     attr = self.__dict__[item][subitem]
                     if self._attribute_value_set(attr):
                         attr = self._verify_attribute_signature(attr)
-            if attr is not True:
+            if attr is None:
                 logger.warning("Verification failed for attribute {}".format(attr))
                 return False
         return True
@@ -456,6 +456,7 @@ class User(object):
             raise cis_profile.exceptions.SignatureVerificationFailure(
                 "Signature data in jws does not match " "attribute data => {} != {}".format(attrnosig, signed)
             )
+        return attr
 
     def sign_all(self, publisher_name):
         """
@@ -476,13 +477,17 @@ class User(object):
                 continue
             try:
                 attr = self.__dict__[item]
-                if self._attribute_value_set(attr, strict=False):
+                if self._attribute_value_set(attr, strict=True) and (
+                    attr["signature"]["publisher"]["name"] == publisher_name
+                ):
                     attr = self._sign_attribute(attr, publisher_name)
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
                     attr = self.__dict__[item][subitem]
-                    if self._attribute_value_set(attr, strict=False):
+                    if self._attribute_value_set(attr, strict=True) and (
+                        attr["signature"]["publisher"]["name"] == publisher_name
+                    ):
                         attr = self._sign_attribute(attr, publisher_name)
 
     def sign_attribute(self, req_attr, publisher_name):
@@ -533,6 +538,7 @@ class User(object):
         @publisher_name str a publisher name (will be set in signature.publisher.name) which corresponds to the
         signing key
         """
+        logger.debug("Will sign {} for publisher {}".format(attr, publisher_name))
         # Extract the attribute without the signature structure itself
         attrnosig = attr.copy()
         del attrnosig["signature"]
