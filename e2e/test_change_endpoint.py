@@ -60,7 +60,8 @@ class TestChangeEndpoint(object):
         res = conn.getresponse()
         data = json.loads(res.read().decode())
         logger.info(data)
-        assert data.get("status") == 200
+        status = data.get("status", data.get("status_code"))
+        assert status == 200
         assert data.get("sequence_number") is not None
 
     def test_publishing_a_profile_using_a_partial_update(self):
