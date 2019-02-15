@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import mock
+import random
 import subprocess
 from botocore.stub import Stubber
 from boto3.dynamodb.conditions import Key
@@ -23,15 +24,18 @@ logger = logging.getLogger(__name__)
 
 class TestProfile(object):
     def setup(self):
-        from cis_change_service.common import get_config
-
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         name = "local-identity-vault"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        from cis_change_service.common import get_config
+
         config = get_config()
-        self.kinesalite_port = config("kinesalite_port", namespace="cis")
+        self.kinesalite_port = str(random.randint(32000, 34000))
         self.kinesalite_host = config("kinesalite_host", namespace="cis")
-        self.dynalite_port = config("dynalite_port", namespace="cis")
+        self.dynalite_port = str(random.randint(32000, 34000))
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
         self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
         conn = boto3.client(
@@ -112,6 +116,10 @@ class TestProfile(object):
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -128,6 +136,8 @@ class TestProfile(object):
         )
 
         response = json.loads(result.get_data())
+
+        logger.info(response)
 
         dynamodb = boto3.resource(
             "dynamodb",
@@ -148,6 +158,9 @@ class TestProfile(object):
     def test_post_profiles_and_retrieving_status_it_should_succeed(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -173,9 +186,15 @@ class TestProfile(object):
     def test_post_profiles_it_should_fail(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["CIS_STREAM_BYPASS"] = "true"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
+        user_profile = FakeUser()
+        user_profile.first_name.signature.publisher.name = "mozilliansorg"
         fake_jwks.return_value = json_form_of_pk
         token = f.generate_bearer_without_scope()
         api.app.testing = True
@@ -183,7 +202,7 @@ class TestProfile(object):
         result = self.app.post(
             "/v2/user",
             headers={"Authorization": "Bearer " + token},
-            data=json.dumps(self.user_profile),
+            data=json.dumps(user_profile.as_dict()),
             content_type="application/json",
             follow_redirects=True,
         )
@@ -201,6 +220,9 @@ class TestProfile(object):
     def test_delete_profile(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()

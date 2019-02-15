@@ -14,39 +14,37 @@ from cis_identity_vault.models import user
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
-logging.getLogger('botocore').setLevel(logging.CRITICAL)
+logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 
 class TestPersonApi(object):
     def setup(self):
         cis_environment = os.getenv("CIS_ENVIRONMENT", "development")
-        os.environ['CIS_ENVIRONMENT'] = cis_environment
-        os.environ['CIS_ASSUME_ROLE_ARN'] = "None"
+        os.environ["CIS_ENVIRONMENT"] = cis_environment
+        os.environ["CIS_ASSUME_ROLE_ARN"] = "None"
         self.connection_object = connect.AWS()
-        self.connection_object._boto_session = boto3.session.Session(region_name='us-west-2')
+        self.connection_object._boto_session = boto3.session.Session(region_name="us-west-2")
         self.idv = self.connection_object.identity_vault_client()
-        logger.info('Generating a single fake user.')
+        logger.info("Generating a single fake user.")
         u = fake_profile.FakeUser()
         u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
         u.verify_all_publishers(profile.User(user_structure_json=None))
         self.durable_profile = u.as_json()
         self.durable_profiles = []
 
-        logger.info('Generating 100 fake users.')
+        logger.info("Generating 100 fake users.")
         for x in range(0, 100):
             u = fake_profile.FakeUser()
             u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
             self.durable_profiles.append(u.as_json())
 
-        logger.info('Bypassing change service and writing directly to the id_vault.')
+        logger.info("Bypassing change service and writing directly to the id_vault.")
         vault = user.Profile(
-            dynamodb_table_resource=self.idv['table'],
-            dyanamodb_client=self.idv['client'],
-            transactions=True
+            dynamodb_table_resource=self.idv["table"], dyanamodb_client=self.idv["client"], transactions=True
         )
 
         res = vault.create(user_profile=self.durable_profile)
-        logger.info('Single user created in vault result: {}'.format(res))
+        logger.info("Single user created in vault result: {}".format(res))
 
     def exchange_for_access_token(self):
         conn = http.client.HTTPSConnection("auth.mozilla.auth0.com")
@@ -65,7 +63,6 @@ class TestPersonApi(object):
         data = json.loads(res.read())
         return data["access_token"]
 
-
     def test_paginated_users():
         access_token = exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
@@ -75,7 +72,6 @@ class TestPersonApi(object):
         data = json.loads(res.read())
         return data
 
-
     def test_get_single_user():
         access_token = exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
@@ -84,10 +80,3 @@ class TestPersonApi(object):
         res = conn.getresponse()
         data = json.loads(res.read())
         return data
-
-
-if __name__ == "__main__":
-    import pprint
-
-    print(pprint.pprint(test_paginated_users()))
-    print(pprint.pprint(test_get_single_user()))
