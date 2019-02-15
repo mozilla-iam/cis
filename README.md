@@ -38,6 +38,13 @@ $ tox -- ./tests/test_profile.py # runs a single test file instead of all tests
 
 The tox test environment is stored in `python-modules/.cis-env` by default
 
+## Test endpoints end-to-end
+
+```
+$ cd e2e
+$ make test-tox
+```
+
 ## Documentation & Resources
 
 ## Where is what?
