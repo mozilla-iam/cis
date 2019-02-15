@@ -88,7 +88,11 @@ class Vault(object):
         # XXX THIS IS AN EXCEPTION AND SHOULD BE REMOVED WHEN ONLY HRIS CAN DISABLE USERS
         # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
         # publishers
-        if not user.active.value:
+        if (
+            user.active.value is False
+            and user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]
+            and user.verify_attribute_signature("active")
+        ):
             logger.info(
                 "Disabling user (setting active=false): user_id:{} uuid:{}".format(user.user_id.value, user.uuid.value)
             )

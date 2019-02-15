@@ -245,11 +245,14 @@ class TestProfile(object):
     def test_rewrite(self):
         from cis_change_service import profile
 
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+
         v = profile.Vault()
         u = FakeUser()
         u.active.value = False
         u.active.signature.publisher.name = "ldap"
-        u.active.signature.value = "invalid"
+        u.sign_attribute("active", "ldap")
         ud = v._update_attr_owned_by_cis(u.as_json())
         print(ud)
         assert ud["active"]["signature"]["publisher"]["name"] == "cis"
