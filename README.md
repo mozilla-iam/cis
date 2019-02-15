@@ -1,23 +1,37 @@
 # CIS - Change Integration Service
 [![Build Status](https://travis-ci.org/mozilla-iam/cis.svg?branch=master)](https://travis-ci.org/mozilla-iam/cis)
+CIS is the Mozilla IAM Change Integration Service.
 
-# THIS IS A WIP BRANCH FOR PROFILE v2
+## Build & Deploy (manual)
 
-This is a work in progress for updating docs and design concepts for profile v2.  Things may not all be updated as yet.
+Available environment/stages are: `development`, `testing`, `production` (see below for more information)
+```
+$ make build STAGE=development
+$ make release STAGE=development
+```
+
+Note that the build & release process happens automatically on the GitHub repository. The above steps are for manual
+deploys.
 
 ## Documentation & Resources
+
+## Where is what?
+
+- e2e contains the end to end tests for CIS
+- python-modules contains several libraries which can be called on their own. Many are inter-dependent.
+- serverless-functions are serverless.com lambda functions which load some of the python-modules into lambda
+- well-known-endpoint contains the Mozilla IAM Well Known endpoint data and it's deployment methods (this endpoint can
+  only be manually deployed)
+- buildspec.yml contains the AWS Codebuild CD scripts
+- .travis.yml contains the travis CI scripts
+
+## Docs
 
 - [CIS Security](docs/Security.md)
 - [User Profiles](docs/Profiles.md)
 
 ## Draft-RFCs & Proposals (informational-only)
 - [RFCs](docs/rfcs/)
-
-## Summary
-
-CIS is the Mozilla IAM Change Integration Service.
-
-TODO: Better summary :)
 
 ## Environments
 ### Production (prod)
