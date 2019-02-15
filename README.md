@@ -13,6 +13,31 @@ $ make release STAGE=development
 Note that the build & release process happens automatically on the GitHub repository. The above steps are for manual
 deploys.
 
+## Test all python modules
+
+This will take care of starting dynalite and other tools, then run tests in tox and clean itself up.
+If you get issues with node packages missing simply install them with `npm install <package>` prior to running this.
+
+```
+$ cd python-modules
+$ make test-tox
+```
+
+Each module can also be individually tested:
+```
+$ cd python-modules/cis_profile
+$ make test-tox
+```
+
+Other good-to-know testing options:
+```
+$ cd python-modules/cis_profile
+$ tox -r # recreates the Python environment
+$ tox -- ./tests/test_profile.py # runs a single test file instead of all tests
+```
+
+The tox test environment is stored in `python-modules/.cis-env` by default
+
 ## Documentation & Resources
 
 ## Where is what?
