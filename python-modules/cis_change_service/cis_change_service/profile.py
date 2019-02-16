@@ -88,14 +88,9 @@ class Vault(object):
         # XXX THIS IS AN EXCEPTION AND SHOULD BE REMOVED WHEN ONLY HRIS CAN DISABLE USERS
         # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
         # publishers
-        if (
-            and user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]
-            and user.verify_attribute_signature("active")
-        ):
-            logger.info(
-                "Disabling user (setting active=false): user_id:{} uuid:{}".format(user.user_id.value, user.uuid.value)
-            )
-            user.active.signature.publisher.name = "cis"
+        if user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]:
+            if self.config("verify_signatures", namespace="cis") == "true":
+                user.verify_attribute_signature("active")
             user.sign_attribute("active", "cis")
         # XXX this should probably return a User object (and have a self.user in the class) instead
         return user.as_dict()
