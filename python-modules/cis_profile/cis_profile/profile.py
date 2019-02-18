@@ -41,23 +41,24 @@ class User(object):
     ```
     """
 
-    def __init__(
-        self,
-        user_structure_json=None,
-        user_structure_json_file=None,
-        discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam",
-        **kwargs
-    ):
+    def __init__(self, user_structure_json=None, user_structure_json_file=None, discovery_url=None, **kwargs):
         """
         @user_structure_json an existing user structure to load in this class
         @user_structure_json_file an existing user structure to load in this class, from a JSON file
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
+        discovery_url = discovery_url = os.environ.get(
+            "CIS_DISCOVERY_URL", "https://auth.mozilla.com/.well-known/mozilla-iam"
+        )
         self.__well_known = WellKnown(discovery_url)
 
         if user_structure_json is not None:
-            self.load(user_structure_json)
+            # Auto-detect if the passed struct is a JSON string or JSON dict
+            if isinstance(user_structure_json, str):
+                self.load(json.loads(user_structure_json))
+            else:
+                self.load(user_structure_json)
         elif user_structure_json_file is not None:
             self.load(self.get_profile_from_file(user_structure_json_file))
         else:

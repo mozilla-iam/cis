@@ -32,8 +32,8 @@ class TestPersonApi(object):
         self.durable_profile = u.as_json()
         self.durable_profiles = []
 
-        logger.info("Generating 100 fake users.")
-        for x in range(0, 100):
+        logger.info("Generating 10 fake users.")
+        for x in range(0, 10):
             u = fake_profile.FakeUser()
             u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
             self.durable_profiles.append(u.as_json())

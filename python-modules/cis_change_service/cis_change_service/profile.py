@@ -53,14 +53,14 @@ class Vault(object):
                 cis_profile_object.verify_all_signatures()
         except SignatureVerificationFailure as e:
             logger.error(
-                "The profile vailed to pass signature verification for user: {}".format(user_id),
+                "The profile failed to pass signature verification for user: {}".format(user_id),
                 extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
 
             raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
         except PublisherVerificationFailure as e:
             logger.error(
-                "The profile vailed to pass publisher verification for user: {}".format(user_id),
+                "The profile failed to pass publisher verification for user: {}".format(user_id),
                 extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
@@ -75,13 +75,25 @@ class Vault(object):
 
     def _update_attr_owned_by_cis(self, profile_json):
         """Updates the attributes owned by cisv2.  Takes profiles profile_json
-        and returns a profile json with updated values and sigs."""
+        and returns a profile dict with updated values and sigs."""
 
         # New up a a cis_profile object
         user = User(user_structure_json=profile_json)
         user.update_timestamp("last_modified")
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
+
+        # Currently we accept LDAP and Auth0 disabling a user
+        # but since CIS is authoritative on this attribute, we rewrite it here
+        # XXX THIS IS AN EXCEPTION AND SHOULD BE REMOVED WHEN ONLY HRIS CAN DISABLE USERS
+        # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
+        # publishers
+        if user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]:
+            if self.config("verify_signatures", namespace="cis") == "true":
+                user.verify_attribute_signature("active")
+            user.sign_attribute("active", "cis")
+        # XXX this should probably return a User object (and have a self.user in the class) instead
+        return user.as_dict()
 
     def _search_and_merge(self, cis_profile_object):
         self._connect()
@@ -121,12 +133,12 @@ class Vault(object):
         try:
             self._connect()
 
+            # XXX Hey its not JSON anymore then.
             if isinstance(profile_json, str):
                 profile_json = json.loads(profile_json)
 
             # Run some code that updates attrs and metadata for attributes cis is trusted to assert
-            self._update_attr_owned_by_cis(profile_json)
-
+            profile_json = self._update_attr_owned_by_cis(profile_json)
             profile_json = self._verify(profile_json).as_dict()
 
             if self.config("dynamodb_transactions", namespace="cis") == "true":
@@ -189,7 +201,7 @@ class Vault(object):
                     profile_json = json.loads(profile_json)
 
                 # Run some code that updates attrs and metadata for attributes cis is trusted to assert
-                self._update_attr_owned_by_cis(profile_json)
+                profile_json = self._update_attr_owned_by_cis(profile_json)
                 verified = self._verify(profile_json)
                 if verified:
                     logger.debug("Profiles have been verified. Constructing dictionary for storage.")

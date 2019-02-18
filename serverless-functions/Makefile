@@ -24,7 +24,7 @@ all:
 clean-layer:
 	rm -rf $(ROOT_DIR)/layer/*
 	rm -rf $(ROOT_DIR)/build/*
-	rm $(ROOT_DIR)/cis.zip
+	rm -f $(ROOT_DIR)/cis.zip
 
 .PHONY:layer
 layer:
