@@ -85,11 +85,16 @@ class IdentityVault(object):
             TableName=self._generate_table_name(),
             KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
             AttributeDefinitions=[
-                {"AttributeName": "id", "AttributeType": "S"},  # auth0 user_id
-                {"AttributeName": "uuid", "AttributeType": "S"},  # uuid formerly dinopark id
-                {"AttributeName": "sequence_number", "AttributeType": "S"},  # sequence number for the last integration
-                {"AttributeName": "primary_email", "AttributeType": "S"},  # value of the primary_email attribute
-                {"AttributeName": "primary_username", "AttributeType": "S"},  # value of the primary_username attribute
+                # auth0 user_id
+                {"AttributeName": "id", "AttributeType": "S"},
+                # user_uuid formerly dinopark id (uuid is a reserverd keyword in dynamo, hence user_uuid)
+                {"AttributeName": "user_uuid", "AttributeType": "S"},
+                # sequence number for the last integration
+                {"AttributeName": "sequence_number", "AttributeType": "S"},
+                # value of the primary_email attribute
+                {"AttributeName": "primary_email", "AttributeType": "S"},
+                # value of the primary_username attribute
+                {"AttributeName": "primary_username", "AttributeType": "S"},
             ],
             ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
             GlobalSecondaryIndexes=[
@@ -118,9 +123,9 @@ class IdentityVault(object):
                     "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },
                 {
-                    "IndexName": "{}-uuid".format(self._generate_table_name()),
+                    "IndexName": "{}-user_uuid".format(self._generate_table_name()),
                     "KeySchema": [
-                        {"AttributeName": "uuid", "KeyType": "HASH"},
+                        {"AttributeName": "user_uuid", "KeyType": "HASH"},
                         {"AttributeName": "id", "KeyType": "RANGE"},
                     ],
                     "Projection": {"ProjectionType": "ALL"},

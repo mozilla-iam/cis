@@ -36,7 +36,7 @@ def profile_to_vault_structure(user_profile):
         "sequence_number": str(random.randint(100000, 100000000)),
         "primary_email": user_profile["primary_email"]["value"],
         "profile": json.dumps(user_profile),
-        "uuid": user_profile["uuid"]["value"],
+        "user_uuid": user_profile["uuid"]["value"],
         "primary_username": user_profile["primary_username"]["value"],
         "id": user_profile["user_id"]["value"],
     }

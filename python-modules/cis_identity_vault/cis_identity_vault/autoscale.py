@@ -7,7 +7,7 @@ class ScalableTable(object):
         self.config = get_config()
         self._boto_session = None
         self._autoscaling_client = None
-        self.index_names = ["primary_email", "sequence_number", "uuid", "primary_username"]
+        self.index_names = ["primary_email", "sequence_number", "user_uuid", "primary_username"]
         self.max_read_capacity = 100
         self.max_write_capacity = 100
         self.min_read_capactity = 5

@@ -20,7 +20,7 @@ class TestUsersDynalite(object):
         self.uuid = self.user_profile["uuid"]["value"]
         self.vault_json_datastructure = {
             "id": self.user_profile.get("user_id").get("value"),
-            "uuid": self.uuid,
+            "user_uuid": self.uuid,
             "primary_email": self.user_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -46,7 +46,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -65,7 +65,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -91,7 +91,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_first_id = {
             "id": modified_profile.get("user_id").get("value"),
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -104,7 +104,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_second_id = {
             "id": "foo|mcbar",
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -128,7 +128,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_first_id = {
             "id": modified_profile.get("user_id").get("value"),
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
@@ -141,7 +141,7 @@ class TestUsersDynalite(object):
 
         vault_json_datastructure_second_id = {
             "id": "foo|mcbar",
-            "uuid": str(uuid.uuid4()),
+            "user_uuid": str(uuid.uuid4()),
             "primary_email": modified_profile.get("primary_email").get("value"),
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
