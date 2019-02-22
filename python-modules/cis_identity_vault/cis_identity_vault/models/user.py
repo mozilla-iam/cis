@@ -57,7 +57,7 @@ class Profile(object):
             "Put": {
                 "Item": {
                     "id": {"S": user_profile["id"]},
-                    "uuid": {"S": user_profile["uuid"]},
+                    "user_uuid": {"S": user_profile["uuid"]},
                     "profile": {"S": user_profile["profile"]},
                     "primary_email": {"S": user_profile["primary_email"]},
                     "primary_username": {"S": user_profile["primary_username"]},
@@ -89,7 +89,7 @@ class Profile(object):
                     ":sn": {"S": user_profile["sequence_number"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u, primary_username = :pe",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pe",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -139,7 +139,7 @@ class Profile(object):
                 "Put": {
                     "Item": {
                         "id": {"S": user_profile["id"]},
-                        "uuid": {"S": user_profile["uuid"]},
+                        "user_uuid": {"S": user_profile["uuid"]},
                         "profile": {"S": user_profile["profile"]},
                         "primary_email": {"S": user_profile["primary_email"]},
                         "primary_username": {"S": user_profile["primary_username"]},
@@ -175,7 +175,7 @@ class Profile(object):
                         ":sn": {"S": user_profile["sequence_number"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, uuid = :u, primary_username = : pn",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = : pn",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -197,7 +197,7 @@ class Profile(object):
 
     def find_by_uuid(self, uuid):
         result = self.table.query(
-            IndexName="{}-uuid".format(self.table.table_name), KeyConditionExpression=Key("uuid").eq(uuid)
+            IndexName="{}-user_uuid".format(self.table.table_name), KeyConditionExpression=Key("user_uuid").eq(uuid)
         )
         return result
 

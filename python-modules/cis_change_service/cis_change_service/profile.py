@@ -155,7 +155,7 @@ class Vault(object):
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
                 primary_email=profile_json["primary_email"]["value"],
-                uuid=profile_json["uuid"]["value"],
+                user_uuid=profile_json["uuid"]["value"],
                 primary_username=profile_json["primary_username"]["value"],
                 sequence_number=self.sequence_number,
                 profile=json.dumps(profile_json),
@@ -208,7 +208,7 @@ class Vault(object):
                     user_profile = dict(
                         id=profile_json["user_id"]["value"],
                         primary_email=profile_json["primary_email"]["value"],
-                        uuid=profile_json["uuid"]["value"],
+                        user_uuid=profile_json["uuid"]["value"],
                         primary_username=profile_json["primary_username"]["value"],
                         sequence_number=self.sequence_number,
                         profile=json.dumps(profile_json),
@@ -233,7 +233,7 @@ class Vault(object):
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
                 primary_email=profile_json["primary_email"]["value"],
-                uuid=profile_json["uuid"]["value"],
+                user_uuid=profile_json["uuid"]["value"],
                 primary_username=profile_json["primary_username"]["value"],
                 sequence_number=self.sequence_number,
                 profile=json.dumps(profile_json),

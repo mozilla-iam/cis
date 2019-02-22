@@ -77,7 +77,7 @@ def seed(number_of_fake_users=100):
                 identity_vault_data_structure = {
                     "id": identity.get("user_id").get("value"),
                     "primary_email": identity.get("primary_email").get("value"),
-                    "uuid": identity.get("uuid").get("value"),
+                    "user_uuid": identity.get("uuid").get("value"),
                     "primary_username": identity.get("primary_username").get("value"),
                     "sequence_number": "1234567890",
                     "profile": dumps(identity),
