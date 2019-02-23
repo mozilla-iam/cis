@@ -57,7 +57,7 @@ class Profile(object):
             "Put": {
                 "Item": {
                     "id": {"S": user_profile["id"]},
-                    "user_uuid": {"S": user_profile["uuid"]},
+                    "user_uuid": {"S": user_profile["user_uuid"]},
                     "profile": {"S": user_profile["profile"]},
                     "primary_email": {"S": user_profile["primary_email"]},
                     "primary_username": {"S": user_profile["primary_username"]},
@@ -83,7 +83,7 @@ class Profile(object):
                 "Key": {"id": {"S": user_profile["id"]}},
                 "ExpressionAttributeValues": {
                     ":p": {"S": user_profile["profile"]},
-                    ":u": {"S": user_profile["uuid"]},
+                    ":u": {"S": user_profile["user_uuid"]},
                     ":pe": {"S": user_profile["primary_email"]},
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
