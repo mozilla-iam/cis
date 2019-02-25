@@ -89,7 +89,7 @@ class Profile(object):
                     ":sn": {"S": user_profile["sequence_number"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pe",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
