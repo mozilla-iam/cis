@@ -462,12 +462,8 @@ class User(object):
     def sign_all(self, publisher_name):
         """
         Sign all child nodes with a non-null value(s) OR empty values (strict=False)
-        To sign empty values, manually call sign_attribute()
         This requires cis_crypto to be properly setup (i.e. with keys)
-
-        WARNING: Since it signs all attributes, this is to be used only when CREATING a new profile. Signing all fields
-        while UPDATING a profile is a sure way to cause a validation failure (since no publisher is allowed to modify
-        all fields)
+        To sign empty values, manually call sign_attribute()
 
         @publisher_name str a publisher name (will be set in signature.publisher.name at signing time)
         """
