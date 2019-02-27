@@ -108,7 +108,7 @@ def ensure_appropriate_publishers_and_sign(fake_profile, condition):
                 temp_profile[attr]["signature"]["publisher"]["name"] == successful_random_publisher
             ):
                 u.sign_attribute(attr, successful_random_publisher)
-                logger.info('Signing attr: {}'.format(attr))
+                logger.info("Signing attr: {}".format(attr))
             temp_profile = u.as_dict()
         else:
             if attr != "schema" and attr in complex_structures:

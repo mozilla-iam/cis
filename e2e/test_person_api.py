@@ -30,7 +30,7 @@ class TestPersonApi(object):
         # u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
         # u.verify_all_publishers(profile.User(user_structure_json=None))
 
-        fh = open('fixtures/durable.json')
+        fh = open("fixtures/durable.json")
         self.durable_profile = fh.read()
         fh.close()
 
@@ -38,7 +38,7 @@ class TestPersonApi(object):
 
         logger.info("Loading 10 fake users.")
         for x in range(0, 10):
-            fh = open('fixtures/{}.json'.format(x))
+            fh = open("fixtures/{}.json".format(x))
             self.durable_profiles.append(fh.read())
             fh.close()
 
@@ -49,12 +49,12 @@ class TestPersonApi(object):
 
         this_user = json.loads(self.durable_profile)
         user_profile = {
-            'id': this_user['user_id']['value'],
-            'profile': self.durable_profile,
-            'primary_username': this_user['primary_username']['value'],
-            'primary_email': this_user['primary_email']['value'],
-            'user_uuid': this_user['uuid']['value'],
-            'sequence_number': '1'
+            "id": this_user["user_id"]["value"],
+            "profile": self.durable_profile,
+            "primary_username": this_user["primary_username"]["value"],
+            "primary_email": this_user["primary_email"]["value"],
+            "user_uuid": this_user["uuid"]["value"],
+            "sequence_number": "1",
         }
 
         res = vault.find_or_create(user_profile)
@@ -63,12 +63,12 @@ class TestPersonApi(object):
         for this_profile in self.durable_profiles:
             this_user = json.loads(this_profile)
             user_profile = {
-                'id': this_user['user_id']['value'],
-                'profile': this_profile,
-                'primary_username': this_user['primary_username']['value'],
-                'primary_email': this_user['primary_email']['value'],
-                'user_uuid': this_user['uuid']['value'],
-                'sequence_number': '1'
+                "id": this_user["user_id"]["value"],
+                "profile": this_profile,
+                "primary_username": this_user["primary_username"]["value"],
+                "primary_email": this_user["primary_email"]["value"],
+                "user_uuid": this_user["uuid"]["value"],
+                "sequence_number": "1",
             }
             res = vault.find_or_create(user_profile=user_profile)
             logger.info("Single user created in vault result: {}".format(res))
@@ -92,7 +92,7 @@ class TestPersonApi(object):
 
     def test_paginated_users(self):
         access_token = self.exchange_for_access_token()
-        base_url = 'person.api.dev.sso.allizom.org'
+        base_url = "person.api.dev.sso.allizom.org"
         conn = http.client.HTTPSConnection(base_url)
         headers = {"authorization": "Bearer {}".format(access_token)}
         conn.request("GET", "/v2/users", headers=headers)
@@ -102,7 +102,7 @@ class TestPersonApi(object):
 
     def test_get_single_user(self):
         access_token = self.exchange_for_access_token()
-        base_url = 'person.api.dev.sso.allizom.org'
+        base_url = "person.api.dev.sso.allizom.org"
         conn = http.client.HTTPSConnection(base_url)
         headers = {"authorization": "Bearer {}".format(access_token)}
         conn.request("GET", "/v2/user/primary_email/dunnkyle%40lam.com", headers=headers)
