@@ -21,8 +21,7 @@ ALGORITHMS = CONFIG("algorithms", namespace="change_service", default="RS256")
 
 # Format error response and append status code
 def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
-    """
+    """Obtains the Access Token from the Authorization Header"""
     auth = request.headers.get("Authorization", None)
     if not auth:
         raise AuthError(
@@ -52,8 +51,7 @@ def get_jwks():
 
 
 def requires_auth(f):
-    """Determines if the Access Token is valid
-    """
+    """Determines if the Access Token is valid"""
 
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -111,6 +109,15 @@ def requires_auth(f):
 
 
 def get_scopes(token):
+    """Takes in a bearer token and deserializes it to parse out the scopes.
+    
+    Arguments:
+        token {[string]} -- A bearer token issued by our token vending machine.  In this case auth zero.
+    
+    Returns:
+        [list] -- a list of scopes.
+    """
+
     try:
         split_bearer = token.split()
         unverified_claims = jwt.get_unverified_claims(split_bearer[1])

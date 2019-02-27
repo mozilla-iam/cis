@@ -232,13 +232,13 @@ def getUser(id, find_by):
         v2_profile = User(user_structure_json=json.loads(vault_profile))
         if "read:fullprofile" in scopes:
             logger.info(
-                "read:fullprofile in token returning the full user profile.", extra={"args": args, "scopes": scopes}
+                "read:fullprofile in token returning the full user profile.", extra={"query_args": args, "scopes": scopes}
             )
         else:
             v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
         if "display:all" in scopes:
-            logger.info("display:all in token not filtering profile.", extra={"args": args, "scopes": scopes})
+            logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
         else:
             v2_profile.filter_display(scope_to_display_level(scopes))
 
@@ -247,7 +247,7 @@ def getUser(id, find_by):
 
         return jsonify(v2_profile.as_dict())
     else:
-        logger.info("No user was found for the query", extra={"args": args, "scopes": scopes})
+        logger.info("No user was found for the query", extra={"query_args": args, "scopes": scopes})
         return jsonify({})
 
 
@@ -294,17 +294,17 @@ class v2Users(Resource):
             v2_profile = User(user_structure_json=vault_profile)
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
-                logger.info("The provided token has access to all of the data.", extra={"args": args, "scopes": scopes})
+                logger.info("The provided token has access to all of the data.", extra={"query_args": args, "scopes": scopes})
                 pass
             else:
                 # Assume the we are filtering falls back to public with no scopes
-                logger.info("This is a limited scoped query.", extra={"args": args, "scopes": scopes})
+                logger.info("This is a limited scoped query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
             if "display:all" in scopes:
-                logger.info("display:all in token not filtering profile.", extra={"args": args, "scopes": scopes})
+                logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
             else:
-                logger.info("display filtering engaged for query.", extra={"args": args, "scopes": scopes})
+                logger.info("display filtering engaged for query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
             if filter_display is not None:
