@@ -92,7 +92,7 @@ provider:
     CIS_SIGNING_KEY_NAME: change_service_signing_key
     CIS_SECRET_MANAGER: aws-ssm
     CIS_WELL_KNOWN_MODE: https
-    c: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
+    CIS_DISCOVERY_URL: ${self:custom.changeEnvironment.CIS_DISCOVERY_URL.${self:custom.changeStage}}
     CIS_PUBLIC_KEY_NAME: ${self:custom.changeEnvironment.CIS_PUBLIC_KEY_NAME.${self:custom.changeStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
