@@ -8,4 +8,4 @@ from cis_profile_retrieval_service import schema
 from cis_profile_retrieval_service import v2_api
 
 __version__ = "0.0.1"
-__all__ = [common, exceptions, idp, schema, v2_api]
+__all__ = [common, exceptions, idp, schema, v2_api, __version__]
