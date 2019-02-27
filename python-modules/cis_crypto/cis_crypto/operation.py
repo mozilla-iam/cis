@@ -83,7 +83,7 @@ class Verify(object):
             key_construct = jwk.construct(key_content, "RS256")
             return [key_construct.to_dict()]
         elif self.well_known_mode == "http" or self.well_known_mode == "https":
-            logger.info("Well known mode engaged.  Reducing key structure.", extra={"well_known": self.well_known})
+            logger.debug("Well known mode engaged.  Reducing key structure.", extra={"well_known": self.well_known})
             return self._reduce_keys(keyname)
 
     def _reduce_keys(self, keyname):
@@ -93,11 +93,11 @@ class Verify(object):
         keys = []
 
         if "access-file-key" in self.config("public_key_name", namespace="cis"):
-            logger.info("This is an access file verification.")
+            logger.debug("This is an access file verification.")
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
-            logger.info("This is a publisher based verification.")
+            logger.debug("This is a publisher based verification.")
             keys = publishers_supported[keyname]["keys"]
         return keys
 
@@ -105,7 +105,7 @@ class Verify(object):
         """Assumes you loaded a payload.  Return the same jws or raise a custom exception."""
         key_material = self._get_public_key(keyname)
 
-        logger.info(
+        logger.debug(
             "The key material for the payload was loaded for: {}".format(keyname), extra={"key_material": key_material}
         )
 
@@ -118,10 +118,10 @@ class Verify(object):
                 except AttributeError:
                     logger.warn("x5t and x5c attrs do not exist in key material.")
 
-                logger.info("Attempting to match against: {}".format(key))
+                logger.debug("Attempting to match against: {}".format(key))
                 try:
                     sig = jws.verify(self.jws_signature, key, algorithms="RS256", verify=True)
-                    logger.info(
+                    logger.debug(
                         "Matched a verified signature for: {}".format(key), extra={"signature": self.jws_signature}
                     )
                     return sig
