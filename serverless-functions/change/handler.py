@@ -5,8 +5,14 @@ import serverless_wsgi
 import socket
 import sys
 
+from aws_xray_sdk.core import xray_recorder, patch_all
+from aws_xray_sdk.core.context import Context
+from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 serverless_wsgi.TEXT_MIME_TYPES.append("application/custom+json")
+
+xray_recorder.configure(context_missing='LOG_ERROR')
+patch_all()
 
 
 def setup_logging():
@@ -23,4 +29,5 @@ def setup_logging():
 def handle(event, context):
     logger = setup_logging()
     logger.debug("Change Service Initialized.")
-    return serverless_wsgi.handle_request(cis_change_service.api.app, event, context)
+    app = cis_change_service.api.app
+    return serverless_wsgi.handle_request(app, event, context)

@@ -158,7 +158,7 @@ class TestAPI(object):
         self.complex_structures = get_complex_structures()
 
     def test_index_exists(self):
-        result = self.app.get("/v2/", follow_redirects=True)
+        result = self.app.get("/v2", follow_redirects=True)
         assert result.status_code == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
