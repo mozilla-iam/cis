@@ -146,7 +146,7 @@ def changes():
         results = publish.to_stream_batch(profiles)
     logger.info(
         "The result of the attempt to publish the profiles was: {}".format(results),
-        extra={"user_id": user_id, "results": results},
+        extra={"results": results},
     )
     return jsonify(results)
 
