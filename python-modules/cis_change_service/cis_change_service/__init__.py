@@ -1,6 +1,5 @@
 # -*- coding: utf-8 -*-
-
-"""Flaks application for publishing changes."""
+"""Flask application for publishing changes."""
 
 __version__ = "0.0.1"
 

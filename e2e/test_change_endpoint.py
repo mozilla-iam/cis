@@ -16,10 +16,12 @@ from cis_profile.exceptions import PublisherVerificationFailure
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
+logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
 
 
 class TestChangeEndpoint(object):
     def setup(self):
+        os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
         u = fake_profile.FakeUser()
         u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
         u.verify_all_publishers(profile.User(user_structure_json=None))
@@ -42,6 +44,7 @@ class TestChangeEndpoint(object):
         return data["access_token"]
 
     def test_publishing_a_profile_it_should_be_accepted(self):
+        os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
         base_url = helpers.get_url_dict().get("change")
         wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
@@ -65,6 +68,7 @@ class TestChangeEndpoint(object):
         assert data.get("sequence_number") is not None
 
     def test_publishing_a_profile_using_a_partial_update(self):
+        os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
         base_url = helpers.get_url_dict().get("change")
         wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())

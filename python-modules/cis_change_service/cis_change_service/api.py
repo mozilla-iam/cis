@@ -1,8 +1,9 @@
 import json
 import logging
-from aws_xray_sdk.core import xray_recorder, patch_all
-from aws_xray_sdk.core.context import Context
+
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
+from aws_xray_sdk.core import xray_recorder
+
 from flask import Flask
 from flask import jsonify
 from flask import request
@@ -26,12 +27,12 @@ logger = logging.getLogger(__name__)
 
 
 cis_environment = config("environment", namespace="cis")
+# Configure the X-Ray recorder to generate segments with our service name
+xray_recorder.configure(service='{}_profile_retrieval_serivce'.format(cis_environment))
 
-if cis_environment != "local":
-    patch_all()
-    xray_recorder.configure(service="{}_change_service".format(cis_environment), sampling=False, context=Context())
-    XRayMiddleware(app, xray_recorder)
-    xray_recorder.configure()
+# Instrument the Flask application
+XRayMiddleware(app, xray_recorder)
+
 
 CORS(
     app,
@@ -72,7 +73,7 @@ def handle_integration_error(ex):
     return response
 
 
-@app.route("/v2/")
+@app.route("/v2")
 def index():
     return "Mozilla Change Integration Service Endpoint"
 

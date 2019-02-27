@@ -3,7 +3,7 @@ dist: xenial
 python:
 - 3.7
 env:
-- AWS_DEFAULT_REGION=us-west-2 BOTO_CONFIG=/dev/null
+- AWS_DEFAULT_REGION=us-west-2 BOTO_CONFIG=/dev/null AWS_XRAY_SDK_ENABLED=false
 before_install:
 - sudo rm -f /etc/boto.cfg
 - pip install flake8

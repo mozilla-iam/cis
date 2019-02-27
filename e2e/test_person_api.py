@@ -35,7 +35,9 @@ class TestPersonApi(object):
         logger.info("Generating 10 fake users.")
         for x in range(0, 10):
             u = fake_profile.FakeUser()
+            logger.info('Fake user generated.')
             u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
+            logger.info('Signing fake user.')
             self.durable_profiles.append(u.as_json())
 
         logger.info("Bypassing change service and writing directly to the id_vault.")

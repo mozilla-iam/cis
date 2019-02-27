@@ -29,6 +29,7 @@ class TestAPI(object):
         self.kinesalite_port = str(random.randint(32000, 34000))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         self.dynalite_host = "localhost"
         self.kinesalite_host = "localhost"
         self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
@@ -65,6 +66,7 @@ class TestAPI(object):
         self.app = api.app.test_client()
 
     def test_that_we_seeded_the_table(self):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         from cis_identity_vault.models import user
 
@@ -74,6 +76,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_profiles_returns_a_list(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -136,6 +139,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_users_with_all(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -151,6 +155,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_users_with_dispaly_level_params_and_scopes(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -175,6 +180,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_users_with_scopes(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -212,6 +218,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -237,6 +244,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x_with_data_classification_scopes(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -286,6 +294,7 @@ class TestAPI(object):
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x_with_dispaly_level_params_and_scopes(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk

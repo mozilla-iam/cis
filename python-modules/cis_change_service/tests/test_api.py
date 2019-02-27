@@ -64,6 +64,8 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
 class TestAPI(object):
     def setup(self):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+
         from cis_change_service.common import get_config
 
         config = get_config()
@@ -158,7 +160,7 @@ class TestAPI(object):
         self.complex_structures = get_complex_structures()
 
     def test_index_exists(self):
-        result = self.app.get("/v2/", follow_redirects=True)
+        result = self.app.get("/v2", follow_redirects=True)
         assert result.status_code == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")

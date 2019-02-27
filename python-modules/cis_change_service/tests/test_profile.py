@@ -115,7 +115,6 @@ class TestProfile(object):
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
-        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
@@ -244,7 +243,7 @@ class TestProfile(object):
 
     def test_rewrite(self):
         from cis_change_service import profile
-
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
 
@@ -254,7 +253,6 @@ class TestProfile(object):
         u.active.signature.publisher.name = "ldap"
         u.sign_attribute("active", "ldap")
         ud = v._update_attr_owned_by_cis(u.as_json())
-        print(ud)
         assert ud["active"]["signature"]["publisher"]["name"] == "cis"
 
     def teardown(self):
