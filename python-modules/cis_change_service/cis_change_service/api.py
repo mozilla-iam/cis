@@ -28,7 +28,7 @@ logger = logging.getLogger(__name__)
 
 cis_environment = config("environment", namespace="cis")
 # Configure the X-Ray recorder to generate segments with our service name
-xray_recorder.configure(service='{}_profile_retrieval_serivce'.format(cis_environment))
+xray_recorder.configure(service="{}_profile_retrieval_serivce".format(cis_environment))
 
 # Instrument the Flask application
 XRayMiddleware(app, xray_recorder)
@@ -111,7 +111,10 @@ def change():
         else:
             publish = operation.Publish()
             result = publish.to_stream(user_profile)
-        logger.info("The result of publishing for user: {} is: {}".format(user_id, result), extra={"user_id": user_id})
+        logger.info(
+            "The result of publishing for user: {} is: {}".format(user_id, result),
+            extra={"user_id": user_id, "result": result},
+        )
     if config("allow_delete", namespace="cis", default="false") == "true":
         if request.method in ["DELETE"]:
             vault = profile.Vault()
@@ -141,7 +144,10 @@ def changes():
     else:
         publish = operation.Publish()
         results = publish.to_stream_batch(profiles)
-    logger.info("The result of the attempt to publish the profiles was: {}".format(results))
+    logger.info(
+        "The result of the attempt to publish the profiles was: {}".format(results),
+        extra={"results": results},
+    )
     return jsonify(results)
 
 

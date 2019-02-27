@@ -54,7 +54,7 @@ logger = getLogger(__name__)
 
 cis_environment = config("environment", namespace="cis")
 # Configure the X-Ray recorder to generate segments with our service name
-xray_recorder.configure(service='{}_profile_retrieval_serivce'.format(cis_environment))
+xray_recorder.configure(service="{}_profile_retrieval_serivce".format(cis_environment))
 
 # Instrument the Flask application
 XRayMiddleware(app, xray_recorder)
@@ -231,12 +231,15 @@ def getUser(id, find_by):
         vault_profile = result["Items"][0]["profile"]
         v2_profile = User(user_structure_json=json.loads(vault_profile))
         if "read:fullprofile" in scopes:
-            logger.debug("read:fullprofile in token returning the full user profile.")
+            logger.info(
+                "read:fullprofile in token returning the full user profile.",
+                extra={"query_args": args, "scopes": scopes},
+            )
         else:
             v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
         if "display:all" in scopes:
-            logger.debug("display:all in token not filtering profile.")
+            logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
         else:
             v2_profile.filter_display(scope_to_display_level(scopes))
 
@@ -245,6 +248,7 @@ def getUser(id, find_by):
 
         return jsonify(v2_profile.as_dict())
     else:
+        logger.info("No user was found for the query", extra={"query_args": args, "scopes": scopes})
         return jsonify({})
 
 
@@ -291,14 +295,19 @@ class v2Users(Resource):
             v2_profile = User(user_structure_json=vault_profile)
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
+                logger.info(
+                    "The provided token has access to all of the data.", extra={"query_args": args, "scopes": scopes}
+                )
                 pass
             else:
                 # Assume the we are filtering falls back to public with no scopes
+                logger.info("This is a limited scoped query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
             if "display:all" in scopes:
-                logger.debug("display:all in token not filtering profile.")
+                logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
             else:
+                logger.info("display filtering engaged for query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
             if filter_display is not None:
@@ -312,6 +321,7 @@ class v2Users(Resource):
 
 if config("graphql", namespace="person_api", default="false") == "true":
     app.add_url_rule("/graphql", view_func=graphql_view())
+
 
 api.add_resource(v2Users, "/v2/users")
 api.add_resource(v2UserByUserId, "/v2/user/user_id/<string:user_id>")

@@ -21,8 +21,7 @@ ALGORITHMS = CONFIG("algorithms", namespace="change_service", default="RS256")
 
 # Format error response and append status code
 def get_token_auth_header():
-    """Obtains the Access Token from the Authorization Header
-    """
+    """Obtains the Access Token from the Authorization Header"""
     auth = request.headers.get("Authorization", None)
     if not auth:
         raise AuthError(
@@ -52,8 +51,7 @@ def get_jwks():
 
 
 def requires_auth(f):
-    """Determines if the Access Token is valid
-    """
+    """Determines if the Access Token is valid"""
 
     @wraps(f)
     def decorated(*args, **kwargs):
@@ -61,7 +59,10 @@ def requires_auth(f):
         jwt_validation = CONFIG("jwt_validation", namespace="person_api", default="true")
 
         if environment == "local" and jwt_validation == "false":
-            logger.debug("Local environment detected with auth bypass settings enabled.  Skipping JWT validation.")
+            logger.info(
+                "Local environment detected with auth bypass settings enabled.  Skipping JWT validation.",
+                extra={"jwt_validation": False},
+            )
             return f(*args, **kwargs)
         else:
             token = get_token_auth_header()
@@ -81,11 +82,12 @@ def requires_auth(f):
                         audience=API_IDENTIFIER,
                         issuer="https://" + AUTH0_DOMAIN + "/",
                     )
+                    logger.info("An auth token has been recieved and verified.", extra={"code": 200})
                 except jwt.ExpiredSignatureError as e:
-                    logger.error(e)
+                    logger.error("The jwt received has an expired timestamp.", extra={"code": 401, "error": e})
                     raise AuthError({"code": "token_expired", "description": "token is expired"}, 401)
                 except jwt.JWTClaimsError as e:
-                    logger.error(e)
+                    logger.error("The jwt received has invalid claims.", extra={"code": 401, "error": e})
                     raise AuthError(
                         {
                             "code": "invalid_claims",
@@ -94,7 +96,7 @@ def requires_auth(f):
                         401,
                     )
                 except Exception as e:
-                    logger.error(e)
+                    logger.error("The jwt received has an unhandled exception.", extra={"code": 401, "error": e})
                     raise AuthError(
                         {"code": "invalid_header", "description": "Unable to parse authentication" " token."}, 401
                     )
@@ -107,6 +109,15 @@ def requires_auth(f):
 
 
 def get_scopes(token):
+    """Takes in a bearer token and deserializes it to parse out the scopes.
+
+    Arguments:
+        token {[string]} -- A bearer token issued by our token vending machine.  In this case auth zero.
+
+    Returns:
+        [list] -- a list of scopes.
+    """
+
     try:
         split_bearer = token.split()
         unverified_claims = jwt.get_unverified_claims(split_bearer[1])
