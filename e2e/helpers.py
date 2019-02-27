@@ -1,10 +1,14 @@
 import boto3
+import logging
 import os
 import random
 import string
 import cis_crypto
 from cis_profile import common
 from cis_profile import profile
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_cis_environment():
@@ -41,6 +45,16 @@ def get_url_dict():
 
 
 def get_secure_parameter(parameter_name):
+    """Gets the desired secret for secureStrings only from AWS Parameter Store.
+    
+    Arguments:
+        parameter_name {string} -- The name of the parameter not including the path
+        to retrieve from parameter store.
+    
+    Returns:
+        [type] -- string literal decrypted value.
+    """
+
     client = boto3.client("ssm")
     response = client.get_parameter(Name=parameter_name, WithDecryption=True)
     return response["Parameter"]["Value"]
@@ -59,6 +73,17 @@ def get_complex_structures():
 
 
 def ensure_appropriate_publishers_and_sign(fake_profile, condition):
+    """Workaround the fact the FakerUser generator does not always generate valid profiles.
+    Iterates over the attributes and ensures the profile will pass publisher rule validation.
+    
+    Arguments:
+        fake_profile {object} -- A fake user object of cis_profile.profile.User() type.
+        condition {string} -- Takes update for create as a condition.
+    
+    Returns:
+        [type] -- A user object of type cis_profile.profile.User() with valid publishers and signatures.
+    """
+
     os.environ["CIS_SECRET_MANAGER"] = "aws-ssm"
     os.environ["CIS_SECRET_MANAGER_SSM_PATH"] = "/iam/cis/{env}/keys".format(
         env=os.getenv("CIS_ENVIRONMENT", "development")
@@ -83,6 +108,7 @@ def ensure_appropriate_publishers_and_sign(fake_profile, condition):
                 temp_profile[attr]["signature"]["publisher"]["name"] == successful_random_publisher
             ):
                 u.sign_attribute(attr, successful_random_publisher)
+                logger.info("Signing attr: {}".format(attr))
             temp_profile = u.as_dict()
         else:
             if attr != "schema" and attr in complex_structures:
