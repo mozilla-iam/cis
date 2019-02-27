@@ -232,7 +232,8 @@ def getUser(id, find_by):
         v2_profile = User(user_structure_json=json.loads(vault_profile))
         if "read:fullprofile" in scopes:
             logger.info(
-                "read:fullprofile in token returning the full user profile.", extra={"query_args": args, "scopes": scopes}
+                "read:fullprofile in token returning the full user profile.",
+                extra={"query_args": args, "scopes": scopes},
             )
         else:
             v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
@@ -294,7 +295,9 @@ class v2Users(Resource):
             v2_profile = User(user_structure_json=vault_profile)
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
-                logger.info("The provided token has access to all of the data.", extra={"query_args": args, "scopes": scopes})
+                logger.info(
+                    "The provided token has access to all of the data.", extra={"query_args": args, "scopes": scopes}
+                )
                 pass
             else:
                 # Assume the we are filtering falls back to public with no scopes

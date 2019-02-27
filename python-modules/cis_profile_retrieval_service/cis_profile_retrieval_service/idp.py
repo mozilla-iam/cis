@@ -110,10 +110,10 @@ def requires_auth(f):
 
 def get_scopes(token):
     """Takes in a bearer token and deserializes it to parse out the scopes.
-    
+
     Arguments:
         token {[string]} -- A bearer token issued by our token vending machine.  In this case auth zero.
-    
+
     Returns:
         [list] -- a list of scopes.
     """
