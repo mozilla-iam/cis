@@ -28,6 +28,7 @@ from cis_profile_retrieval_service.schema import Query
 from cis_profile_retrieval_service.schema import AuthorizationMiddleware
 from cis_profile_retrieval_service.idp import requires_auth
 from cis_profile_retrieval_service.idp import get_scopes
+from cis_profile_retrieval_service import __version__
 
 
 app = Flask(__name__)
@@ -322,6 +323,12 @@ api.add_resource(v2UserByPrimaryUsername, "/v2/user/primary_username/<string:pri
 @app.route("/v2")
 def index():
     return "Mozilla Profile Retrieval Service Endpoint"
+
+
+@app.route("/v2/version")
+def version():
+    response = __version__
+    return jsonify(message=response)
 
 
 def main():
