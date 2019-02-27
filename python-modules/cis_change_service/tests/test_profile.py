@@ -243,6 +243,7 @@ class TestProfile(object):
 
     def test_rewrite(self):
         from cis_change_service import profile
+
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"

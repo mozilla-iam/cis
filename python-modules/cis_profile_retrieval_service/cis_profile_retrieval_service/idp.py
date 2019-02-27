@@ -61,7 +61,10 @@ def requires_auth(f):
         jwt_validation = CONFIG("jwt_validation", namespace="person_api", default="true")
 
         if environment == "local" and jwt_validation == "false":
-            logger.debug("Local environment detected with auth bypass settings enabled.  Skipping JWT validation.")
+            logger.info(
+                "Local environment detected with auth bypass settings enabled.  Skipping JWT validation.",
+                extra={"jwt_validation": False},
+            )
             return f(*args, **kwargs)
         else:
             token = get_token_auth_header()
@@ -81,11 +84,12 @@ def requires_auth(f):
                         audience=API_IDENTIFIER,
                         issuer="https://" + AUTH0_DOMAIN + "/",
                     )
+                    logger.info("An auth token has been recieved and verified.", extra={"code": 200})
                 except jwt.ExpiredSignatureError as e:
-                    logger.error(e)
+                    logger.error("The jwt received has an expired timestamp.", extra={"code": 401, "error": e})
                     raise AuthError({"code": "token_expired", "description": "token is expired"}, 401)
                 except jwt.JWTClaimsError as e:
-                    logger.error(e)
+                    logger.error("The jwt received has invalid claims.", extra={"code": 401, "error": e})
                     raise AuthError(
                         {
                             "code": "invalid_claims",
@@ -94,7 +98,7 @@ def requires_auth(f):
                         401,
                     )
                 except Exception as e:
-                    logger.error(e)
+                    logger.error("The jwt received has an unhandled exception.", extra={"code": 401, "error": e})
                     raise AuthError(
                         {"code": "invalid_header", "description": "Unable to parse authentication" " token."}, 401
                     )
