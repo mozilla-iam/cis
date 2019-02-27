@@ -322,6 +322,7 @@ class v2Users(Resource):
 if config("graphql", namespace="person_api", default="false") == "true":
     app.add_url_rule("/graphql", view_func=graphql_view())
 
+
 api.add_resource(v2Users, "/v2/users")
 api.add_resource(v2UserByUserId, "/v2/user/user_id/<string:user_id>")
 api.add_resource(v2UserByUuid, "/v2/user/uuid/<string:uuid>")
