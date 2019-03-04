@@ -4,3 +4,7 @@ class SignatureVerificationFailure(Exception):
 
 class PublisherVerificationFailure(Exception):
     pass
+
+
+class SignatureRefused(Exception):
+    pass

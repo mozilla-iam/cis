@@ -427,6 +427,13 @@ class User(object):
         publisher_name from the current user structure is used instead and no check is performed.
         """
 
+        if not self._attribute_value_set(attr):
+            logger.error(
+                "Disallowing verification of NULL (None) value(s) attribute: {} for publisher {}".format(
+                    attr, publisher_name
+                )
+            )
+            raise cis_profile.exceptions.SignatureVerificationFailure("Cannot verify attribute with NULL value(s)")
         if publisher_name is not None and attr["signature"]["publisher"]["name"] != publisher_name:
             raise cis_profile.exceptions.SignatureVerificationFailure("Incorrect publisher")
         else:
@@ -534,7 +541,15 @@ class User(object):
         @attr: a CIS Profilev2 attribute
         @publisher_name str a publisher name (will be set in signature.publisher.name) which corresponds to the
         signing key
+        This method will not allow signing NULL (None) attributes
         """
+        if not self._attribute_value_set(attr):
+            logger.error(
+                "Disallowing signing of NULL (None) value(s) attribute: {} for publisher {}".format(
+                    attr, publisher_name
+                )
+            )
+            raise cis_profile.exceptions.SignatureRefused("Signing NULL (None) attribute is forbidden")
         logger.debug("Will sign {} for publisher {}".format(attr, publisher_name))
         # Extract the attribute without the signature structure itself
         attrnosig = attr.copy()

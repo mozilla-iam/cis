@@ -88,6 +88,8 @@ class TestProfile(object):
         assert len(u.user_id.signature.publisher.value) > 0
 
         # Empty attributes should be signed in this case since it's directly requested to be signed
+        # (empty but not None)
+        u.fun_title.value = ""
         u.sign_attribute("fun_title", publisher_name="ldap")
         assert u.fun_title.signature.publisher.value is not None
         assert len(u.fun_title.signature.publisher.value) > 0
@@ -96,6 +98,16 @@ class TestProfile(object):
         u.sign_attribute("access_information.ldap", publisher_name="ldap")
         assert u.access_information.ldap.signature.publisher.value is not None
         assert len(u.access_information.ldap.signature.publisher.value) > 0
+
+        # test for NULL values
+        try:
+            u.active.value = None
+            u.sign_attribute("active", publisher_name="ldap")
+            raise Exception("ValidationFailure", "Should have failed validation, did not")
+        except cis_profile.exceptions.SignatureRefused:
+            pass
+        else:
+            raise Exception("ValidationFailure", "Should have failed validation, did not")
 
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
