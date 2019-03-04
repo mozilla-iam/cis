@@ -138,8 +138,8 @@ class Vault(object):
                 profile_json = json.loads(profile_json)
 
             # Run some code that updates attrs and metadata for attributes cis is trusted to assert
-            profile_json = self._update_attr_owned_by_cis(profile_json)
             profile_json = self._verify(profile_json).as_dict()
+            profile_json = self._update_attr_owned_by_cis(profile_json)
 
             if self.config("dynamodb_transactions", namespace="cis") == "true":
                 vault = user.Profile(
