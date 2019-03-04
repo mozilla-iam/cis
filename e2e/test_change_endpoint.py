@@ -80,11 +80,10 @@ class TestChangeEndpoint(object):
         )
         partial_update = profile.User(user_structure_json=None)
         partial_update.user_id = user.user_id
-        partial_update.uuid = user.uuid
         partial_update.primary_email = user.primary_email
         partial_update.primary_username = user.primary_username
-        partial_update.first_name.value = "anewfirstname"
-        partial_update.sign_attribute("first_name", "mozilliansorg")
+        partial_update.alternative_name.value = "anewfirstname"
+        partial_update.sign_attribute("alternative_name", "mozilliansorg")
         access_token = self.exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
         logger.info("Attempting connection for: {}".format(base_url))
