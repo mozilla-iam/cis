@@ -6,7 +6,6 @@ import os
 import random
 import subprocess
 import string
-from botocore.stub import Stubber
 from cis_profile import common
 from cis_profile import FakeUser
 from cis_profile import profile

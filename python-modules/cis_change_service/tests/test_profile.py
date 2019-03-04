@@ -5,7 +5,6 @@ import os
 import mock
 import random
 import subprocess
-from botocore.stub import Stubber
 from boto3.dynamodb.conditions import Key
 from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
@@ -29,8 +28,6 @@ class TestProfile(object):
         name = "local-identity-vault"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         from cis_change_service.common import get_config
-
-        config = get_config()
         self.dynalite_port = str(random.randint(32000, 34000))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
