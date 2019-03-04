@@ -61,7 +61,7 @@ class Vault(object):
         except PublisherVerificationFailure as e:
             logger.error(
                 "The profile failed to pass publisher verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
+                extra={"user_id": user_id, "profile": user.as_dict(), "reason": e, "trace": format_exc()},
             )
             raise VerificationError({"code": "invalid_publisher", "description": "{}".format(e)}, 403)
         except Exception as e:
