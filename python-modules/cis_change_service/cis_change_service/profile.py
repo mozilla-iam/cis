@@ -71,8 +71,7 @@ class Vault(object):
         """Updates the attributes owned by cisv2.  Takes profiles profile_json
         and returns a profile dict with updated values and sigs."""
 
-        # New up a a cis_profile object
-        user = User(user_structure_json=profile_json)
+        user = profile_json
         user.update_timestamp("last_modified")
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
@@ -202,7 +201,7 @@ class Vault(object):
                     profile_json = json.loads(profile_json)
 
                 # Run some code that updates attrs and metadata for attributes cis is trusted to assert
-                verified = self._verify(profile_json)
+                profile_json = self._verify(profile_json)
                 profile_json = self._update_attr_owned_by_cis(profile_json)
                 if verified:
                     logger.debug("Profiles have been verified. Constructing dictionary for storage.")
