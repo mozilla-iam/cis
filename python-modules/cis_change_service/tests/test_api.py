@@ -70,33 +70,8 @@ class TestAPI(object):
 
         config = get_config()
         os.environ["CIS_DYNALITE_PORT"] = str(random.randint(32000, 34000))
-        os.environ["CIS_KINESALITE_PORT"] = str(random.randint(32000, 34000))
-        self.kinesalite_port = config("kinesalite_port", namespace="cis")
-        self.kinesalite_host = config("kinesalite_host", namespace="cis")
         self.dynalite_port = config("dynalite_port", namespace="cis")
         self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
-        self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
-
-        conn = Stubber(boto3.session.Session(region_name="us-west-2")).client.client(
-            "kinesis", endpoint_url="http://{}:{}".format(self.kinesalite_host, self.kinesalite_port)
-        )
-
-        try:
-            name = "local-stream"
-            conn.create_stream(StreamName=name, ShardCount=1)
-        except Exception as e:
-            logger.error("Stream error: {}".format(e))
-            # This just means we tried too many tests too fast.
-            pass
-
-        waiter = conn.get_waiter("stream_exists")
-
-        waiter.wait(StreamName=name, Limit=100, WaiterConfig={"Delay": 1, "MaxAttempts": 5})
-
-        tags_1 = {"Key": "cis_environment", "Value": "local"}
-        tags_2 = {"Key": "application", "Value": "change-stream"}
-        conn.add_tags_to_stream(StreamName=name, Tags=tags_1)
-        conn.add_tags_to_stream(StreamName=name, Tags=tags_2)
 
         name = "local-identity-vault"
         conn = boto3.client(
@@ -273,16 +248,11 @@ class TestAPI(object):
 
         # Now let's try a partial update :)
         null_profile = profile.User(user_structure_json=None)
-        null_profile.user_id = fake_new_user.user_id
-        null_profile.uuid = fake_new_user.uuid
-        null_profile.primary_email = fake_new_user.primary_email
-        null_profile.primary_username = fake_new_user.primary_username
-
         null_profile.last_name.value = "iamanewpreferredlastname"
         null_profile.sign_attribute("last_name", "mozilliansorg")
 
         result = self.app.post(
-            "/v2/user",
+            "/v2/user?user_id={}".format(fake_new_user.user_id.value),
             headers={"Authorization": "Bearer " + token},
             data=json.dumps(null_profile.as_json()),
             content_type="application/json",
@@ -294,4 +264,3 @@ class TestAPI(object):
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
-        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)

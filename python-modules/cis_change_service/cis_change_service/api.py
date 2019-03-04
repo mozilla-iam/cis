@@ -96,28 +96,19 @@ def change():
     if isinstance(user_profile, str):
         user_profile = json.loads(user_profile)
 
-    user_id = user_profile["user_id"]["value"]
+    user_id = request.args.get("user_id", user_profile["user_id"]["value"])
     logger.info("A json payload was received for user: {}".format(user_id), extra={"user_id": user_id})
+    vault = profile.Vault(sequence_number=None, profile_json=user_profile, **request.args)
 
     if request.method in ["POST", "PUT", "GET"]:
-        if config("stream_bypass", namespace="cis", default="true") == "true":
-            # Plan on stream integration not working an attempt a write directly to discoverable dynamo.
-            logger.debug(
-                "Stream bypass activated.  Integrating user profile directly to dynamodb for: {}".format(user_id)
-            )
-            vault = profile.Vault()
-            vault.identity_vault_client = identity_vault_client
-            result = vault.put_profile(user_profile)
-        else:
-            publish = operation.Publish()
-            result = publish.to_stream(user_profile)
+        vault.identity_vault_client = identity_vault_client
+        result = vault.put_profile(user_profile)
         logger.info(
             "The result of publishing for user: {} is: {}".format(user_id, result),
             extra={"user_id": user_id, "result": result},
         )
     if config("allow_delete", namespace="cis", default="false") == "true":
         if request.method in ["DELETE"]:
-            vault = profile.Vault()
             vault.identity_vault_client = identity_vault_client
             result = vault.delete_profile(user_profile)
             logger.info(
@@ -136,18 +127,10 @@ def changes():
     identity_vault_client = connection.identity_vault_client()
     profiles = request.get_json(silent=True)
     logger.info("A list numbering: {} profiles has been received.".format(len(profiles)))
-
-    if config("stream_bypass", namespace="cis", default="false") == "true":
-        vault = profile.Vault(sequence_number=None)
-        vault.identity_vault_client = identity_vault_client
-        results = vault.put_profiles(profiles)
-    else:
-        publish = operation.Publish()
-        results = publish.to_stream_batch(profiles)
-    logger.info(
-        "The result of the attempt to publish the profiles was: {}".format(results),
-        extra={"results": results},
-    )
+    vault = profile.Vault(sequence_number=None)
+    vault.identity_vault_client = identity_vault_client
+    results = vault.put_profiles(profiles)
+    logger.info("The result of the attempt to publish the profiles was: {}".format(results), extra={"results": results})
     return jsonify(results)
 
 
