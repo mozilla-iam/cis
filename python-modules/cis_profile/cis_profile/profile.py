@@ -395,12 +395,14 @@ class User(object):
             try:
                 attr = self.__dict__[item]
                 if self._attribute_value_set(attr):
+                    logger.debug("Verifying attribute {}".format(item))
                     attr = self._verify_attribute_signature(attr)
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
                     attr = self.__dict__[item][subitem]
                     if self._attribute_value_set(attr):
+                        logger.debug("Verifying attribute {}.{}".format(item, subitem))
                         attr = self._verify_attribute_signature(attr)
             if attr is None:
                 logger.warning("Verification failed for attribute {}".format(attr))
@@ -484,6 +486,7 @@ class User(object):
                 if self._attribute_value_set(attr, strict=True) and (
                     attr["signature"]["publisher"]["name"] == publisher_name
                 ):
+                    logger.debug("Signing attribute {}".format(item))
                     attr = self._sign_attribute(attr, publisher_name)
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
@@ -492,6 +495,7 @@ class User(object):
                     if self._attribute_value_set(attr, strict=True) and (
                         attr["signature"]["publisher"]["name"] == publisher_name
                     ):
+                        logger.debug("Signing attribute {}.{}".format(item, subitem))
                         attr = self._sign_attribute(attr, publisher_name)
 
     def sign_attribute(self, req_attr, publisher_name):
