@@ -78,16 +78,6 @@ class TestChangeEndpoint(object):
             user_structure_json=json.loads(self.durable_profile),
             discovery_url="https://auth.allizom.org/.well-known/mozilla-iam",
         )
-        user.verify_all_signatures()
-        access_token = self.exchange_for_access_token()
-        conn = http.client.HTTPSConnection(base_url)
-        logger.info("Attempting connection for: {}".format(base_url))
-        headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
-        conn.request("POST", "/v2/user", self.durable_profile, headers=headers)
-        res = conn.getresponse()
-        data = json.loads(res.read().decode())
-        logger.info(data)
-
         partial_update = profile.User(user_structure_json=None)
         partial_update.user_id = user.user_id
         partial_update.uuid = user.uuid
@@ -95,7 +85,8 @@ class TestChangeEndpoint(object):
         partial_update.primary_username = user.primary_username
         partial_update.first_name.value = "anewfirstname"
         partial_update.sign_attribute("first_name", "mozilliansorg")
-
+        access_token = self.exchange_for_access_token()
+        conn = http.client.HTTPSConnection(base_url)
         logger.info("Attempting connection for: {}".format(base_url))
         headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
         conn.request("POST", "/v2/user", partial_update.as_json(), headers=headers)
