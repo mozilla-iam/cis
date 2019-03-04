@@ -41,13 +41,7 @@ class Vault(object):
         user_id = cis_profile_object.as_dict()["user_id"].get("value", "")
 
         try:
-            if self.config("verify_publishers", namespace="cis") == "true":
-                logger.info("Verifying publishers.")
-                user = self._search_and_merge(cis_profile_object)
-                cis_profile_object.verify_all_publishers(user)
-            else:
-                # Search for the user without verification to set condition.
-                user = self._search_and_merge(cis_profile_object)
+            user = self._search_and_merge(cis_profile_object)
 
             if self.config("verify_signatures", namespace="cis") == "true":
                 user.verify_all_signatures()
@@ -118,15 +112,22 @@ class Vault(object):
             )
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
-            old_user_profile.merge(cis_profile_object)
-            return old_user_profile
+            new_user_profile = copy.deepcopy(old_user_profile)
+            new_user_profile.merge(cis_profile_object)
+            if self.config("verify_publishers", namespace="cis") == "true":
+                logger.info("Verifying publishers.")
+                new_user_profile.verify_all_publishers(old_user_profile)
+            return new_user_profile
         else:
             self.condition = "create"
             logger.info(
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
-            return User()
+            if self.config("verify_publishers", namespace="cis") == "true":
+                logger.info("Verifying publishers.")
+                cis_profile_object.verify_all_publishers()
+            return cis_profile_object
 
     def put_profile(self, profile_json):
         """Write profile to the identity vault."""
