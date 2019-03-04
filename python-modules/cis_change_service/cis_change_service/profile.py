@@ -7,6 +7,7 @@ from cis_aws import connect
 from cis_change_service import common
 from cis_identity_vault.models import user
 from cis_profile.profile import User
+from cis_change_service.exceptions import AttributeMismatch
 from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from cis_profile.exceptions import PublisherVerificationFailure
@@ -33,6 +34,7 @@ class Vault(object):
         if self.user_id is None:
             logger.info("No user_id arg was passed for the payload.  This is a new user or batch.")
             self.user_id = User(user_structure_json=profile_json).as_dict()["user_id"]["value"]
+            self.condition = "create"
 
         if sequence_number is not None:
             self.sequence_number = str(sequence_number)
@@ -44,9 +46,30 @@ class Vault(object):
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
+    def _sanity_check(self, profile_json):
+        cis_profile_object = User(user_structure_json=profile_json)
+        user_id = cis_profile_object.as_dict()["user_id"].get("value")
+
+        if (
+            user_id is not None
+            and user_id != self.user_id
+            and (self.condition == "update" or self.condition == "delete")
+        ):
+            # Perform a simple sanity check on the payload vs the arg to ensure there are no shenanigans.
+            raise AttributeMismatch(
+                {
+                    "code": "attribute_mismatch",
+                    "description": "user_id: {} does not match user_id: {} this combination is unstrusted.".format(
+                        user_id, self.user_id
+                    ),
+                },
+                403,
+            )
+        return profile_json
+
     def _verify(self, profile_json, old_profile=None):
         cis_profile_object = User(user_structure_json=profile_json)
-        user_id = cis_profile_object.as_dict()["user_id"].get("value", "")
+        user_id = cis_profile_object.as_dict()["user_id"].get("value")
 
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
@@ -111,6 +134,7 @@ class Vault(object):
 
         try:
             # XXX TBD add more searches here to support additional parameters for partial updates.
+            self._sanity_check(cis_profile_object.as_dict())
             res = vault.find_by_id(self.user_id)
             logger.info("The result of the search contained: {}".format(len(res["Items"])))
         except Exception as e:
@@ -236,6 +260,7 @@ class Vault(object):
 
     def delete_profile(self, profile_json):
         condition = "delete"
+        self._sanity_check(profile_json)
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],

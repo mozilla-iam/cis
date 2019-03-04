@@ -214,6 +214,55 @@ class TestAPI(object):
         assert result.status_code == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
+    def test_partial_update_it_should_fail(self, fake_jwks):
+        os.environ["CIS_STREAM_BYPASS"] = "true"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
+        from cis_change_service import api
+
+        fake_new_user = FakeUser()
+        # Create a brand new user
+        patched_user_profile = ensure_appropriate_publishers_and_sign(
+            fake_new_user.as_dict(), self.publisher_rules, "create"
+        )
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(patched_user_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        response = json.loads(result.get_data())
+        assert result.status_code == 200
+        assert response["condition"] == "create"
+
+        logger.info("A stub user has been created and verified to exist.")
+        logger.info("Attempting partial update.")
+
+        # Now let's try a partial update :)
+        null_profile = profile.User(user_structure_json=None)
+        null_profile.last_name.value = "iamanewpreferredlastname"
+        null_profile.user_id.value = "ad|bobob|LDAP"
+        null_profile.sign_attribute("last_name", "mozilliansorg")
+
+        result = self.app.post(
+            "/v2/user?user_id={}".format("bob"),
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(null_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert result.status_code == 403
+
+    @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_succeed(self, fake_jwks):
         os.environ["CIS_STREAM_BYPASS"] = "true"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"

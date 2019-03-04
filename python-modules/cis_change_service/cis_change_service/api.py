@@ -12,6 +12,7 @@ from flask_cors import cross_origin
 from cis_aws import connect
 from cis_change_service.common import get_config
 from cis_change_service import profile
+from cis_change_service.exceptions import AttributeMismatch
 from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from cis_change_service.idp import requires_auth
@@ -54,6 +55,13 @@ CORS(
 
 @app.errorhandler(AuthError)
 def handle_auth_error(ex):
+    response = jsonify(ex.error)
+    response.status_code = ex.status_code
+    return response
+
+
+@app.errorhandler(AttributeMismatch)
+def handle_attribute_mismatch_error(ex):
     response = jsonify(ex.error)
     response.status_code = ex.status_code
     return response
