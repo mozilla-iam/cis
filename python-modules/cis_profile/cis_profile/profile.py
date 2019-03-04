@@ -316,6 +316,16 @@ class User(object):
 
         Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
+
+        # If there was no change made always allow publishing - this also helps if for example:
+        # - user contains a "created" attribute
+        # - user has an update merged in
+        # - any non-updated attribute will pass here (but may otherwise fail because their attribute will be understood
+        # as "updated" otherwise
+        if attr == previous_attribute:
+            logger.debug("Both attribute match and were not modified, allowing to publish (skipped verification logic)")
+            return True
+
         publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
         logger.debug("Verifying that {} is allowed to publish field {}".format(publisher_name, attr_name))
         operation = "create"
@@ -374,6 +384,13 @@ class User(object):
             elif publisher_name == allowed_updators:
                 logger.debug("[update] {} is allowed to publish field {}".format(publisher_name, attr_name))
                 return True
+            else:
+                logger.warning(
+                    "[noop] no previous_attribute passed, but trying to to compare against an existing value ({}, {})".format(
+                        publisher_name, attr_name
+                    )
+                )
+                raise ValueError("previous_attribute must be set when calling this function, if updating an attribute")
 
         # None of the checks allowed this change, bail!
         logger.warning(

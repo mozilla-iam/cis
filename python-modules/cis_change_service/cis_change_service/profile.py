@@ -50,11 +50,11 @@ class Vault(object):
                 user = self._search_and_merge(cis_profile_object)
 
             if self.config("verify_signatures", namespace="cis") == "true":
-                cis_profile_object.verify_all_signatures()
+                user.verify_all_signatures()
         except SignatureVerificationFailure as e:
             logger.error(
                 "The profile failed to pass signature verification for user: {}".format(user_id),
-                extra={"user_id": user_id, "profile": cis_profile_object.as_dict(), "reason": e, "trace": format_exc()},
+                extra={"user_id": user_id, "profile": user.as_dict(), "reason": e, "trace": format_exc()},
             )
 
             raise VerificationError({"code": "invalid_signature", "description": "{}".format(e)}, 403)
@@ -71,7 +71,7 @@ class Vault(object):
             )
             logger.error("The error causing a trust problem is: {}".format(e))
             raise VerificationError({"code": "unknown_error", "description": "{}".format(e)}, 500)
-        return cis_profile_object
+        return user
 
     def _update_attr_owned_by_cis(self, profile_json):
         """Updates the attributes owned by cisv2.  Takes profiles profile_json
@@ -201,8 +201,8 @@ class Vault(object):
                     profile_json = json.loads(profile_json)
 
                 # Run some code that updates attrs and metadata for attributes cis is trusted to assert
-                profile_json = self._update_attr_owned_by_cis(profile_json)
                 verified = self._verify(profile_json)
+                profile_json = self._update_attr_owned_by_cis(profile_json)
                 if verified:
                     logger.debug("Profiles have been verified. Constructing dictionary for storage.")
                     user_profile = dict(

@@ -44,7 +44,11 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
             successful_random_publisher = random.choice(publisher_rules[condition][attr])
             temp_profile[attr]["signature"]["publisher"]["name"] = successful_random_publisher
             u = profile.User(user_structure_json=temp_profile)
-            u.sign_attribute(attr, successful_random_publisher)
+            # Don't sign NULL attributes or invalid publishers
+            if u._attribute_value_set(temp_profile[attr], strict=True) and (
+                temp_profile[attr]["signature"]["publisher"]["name"] == successful_random_publisher
+            ):
+                u.sign_attribute(attr, successful_random_publisher)
             temp_profile = u.as_dict()
         else:
             if attr != "schema" and attr in complex_structures:
@@ -56,7 +60,11 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
                     temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                     u = profile.User(user_structure_json=temp_profile)
                     attribute = "{}.{}".format(attr, k)
-                    u.sign_attribute(attribute, successful_random_publisher)
+                    # Don't sign NULL attributes or invalid publishers
+                    if u._attribute_value_set(temp_profile[attr][k], strict=True) and (
+                        temp_profile[attr][k]["signature"]["publisher"]["name"] == successful_random_publisher
+                    ):
+                        u.sign_attribute(attribute, successful_random_publisher)
                     temp_profile = u.as_dict()
     return profile.User(user_structure_json=temp_profile)
 

@@ -111,6 +111,7 @@ class TestProfile(object):
         conn.add_tags_to_stream(StreamName=name, Tags=tags_1)
         conn.add_tags_to_stream(StreamName=name, Tags=tags_2)
         self.user_profile = FakeUser().as_json()
+        print(self.user_profile)
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
