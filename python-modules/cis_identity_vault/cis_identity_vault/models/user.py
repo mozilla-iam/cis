@@ -15,6 +15,7 @@ import uuid
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from botocore.exceptions import ParamValidationError
+from traceback import format_exc
 
 
 logger = logging.getLogger(__name__)
@@ -28,10 +29,20 @@ class Profile(object):
         self.transactions = transactions
 
     def _run_transaction(self, transact_items):
-        response = self.client.transact_write_items(
-            TransactItems=transact_items, ReturnConsumedCapacity="TOTAL", ReturnItemCollectionMetrics="SIZE"
-        )
-        return response
+        sequence_numbers = []
+        for t in transact_items:
+            s = t.get("Update", t.get("Put"))
+            sequence_numbers.append(s["ExpressionAttributeValues"][":sn"]["S"])
+
+        try:
+            self.client.transact_write_items(
+                TransactItems=transact_items, ReturnConsumedCapacity="TOTAL", ReturnItemCollectionMetrics="SIZE"
+            )
+        except ClientError as e:
+            logger.warning("Transaction failed", extra={"reason": e, "trace": format_exc()})
+            raise ValueError("Transaction failed - profile issue?", e)
+
+        return {"status": "200", "sequence_numbers": sequence_numbers}
 
     def create(self, user_profile):
         if self.transactions:
@@ -139,7 +150,7 @@ class Profile(object):
                 "Put": {
                     "Item": {
                         "id": {"S": user_profile["id"]},
-                        "user_uuid": {"S": user_profile["uuid"]},
+                        "user_uuid": {"S": user_profile["user_uuid"]},
                         "profile": {"S": user_profile["profile"]},
                         "primary_email": {"S": user_profile["primary_email"]},
                         "primary_username": {"S": user_profile["primary_username"]},
@@ -169,13 +180,13 @@ class Profile(object):
                     "Key": {"id": {"S": user_profile["id"]}},
                     "ExpressionAttributeValues": {
                         ":p": {"S": user_profile["profile"]},
-                        ":u": {"S": user_profile["uuid"]},
+                        ":u": {"S": user_profile["user_uuid"]},
                         ":pe": {"S": user_profile["primary_email"]},
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = : pn",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }

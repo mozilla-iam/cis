@@ -304,11 +304,15 @@ class TestAPI(object):
 
         # Now let's try a partial update :)
         null_profile = profile.User(user_structure_json=None)
+        # null_profile.user_id.value = patched_user_profile.user_id.value
+        # null_profile.sign_attribute("user_id", "access_provider")
+        null_profile.active.value = True
+        null_profile.sign_attribute("active", "access_provider")
         null_profile.last_name.value = "iamanewpreferredlastname"
         null_profile.sign_attribute("last_name", "mozilliansorg")
 
         result = self.app.post(
-            "/v2/user?user_id={}".format(fake_new_user.user_id.value),
+            "/v2/user?user_id={}".format(patched_user_profile.user_id.value),
             headers={"Authorization": "Bearer " + token},
             data=json.dumps(null_profile.as_json()),
             content_type="application/json",

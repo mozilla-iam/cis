@@ -32,8 +32,9 @@ class Vault(object):
         self.primary_username = kwargs.get("primary_username")
 
         if self.user_id is None:
-            logger.info("No user_id arg was passed for the payload.  This is a new user or batch.")
-            self.user_id = User(user_structure_json=profile_json).as_dict()["user_id"]["value"]
+            logger.info("No user_id arg was passed for the payload. This is a new user or batch.")
+            tmp_user = User(user_structure_json=profile_json)
+            self.user_id = tmp_user.user_id.value
             self.condition = "create"
 
         if sequence_number is not None:
@@ -237,7 +238,11 @@ class Vault(object):
             elif isinstance(user_profile, dict):
                 user_profile = cis_profile.User(user_structure_json=json.dumps(user_profile))
 
-            user_id = user_profile.user_id.value
+            # For single put_profile events the user_id is passed as argument
+            if self.user_id:
+                user_id = self.user_id
+            else:
+                user_id = user_profile.user_id.value
             logger.info("Attempting integration of profile data into the vault", extra={"user_id": user_id})
 
             # Ensure we merge user_profile data when we have an existing user in the vault
