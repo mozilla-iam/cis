@@ -327,7 +327,8 @@ class Vault(object):
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
         # The result looks something like this:
-        # result = {'creates': {'status': '200', 'sequence_numbers': ['285229813155718975995433494324446866394']}, 'updates': None, 'status': 200}"}
+        # result = {'creates': {'status': '200',
+        # 'sequence_numbers': ['285229813155718975995433494324446866394']}, 'updates': None, 'status': 200}"}
         return {"creates": result[0], "updates": result[1], "status": 200}
 
     def delete_profile(self, profile_json):
