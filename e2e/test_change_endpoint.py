@@ -16,23 +16,24 @@ from cis_profile.exceptions import PublisherVerificationFailure
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
-logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
+#logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
 
 
 class TestChangeEndpoint(object):
     def setup(self):
         os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
+        self.helper_configuration = helpers.Configuration()
         u = fake_profile.FakeUser()
-        u = helpers.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
+        u = self.helper_configuration.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
         u.verify_all_publishers(profile.User(user_structure_json=None))
         self.durable_profile = u.as_json()
 
     def exchange_for_access_token(self):
         conn = http.client.HTTPSConnection("auth.mozilla.auth0.com")
         payload_dict = dict(
-            client_id=helpers.get_client_id(),
-            client_secret=helpers.get_client_secret(),
-            audience=helpers.get_url_dict().get("audience"),
+            client_id=self.helper_configuration.get_client_id(),
+            client_secret=self.helper_configuration.get_client_secret(),
+            audience=self.helper_configuration.get_url_dict().get("audience"),
             grant_type="client_credentials",
         )
 
@@ -45,7 +46,7 @@ class TestChangeEndpoint(object):
 
     def test_publishing_a_profile_it_should_be_accepted(self):
         os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
-        base_url = helpers.get_url_dict().get("change")
+        base_url = self.helper_configuration.get_url_dict().get("change")
         wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
         os.environ["CIS_WELL_KNOWN_MODE"] = "https"
@@ -71,7 +72,7 @@ class TestChangeEndpoint(object):
 
         #    def test_publishing_a_profile_using_a_partial_update(self):
         os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
-        base_url = helpers.get_url_dict().get("change")
+        base_url = self.helper_configuration.get_url_dict().get("change")
         wk = WellKnown(discovery_url="https://auth.allizom.org/.well-known/mozilla-iam")
         jsonschema.validate(json.loads(self.durable_profile), wk.get_schema())
         os.environ["CIS_WELL_KNOWN_MODE"] = "https"
@@ -99,7 +100,7 @@ class TestChangeEndpoint(object):
 
     def test_deleting_a_profile(self):
         return
-        base_url = helpers.get_url_dict().get("change")
+        base_url = self.helper_configuration.get_url_dict().get("change")
         if os.getenv("CIS_ENVIRONMENT", "development") == "development":
             wk = WellKnown()
             access_token = self.exchange_for_access_token()

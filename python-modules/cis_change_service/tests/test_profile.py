@@ -5,7 +5,6 @@ import os
 import mock
 import random
 import subprocess
-from botocore.stub import Stubber
 from boto3.dynamodb.conditions import Key
 from cis_profile import FakeUser
 from tests.fake_auth0 import FakeBearer
@@ -29,15 +28,9 @@ class TestProfile(object):
         name = "local-identity-vault"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         from cis_change_service.common import get_config
-
-        config = get_config()
-        self.kinesalite_port = str(random.randint(32000, 34000))
-        self.kinesalite_host = config("kinesalite_host", namespace="cis")
         self.dynalite_port = str(random.randint(32000, 34000))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
-        self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
         conn = boto3.client(
             "dynamodb",
             region_name="us-west-2",
@@ -87,29 +80,10 @@ class TestProfile(object):
                     },
                 ],
             )
+            waiter = conn.get_waiter("table_exists")
+            waiter.wait(TableName="local-identity-vault", WaiterConfig={"Delay": 5, "MaxAttempts": 5})
         except Exception as e:
             logger.error("Table error: {}".format(e))
-
-        conn = Stubber(boto3.session.Session(region_name="us-west-2")).client.client(
-            "kinesis", endpoint_url="http://{}:{}".format(self.kinesalite_host, self.kinesalite_port)
-        )
-
-        try:
-            name = "local-stream"
-            conn.create_stream(StreamName=name, ShardCount=1)
-        except Exception as e:
-            logger.error("Stream creation error: {}".format(e))
-            # This just means we tried too many tests too fast.
-            pass
-
-        waiter = conn.get_waiter("stream_exists")
-
-        waiter.wait(StreamName=name, Limit=100, WaiterConfig={"Delay": 1, "MaxAttempts": 5})
-
-        tags_1 = {"Key": "cis_environment", "Value": "local"}
-        tags_2 = {"Key": "application", "Value": "change-stream"}
-        conn.add_tags_to_stream(StreamName=name, Tags=tags_1)
-        conn.add_tags_to_stream(StreamName=name, Tags=tags_2)
         self.user_profile = FakeUser().as_json()
         print(self.user_profile)
 
@@ -119,7 +93,6 @@ class TestProfile(object):
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -160,7 +133,6 @@ class TestProfile(object):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -189,7 +161,6 @@ class TestProfile(object):
         os.environ["CIS_STREAM_BYPASS"] = "true"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -222,7 +193,6 @@ class TestProfile(object):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         from cis_change_service import api
 
         f = FakeBearer()
@@ -231,7 +201,7 @@ class TestProfile(object):
         api.app.testing = True
         self.app = api.app.test_client()
         result = self.app.delete(
-            "/v2/user",
+            "/v2/user?user_id={}".format(json.loads(self.user_profile)["user_id"]["value"]),
             headers={"Authorization": "Bearer " + token},
             data=json.dumps(self.user_profile),
             content_type="application/json",
@@ -260,4 +230,3 @@ class TestProfile(object):
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
-        os.killpg(os.getpgid(self.kinesaliteprocess.pid), 15)
