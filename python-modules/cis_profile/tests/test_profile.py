@@ -95,6 +95,7 @@ class TestProfile(object):
         assert len(u.fun_title.signature.publisher.value) > 0
 
         # test for subitems
+        u.access_information.ldap.values = {"test": None}
         u.sign_attribute("access_information.ldap", publisher_name="ldap")
         assert u.access_information.ldap.signature.publisher.value is not None
         assert len(u.access_information.ldap.signature.publisher.value) > 0
@@ -130,7 +131,6 @@ class TestProfile(object):
 
         u_new.first_name["signature"]["publisher"]["name"] = "failure"
         u_new.first_name["value"] = "failure"
-        namefail = "first_name"
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
             u_new.verify_can_publish(u_new.first_name, "first_name", previous_attribute=u_old.first_name) is True
 

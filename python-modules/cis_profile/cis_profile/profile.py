@@ -386,9 +386,8 @@ class User(object):
                 return True
             else:
                 logger.warning(
-                    "[noop] no previous_attribute passed, but trying to to compare against an existing value ({}, {})".format(
-                        publisher_name, attr_name
-                    )
+                    "[noop] no previous_attribute passed, but trying to to compare against an existing value"
+                    "({}, {})".format(publisher_name, attr_name)
                 )
                 raise ValueError("previous_attribute must be set when calling this function, if updating an attribute")
 

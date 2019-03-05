@@ -579,7 +579,7 @@
             "title": "PublisherLax"
         },
         "AccessInformationValues": {
-            "type": "object",
+            "type": [ "null", "object" ],
             "additionalProperties": true,
             "properties": {},
             "title": "AccessInformationValues"

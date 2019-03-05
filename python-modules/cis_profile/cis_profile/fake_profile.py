@@ -288,6 +288,7 @@ class FakeUser(cis_profile.profile.User):
         fake.add_provider(faker.providers.job)
         fake.add_provider(FakeCISProfileProvider)
 
+        self._init_dicts()
         self.generate_uuid(fake, config)
         self.generate_ldap(fake, config)
         self.generate_hris(fake, config, hierarchy)
@@ -297,6 +298,13 @@ class FakeUser(cis_profile.profile.User):
         display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
         super().initialize_timestamps()
+
+    def _init_dicts(self):
+        """
+        Init null profile dicts with empty dicts so that we can update them
+        """
+        for _ in self.__dict__["access_information"]:
+            self.__dict__["access_information"][_]["values"] = {}
 
     def _d(self, path, value):
         v = self.__dict__
