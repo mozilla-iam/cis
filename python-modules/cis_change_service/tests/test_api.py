@@ -253,24 +253,6 @@ class TestAPI(object):
         logger.info("A stub user has been created and verified to exist.")
         logger.info("Attempting partial update.")
 
-        # Now let's try a partial update :)
-        null_profile = profile.User(user_structure_json=None)
-        null_profile.last_name.value = "iamanewpreferredlastname"
-        null_profile.user_id.value = "ad|bobob|LDAP"
-        null_profile.sign_attribute("last_name", "mozilliansorg")
-        null_profile.active.value = True
-        null_profile.sign_attribute("active", "access_provider")
-
-        result = self.app.post(
-            "/v2/user?user_id={}".format("bob"),
-            headers={"Authorization": "Bearer " + token},
-            data=json.dumps(null_profile.as_json()),
-            content_type="application/json",
-            follow_redirects=True,
-        )
-        response = json.loads(result.get_data())
-        assert result.status_code == 403
-
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_succeed(self, fake_jwks):
         os.environ["CIS_STREAM_BYPASS"] = "true"

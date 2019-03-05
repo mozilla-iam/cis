@@ -139,9 +139,13 @@ class Profile(object):
                 return {"status": "500", "sequence_numbers": sequence_numbers}
 
     def _put_items_without_transaction(self, list_of_profiles):
+        sequence_numbers = []
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
                 batch.put_item(Item=profile)
+                sequence_numbers.append(profile["sequence_number"])
+
+        return {"status": "200", "ResponseMetadata": {"HTTPStatusCode": 200}, "sequence_numbers": sequence_numbers}
 
     def _create_items_with_transaction(self, list_of_profiles):
         transact_items = []

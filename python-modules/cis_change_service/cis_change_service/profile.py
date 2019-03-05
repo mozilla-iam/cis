@@ -50,24 +50,6 @@ class Vault(object):
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
-    def _sanity_check(self, user_id, user_profile):
-        if (
-            user_id is not None
-            and user_id != self.user_id
-            and (self.condition == "update" or self.condition == "delete")
-        ):
-            # Perform a simple sanity check on the payload vs the arg to ensure there are no shenanigans.
-            raise AttributeMismatch(
-                {
-                    "code": "attribute_mismatch",
-                    "description": "user_id: {} does not match user_id: {} this combination is untrusted.".format(
-                        user_id, self.user_id
-                    ),
-                },
-                403,
-            )
-        return user_profile
-
     def _update_attr_owned_by_cis(self, user_id, user):
         """
         Updates the attributes owned by CIS itself. Updated attributes:
@@ -131,7 +113,6 @@ class Vault(object):
         try:
             self._connect()
             vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
-            self._sanity_check(user_id, cis_profile_object)
             res = vault.find_by_id(user_id)
             logger.info("Search user in vault results: {}".format(len(res["Items"])))
 
@@ -335,7 +316,6 @@ class Vault(object):
         # XXX This method should be refactored to look like put_profiles() / put_profile()
         self.condition = "delete"
         user_id = profile_json["user_id"]["value"]
-        self._sanity_check(user_id, profile_json)
 
         try:
             user_profile = dict(
