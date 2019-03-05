@@ -16,7 +16,7 @@ from cis_profile.exceptions import PublisherVerificationFailure
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
-#logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
+# logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
 
 
 class TestChangeEndpoint(object):
@@ -68,8 +68,6 @@ class TestChangeEndpoint(object):
         assert status == 200
         assert data.get("sequence_number") is not None
 
-        logger.info("We now have user in db", self.durable_profile["user_id"]["value"])
-
         #    def test_publishing_a_profile_using_a_partial_update(self):
         os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
         base_url = self.helper_configuration.get_url_dict().get("change")
@@ -90,16 +88,16 @@ class TestChangeEndpoint(object):
         access_token = self.exchange_for_access_token()
         conn = http.client.HTTPSConnection(base_url)
         logger.info("Attempting connection for: {}".format(base_url))
-        logger.info("Partial update of user", partial_update.user_id.value)
+        logger.info("Partial update of user: {}".format(partial_update.user_id.value))
         headers = {"authorization": "Bearer {}".format(access_token), "Content-type": "application/json"}
         conn.request("POST", "/v2/user", partial_update.as_json(), headers=headers)
         res = conn.getresponse()
         data = json.loads(res.read().decode())
-        assert data.get("status") == 200
+        status = data.get("status", data.get("status_code"))
+        assert status == 200
         assert data.get("sequence_number") is not None
 
     def test_deleting_a_profile(self):
-        return
         base_url = self.helper_configuration.get_url_dict().get("change")
         if os.getenv("CIS_ENVIRONMENT", "development") == "development":
             wk = WellKnown()

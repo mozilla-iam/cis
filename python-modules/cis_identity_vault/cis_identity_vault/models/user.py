@@ -31,8 +31,10 @@ class Profile(object):
     def _run_transaction(self, transact_items):
         sequence_numbers = []
         for t in transact_items:
-            s = t.get("Update", t.get("Put"))
-            sequence_numbers.append(s["ExpressionAttributeValues"][":sn"]["S"])
+            if "Update" in t:
+                sequence_numbers.append(t["Update"]["ExpressionAttributeValues"][":sn"]["S"])
+            else:
+                sequence_numbers.append(t["Put"]["Item"]["sequence_number"]["S"])
 
         try:
             self.client.transact_write_items(
@@ -42,7 +44,7 @@ class Profile(object):
             logger.warning("Transaction failed", extra={"reason": e, "trace": format_exc()})
             raise ValueError("Transaction failed - profile issue?", e)
 
-        return {"status": "200", "sequence_numbers": sequence_numbers}
+        return {"status": "200", "ResponseMetadata": {"HTTPStatusCode": 200}, "sequence_numbers": sequence_numbers}
 
     def create(self, user_profile):
         if self.transactions:
