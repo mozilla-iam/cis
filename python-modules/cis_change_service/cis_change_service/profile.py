@@ -66,7 +66,7 @@ class Vault(object):
                 403,
             )
         return user_profile
-      
+
     def _update_attr_owned_by_cis(self, user_id, user):
         """
         Updates the attributes owned by CIS itself. Updated attributes:
@@ -203,7 +203,19 @@ class Vault(object):
         """
         Wrapper for a single profile, calls the batch put_profiles method
         """
-        return self.put_profiles([_profile])
+        res = self.put_profiles([_profile])
+        if res["creates"] is not None and len(res["creates"]["sequence_numbers"]) == 1:
+            sequence_number = res["creates"]["sequence_numbers"][0]
+            condition = "create"
+        elif res["updates"] is not None and len(res["updates"]["sequence_numbers"]) == 1:
+            sequence_number = res["updates"]["sequence_numbers"][0]
+            condition = "update"
+        else:
+            raise IntegrationError(
+                {"code": "integration_exception", "description": "No operation occurred: {}".format(res)}, 500
+            )
+
+        return dict(sequence_number=sequence_number, status_code=res["status"], condition=condition)
 
     def put_profiles(self, profiles):
         """
@@ -309,6 +321,8 @@ class Vault(object):
                 extra={"profiles": profiles, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
+        # The result looks something like this:
+        # result = {'creates': {'status': '200', 'sequence_numbers': ['285229813155718975995433494324446866394']}, 'updates': None, 'status': 200}"}
         return {"creates": result[0], "updates": result[1], "status": 200}
 
     def delete_profile(self, profile_json):
@@ -316,7 +330,7 @@ class Vault(object):
         self.condition = "delete"
         user_id = profile_json["user_id"]["value"]
         self._sanity_check(user_id, profile_json)
-        
+
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],

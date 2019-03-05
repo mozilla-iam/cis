@@ -19,8 +19,6 @@ from cis_change_service.idp import requires_auth
 from cis_change_service.idp import AuthError
 from cis_change_service import __version__
 
-from cis_publisher import operation
-
 
 app = Flask(__name__)
 config = get_config()
