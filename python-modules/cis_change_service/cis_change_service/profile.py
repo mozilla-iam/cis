@@ -150,7 +150,7 @@ class Vault(object):
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
                 try:
-                    cis_profile_object.verify_all_publishers()
+                    cis_profile_object.verify_all_publishers(cis_profile.User())
                 except Exception as e:
                     logger.error(
                         "The profile failed to pass publisher verification",
@@ -169,11 +169,11 @@ class Vault(object):
                 )
             return cis_profile_object
 
-    def put_profile(self, profile):
+    def put_profile(self, _profile):
         """
         Wrapper for a single profile, calls the batch put_profiles method
         """
-        return self.put_profiles([profile])
+        return self.put_profiles([_profile])
 
     def put_profiles(self, profiles):
         """
@@ -188,17 +188,19 @@ class Vault(object):
         # User profiles that have been verified, validated, merged, etc.
         profiles_to_store = []
 
-        for profile in profiles:
+        for user_profile in profiles:
             # Ensure we always have a cis_profile.User at this point (compat)
-            if isinstance(profile, str):
-                profile = cis_profile.User(user_structure_json=profile)
+            if isinstance(user_profile, str):
+                user_profile = cis_profile.User(user_structure_json=user_profile)
+            elif isinstance(user_profile, dict):
+                user_profile = cis_profile.User(user_structure_json=json.dumps(user_profile))
 
-            user_id = profile.user_id.value
-            logger.info("Attempting integration of profile data from user_id {} into the vault".format(user_id))
+            user_id = user_profile.user_id.value
+            logger.info("Attempting integration of profile data into the vault", extra={"user_id": user_id})
 
-            # Ensure we merge profile data when we have an existing user in the vault
+            # Ensure we merge user_profile data when we have an existing user in the vault
             # This also does publisher verification
-            current_user = self._search_and_merge(user_id, profile)
+            current_user = self._search_and_merge(user_id, user_profile)
 
             # Check profile signatures
             if self.config("verify_signatures", namespace="cis") == "true":
@@ -237,6 +239,9 @@ class Vault(object):
         Returns dict {"creates": result_of_users_created, "updates": result_of_users_updates}
         """
 
+        # Vault profiles (not cis_profile.User objects)
+        vault_profiles = []
+
         try:
             self._connect()
 
@@ -255,18 +260,30 @@ class Vault(object):
                     transactions=False,
                 )
 
-            result = vault.find_or_create_batch(profiles)
+            # transform cis_profiles.User profiles to vault profiles
+            for user_profile in profiles:
+                vault_profile = dict(
+                    id=user_profile.user_id.value,
+                    primary_email=user_profile.primary_email.value,
+                    user_uuid=user_profile.uuid.value,
+                    primary_username=user_profile.primary_username.value,
+                    sequence_number=self.sequence_number,
+                    profile=user_profile.as_json(),
+                )
+                vault_profiles.append(vault_profile)
+
+            result = vault.find_or_create_batch(vault_profiles)
         except ClientError as e:
             logger.error(
                 "An error occured writing these profiles to dynamodb",
                 extra={"profiles": profiles, "error": e, "trace": format_exc()},
             )
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
-        return {"creates": result[0], "updates": result[1]}
+        return {"creates": result[0], "updates": result[1], "status": 200}
 
     def delete_profile(self, profile_json):
         # XXX This method should be refactored to look like put_profiles() / put_profile()
-        condition = "delete"
+        self.condition = "delete"
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
@@ -300,7 +317,7 @@ class Vault(object):
         return {
             "status": 200,
             "message": "user profile deleted for user: {}".format(profile_json["user_id"]["value"]),
-            "condition": condition,
+            "condition": self.condition,
         }
 
 

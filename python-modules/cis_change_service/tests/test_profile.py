@@ -254,8 +254,9 @@ class TestProfile(object):
         u.active.value = False
         u.active.signature.publisher.name = "ldap"
         u.sign_attribute("active", "ldap")
-        ud = v._update_attr_owned_by_cis(u.as_json())
-        assert ud["active"]["signature"]["publisher"]["name"] == "cis"
+        ud = v._update_attr_owned_by_cis(u.user_id.value, u)
+        print(ud)
+        assert ud.active.signature.publisher.name == "cis"
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
