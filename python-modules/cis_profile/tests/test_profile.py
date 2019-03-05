@@ -95,6 +95,7 @@ class TestProfile(object):
         assert len(u.fun_title.signature.publisher.value) > 0
 
         # test for subitems
+        u.access_information.ldap.values = {"test": None}
         u.sign_attribute("access_information.ldap", publisher_name="ldap")
         assert u.access_information.ldap.signature.publisher.value is not None
         assert len(u.access_information.ldap.signature.publisher.value) > 0
@@ -125,15 +126,27 @@ class TestProfile(object):
             u.verify_attribute_signature("fun_title")  # Unsigned, so should raise and fail
 
     def test_verify_can_publish(self):
-        u = profile.User(user_id="test")
+        u_old = profile.User(user_id="test")
+        u_new = copy.deepcopy(u_old)
 
-        attrfail = copy.deepcopy(u.first_name)
-        attrfail["signature"]["publisher"]["name"] = "failure"
-        attrfail["value"] = "failure"
-        namefail = "first_name"
-        assert u.verify_can_publish(u.user_id, "user_id") is True
+        u_new.first_name["signature"]["publisher"]["name"] = "failure"
+        u_new.first_name["value"] = "failure"
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
-            u.verify_can_publish(attrfail, namefail)
+            u_new.verify_can_publish(u_new.first_name, "first_name", previous_attribute=u_old.first_name) is True
+
+        assert u_new.verify_can_publish(u_new.user_id, "user_id", previous_attribute=u_old.user_id)
+
+    def test_verify_can_publish_when_merging(self):
+        u_orig = profile.User()
+        u_orig.access_information.ldap.values = {"test": None}
+        u_orig.uuid.value = "31337"
+        u_orig.active.value = True
+
+        u_patch = profile.User()
+        u_patch.access_information.ldap.values = {"test_replacement": None}
+        u_orig.merge(u_patch)
+
+        u_orig.verify_all_publishers(u_patch)
 
     def test_verify_all_publishers(self):
         u = profile.User(user_id="test")

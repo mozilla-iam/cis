@@ -1,1 +1,1417 @@
-{"schema": "https://auth.mozilla.com/.well-known/profile.schema", "uuid": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "cis", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJkODJhMTBiYi1kZTViLTRhZWQtYmY2Ny1iNDgyNzFkZDQyZjkifQ.afUuiZctO8YNSbvlIrnUJEuEBOhXa-Y7Pd03hEXtisz8ZxbIrs-Hk89kZNaD2WIcsNNZYTt4pZ8MIB6ppSaogUQAQuY-aGnzIRQAsNgihnKfJmKoGeE0XcgbAbUxu7gHfe3qbJnVwWDqJOrpboivcEHWLZRsCXD-WD9509oeH9wvrBZFOPChlIuwsPvi_jeOCrZeVC80I6VKbWXD_UgvSgkqHpiRQtC4u4czmhdlfjBGgfkpxwLWu56EIVbXslvdpLVgc20BtvJMW0rRFZ4pnOWi1o8ZoUxGbRZxJUDj0w8HWEOD4XJZ_1fbavvyG0oeGeYW5Ui---jDIZdFclZs4pOQvtl9s6XZi_r9EhcHVJX7VDPX1WI4UP_USd_HI8FlmTZ3io8h8PdpORE2DGailqu7gJxov9rjqvKIjZOnqgNisZRpe5W6kkct2VwdPnrHw2tyzT4zuUlV9hhvgCIZhdTDhtxPi0AIsek-yYKbeA5sGtCg_wfY7x1Pe8LjfLHy3F6aeFqGm1kQLUea3s6DNup1Nkf0t_taw9ROMjtu2I_p7fIocHCbQnY0coFYaOOdHn4hlA0TybQZnEkfXX_MkwUsR5RWZ37n_RQFEeT9vrH_NZ6lpegHD3lyw7O_Nt7AiI7z2atj9KekYtVeOK_7PvSOanJPooMsrzjtOwn5KJ4"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": "d82a10bb-de5b-4aed-bf67-b48271dd42f9"}, "user_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJlbWFpbHw2MzVhZWUwZjE2MzdjZTg5MDIzN2U1YmVjNDMxZTdiNyJ9.sGH1CtMNV7A7qDlElrIixU0Apq9jh-sPhZF3LWU2Qf41KhX2DMk0t_JBxPXdOjPurNFsv1hc6HkNtEz8h7PmsbqzYf6IOMVRbXzFJh-XtANijDddx60EXZRH0MgYGTp_IbdpPq5mDRTL2dWgx-DsSJAPwWUCmKAehaGcRqpgd1wXGIIEWlismIfeRkF_fAqSNd94TOnN6lxhrvWmnrlbDnDOLq12a2ccqp3caRplENpQBhLbGojquaXBlfDttuhS1ATGVM7SZNymNleCQbN2alg2WZK1xCT9oF5eqlmETlEPN6lH5da_vGGg-5FNQpQe_ub_cpPwbSPjW2qYGBIlTPDkvuQBI81S5_KYlZDOTQKBMY_WcyTj26N9a7xd6N8WcsexTAJF71A9Yl-MUryExICoolg7JWvqZGwzZihozYUE6FyJuu3_VRFoEZpYM_CVXsPNcw0FiptibL-ORPqnWLQm1RXHLT09zXyBnmuxGLOB5hNQq3CT5NqilUfFHfjpW1qPAIg6OMiLUhV0r7I0A0ne3rZS4AZmIeiP_2enBt58f4VD6onDiOaq8pYFa8sNVt3aLo9b2KROSErmisuhj5euraf65wcL-k_TSiSjKw7-YltqlILj2Yqt4A7nyGckOVpNxQYnKOn-AxqznWWSL-p3hukdphjlIHSshn9ktpQ"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": "email|635aee0f1637ce890237e5bec431e7b7"}, "primary_username": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJvcnRpem5pY29sZSJ9.UoCfH9sEP3iFKA_nZ4osjZ8ulOse0ygn8xgs_ZiPkraPVGqG4vmNzvs38VaFHQXFzftyKyKn03l-Ctj9jBnA5Ujd8KtRMx_oYuJFn_2atYM_43dsFlgZGsK_BYWMBGgvEzjeXKNKZgzXsJVRKKK3_-oTiY44P-8dyIHqmVnk6i6mGU61ujFfwxBQeci4EUIxoVSsNcYVOKyvZ-bKK_eU2A3hs6JrhokIyp7-7SuqqpgXY455ou11UK4b3ZiWu8D8QGxvZkzWkazhY7RxIcK1-p2nG9_2jKLWj5i-nwzAq4ni25JWyOb_W9h8g0kcc6qTn9ltwMmMuiuf_LTQ5os99nz1RMv39QocvjgLHz3uC5rk5RnTYpaDwpecSPXas13imjBx_QQe-KZwmkNDKjcXC-8DLHAdropl5ND6OMOjZ5mUpqdsQcNGR9c1mvrQy-OL9qoPNeifVZHPSmrDQKRSqQwjRcI1WmXQOwGNmasqNvrWe8vAnassaHDEUr_sy9c6QbE7om_GfSTymS0Lgifv4K0-yW9lG3evd9YqFm-lzPn_ilLHYpYNSsGWlsrC6GufBMq0B1rpBUqF9llb4T6aAVewfKIKZGDh0EEdVymxmcMUV2EjdF7P_F_C0LOtRx3gHdcg2ulqXd93HH7pSc7VfLoNBXTyUJmDTE6_x1D2omQ"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": "ortiznicole"}, "login_method": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJhdXRoZW50aWNhdGVkIn0sInZhbHVlIjoiZ2l0aHViIn0.B1jideKbwg12Dp76vdD1AKxgYftf_wgOSgk5MC-FvWCXuRyONJWJIpXJEpkfkwUFms4sh_8JwLdAytaH_tG1F8Erro-oY7nOm2PeVjJmDlEE32ORfVI1vKId0POmgeMS1GgSldZjFx2JTWnI48KULa2Q-8c0YKLr6BXG9d5KxwtQMlANL5f5sxrhw36vKTOBbYWo-Nn-aWoHUKYkrl1h6nR2pTj4JU8bB7iVlbDtqeIlMISUAKyMOvlPXEK0ZY0EdvcrBrHneOhDLS6bWsuJv7BSWf4FGfDDtMh_Fx2xNuiBq8fZ5c7xvaVhvANuTxu1sJHrOcOq0mSSuCvobkR2N3h4QC9njJjLw_TQw1L7fMXhXGbFfm0ioh4ILRhF3rNEPyzGrJQB0elmCBRYnBaBsNRw9PQxvGh9VPo8PV8yOoDoLajjmjRoiDNsg8c20wfn83DmiwYHAXNH_LskgXhBQHrjnfsSWo26QfwcAdzN20JTSJeOp7bq-hGqHea3dqIFALuiSrEJpl8OHuSYrDAuCqa1fROAQqCE9EwEW8VUbVLF3Yl-PZ-1DOUu-N3g66u2uqwyoNQ33kwrLYz3GHehsauJAxa-Iqg4sJP1SNadNWClC-2VqmIxy3FYQzniut3guIp1Vi-6e5_7TJwd8X4Ot8dUyO9wzNF6CDXgFBJP6DY"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": "github"}, "active": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "cis", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWUiOnRydWV9.LPIaKoRNmqqZV-dxz4i_gKSlk9nLv4mJRVf-U1AscidkOPyWmifFiD83iGATa7lARlunSh7NlXgi173ap4ObL_M6h0y_-FqOcmGywEs1pDmKvvR3eZL10t3YQqEF_8BtWUYcJw6rvxfwmRFvmEphYQnvm0iUXxiRpaUkWe5vB-FA6p6emZuTmiFY5qY_3PaPy3Yr2-aoeZ2M_lu8ke-pIdQjAEbA9RqP56kAaJTITSUrBrQbxl-NBIgzPzQDoABXScwB1FWKlMge9X3FbUjhatQXR7vH7GHsNhDobgisJSGQohC8CawfdddNc_SBZMtAc4mhe1dsSRyvAL-IssBTS6xN5jmoPaK24O8q-ggTfOg8f_4v4ZCnHEol7OlcVWuLreCHKLFuqEz1-9KrolP8iaQA8_AKmTP3IH-lRsdbTAopdIv8BBL-zoQtCda_zlkzkBl6OICsIv-b4-FLU_SUJ9xzkP6tBDH5apdrXvZgn1cagc4CoGgMqHXXJA8he7EklsLOY7FqbuqFjNQkoIn962DA-5pwVylCfJ3Iikk-nFjdvSxk3dmp_zZFjMzNfBw8cAZCObO4XIOO6-n9XpatYsPJohZY4dia3d7HUO11FducJOFr6fcGvQB2SihsXMWi192hFpPpqoaNp5fSC7Sjxw3rFxgNCTe0pCerDWrXGsY"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "value": true}, "last_modified": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZSI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiJ9.gfFiUjEEpWytPo8j2gr36o8yVpU9uIrMnvuZ02vxgxvJBPfJBPx8nsp8lhrtqVKXI3ZKhTCkKkTq7qBvRK7dw7OmRSRWzi6XByRw1O2AWayijrw0CsDS3bJeu4xBSop5yKNH5Zps6XFET2rczBKiYMRNlpoGF96yfHH3hIZQ38TCUXrR3ao9-NQNG9QNpniQDAQsBs5VjdPXQ2LR1Z631cRNOhnl06ibT4qvabRKzF7vaXpMi1B7MOGt5nbrEnGJd75M_LUk8N71qtBp1ZR_LAIXDioHwFvzcQ6X__6yX59wqLmBYBEE0fySRjrWlSee8gauLMn0YZE2kMpXfdXP0BULg-s49DtXN_cXIE-Rj10PJG5yjFIMNUO8M6_2Z0e0JahTay-3dREXHFaUQRNVXMG7xwdjsGR_wVYiGHWL_0fuFlkKXF7rTjnrgVydqwCqv9OFIracXzQ3o6gIBwk14KwLF2L4yEG9t5vStt_q3OCiHQ0PHozVm5vbBkRVtIXFB6cxmpnTrrR5dTbl_P0MbW8gsUP0hvUshfI1VB5uaq5Kgk9WdBofhJ5W1a9jpaDPgPBy_Jjbccb06lKgQ49zeB2St6EnNIeCG1ZCodMjNc1BEHFgKJRwHvtzLQgLpSsZUW-dyv_4BSZ0y49wckmh4_7uADGkz7J1kQ6X-PhkuNQ"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "value": "2019-02-27T11:23:00.000Z"}, "created": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "cis", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoifQ.cf6J1itm_JPVhdLe8dFawoNpgq0U_Wg_8ohlZ2YnCSFa7IZ1IoWoRtkKDM9Pv_lK1CM04fKyFWk54SftnkNWASmjBDogtgYi6FHvCsYfZhHVs9HvHxV-_Qtx0WUfLPiHEdJIlT8QZjZlc0T48W-itmQfovQ7M6F8i-Alh6DiDOkorh6y559UYFpy3jOCACgMRKGGpbPFAFAXX-cqUZcdnpSZQuWHiCvzKGzCMUV24aTRyrF0MWHFKK6zhOSQOQ1daQZhK4bcLn8WbYtJ618SWfs7V7CMzLyVplNJyUXaUS98Im8TuygzbfBGQGGbdfMuWRS7H2CKGGmPeu7_PkuaYBMQfPmxxxBbQdxfI9eIlagD7UqpGVoItS3l5gNJYr2_Yn8BHHrQDp0kx-tebu8FsLxmjMIm6zRyuyjY3aEMXbNXKG1eR3qe_AsoHQtAyG7U6AM2GrUq40pGvgU0pMwHkEtDM7JZAJFX4XsgaQzfKIUPbNcqya8fyucqaXesS6tWc4Yygj35dejHKetpGhwyvwrnL_rqEBcYIaBEN7POlFElBIIAv9z7Ahf9955k-f8jf2ZPYZ11UNu9o8UucDKxPKIuoih3AfhqyuKr3m3Lzx-3d1OePV2QYT-jhys8G2_zbC5BoulnZfUvW84VSxR29bwb0-_aDglPh1bw1yB618g"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": "2019-02-27T11:23:00.000Z"}, "usernames": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZXMiOnsic2V2ZXJhbCI6InVyb3NzIiwiZGlyZWN0aW9uIjoiamFzb245NSIsInRyb3VibGUiOiJoaWxsamFjcXVlbGluZSJ9fQ.KAtEpO-zVJoO8uAllm7121sko3VLQGVnILZFI2IUk53lZ8qRauV1HlqUtg4ZCmpSnqheGn57XjYjYQtqfxsn46Fr-XElpPxvN_JNKBDCvwDkDcg2ch2G1WizkU79333XRdyiqf2aZmzZNw2OUnJhh6FSBuUgNzQJDkY4igfu9D9DcGmGtYtTtcKYfh6rre9vnnctk91yz8AFs_z6qAcwoiRLVP4w_-9pZ2N27tMA5F3L9hS0k0v-6muTfVndLSRuuU6JuNgOdVQlxBv07_wbf4Mm7ly9OgzYkOioTL6AOkU4g6GCcojvaVZ_HjmqXh2uieqb1-qZ6wWTxxpBYCYPAAoTIf6NE2sYb7rZZwhScnBA3FM0WisLSrctU4XepxhtdHlokmNgL-T7iem9UMUy67mjOrGTSiyIqYcIuyT2VA8T4Y1HVMeJSJm7LhlrcRWx1gd-tYtPrMZj-6M3Lvj3YxL1x9looXIZ6zzqldcevQmYYeze9NMwavKpfipR0jJdV9u9CpQ52iYG2KDNS9EWiMM8MTTjO9BOAJjFwcm2Eyb-svTC_P5WcBt4K9_BAu5jreQVWiuyyeRfCbfRWi62n-Oz76fqhBfpNV765JsCI7Yr-TwJrvjszW-IwzIqP_E516MMy-057VdklxFYaHPOkWdQpcL65AebjygqPLizlfE"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "private"}, "values": {"several": "uross", "direction": "jason95", "trouble": "hilljacqueline"}}, "first_name": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJhdXRoZW50aWNhdGVkIn0sInZhbHVlIjoiUmFjaGVsIn0.Lq2Q16aYUSBsmlftycyWjzKrb0tcuhQ9tY19Z6JB0OO9KJgs_Bex8Omdou7fEeQWGylx2g2J921UMIkuJI1aGXCsCLT6-UjPEjZMiAViXRRCybVqYcD0cTa3ehVDtwkY_xAqCCut5iT5o9uOAwh3rDdDxivOnMr97tuCXKmZxwA_ik1zpT4dZlCUlfwKzqs0nMvGTCaxkzHU9KMPsBF94kmn5orkrLzEGZqemQH5PekHt86mVb1M1pEGIA7mFO5VPk55eZ73l_dJRy0Hzga5fpNCiw79mb_oall4ccjpMdIYqqHe1HrDy7Q9xgIp1AnFu9oP0FP5A75JXlizyTtEHrbb5HS0qDZ-QrueBps14K93W3E6KSOAfxfMjJD1WMw1yr-_66eump1WG-XIe50CWsxxOfzQ7qChIhaP35BJNCWjLBXC-AbEf-sbfbxeFkMR4Fo7vbYvERO2zbp9u5TBcYkBdJjyJJX82UAFL1gRJFJL9dpgio8Fge174YQB2P35kbOG9XteM3pj5s2himcpqNcTOzPzRiXocOEMlq-_DafA6qQJ9w3Vf90lgG08AnhTahidHoUtQCnhzRyvAKq1X8OjuRRDJFojQNPtKkfxo-V9tx9rcgEA8C4xcBNoKnOaiIB-kd75-wgf6bxMyu-wXqDsFV_Fsgm4LXnNF9q130Y"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": "Rachel"}, "last_name": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZSI6IkdyaWZmaW4ifQ.gancRk6h5cyR_5NqRnDDrSSjIMCw1W4L0J5sgeHwIE-UHawCidD4Kj0oaevk3WbDd4cEvS_Z2bU0NA22tgFUT-ur0BesdFd1KMqutmNUI1eCrXMkCzyl7otdPVloXQd19u6ZuDwrNE2zkqvw41vSKQuyFrBpaFz3u6dbBd9ztjk3sySTdWzzKkpN8A8wyzYm8d2CM7EDfy90IVsGvBJYOz690cvu68kn9iN2esfuRu-70iW6gc3FT-V_xSdR2C8AQCAHzUTThNrvty088dnRcI6i78GqJy-BwrUYGlSg_zk_jC3QXgLDWS8krmcgzImxkfLFWm1hZ2JnVD1iAg-NGG160S0OZpisefX_IIzXDWL9Df0jJ1ZCKdKQks_RJ10ErKwvHmF6nc7LRvJB-8s1bFxJdaGg9MINK75eiW_gl0Vbjx3D8ZU-vskh-his70_vglEW3n4XuCtz4f0RgbpvCCg58TBcPZkbeLfKMkM9ApjDqkyFHCqwXGkclSbxQgUcJtvqesv7TUPpfDb2tZEJ6WDvCCXaH6hpG1eW6jUj7GBTQCwJquoE_nyF8tsuHVIOtJjVSbv0_qYTi2QeUFRhiaPY7azw_oZQSjO_bbVSGW2EZZNO9nrLGP5hlpZFsIMz1JAEAWHIH-yGeFSoIIanMBFzlHJB41Jmq2_gqmQ8w4w"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": "Griffin"}, "primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZSI6Imphc21pbmUyMkBnbWFpbC5jb20ifQ.vx36wnes4oXnB5lPmgfgJTCvG7vlVNntGQnn5yz9iU9Z58bCGyONNKiXZgnNq1wycaD0iQGLhFt8elR2Y6_lRMWRdXl1WqYc6iZCh3Ptwc_CFG_gNA52J9nboBr6xSQZCicZo4YJekT6Kyza3BUchB6urlVImOR1pJhcSlXE4-7IiJ_HFVUBUt5VsRVHt_D2UEHvkb6UcemICR7pvpD_dos8Xdhz2EJdeN-KmAvViqCduDweavLn4fYwbPxwsWH1iDJvgCSX3Hv789fxYXpXOLdDNAzT2m8wH9d99oL-qNTjhfeDoQaBrtNvzTkARrnpcSzqjkWqZiBEs7NDqlouZhJdwgi6cBZrSPYS5VKIHvSVwIFbTPESo7gbXJWOnPewVTinkl08FeqPqwt3BFaEvlzrWjbNeu-pFbhxpaUyiBuQW2zyKj-5kGdT0pJp2L9v1WwuIEzV1vb26RPrjfF-bAzN4P-A9nTiUewvD590SdOKGsZsxkKKLMDaqNa7tZQXSV-SfQVq_FXvc0WAQBT73mRHZ5g4biZ_Gy3kOU-OGj_PwMiO52DQfcuKrh2K7LSUJTDjEKLpvP3wJfq2kyBGERFVtlBQWAH1dzv7UDBsRMP53jn0bNzbjC6MOtr1W7UQzzXn_3IRjGBr4NnOntoPmYlaC1ooHcBW-JIR2U-Lx2g"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "value": "jasmine22@gmail.com"}, "identities": {"github_id_v3": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "vouched"}, "value": null}, "github_id_v4": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": null}, "github_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": null}, "custom_1_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "custom_2_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiJqYXNtaW5lMjJAZ21haWwuY29tIn0.fLJ2axze3genLt0LEEkvHrst47QIBythe_c9s2Jz9T0kGnPmxnlTgCIDEuPkWaWMnW79UcRnvP2-WOiGU7Ck2vLoJ17ueDmSOPFDwSY-Z5x_JTOQCFneEfmeizNugbXIpiLCD9KwRsB2hca06LYmZKSVrIlsthJ9jGow8BDQFU9tkeGJ2llbWxPAzNebXSNIbg7bHZayvhTOWcswVoU5Qn9JoiAtPmgsWTdZaTtZ8ydOXr_Xd2kS4Rqe0puDN4VWzXpYw-QxkTvT9X6h56utzils9R8Xoe7IFo4uMoRJEUcw53OSDU4u7B0LeJMSIVaEEz-dC5vX-Fa_Sz4H_ribFW-3DRfQ-1CL2otVrUsFWmzAo59DEWDAOmc9VvMLk_KPF6BZktDgONhXhQMxTLxHTu0YZv25cbFgJDfFMpnToMaB1hnC1vDfnWTO0PhRmQtdCFC4d_stJKyM5jlEJ6EhzDHFh89nvg4K4b73YmIq5uL_5ewkBsTodaa1mY-xhnCVQtB-QXzstpJLNS4l5aqaBbSyt9fabxY-Ejhc-lwxqK67deS5J56aVOHLNyxJI17LpS7WHu1USq65EnPRa6-6oGZc8NU3VQwlHy3w4--AyqYaMqdzJfC7PsbaqQKoNBpqyH64oxaw_y6MlBitr8YR1Ydh44fINNVzjYWJVEKcYTE"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": "jasmine22@gmail.com"}, "custom_3_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "mozilliansorg_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "bugzilla_mozilla_org_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": null}, "bugzilla_mozilla_org_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "mozilla_ldap_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiJiZW5uZXR0bWljaGFlbEBldmFucy5uZXQifQ.TaxX7spvvnj8GeTUC0_cmQNun8V2Fs83SW3eFD8k1oBaYHbtBgHAJTuQ3ND98MXNRbw2YuyDz9HBmO1-AtiJ97kh1snOGlgmKMPqKDG0LO88ZK9mWoV8jSz9tg04-F2PfYGapErHwZ2ndw_U6xchcHbC4unF-rS1XS1LOVJcNPD-0c7RRi8xsJq2akv5ZLk3VCHXS0J-V757oJbMu-jvmPYpTPs8_nl0BPGEdoG6GvjTM_cXaJnaMYwQO5nWLzKprK_wA4bBBQW73I5Z_MTQDzFOo6Tz0-p413L2GHoQjS5a-iNzZPDjSB3iMQXhNWnb5uWE1tnSaLHT3HJHnmDb3HHO8UGAq8cPhfuP1n-ffX1X3Zmh51iQ4cgoSwj50WiQJfGXFzNPMoPvdU1G4svSVLqMGiCs_X3qGHyY08g-CbF-DPx9HGJuUM6BVILc0ruXAQ8dxOMcHTwJ8wlyk4rTPC41NIgXtJNRQAgVKPt6-PHrOG0G1EYmaqy0-K9vE_Fz1srrF-5IFw8pNmW8VWnmsapIvD-mLnpA5wCuTACwR1pNy5-1E9ZQjy7UyYSdxRpAvxXxFzqdJPVw8P0q24zNjL1277MTP9K8ZF0trc-kG0pMFVp1qvD7r_Ecqx3dGzwJsEVJIuZ--Vtywer7rE1inKXBj0hcDaDAh7EuqAV_Ikk"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": "bennettmichael@evans.net"}, "mozilla_ldap_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6ImJlbm5ldHRtaWNoYWVsQGV2YW5zLm5ldCJ9.TcgEqDAdp-TIGRa4BpTV5oA1QaIExNIol2Vo1FJHFww7udOX-XhNwFqTA6gU4SprSN52gyaN6ESBcY-0ddJ8jlKU8YY9jXBkgdZg8XqDb314fSYBseAasFyQ39bXaRkHbM4Q5MhpDy7A2nd-KH-SKsLsnWw5TdA1MpKeIfWsx6AdRyd4JZNQUe4J4ij-iDOGFFQRAcAZbjhzIFZi56R6htwZnZkZH1OKIeInnL8R7AsDdwH40GoPYUzoaxnnz1K-19878p8ypozMAc6AJb4zcN_6n_-fGRHC5K81R3ADk9Fr37cgaH3Rv4D_Z1h6An0xCIANAtj8g2yFCAHwgAo5hYYDEFjHnnzuNcG-iYYpBd_7d4STDJ9TUzcLuwhA7dZzQXTZ7Qrz50VxKWtQE_jK8YKIWXGcectsQwUcqOcPAorR-eeZSbl1i4Q7FH4cNgps3IbmyF1dZWv5BKAzd1a485mk58tbFB1dxobOKF0XQ0FrsZF7cY8Wu5dxvPz-sdMtbCqb6FhvoS_9a4GJA-8ijzhKx403lQPjcpv-yt5Jm3VvTVqNQBtnXN28lHqcVPYHfRlpVyRQFrp2Tq0odDX8MoVrwzbWqBD86CkZ0KMvSlNAyumiYmMbf4_CF8isxVUsZ28Vvgix1y-wN5UwvwSwUy-ykow8ZLQPgXvsvQgQkg4"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": "bennettmichael@evans.net"}, "mozilla_posix_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoibmRhZWQifSwidmFsdWUiOiJiZW5uZXR0bWljaGFlbCJ9.Ks6TpFTyYSWc2zEDJr2sBpkQM3wAbcbaOcdpOxKRD8il8YJ58X8xd9P0Vq-q9rdu7m_LftQWAaCieCHk5E2CspjTKY273cs4aTgUT9TDhLgAAEeV2QbNdYQTtRthZu-pw2hXB42lhsp0a2wyAmnv7ifaptfhRcRHdLAbPjHnmmCAW3TUQMZAD4MUGLwV3HvfBOD5WAjn0GVE09ApBvZxGn2TCoz8kKuel3EQAyHM6b0eu_KkWpMFhv-ktcBc8BiZIa7L8YDp0ZRhcmAVUctjcETsFD5dRV3pJ-XIPjdNJ6MPqexGbCw80c36UgGnkvhn9mfc0YR7RkDKE8aZ7paPV-81BvohKw2oEohPot_QtcPzk3dx73OwW0InDWrAeAdMkfisW8bteJPQmv1C8imQTPeIsKx8DlnHHz81U_fjf3zMTnjPRXFsCcydrmuNugQSzCSOyq1UYRHenxBZcqrN7uyH2XrWL8FYpDaZBT9UOvwHdPX0g8LmkOIewPMwfOrunArvhQ5zqjbIlc1wcPI61yXmJQpGU_aA0w9_76_I-t_EUeAYsKst1xgi1-dKWFhQrq6AxvoZQDWgtNnJUVpaheHqrc-7xbURLttemCxX4wTx55X6nUnWZjSXfq8ORyIuVf9W0rgckX4ziMudXV0Jq4FvkEDImRia-ixON9K7pzQ"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": "bennettmichael"}, "google_oauth2_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "value": null}, "google_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "firefox_accounts_id": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "private"}, "value": null}, "firefox_accounts_primary_email": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "vouched"}, "value": null}}, "ssh_public_keys": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZXMiOnt9fQ.upqAJmteOCUkNdTGVMaRx1ThPx-ETO_VoOL82TMAlyCg7Ji95mb-UHUQiCNQxf19yY4HF9Sm0bmoK_G07uJi5qcc1C3_kkC_xfAybE36jQSq7F3xcTdIRFyGI-xWgROHkDvY-L5y14A4Xkp72e7dAE99R4acQjyin8WEtAULAy0mL7j6fM4fVYiVd-aZgPM4sUXx6XSdRm9-2cdlTgg6YpFRcl3C8xEPiRsV1083yV336Id4eqapS67doNLYHv8gM7r9QATN6fnptvxX1GdAw0fz6unUMcTDBMtF5kFXMQ9MV_TWKdDvegMWPNG6ukyGvsrAZ8Ur2TGlw8-in8XVb5NaNCkuEMS8oyaAGk9LQYepwaQ9k2eIQx2XPONbeekzDrZkeFIDpsP-8492YSQO8SffRgezWg5M0EFG5KJcwV5Wc02vgc5EUBMId4Gzf09a14hsgN6jNsuE7lsp_WoqhTVpgLdpqAqdUOQe5vpHbMzg8rjNhCBwmdNZrELo70zVNVftlm6FpLiHYx3v_9wql-LlRn1g8KE_v25N1deyVdeTI7GY0NTTNw-vn0GC1oONLvUwsNDuDv0eS_JA8vob_GJhBoCNOHPaxqk1CsrNHjiPozDPaLryoDPxphJRXiZZsD43MqE2cn62EdkVYq0u8K7WusXYihEuWHI8LF5W2Fo"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "values": {}}, "pgp_public_keys": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJzdGFmZiJ9LCJ2YWx1ZXMiOnsiYWxzbyI6IjUxY2RiZGM1ODE5NjQwMThhOTQxNDVlZGQ5Yjg5NWFmMDVhMmQ5MmMifX0.Z-D0z1A289Sq0Px37GUB6WBSd5CXH90i8iAmLZ4J8YHYJpOPlI_UIyqZBwz9khhdq1c8a_mzgBHsNBWTT5wU8yRnyMzgB7CWbDNPjTUyak_MKnLvKWLQTXoG2OjRiKDx7eFMOeEHUKtMRnHmkInbwT98-L5XGLxf8NPemB5uPD9vAtp9Ra-JHmFY88cU3MqxDi6F300KQu8cazmRKyLZdUKuPlxvWLNsbrNksbZxCHivLBXTC-5U1Kf0FoWaVlRIzh4MGIdqi3aJzGjufFm6wt-hwdGBMZ-1t9R3g7jRbcNzBAPShDch_UMMU9raxH0J2QO13CQ5UG-uZeAuYr-XwxlqjBzS5zljSo2H4mS9Rpz39emn2ZbOkwEwfowcQioMWbkjd52MY1y2ti3BE848fh1w7VFD9ABYjY8rb8t21ZZXp3hYGIk2jaMRshUitNh0CYdVjb0bkdniDT6pi4As-UX8H7Tt5vNd9Dir7vh6AywzjRjwfh5C8bbpY9o3Nl4wkBaVvnF-SfpZqgXteIJWAn7_beIuqwCfSHoY2EDl7kCYM3vV82RqBwvRTRKUiQB5r8AGn_dPOhC83UaICUqnQAlRrPTzJ1bo5jSyQneurvOAS6XW85ixNT0pNDcIEswU4OFqZR0hT9eRGq0qou810qOrt2Dv7vT5AAln9LB9f8E"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "values": {"also": "51cdbdc581964018a94145edd9b895af05a2d92c"}}, "access_information": {"ldap": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZXMiOnsibmVhcmx5IjpudWxsfX0.q5wEE7JLTq1P0m1duk6BNXNVDYnZPoggBV4CJtAAWOtzGxL321CBmeGXp5qGP5hDiEksVGYgFdaLJ6DYdVsbQj2TZ-JAG_A8pYF9UXW-TUYR8aVAC6oCalmEz-8vpG5frSqQ1T9cufDy1uZusCmjUSV-I1pdZIKnu9cRgYuPi4YU80JCmXGtwxKb8-l_V4UWmDxFbL_nFLAvu_U5ilrFnb26A6KTbdFuuoNNO4IswxYFigQcNNp69_4Iev-HI47T-PtGRXlG6COvKrZ5UOhQQOfSNpM-aYRSmYzsyix5Yv9j7W95MVWdI0-SSanqSBGu7XV602KmPBYcctdZoWUrPVqG7C8IFEoHI8JKyEZ8fgh7iZfSeDUzWt9m-lLvqpEIPQ1dpufcCID37vMf7HisJoqoTL4cApnpSP6NyRt5P5RUKWRSylnv91HkBzkQaa4Sk_jsCLOJ7FphbpZQtNSZfhy9KQGHrdWllEWYKAH2JvKmcX8BzIvIrLM1COg1ATHgRdjiB1O9GadnRdY1pOzoCTHEI844CFXZvuWlCE_38EMVMZnSCtnJkEk9u69LVc0lHL1pyjK0WMpjtWYJeP6wKU56M7iWpLz8cbLlyKVa9NG7kqvyuQeSAXWo5J_Z5R4XsS9_WCKVLWazwrRGtOViSJdY4v1Kdx-o2xZ7FDrBU5k"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "values": {"nearly": null}}, "mozilliansorg": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZXMiOnsiaXNzdWUiOm51bGwsIm1lZGlhIjpudWxsLCJsYXd5ZXIiOm51bGx9fQ.C60csM6IYMYI8SysL-AMkNiJWr7MkI6u-Bofv4pNJIA3Y9kYXnmk5Bte9OQayUY2Y8EiKnpHAXl1g-74xGSuypQi6v4TvyLYfyIJq-8zRpmjbJpiaAjjRzkwxNMEa0imoKdA6fek_FIwQVD1bgcMZNDUDTFus9G0wZh-2eJKH0FJCZFCY5KVGKfQL1AguPJhZKhdxIXP1RJWLDXoNJSZlhj3bjeNRgGsg_Eu1B9ksiWujrEbm116iJ8b8_JjwkxAliZ2Djp790AojcLD7MEfPeWZsU901oHvpP2g0jUf9IvKPZ4f8GgSpyjVL386GCaHLF-0rCWIz7RCOuxlqSEXI6reKOVcFKsB972DvpD692A1bmsRdxv6lgfe60E7IEAHVIxKNvCrea_Hxf32Id88J62t9uWlPKXFR3LEQQg-Eu-6vGb3wGb90MJFuG17_Z40LPY6B8M5SvlB2qp3by8fQOCobs6ssYbm-a6mzm9gDeZN2fNSIBVngzBBxkZ-zdta-X0PuqaU54wQoRZb3GnoLfJulw-EAZA6KVK6bJ4jo6Z1hexKarYuPIGH_poF__t7GeMIHBCpX6b0GxOObRnjzaPxlbOUkWCna4XSyl58u8-57tYvQjdV8qczGBydQk0MMYlpzJrW-2AyqKHviZNO0zDur_45ZRKWBzeZgdEC8qg"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "values": {"issue": null, "media": null, "lawyer": null}}, "hris": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUw6IFNUQUZGIE9OTFkiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7ImVtcGxveWVlX2lkIjoxMjY5Nywid29ya2VyX3R5cGUiOiJDb250cmFjdG9yIiwibWFuYWdlcnNfZW1wbG95ZWVfaWQiOjM4NDUzLCJlZ2VuY2lhX3Bvc19jb3VudHJ5IjoiVVkifX0.mJwIFtsGp6pdN8v8mpcyElyONL5R4GHovVyWQkCj1lZ19IdfXT0ZkxXGEx6CMhwEoVisYCi3IiTcKoezKvaZXM68oE5ukCwd2pB6ibTkMz_kwgxYhxeECRsBCWLZD-KAhuFWteBXVSXEJtfYen_2XKXHatDts7GEq7DqwOF-JpleOGTWdBCj0q7PJ3ATtoyXjBV4lGG8M8p2gn1uDCsnduwuMoELzWTHlg8Wai3Lde7v1jL7PawTpY_6pqx0afBpNlBuliTLRNHSnexpYqiP8_3OStijVeyX_TT36-_GmLcLMrWiH_Chl86BPDfzV9L4xKCyfImh7LxJLTrEduKkR4sXiRMHQj1Lx9gIpfqBqWboYAQ2VRjd3Z2mqr5Tm5beUHiMINA34-NXXNA9ZNXNPKtZFORoQmZqoX5CR0DXQmEtNet29wCga97ygn5z-utSoy_yL6CUSU1pXZKv0dCtTCbjDMzf_UXBb642eRTPu8FAFwoEfvOHFat-ExvHIADq5Bo5cez6qrzSyNsAym2PlGQ63J8qzWsgoVbxuXqkNms3HcGC-RKeWgYd5Y-6rvghmmd1jaAIrVN5IIWUsL5iunKUhJURqP53hlR_XkWmchBMsz9t4iszFACZUb0aBus9h-jvTRKrk4jiy9kqvwMAbt4ykcTVLKo_CN0nlViUcCs"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "values": {"employee_id": 12697, "worker_type": "Contractor", "managers_employee_id": 38453, "egencia_pos_country": "UY"}}, "access_provider": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "access_provider", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7fX0.v3DxRZbseZJ8ptpUFTEZkzZuzoKUMRRiMspFsyXtQxuuDSFlKA6e9LTLfnfR0ksZf5vzdPwk1qbEK1d-PYYmjG4ixb8rjJKRlta0Ump8TQiBaTj68j2-CdYAf4lPRs3rOFomLenKQg8D9sEezc9teTgmvEo5l5CJCzBUS26-yeuqCSzRfedG55tUQ3ZDh1QxTjO9ySq0gZTd4hx67YybchC3gVRk0qNhk8C_6oa1LyjUMwuI-2CjriZf_4QVOJ2vBR2S3bdA9-9ChmoT-HtK2l47pjcVc_yjQWOi6dqKZPxhFmkfRHYzDXiwHDIlPS-qB0RDQ6MWug6iozoTKapzVVeErqJErySmm1AEx9Qo95bNZBvNaiKK8vr9jiSmdcuuZ_sNWqmUoRZOI7fvTlezk91GXHKu50404bGgnxGvOGmnVWvwWoZF5UrJ6m67QaidpE-6p1eHLnFTOvEmw_UuMCsS672IkZXhKx4pSodf25GHgnh98D-bHSvfuSO6oChgjz3EToiYSSdJh1UGQeOOc0xENqi1RuFGzTu_E8gMuBUVXkVXm90XMA51YnyBoWAz22t5vfyvJErccW1rE1NOkc84IwMncvL9MXgHSEWRWIu8t0HNVudEPoE6OEzlOhsEiW8lVNwtqAZcOzmDjYSIUlP-AMwSX7ZbRZSb7r1G3r4"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "values": {}}}, "fun_title": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZSI6IkNvbmZlcmVuY2UgY2VudHJlIG1hbmFnZXIifQ.4dd3GmpfcKtEDZctUYVTU4nAPvaS9kILvdbsUTRzIdeAtQuN6_OG62pZL0xc6_7spi1Jzi9vwN1vZFXmjzvCDxc0SkBsNaVQj8SNyHDVfuoEuS3jRmYLszqyBKc-vxxR-HUZ7uLEOa-wiXtUGbQP4UoCjG0WvlpntYxunR1UDj4074XYPMKk88Ccd77lgOZNFCS2ONyKm7dGWV7fSde1i6PFIQYc_YmHWOoBcuj_Z3EMjoq1nSgYZ2zP_jo3Gt4JuV_nrqDM2UZssSKdz7ANpaOCEv7aEVgPkNLGvUjbMG_7SjSTUDVTy3CVoZQrtkJpMybHmIsee_sW3VvbWpVlniVGpXLU2BqvFQyMHOKwDtav4-kTsXvufnl3WkTlU5pHcPitRBH0gbfhf3p2ioLt7bZejgxbp0XBmWaCFV0vUtf0Y93ZKZD9Mm9Jenfx1IsTMXT7Aix_6681nQC31JTS9-5ye4ZhgS3J2-t1h5jECwUY9Yi738jQzHatwC1_k9IaWyA16SZWxAnM0r0hDa5PV0gbtYLoBLQvrwF9qOwOm-J2KMce-tpO5NWNd4QZD4FztDzdkehzpznpl1mULUzWKXlv8QScBjk0WZ9My0pUijM_boah-KG_aEcmni0GLhD2TumqiSUnv2a_g5GA5vqthRFuJxOes0-7ga9E_WCcN1s"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "private"}, "value": "Conference centre manager"}, "description": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoidm91Y2hlZCJ9LCJ2YWx1ZSI6IkNvbnRpbnVlIHdyb25nIGFjY2VwdCBleHBlcmllbmNlIGRpZmZpY3VsdCBldmVyeWJvZHkuIFNpZ25pZmljYW50IG9uY2Ugd2F5IGZhc3QgcGljayBsb29rIHNvbWV0aGluZy4gSGVscCBtb3JlIHN1ZmZlci4ifQ.ThfEwWsy7HXeitCrRYEZJ4UhIIfejtvb-Q1SW0ERgJdQljUgn9ZAnE_TapcylbZKf78RKcdN3f6Nq6YWmujyV40h9gBg4uweJ4PO6MQZWGuahyF6AQpODySIY0No92Zh1-nsrsfhfidK3nmFZrZgLh0R4UgndVBGNp3xsqXRSJK5dkjVhd9-uq7ix7kKwgo85qha9cVgAaXZfF7yyEu3DA-wGWrordWn4T1TzFUgRfIXpifKGVX-gZbg0k__aPCM68VGZ_N2AFE07hKkrYw-NBKz7y4J8a9iRUiQ_mLZCGIBHaRljTU-cMvbHjhd7--i7Dg3rFcMDEXLVbrzVaNjt0lPpGrEqpPLnv7KMDHF2SFE83Y3ucGhl-Pm2TphS5sCgUQR3r5HEf5voZR87ZoY1bWJ78VeYj6H7ZIoUCThe6VYlaNmWN2cil44GwuEqQYGrUv-X_24N5FkllanmDzzvcH-QMpyoj292OsiU6sc_XGpn7-MvGWgyAIpY-bHptXHYPiROSsfQFnAOASmUmaNZVL6rz3j1BQI2X1Wfnne7-p-khhoWGtahr5dLuiaHeCjz_SQSeCp_7_RXYCRDZ-ZKT1VwID3frFbzEDxDnZP-m127dnmrXBGRfFvO0XYCg2cKW0NGRfQM-OOKxFhlDitEogEddt1jATCd3pBMCBDL_U"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "vouched"}, "value": "Continue wrong accept experience difficult everybody. Significant once way fast pick look something. Help more suffer."}, "location": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHVibGljIn0sInZhbHVlIjoiRnJlbmNoIFBvbHluZXNpYSJ9.JBcJaHw06jjb8JDO0YPIEbqDUEHMQLF-m73O_7VBAk65KExaZ67lotNKeZ7slyqM3ey8S64nPNZIhb4GZt-BNXn0ASsDxvnvd4mHHKlIcFdDjGnljcuih4JPn2sk6EVQxMG5SJv8UIJdhfqUIYuaUlZ8vYwHSLDt-MFMeIGDEi1jd0iw5-iF5i89Hizx6lXZxu_du5cJKSB2h5oZHKAhP6-XHAkSI7DsvRbTcIl1ej48cbKpX186CTlzPjSjYoQwLP6S6x5yDYsz89d_liyL0t1-OxbvcuMbXnSdqXZhDq2RpRkhrHn6laTxTOUUnz0VA4AxplNWaPc6HLKlu9kkiB4xxCm_kFcvlycd8QtrK0caMYLst-5SHZGN3HAJ7raxYp_ubMADeUhTnjRPn3MaPCW8h7rBYKDZeDMRGngVJeJerP66E9vZs98G3QLxsU8Zn-6NlCvInc37CBKo8LLdxCMUsPMHQ9uuwpiSsQvXyr2D7J4dmCZFiwWkwEQpP67zSQDeySKErXTEigmoDUfpsCUhDZdss7Umvc_iVddlWQS1t3LGyqscwN-keE8sk9pBiquXzrn66T8Bi6R6CTaB_Vqd2zwv6wTCTvry47bJfvsmMs5CtFRZhaCbBOdKmp7L4R9waTEhUREobW30m_cEMuNGV0xLXXpcfi4iPX0t5Mc"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "public"}, "value": "French Polynesia"}, "timezone": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6IlVUQyswNTAwIEFzaWEvU2FpZ29uIn0.BFhkIvXd26zmiS2ilv_5jl34NOT2PWbYH01xSIR0OgW4vI_Q_BuNWh8IY4GMvGMoP6BxYOAchhPVvj3gZqXDueztbYqCuoCQkY25cPn8yZxeqE9TfsAYC9IgwCsJFarPP59rJC222zNYXI_DlaYUJFV4JoQzNg62T1-hBYu4nyIBnqjUPW1NZ63LFRDDn__aZGLdIEqqbgRyRs4zfTgxqkn2_t6YEGUOTfOO8z9r3ilkk03Mc0FlCh9QRVIFyEs9-T7gEVe_EpE3azeOUJtSkA8toFnr2OOKQUuyOcRdA-4yUqkI89a6rVWp84zMeZQEQRLTnsw3h9GfFBayR75jtXwfVmfULBdwXoTXrXXULk8HN9qaQ7NebQigdIJ7llSmT6WnUkx4AknAmWezWBBeOXIWhK-Ezh12kzxsYC8nIFo8hmNOUIzcch2yVYx1bQ0IhcRXXhdw3LCZtz-08c3ih51lb5GBK_Aq2OzUOVIv2NqCwzPYcxIuZ-1uLmP6A-r2rjOus2IxQrCSd7OINFbpL8hyM-6EzDc7oJVXVckTFU68vaq0p6U7b07xQZ5U_Il9iyuBOzmknN2_GOmUFGZ2ijoDmFoNo9s37xE8aScRErzi5OU8kwvh8s0ykafkZCOElROqk2MLTgwaiyOgIlHI_YMQQgmLUkH1FFfqRHzpP10"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": "UTC+0500 Asia/Saigon"}, "languages": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7Ikdlcm1hbiI6bnVsbCwiRW5nbGlzaCI6bnVsbCwiRnJlbmNoIjpudWxsLCJTcGFuaXNoIjpudWxsfX0.XiYcTxib6c8ubE48h9Yt8cnrzzk5XDp71Zzfp2EIwgCCBagadwrYR1MR5ZBriqLq8kpJofppLqJNFVfaIiSUwZ5wyFYG5DhL0ZPK35Z7vvMkRmOCttxO1XNIBGUonMKjf2ceYfMCThGZ_V0hziBG0nOgEfKzL13wwmktucO6LO_rVTD6zbAG7ZFIGStgbhzMNP_a0SAHHULVmcwEAMkGkvITW3GUGGyx0ZPKw_sqvjzbhrK8sHw8RiJf34L6r5Z0eROIpv7S0bBxi0xZ_c031Wjo8eXhZigI9wxLlcIERg5S57DkmLf077TtJS-xHggNM6p1AVtQ7mXdt9bAAUDGPCWhzXiEu00hBIixkXw-d7yVCMnVUjB2BOek2qzVx2yFVFYhBCi6_b_ZsIQq9y9lvCUQV1ZGLMtjcMAvO2_vsO_CFmCL8EfDgHrvtzXMrxh3CN_726Z561b_RmyuicsZxV8PfTHplsG9nmMUVI7QYTGiL4FfZt-6lQhqQ_RFjO6FU5OK8HmCjG0Q-4_YflpCH9MD_mQ1rSfk9uc28ajnY2OdoyeaRRAJqRF_mjjoSyQ-Owid4XEh9HtybzOL5US4OCnkovp-rM-FfcMRLmrcDa8ZPKMyvvMrK9F0ZraUSn669_83zGgTv4JYbE4IUdsMzAwdnko0PwIh3kriS6ToiOU"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": null}, "values": {"German": null, "English": null, "French": null, "Spanish": null}}, "tags": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoibmRhZWQifSwidmFsdWVzIjp7ImRpc2N1c3Npb24iOm51bGwsInNwZWNpYWwiOm51bGx9fQ.bynNcfYq5At5i6aRvKa0Ez5KdpeerCWYCvJ2qNUfNJ-AbOO7qTr9w1s8PBrbc0RGbLDUBPntGRC3sjEeK9DhN9E2aFlDm6I85Twqxc4QSjwl48DgxzJwE2QHq1-suvVP6mb4PplaAWTpguO-_lW41MLHoD9kNXrbODfXTy0oNJcR-3MWfQ4oiGMF2ZEgj_8Sfit4NZKh1UuKq3lJNAh5oZh0K8lmH6pKQ_y3eLugjKVIql9WmvTxTGKGQHrnSBFI3lHXCkST3UtqN-K0pbk_thhp8T1YBdbxugCsCUyhv05l3MuYHQwyLrRbmUhGejGaf_p1v46eAGhZWeWx6JEhXzQxrAh9HpKd_zXrFCBD3xI4Ix0yogkSYF-IL2SF56mpDHERfcye2V63YGrzFk3py2tX0EYWlhXKGDgnq-gE7BM25X7u5w-cIbgc1KM6a6ods9O8uodx_Iu2AAru2bQ9oFoOf6aQpXHir5jwVIyFh8f_I8T79TZDqJfl4i0ikYCpNHUXIlJhhFQiIhjroL1Ni9buX0rqVh5Qz3Mke2FmemlJ2uV4sViejalCI0-FRZLfIEKTZf5eC2A2-9vJtPf3-VIKP-QLH7CIGtoRhU1rGYCA3-4jvyZVLSzC5tPDKtAwut3ndFaPi42Kkslm-WlwA4u3EDRaLAFEhjjiQ-LcwnM"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "values": {"discussion": null, "special": null}}, "pronouns": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": null}, "picture": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwcml2YXRlIn0sInZhbHVlIjoiaHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjU4Lzk4NiJ9.D590_a-LphdOZlyrgtYWwyCXeKF0oDsx85j6zwV5XbBYWpQKZSaxR9drfiH27-BPnv7XZxPeIJ7X9W7HlNh62c76K1A-fYxGOCa4tc9LrSNAaQw_44GZ3YFRy5GZfrV95Eui5pAAczPURFLT1YxJxhfoz-GeX7eA6R81GUraXdOjYFpb5BR2J6FHyeuhV5QERBqD0iqfM9p8THgm7M6xqGAdpx6MYjYUTNkjyYisUlY5Yz7Sw4snyOS5Ghl49O4phDOZkT7JdjCcSw5yIZed9K0NFquU3zvWT9qsMdu7iFtBbaPVpIxfB1FafAbzeP3COXz1HJqrPnShRj6pwpOR4HpwJoUpy0lf3iFvEwEMfZdkhQI3VN_Ff994oIWpwTsRTl7MTtAhJlxCQIYhOW6JwECV8fLVrRtKVVOZfdqQiQSmbORwAYHP4A-ZAq3Vua6VjR8NQ4etMLCIjYyJxmrXtzuSRVW1tYV06gcSImttt-m-C_w4RrcH4INJImIX_cqJA-A_dgnCjO4HPDDhQmRd02WJfeolfOQPoSOkGOqplHQgIEdeDgaC2ubVfG6RfwtNhfadJuOHSRnm0LRVmMh4om75XmMrX0frmEJCOi0L0jYE4iLkCbIB-4JE1rlBk7ejWLWc70dICoOfCLgstaFMCKTnuPHYPzvxkMaT0ATOL00"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "PUBLIC", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "private"}, "value": "https://placekitten.com/258/986"}, "uris": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWVzIjp7Im1hdHRlciI6Imh0dHA6Ly93d3cubGV3aXMuY29tLyIsIm1ham9yIjoiaHR0cHM6Ly93d3cuZnJhbmstdGhvbXBzb24uY29tLyJ9fQ.ohii8hilrXMbfCt1eYkyDaUSys96KO6DKIkjFkqgIJcJ7ZimPB1ZLbq4FMRfU0jrBZRZr6DJUdHd6OJR-IA9-ANjEJeKJNK_Cnp0zj7XFgyOcKHaZAtGyxquKsjq7rp71ar0oTthjakZfhFnB08x42adBlIpIhn0aSAKORyWX29BM7EMoQj9ZB3P_uc2I4rdpOpyYVNmhTgbO8hvI70MyWQGceOpm3bDE4mwT5_PPJ6weFTOcwvCjmX0x3mNGLIcDjd7s7I8zbcGPzjN2IjHnB1YkFpfobhBBIT0vHD4UZkfrhklzKOqz9hnMlm7YWO5mSY9QjBnGypYwOVdX-qbz9h8QrM80rdtbfi0Ss_cEkNHztn9pns7AaLbUCrKtitKmghBPVSeA0xgO4hzjBbTyX7LM4IoBuhTYcFalK46gI-ETYxiIklSLuZK9IU9QQo1MCK2kxFm1FzrAcxg0RS4TsOfks4xKnKCOu2PG4aD01Yu5AgFrVTVbxaBxnQtsNhdx2-7UIe3JsKYOPHZ2Mp3tu-q_uTxzY-04LXVAzC9Lp5inFd7-28psLGrPY1xAdukAJUE9Wx0fU6Wl4JWitvKB1dcYSBYbAB0-JO29p_uMHrs2MLukmMH0vGEaNPPCLJBOh6ySMS1y_NdC3eJV1tsg9ngRO8EFrtOaRa5fQpQ4WU"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "values": {"matter": "http://www.lewis.com/", "major": "https://www.frank-thompson.com/"}}, "phone_numbers": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "mozilliansorg", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZXMiOnsicmlzayI6Iig3NDEpNzI4LTUwNzYifX0.rljkR4p_Cpgb2mu_mAW8t4dc2vYrqxwwqVoE2sp4UTn0XP0qazmmzm3Aey75DcifRkGKfzqcqJA_Emu5FejqrZvxHyMiHdoull47GX9w_dKtme1BKu6QKKiYSZcVz5vg8NmyxEFT3lDKfsstyHc1EpohKD8qmc_ljC3v9Be7emdH868OG8EiST-pvH-UVW9ZWKk9_jzCfBaLCUazQFowXS4ZJcgL7Lz7H_CdSF_e4KcOIykBL0gBj9tL-0_n6YtDHdD7OgRgx6Q3Jlz8mKg2vu2LYg37JqKOCDgRu42pcY4b4SOHF-EV-UZFn-A-cRTR5DnYKVo5LeLN4rj_EdRA5kKV46ixlFxlxsxlsF3vMV-bSS_fGVc6_9hM-O1mZDeFJOEaLZeT6zy2e7cE8dxwEZq-R-xH-24Q1dcqLEvi62HWrCIQjjswg5i1sA1XBV5uXz3tX5FLf9fANb9UO3c8KqgqyeGNtWrC4zXijPHoAx7IX11ZSK16wz3ruPUxC_qx4iE8lASKZv7vu7c8RSuS83Ks0FY6c9XspapoAHNpzfwpxCBrfWEEjGIi1Eg8AQ6Q6wmS_3vBHg69GhsvTw26mmiPYtLd7-e-P9sl8yqBELx_tPikTYZXT9gWDDB7oVS2KTRb7ezKwtNXXx0CqMTSL3ADgOsxPrdP422TinR7KAA"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "private"}, "values": {"risk": "(741)728-5076"}}, "alternative_name": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6IkNoYXJsZXMgTWNjYXJ0eSJ9.e8Q24Ird49DelN8eLLZR1Cjkvh2vcLw0beMblXedSn-yFpFhQa1Dr4ClclRXzes2iMiKF6Re-MFCOYdLFaYCUWCwhQSZxBSkDhApcnVGQDO_69AqLV0bv_2_KpffwZ9QiPrlrwDzbTJDZ2ScdFpSy2iWOa3P_25qxIlEdhdeqcVt0aXWCZTphrugmdELoGKeyIpRPQk1UZKhYFsREtLOZ74h_7fAlyLrzpCyk1_XE2wd_qNq06X2P-z7jOqjkjB8s7ZscJR2k5GH1f76P-LF1nsjEacAWmnjKZZ1QNs4M6rqk6-33pSTciX2GTtJ5LTHHBBw4zlF1laBNWiHfWiVg746SNuDvG29VHMwW55lhvC3DWtRk-JwluXWzZtNZJPvtYa-Qfa2jdNYxTSgq_efmPpWqQ7vTdOVWciEClde2yke38rghE9NpSse5fshuOcnkY7AzMXbIYciUvUtDX5FD6r_wddppR3GCKp022d0tCn5Vj-5KVWXMywhLKw2DrFBl7D5uqHIwyl-GJ8lnE7kRe-1M9q4SaTgyXw7P_xMEDxyHE_OPDGx5InGbte9zgw5bLi4harXfOkGiaKGcPHrPpMDlabLoL22ozv0raPvcLRN53KCO61unJSZXA3YbPXy7tsY01kcPeYY283lfBIlO4V7HrcS7y-IMAlObo4a0mI"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "authenticated"}, "value": "Charles Mccarty"}, "staff_information": {"manager": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjp0cnVlfQ.QAPFFEdOhWrIjnMT0uXrHC5bIVvi_QObr63zDZuauBYghM7APWX2OuHLB48kanhrZViIYmHNWPsOA_M148oEYh6iWJOSs8pIrqKrqRqaQnmC5SAlFNndZpPT8VtKZAPcxCu888lfF2Pfleik4klNjLsIuBeA1lxtqc0Yr7RLCOYFRwyNNMPQxAo0x2ZLQJteu013D3Ch7DGaVR5gRM9Cka06BHttMDUsrA1u4D6XAbrXx7K8QLBvyfB7NbOq37syJPck6vObO8hZz3-FhZ8soKWkxIJjPW5BtiE9ODaSZWvBxQkgXi1tkTFfHoXMRhBcYKFtEEIs6beSEkxI1iIX3GIt9WjxVpHPiX_xRZ7vRo97PnEyEn4CKd6O4n0Mcw-XETsryxZI9-eO-dIo02ACDUJZCE-lWDmCAdXgFBIdYWDNcFs652dh-dJwdy5e0EaI-GYww1KiJ0gAEk7qtxKYYG4J2J_1Q-2FrwDNe3VhPSSIN3rNFpNL0m-iMXdog34cSE24zngPvFWaVcfe2cxSYJ2Hzu60L8sYyglLhQQgdU4m7bm3pOe_fMQtN-riPZ5VHCjuqfFTQZETH0qchtz7V2vnFVReti0K9cr63aI9YWq9I91QUFznePw9bLnvEIROmsH6t4hwyG6VrxTe2MlTeVQEGnGCODkjPsSW3nK87go"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": true}, "director": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjpmYWxzZX0.ZClpQ2tHSV9QMxIk5wZnaPGZaVjnxqgoxNvKHXa6BdGaRSsOVb7DbKLc-Zw6V4Pnz1MNpxAxvl9yByvMXNLDJet809Vil1-51SJZ4uegUYYa95jfjj0HsfC305RgPWxnfHj1UwuAncr5dgvi94mlveSr5C8R7Ht_J5M5gsw9YheFkxbXmjS3-CDjeUv6KYt0C1kWN44KvSzLSjbdJc6wz3mDo7aQpGSlNuKV4yMUi-JE3yy-8GCOX0SXYUKqkrXkzD2_cPaMsn3dfL1G7FkfSU-zB4hUNr-1QF06JtFJec6NfSSAD2u_23RZJ_jox4wUzz7c8PSPs8igyNsPsKSAmUzXx4FC73CBMfJ-IKOCkEdFjy0SYAV1nPL0-bIEOLACnex68uYY5mQ64qOxm2U6FkBA47IDy89lUoP6mMa3iQeXRqAMLnFiJxcDhyOJTaxP5qVA-u84BmJsENJ12IWA6NjVRFTIoT0VNLi44gEZho44wc07ApHdndfUiszaz8O46DRGrqOutf0isYc3A7yhOzzss6wOhkuuFeJkl6lyipvGkz_3GOQS3zyJOZLBk5FoIWmp5MV0HRtCgaMLe8QUTYIjua4trFnJY1kRKgcuxAwBcLhRWHgcdrZ3VmcpK_XIirlw3nH8MKNjXBhhMqbNDGnl3xWYtVPNlqCQgFImY68"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": false}, "staff": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjp0cnVlfQ.Y8ShSu7T98HeAuualD94Cby0d84jrIsuiW6n690tFw2fXbaAhFl0bsLWQNq51uTZkpzgTpPIjrmeVpyjAJfLy8YJNpasgcXBqXFUaaCaaMRg1zPOeKL4ENhp8GSW25Qj3W_VkwJTOvNPP1b7OA4DGrPenMGxiZuxDScCqLlX-0Vyxfe3XVyI5WgDfG_Jok20zlsj_kERbfnRI2EOC-VoTYBFZOJ_zT6DMHxCw3Xg4-aN638TpLh9T4aTSabmF-ie1mAFJgVffi-StPwZjkhJOM4BKH2bPE9rhlVR6WzTzpt_0uqMPm9_wTBiHMaWEK0Tx-TijcKFIF9rsY4LZsrhjL--zUmVlQaWX_QDB5UKw_xwW_auMpSkSIXBsVKxCl9PkSrzSZe-r7q4U75SS-AerF8Bresy1GaapOVMUjNWdEq-RDGB3ChQ356zt7z8Nm_29rHDMUZ5NK5OwZyjr8kNdn02AbhHTGsiwFBrVzupsKFSbF8Pc43BHtXeVXrZkJ8Dk4izeqY6kgcE03JrDV8GWAIbYUBhcRfTGgNjG8xoRkewA7AGA7thBWKrK4xc1T6TTZvP2SUYRxNtcvy0lP_fT9PzM_rnvVg0q9cbj51xAgznF_x6DhvWEfNuyOmtjLvNe9Q18PbmmUdotvNoFWY0MAB2UUsYvzvYAQBshu2l_NM"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": true}, "title": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiVGhlcmFwZXV0aWMgcmFkaW9ncmFwaGVyIn0.hJkzzIszjfR9jcIbn0vPDNTTWrTcSd_i0R5gSfoU1LEt7SP0XdzQEPV3MerOrSUKvXsWHmbMjyqkAPTgIwqEPXP8u2ivO_J-EZXG48Uul12tlXJp6krgoLLBXz7T68QlEgc_9sjMnb5nCejHmoVN3fcyrhdDiwYlnUkmyeH1UaHX92iPqUR4BmYCA9nVxp_qfYg59TbTqn8rt-qcCTzwsGA2Ddu3RoCbC6LYEoJKb9C1fbnngcIRI8I9WCfe35zCyQ26MArTVKZ9RgOzqkqvEzOAPYssDjK2BgIryF1B17eqLinBknIKp9Vt0fsZIune_2omVySP-YOllzgEi5oPRybgXPB0NdbCDd0rVYL2n9KooNnnvjQ3T3lMR2hwl-PXDhkVd5obpHHM3hQyTUlvYkWPB68Rq3s5NY22F9X0TpI3-8MdKWbOqiDXdOg7RlCtt0---zat0q2cVQ8v8e40x1pXz0f5AvzKnZ_fF555qMzQl-45vdTBHV2GdRnPsLxZrmwx5QHXRraCpaThAC_6Vud-e-9Tflga8no7FdpIi81jYq8rAvG5Kz4hyfReCL2L-Z8ngnbrf_HmV3q__ScezGwRVYzyHncLxdn5IEZX9o-0R-ehOXFr3EASPnVm_thdDGGHjyfphl3BIKFK10o0mjYbbeklRAn6M4fKBOPe9Xo"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": "Therapeutic radiographer"}, "team": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjoiUHJpY2UuIn0.GT8I219hoSqwrkddjsXdwwjQUzOWlhSUIbbqtOrnQZULG90LQpGR6ls2rsUv1XnvEXB764IQjT1L7rlAegFWw2r9D_cbi0wBhsYCfDVGnvv1z21MNykAf96Uem_R_9P5Y7Lafz_w39u3Ro3Jb-2WTJuXfDVNZtS1QRdkC7kuq7KC9d0RIjjlQ8DiKXsw4Lj6iJu3UhcsLKMClsip8HoU9l_OCrP8Q3wY4btaxyWSCuwSO7dE2X-umSX8cDBjgqSD8AX37z-95hmaoh0KzUH6In6FkJ9xxxvb-jAau7caAXHGotwg92F7py8Tsup0Wzj5594__hUqflOHm7gufikduMRwGlIN1zzIUq0DnxkO1ia52W9M6XpjiXsYTqsYPbexbDMrQ6jiE4A7MzQACJ8XQW33f-fE2zpVwcwlJrSYSwV8RlNXL8tlzMul7_J5LwjTq_lS1lA3tSmEWXTSsMbrNQtwPQIZGd_zS1xDMBrB122vHk7OfSKPMXTxMKVfdj8CYOLJrBtB49lf0PmAvZ6wbAZPbNSx17M7xb3Bb0hLS6iM5EqtgVgVpMux2W0gILQhRU3ytHmEcsZ8gx2FAY9NVHKZjUeCIVKTeOPEhVWf-ZdQN2tVHrahgnIYWq0ClW0QL6q-i8akFZSo3Tu359lGvjmtuUubg8js-FYWzx0ZKaE"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": "Price."}, "cost_center": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUw6IFNUQUZGIE9OTFkiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiI3MjI2IC0gUGVyaGFwcyBodWdlLiJ9.fniedFMUxwtnsFovCUyWcsupTXRP0eGLtcEIA-o3-KCSYVfV6JizaYK7D9OXOUVG1DLSIBoR9zm6v9L6pJLg1_rhm01CjlXPgwtMN8knLRDRlJGjLhsMLfBA6TK7DPg7Un6ixVzFTZaWF1jeR9ChvISzBT-QDTVQ3BSGlL_pPaC2DsiKuIChKz1oKQfvVi_KcZEo0vHeqfrFkfvoFk2oETsw7b8RPIir1oBXBZ39Ui8UtDozrzTXsvSEyi3YmJYMKOuk-LjbPFAS3zvHUJxhPSnI-kRH5TwjXJBWQgU_v49VUv7-1HlzqiwBPUafTkxyAbIYJc3eRNJRTN3-_CWwZCBUUEmgVAtXCyQQ6jRucZSX5GIb8VwnJsftonHuLquNRV7XnVKhxq40B9TbVpgt_yktAT2gkRF1c11g5meIQAeLwdnO8_pMykTrRG5Sxe8IYIVQKAkxsV4_3E_IGIZruFntt06M0xYnOypA4bZOJnjQZ__hSQQE31DFRv8_BuOsA5DN0nMlvQPkuXvkG9ZJ9j818RtOhgZGBWn1iaEQ8TkSFkm2kLUf_ZzHL5L91BhmG0zbuQ97fG402cxf0JmzJz1CtHnqLtIVeD03Bmmr3wzhgXlfBOkR2OWpsxbB5bLrIbxxDqKR5UlPhIDU5B4r2-GgdHhS7Cw_OHXLaNjB3vQ"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": "7226 - Perhaps huge."}, "worker_type": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "hris", "value": ""}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "staff"}, "value": null}, "wpr_desk_number": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiNjc1NTEifQ.Nf8EgnEI-mdse7AOSVXsSSuzxBx7DjkFfUvSFnB6JNozwfH7Y8WwYFhYxDb8u5Rc4UNWLjL_PHOy4hhQYnpfHSfMnXJDgTfjKDMeQJjgyxDK2Lt00Hb4D6WTN9SzIbfO3pHhhe3rkUw_BM9afwHay2Wy63etzcb4ifViwKniwaJSBySQFpT8rIxJuq8UFnOkvaaRq1b5Us-viQAc_m3gKB7M7vBb6PR4IFRB4FgWbRl0m8hzGFcnNDXRO0oUIWA2UbSgrkJPBDWIzNKk_7g9_noCsfWdrS-t9rdfm36LNQSj9AhZGVBQzzdNEuZx57xENfYsTn6jB33jx5XWlD7IzLKPRN7QNyyoSMT72wcKHSWFuO3p6W6lig_sAVD9VafPmzekEoCYm3sm1E4gFDOilewpHsVOfzUptO-guE5qwpk02nbeZVVX5Trxth5vIvPaPSTjsNN7WsTzEF9PhnCexpFxL_sGhvL9s7XS6w2BrVOInwdckzmo49EjnmysrMklBQfLub9z3HbWP8ocPV8Oo9v--8RWUwtYmlDpTk-lCxkkJnA0VypxEdRYEWkoZQZZIoO_LdnqNNNsJ0DEvZpjc40GpkYiHzvASUuKK2o0CQ1JuAsE209bzj0DIi5k35oar6nfkaMofOJgYthnNEcbm3QOO9iYBa4Qm_oAUeuQFEY"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": "67551"}, "office_location": {"signature": {"publisher": {"alg": "RS256", "typ": "JWS", "name": "ldap", "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiTGFrZSBEdXN0aW5oYXZlbiBPZmZpY2UifQ.RGRVl15osC-B5_pElL3Lobhy3FTlx30LJRB5NcbR5yCfK5nzyPwiMpWyBpWga6uzdqf11mprweUYd42b9trQ4m5y-E4dZ_8Ua9449SJyfqW-mLx6Mg1RsQ_MaEtWv4pgjT_9-88TOEN5v4XExztsdGEeYDsb4WrSHh_DGjSXNI7RH0CJ4Xh6k6ScGmSNsC50GMJ7jSwGzSkXu5kxHFJZ9kxitN_bWunad6unSY2I9LbQNCHlFE14MJjFJB7kzqbIEVvCZZcLZl5szmjs372d9BZ3Wu05oKFPLYk7Cqwsqsb27Qn5OuEfb6rjRgvL_EzvblOPBWGTUutm0PqH7RSGOCzbedi8YmTruqKTmOoN6pPwvGXiDhaHwrHc5O997tfXXcgfo00EFetgb6YFiEwhoIrwNJTV4NYIoCzcxw7DQp--9hu-eweY5v1JPwkhDzs2TGMOvKhAHJoO9nvMbs9uzo4dpqvBHPQbIiG1Ew_7br22a1ZNXX6W9kIzK9HdNWxy9bhw1GpGKk4YFBnveygHOotrZ4Z0_7K1AT6MXJvdNA2q0e486teWLvJ_cvKZNapt4D8A-FQbYOelVKfmzjrSBNQOvpFyUpNypjQca_tj72YvqA-jcu2FkwWsdbPyNedOa6uiGGa-kjqwRsrlVk5svlQFB_j3_iVS-Ms2rStRLQw"}, "additional": [{"alg": "RS256", "typ": "JWS", "name": null, "value": ""}]}, "metadata": {"classification": "MOZILLA CONFIDENTIAL", "last_modified": "2019-02-27T11:23:00.000Z", "created": "2019-02-27T11:23:00.000Z", "verified": true, "display": "ndaed"}, "value": "Lake Dustinhaven Office"}}}
+{
+    "schema": "https://auth.mozilla.com/.well-known/profile.schema",
+    "uuid": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "cis",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJkODJhMTBiYi1kZTViLTRhZWQtYmY2Ny1iNDgyNzFkZDQyZjkifQ.afUuiZctO8YNSbvlIrnUJEuEBOhXa-Y7Pd03hEXtisz8ZxbIrs-Hk89kZNaD2WIcsNNZYTt4pZ8MIB6ppSaogUQAQuY-aGnzIRQAsNgihnKfJmKoGeE0XcgbAbUxu7gHfe3qbJnVwWDqJOrpboivcEHWLZRsCXD-WD9509oeH9wvrBZFOPChlIuwsPvi_jeOCrZeVC80I6VKbWXD_UgvSgkqHpiRQtC4u4czmhdlfjBGgfkpxwLWu56EIVbXslvdpLVgc20BtvJMW0rRFZ4pnOWi1o8ZoUxGbRZxJUDj0w8HWEOD4XJZ_1fbavvyG0oeGeYW5Ui---jDIZdFclZs4pOQvtl9s6XZi_r9EhcHVJX7VDPX1WI4UP_USd_HI8FlmTZ3io8h8PdpORE2DGailqu7gJxov9rjqvKIjZOnqgNisZRpe5W6kkct2VwdPnrHw2tyzT4zuUlV9hhvgCIZhdTDhtxPi0AIsek-yYKbeA5sGtCg_wfY7x1Pe8LjfLHy3F6aeFqGm1kQLUea3s6DNup1Nkf0t_taw9ROMjtu2I_p7fIocHCbQnY0coFYaOOdHn4hlA0TybQZnEkfXX_MkwUsR5RWZ37n_RQFEeT9vrH_NZ6lpegHD3lyw7O_Nt7AiI7z2atj9KekYtVeOK_7PvSOanJPooMsrzjtOwn5KJ4"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "public"
+        },
+        "value": "d82a10bb-de5b-4aed-bf67-b48271dd42f9"
+    },
+    "user_id": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "access_provider",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJlbWFpbHw2MzVhZWUwZjE2MzdjZTg5MDIzN2U1YmVjNDMxZTdiNyJ9.sGH1CtMNV7A7qDlElrIixU0Apq9jh-sPhZF3LWU2Qf41KhX2DMk0t_JBxPXdOjPurNFsv1hc6HkNtEz8h7PmsbqzYf6IOMVRbXzFJh-XtANijDddx60EXZRH0MgYGTp_IbdpPq5mDRTL2dWgx-DsSJAPwWUCmKAehaGcRqpgd1wXGIIEWlismIfeRkF_fAqSNd94TOnN6lxhrvWmnrlbDnDOLq12a2ccqp3caRplENpQBhLbGojquaXBlfDttuhS1ATGVM7SZNymNleCQbN2alg2WZK1xCT9oF5eqlmETlEPN6lH5da_vGGg-5FNQpQe_ub_cpPwbSPjW2qYGBIlTPDkvuQBI81S5_KYlZDOTQKBMY_WcyTj26N9a7xd6N8WcsexTAJF71A9Yl-MUryExICoolg7JWvqZGwzZihozYUE6FyJuu3_VRFoEZpYM_CVXsPNcw0FiptibL-ORPqnWLQm1RXHLT09zXyBnmuxGLOB5hNQq3CT5NqilUfFHfjpW1qPAIg6OMiLUhV0r7I0A0ne3rZS4AZmIeiP_2enBt58f4VD6onDiOaq8pYFa8sNVt3aLo9b2KROSErmisuhj5euraf65wcL-k_TSiSjKw7-YltqlILj2Yqt4A7nyGckOVpNxQYnKOn-AxqznWWSL-p3hukdphjlIHSshn9ktpQ"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "public"
+        },
+        "value": "email|635aee0f1637ce890237e5bec431e7b7"
+    },
+    "primary_username": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "access_provider",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiJvcnRpem5pY29sZSJ9.UoCfH9sEP3iFKA_nZ4osjZ8ulOse0ygn8xgs_ZiPkraPVGqG4vmNzvs38VaFHQXFzftyKyKn03l-Ctj9jBnA5Ujd8KtRMx_oYuJFn_2atYM_43dsFlgZGsK_BYWMBGgvEzjeXKNKZgzXsJVRKKK3_-oTiY44P-8dyIHqmVnk6i6mGU61ujFfwxBQeci4EUIxoVSsNcYVOKyvZ-bKK_eU2A3hs6JrhokIyp7-7SuqqpgXY455ou11UK4b3ZiWu8D8QGxvZkzWkazhY7RxIcK1-p2nG9_2jKLWj5i-nwzAq4ni25JWyOb_W9h8g0kcc6qTn9ltwMmMuiuf_LTQ5os99nz1RMv39QocvjgLHz3uC5rk5RnTYpaDwpecSPXas13imjBx_QQe-KZwmkNDKjcXC-8DLHAdropl5ND6OMOjZ5mUpqdsQcNGR9c1mvrQy-OL9qoPNeifVZHPSmrDQKRSqQwjRcI1WmXQOwGNmasqNvrWe8vAnassaHDEUr_sy9c6QbE7om_GfSTymS0Lgifv4K0-yW9lG3evd9YqFm-lzPn_ilLHYpYNSsGWlsrC6GufBMq0B1rpBUqF9llb4T6aAVewfKIKZGDh0EEdVymxmcMUV2EjdF7P_F_C0LOtRx3gHdcg2ulqXd93HH7pSc7VfLoNBXTyUJmDTE6_x1D2omQ"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "public"
+        },
+        "value": "ortiznicole"
+    },
+    "login_method": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "ldap",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJhdXRoZW50aWNhdGVkIn0sInZhbHVlIjoiZ2l0aHViIn0.B1jideKbwg12Dp76vdD1AKxgYftf_wgOSgk5MC-FvWCXuRyONJWJIpXJEpkfkwUFms4sh_8JwLdAytaH_tG1F8Erro-oY7nOm2PeVjJmDlEE32ORfVI1vKId0POmgeMS1GgSldZjFx2JTWnI48KULa2Q-8c0YKLr6BXG9d5KxwtQMlANL5f5sxrhw36vKTOBbYWo-Nn-aWoHUKYkrl1h6nR2pTj4JU8bB7iVlbDtqeIlMISUAKyMOvlPXEK0ZY0EdvcrBrHneOhDLS6bWsuJv7BSWf4FGfDDtMh_Fx2xNuiBq8fZ5c7xvaVhvANuTxu1sJHrOcOq0mSSuCvobkR2N3h4QC9njJjLw_TQw1L7fMXhXGbFfm0ioh4ILRhF3rNEPyzGrJQB0elmCBRYnBaBsNRw9PQxvGh9VPo8PV8yOoDoLajjmjRoiDNsg8c20wfn83DmiwYHAXNH_LskgXhBQHrjnfsSWo26QfwcAdzN20JTSJeOp7bq-hGqHea3dqIFALuiSrEJpl8OHuSYrDAuCqa1fROAQqCE9EwEW8VUbVLF3Yl-PZ-1DOUu-N3g66u2uqwyoNQ33kwrLYz3GHehsauJAxa-Iqg4sJP1SNadNWClC-2VqmIxy3FYQzniut3guIp1Vi-6e5_7TJwd8X4Ot8dUyO9wzNF6CDXgFBJP6DY"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "authenticated"
+        },
+        "value": "github"
+    },
+    "active": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "cis",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWUiOnRydWV9.LPIaKoRNmqqZV-dxz4i_gKSlk9nLv4mJRVf-U1AscidkOPyWmifFiD83iGATa7lARlunSh7NlXgi173ap4ObL_M6h0y_-FqOcmGywEs1pDmKvvR3eZL10t3YQqEF_8BtWUYcJw6rvxfwmRFvmEphYQnvm0iUXxiRpaUkWe5vB-FA6p6emZuTmiFY5qY_3PaPy3Yr2-aoeZ2M_lu8ke-pIdQjAEbA9RqP56kAaJTITSUrBrQbxl-NBIgzPzQDoABXScwB1FWKlMge9X3FbUjhatQXR7vH7GHsNhDobgisJSGQohC8CawfdddNc_SBZMtAc4mhe1dsSRyvAL-IssBTS6xN5jmoPaK24O8q-ggTfOg8f_4v4ZCnHEol7OlcVWuLreCHKLFuqEz1-9KrolP8iaQA8_AKmTP3IH-lRsdbTAopdIv8BBL-zoQtCda_zlkzkBl6OICsIv-b4-FLU_SUJ9xzkP6tBDH5apdrXvZgn1cagc4CoGgMqHXXJA8he7EklsLOY7FqbuqFjNQkoIn962DA-5pwVylCfJ3Iikk-nFjdvSxk3dmp_zZFjMzNfBw8cAZCObO4XIOO6-n9XpatYsPJohZY4dia3d7HUO11FducJOFr6fcGvQB2SihsXMWi192hFpPpqoaNp5fSC7Sjxw3rFxgNCTe0pCerDWrXGsY"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": null
+        },
+        "value": true
+    },
+    "last_modified": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "ldap",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZSI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiJ9.gfFiUjEEpWytPo8j2gr36o8yVpU9uIrMnvuZ02vxgxvJBPfJBPx8nsp8lhrtqVKXI3ZKhTCkKkTq7qBvRK7dw7OmRSRWzi6XByRw1O2AWayijrw0CsDS3bJeu4xBSop5yKNH5Zps6XFET2rczBKiYMRNlpoGF96yfHH3hIZQ38TCUXrR3ao9-NQNG9QNpniQDAQsBs5VjdPXQ2LR1Z631cRNOhnl06ibT4qvabRKzF7vaXpMi1B7MOGt5nbrEnGJd75M_LUk8N71qtBp1ZR_LAIXDioHwFvzcQ6X__6yX59wqLmBYBEE0fySRjrWlSee8gauLMn0YZE2kMpXfdXP0BULg-s49DtXN_cXIE-Rj10PJG5yjFIMNUO8M6_2Z0e0JahTay-3dREXHFaUQRNVXMG7xwdjsGR_wVYiGHWL_0fuFlkKXF7rTjnrgVydqwCqv9OFIracXzQ3o6gIBwk14KwLF2L4yEG9t5vStt_q3OCiHQ0PHozVm5vbBkRVtIXFB6cxmpnTrrR5dTbl_P0MbW8gsUP0hvUshfI1VB5uaq5Kgk9WdBofhJ5W1a9jpaDPgPBy_Jjbccb06lKgQ49zeB2St6EnNIeCG1ZCodMjNc1BEHFgKJRwHvtzLQgLpSsZUW-dyv_4BSZ0y49wckmh4_7uADGkz7J1kQ6X-PhkuNQ"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": null
+        },
+        "value": "2019-02-27T11:23:00.000Z"
+    },
+    "created": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "cis",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwdWJsaWMifSwidmFsdWUiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoifQ.cf6J1itm_JPVhdLe8dFawoNpgq0U_Wg_8ohlZ2YnCSFa7IZ1IoWoRtkKDM9Pv_lK1CM04fKyFWk54SftnkNWASmjBDogtgYi6FHvCsYfZhHVs9HvHxV-_Qtx0WUfLPiHEdJIlT8QZjZlc0T48W-itmQfovQ7M6F8i-Alh6DiDOkorh6y559UYFpy3jOCACgMRKGGpbPFAFAXX-cqUZcdnpSZQuWHiCvzKGzCMUV24aTRyrF0MWHFKK6zhOSQOQ1daQZhK4bcLn8WbYtJ618SWfs7V7CMzLyVplNJyUXaUS98Im8TuygzbfBGQGGbdfMuWRS7H2CKGGmPeu7_PkuaYBMQfPmxxxBbQdxfI9eIlagD7UqpGVoItS3l5gNJYr2_Yn8BHHrQDp0kx-tebu8FsLxmjMIm6zRyuyjY3aEMXbNXKG1eR3qe_AsoHQtAyG7U6AM2GrUq40pGvgU0pMwHkEtDM7JZAJFX4XsgaQzfKIUPbNcqya8fyucqaXesS6tWc4Yygj35dejHKetpGhwyvwrnL_rqEBcYIaBEN7POlFElBIIAv9z7Ahf9955k-f8jf2ZPYZ11UNu9o8UucDKxPKIuoih3AfhqyuKr3m3Lzx-3d1OePV2QYT-jhys8G2_zbC5BoulnZfUvW84VSxR29bwb0-_aDglPh1bw1yB618g"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "public"
+        },
+        "value": "2019-02-27T11:23:00.000Z"
+    },
+    "usernames": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "access_provider",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZXMiOnsic2V2ZXJhbCI6InVyb3NzIiwiZGlyZWN0aW9uIjoiamFzb245NSIsInRyb3VibGUiOiJoaWxsamFjcXVlbGluZSJ9fQ.KAtEpO-zVJoO8uAllm7121sko3VLQGVnILZFI2IUk53lZ8qRauV1HlqUtg4ZCmpSnqheGn57XjYjYQtqfxsn46Fr-XElpPxvN_JNKBDCvwDkDcg2ch2G1WizkU79333XRdyiqf2aZmzZNw2OUnJhh6FSBuUgNzQJDkY4igfu9D9DcGmGtYtTtcKYfh6rre9vnnctk91yz8AFs_z6qAcwoiRLVP4w_-9pZ2N27tMA5F3L9hS0k0v-6muTfVndLSRuuU6JuNgOdVQlxBv07_wbf4Mm7ly9OgzYkOioTL6AOkU4g6GCcojvaVZ_HjmqXh2uieqb1-qZ6wWTxxpBYCYPAAoTIf6NE2sYb7rZZwhScnBA3FM0WisLSrctU4XepxhtdHlokmNgL-T7iem9UMUy67mjOrGTSiyIqYcIuyT2VA8T4Y1HVMeJSJm7LhlrcRWx1gd-tYtPrMZj-6M3Lvj3YxL1x9looXIZ6zzqldcevQmYYeze9NMwavKpfipR0jJdV9u9CpQ52iYG2KDNS9EWiMM8MTTjO9BOAJjFwcm2Eyb-svTC_P5WcBt4K9_BAu5jreQVWiuyyeRfCbfRWi62n-Oz76fqhBfpNV765JsCI7Yr-TwJrvjszW-IwzIqP_E516MMy-057VdklxFYaHPOkWdQpcL65AebjygqPLizlfE"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "private"
+        },
+        "values": {
+            "several": "uross",
+            "direction": "jason95",
+            "trouble": "hilljacqueline"
+        }
+    },
+    "first_name": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "access_provider",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJhdXRoZW50aWNhdGVkIn0sInZhbHVlIjoiUmFjaGVsIn0.Lq2Q16aYUSBsmlftycyWjzKrb0tcuhQ9tY19Z6JB0OO9KJgs_Bex8Omdou7fEeQWGylx2g2J921UMIkuJI1aGXCsCLT6-UjPEjZMiAViXRRCybVqYcD0cTa3ehVDtwkY_xAqCCut5iT5o9uOAwh3rDdDxivOnMr97tuCXKmZxwA_ik1zpT4dZlCUlfwKzqs0nMvGTCaxkzHU9KMPsBF94kmn5orkrLzEGZqemQH5PekHt86mVb1M1pEGIA7mFO5VPk55eZ73l_dJRy0Hzga5fpNCiw79mb_oall4ccjpMdIYqqHe1HrDy7Q9xgIp1AnFu9oP0FP5A75JXlizyTtEHrbb5HS0qDZ-QrueBps14K93W3E6KSOAfxfMjJD1WMw1yr-_66eump1WG-XIe50CWsxxOfzQ7qChIhaP35BJNCWjLBXC-AbEf-sbfbxeFkMR4Fo7vbYvERO2zbp9u5TBcYkBdJjyJJX82UAFL1gRJFJL9dpgio8Fge174YQB2P35kbOG9XteM3pj5s2himcpqNcTOzPzRiXocOEMlq-_DafA6qQJ9w3Vf90lgG08AnhTahidHoUtQCnhzRyvAKq1X8OjuRRDJFojQNPtKkfxo-V9tx9rcgEA8C4xcBNoKnOaiIB-kd75-wgf6bxMyu-wXqDsFV_Fsgm4LXnNF9q130Y"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "authenticated"
+        },
+        "value": "Rachel"
+    },
+    "last_name": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "access_provider",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZSI6IkdyaWZmaW4ifQ.gancRk6h5cyR_5NqRnDDrSSjIMCw1W4L0J5sgeHwIE-UHawCidD4Kj0oaevk3WbDd4cEvS_Z2bU0NA22tgFUT-ur0BesdFd1KMqutmNUI1eCrXMkCzyl7otdPVloXQd19u6ZuDwrNE2zkqvw41vSKQuyFrBpaFz3u6dbBd9ztjk3sySTdWzzKkpN8A8wyzYm8d2CM7EDfy90IVsGvBJYOz690cvu68kn9iN2esfuRu-70iW6gc3FT-V_xSdR2C8AQCAHzUTThNrvty088dnRcI6i78GqJy-BwrUYGlSg_zk_jC3QXgLDWS8krmcgzImxkfLFWm1hZ2JnVD1iAg-NGG160S0OZpisefX_IIzXDWL9Df0jJ1ZCKdKQks_RJ10ErKwvHmF6nc7LRvJB-8s1bFxJdaGg9MINK75eiW_gl0Vbjx3D8ZU-vskh-his70_vglEW3n4XuCtz4f0RgbpvCCg58TBcPZkbeLfKMkM9ApjDqkyFHCqwXGkclSbxQgUcJtvqesv7TUPpfDb2tZEJ6WDvCCXaH6hpG1eW6jUj7GBTQCwJquoE_nyF8tsuHVIOtJjVSbv0_qYTi2QeUFRhiaPY7azw_oZQSjO_bbVSGW2EZZNO9nrLGP5hlpZFsIMz1JAEAWHIH-yGeFSoIIanMBFzlHJB41Jmq2_gqmQ8w4w"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "ndaed"
+        },
+        "value": "Griffin"
+    },
+    "primary_email": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "hris",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZSI6Imphc21pbmUyMkBnbWFpbC5jb20ifQ.vx36wnes4oXnB5lPmgfgJTCvG7vlVNntGQnn5yz9iU9Z58bCGyONNKiXZgnNq1wycaD0iQGLhFt8elR2Y6_lRMWRdXl1WqYc6iZCh3Ptwc_CFG_gNA52J9nboBr6xSQZCicZo4YJekT6Kyza3BUchB6urlVImOR1pJhcSlXE4-7IiJ_HFVUBUt5VsRVHt_D2UEHvkb6UcemICR7pvpD_dos8Xdhz2EJdeN-KmAvViqCduDweavLn4fYwbPxwsWH1iDJvgCSX3Hv789fxYXpXOLdDNAzT2m8wH9d99oL-qNTjhfeDoQaBrtNvzTkARrnpcSzqjkWqZiBEs7NDqlouZhJdwgi6cBZrSPYS5VKIHvSVwIFbTPESo7gbXJWOnPewVTinkl08FeqPqwt3BFaEvlzrWjbNeu-pFbhxpaUyiBuQW2zyKj-5kGdT0pJp2L9v1WwuIEzV1vb26RPrjfF-bAzN4P-A9nTiUewvD590SdOKGsZsxkKKLMDaqNa7tZQXSV-SfQVq_FXvc0WAQBT73mRHZ5g4biZ_Gy3kOU-OGj_PwMiO52DQfcuKrh2K7LSUJTDjEKLpvP3wJfq2kyBGERFVtlBQWAH1dzv7UDBsRMP53jn0bNzbjC6MOtr1W7UQzzXn_3IRjGBr4NnOntoPmYlaC1ooHcBW-JIR2U-Lx2g"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": null
+        },
+        "value": "jasmine22@gmail.com"
+    },
+    "identities": {
+        "github_id_v3": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "vouched"
+            },
+            "value": null
+        },
+        "github_id_v4": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": null
+        },
+        "github_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": null
+        },
+        "custom_1_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "access_provider",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": null
+        },
+        "custom_2_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiJqYXNtaW5lMjJAZ21haWwuY29tIn0.fLJ2axze3genLt0LEEkvHrst47QIBythe_c9s2Jz9T0kGnPmxnlTgCIDEuPkWaWMnW79UcRnvP2-WOiGU7Ck2vLoJ17ueDmSOPFDwSY-Z5x_JTOQCFneEfmeizNugbXIpiLCD9KwRsB2hca06LYmZKSVrIlsthJ9jGow8BDQFU9tkeGJ2llbWxPAzNebXSNIbg7bHZayvhTOWcswVoU5Qn9JoiAtPmgsWTdZaTtZ8ydOXr_Xd2kS4Rqe0puDN4VWzXpYw-QxkTvT9X6h56utzils9R8Xoe7IFo4uMoRJEUcw53OSDU4u7B0LeJMSIVaEEz-dC5vX-Fa_Sz4H_ribFW-3DRfQ-1CL2otVrUsFWmzAo59DEWDAOmc9VvMLk_KPF6BZktDgONhXhQMxTLxHTu0YZv25cbFgJDfFMpnToMaB1hnC1vDfnWTO0PhRmQtdCFC4d_stJKyM5jlEJ6EhzDHFh89nvg4K4b73YmIq5uL_5ewkBsTodaa1mY-xhnCVQtB-QXzstpJLNS4l5aqaBbSyt9fabxY-Ejhc-lwxqK67deS5J56aVOHLNyxJI17LpS7WHu1USq65EnPRa6-6oGZc8NU3VQwlHy3w4--AyqYaMqdzJfC7PsbaqQKoNBpqyH64oxaw_y6MlBitr8YR1Ydh44fINNVzjYWJVEKcYTE"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": "jasmine22@gmail.com"
+        },
+        "custom_3_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": null
+        },
+        "mozilliansorg_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": null
+        },
+        "bugzilla_mozilla_org_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "public"
+            },
+            "value": null
+        },
+        "bugzilla_mozilla_org_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": null
+        },
+        "mozilla_ldap_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiJiZW5uZXR0bWljaGFlbEBldmFucy5uZXQifQ.TaxX7spvvnj8GeTUC0_cmQNun8V2Fs83SW3eFD8k1oBaYHbtBgHAJTuQ3ND98MXNRbw2YuyDz9HBmO1-AtiJ97kh1snOGlgmKMPqKDG0LO88ZK9mWoV8jSz9tg04-F2PfYGapErHwZ2ndw_U6xchcHbC4unF-rS1XS1LOVJcNPD-0c7RRi8xsJq2akv5ZLk3VCHXS0J-V757oJbMu-jvmPYpTPs8_nl0BPGEdoG6GvjTM_cXaJnaMYwQO5nWLzKprK_wA4bBBQW73I5Z_MTQDzFOo6Tz0-p413L2GHoQjS5a-iNzZPDjSB3iMQXhNWnb5uWE1tnSaLHT3HJHnmDb3HHO8UGAq8cPhfuP1n-ffX1X3Zmh51iQ4cgoSwj50WiQJfGXFzNPMoPvdU1G4svSVLqMGiCs_X3qGHyY08g-CbF-DPx9HGJuUM6BVILc0ruXAQ8dxOMcHTwJ8wlyk4rTPC41NIgXtJNRQAgVKPt6-PHrOG0G1EYmaqy0-K9vE_Fz1srrF-5IFw8pNmW8VWnmsapIvD-mLnpA5wCuTACwR1pNy5-1E9ZQjy7UyYSdxRpAvxXxFzqdJPVw8P0q24zNjL1277MTP9K8ZF0trc-kG0pMFVp1qvD7r_Ecqx3dGzwJsEVJIuZ--Vtywer7rE1inKXBj0hcDaDAh7EuqAV_Ikk"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": "bennettmichael@evans.net"
+        },
+        "mozilla_ldap_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6ImJlbm5ldHRtaWNoYWVsQGV2YW5zLm5ldCJ9.TcgEqDAdp-TIGRa4BpTV5oA1QaIExNIol2Vo1FJHFww7udOX-XhNwFqTA6gU4SprSN52gyaN6ESBcY-0ddJ8jlKU8YY9jXBkgdZg8XqDb314fSYBseAasFyQ39bXaRkHbM4Q5MhpDy7A2nd-KH-SKsLsnWw5TdA1MpKeIfWsx6AdRyd4JZNQUe4J4ij-iDOGFFQRAcAZbjhzIFZi56R6htwZnZkZH1OKIeInnL8R7AsDdwH40GoPYUzoaxnnz1K-19878p8ypozMAc6AJb4zcN_6n_-fGRHC5K81R3ADk9Fr37cgaH3Rv4D_Z1h6An0xCIANAtj8g2yFCAHwgAo5hYYDEFjHnnzuNcG-iYYpBd_7d4STDJ9TUzcLuwhA7dZzQXTZ7Qrz50VxKWtQE_jK8YKIWXGcectsQwUcqOcPAorR-eeZSbl1i4Q7FH4cNgps3IbmyF1dZWv5BKAzd1a485mk58tbFB1dxobOKF0XQ0FrsZF7cY8Wu5dxvPz-sdMtbCqb6FhvoS_9a4GJA-8ijzhKx403lQPjcpv-yt5Jm3VvTVqNQBtnXN28lHqcVPYHfRlpVyRQFrp2Tq0odDX8MoVrwzbWqBD86CkZ0KMvSlNAyumiYmMbf4_CF8isxVUsZ28Vvgix1y-wN5UwvwSwUy-ykow8ZLQPgXvsvQgQkg4"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": "bennettmichael@evans.net"
+        },
+        "mozilla_posix_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "access_provider",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoibmRhZWQifSwidmFsdWUiOiJiZW5uZXR0bWljaGFlbCJ9.Ks6TpFTyYSWc2zEDJr2sBpkQM3wAbcbaOcdpOxKRD8il8YJ58X8xd9P0Vq-q9rdu7m_LftQWAaCieCHk5E2CspjTKY273cs4aTgUT9TDhLgAAEeV2QbNdYQTtRthZu-pw2hXB42lhsp0a2wyAmnv7ifaptfhRcRHdLAbPjHnmmCAW3TUQMZAD4MUGLwV3HvfBOD5WAjn0GVE09ApBvZxGn2TCoz8kKuel3EQAyHM6b0eu_KkWpMFhv-ktcBc8BiZIa7L8YDp0ZRhcmAVUctjcETsFD5dRV3pJ-XIPjdNJ6MPqexGbCw80c36UgGnkvhn9mfc0YR7RkDKE8aZ7paPV-81BvohKw2oEohPot_QtcPzk3dx73OwW0InDWrAeAdMkfisW8bteJPQmv1C8imQTPeIsKx8DlnHHz81U_fjf3zMTnjPRXFsCcydrmuNugQSzCSOyq1UYRHenxBZcqrN7uyH2XrWL8FYpDaZBT9UOvwHdPX0g8LmkOIewPMwfOrunArvhQ5zqjbIlc1wcPI61yXmJQpGU_aA0w9_76_I-t_EUeAYsKst1xgi1-dKWFhQrq6AxvoZQDWgtNnJUVpaheHqrc-7xbURLttemCxX4wTx55X6nUnWZjSXfq8ORyIuVf9W0rgckX4ziMudXV0Jq4FvkEDImRia-ixON9K7pzQ"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": "bennettmichael"
+        },
+        "google_oauth2_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "access_provider",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": null
+            },
+            "value": null
+        },
+        "google_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "access_provider",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "authenticated"
+            },
+            "value": null
+        },
+        "firefox_accounts_id": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "private"
+            },
+            "value": null
+        },
+        "firefox_accounts_primary_email": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "vouched"
+            },
+            "value": null
+        }
+    },
+    "ssh_public_keys": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZXMiOnt9fQ.upqAJmteOCUkNdTGVMaRx1ThPx-ETO_VoOL82TMAlyCg7Ji95mb-UHUQiCNQxf19yY4HF9Sm0bmoK_G07uJi5qcc1C3_kkC_xfAybE36jQSq7F3xcTdIRFyGI-xWgROHkDvY-L5y14A4Xkp72e7dAE99R4acQjyin8WEtAULAy0mL7j6fM4fVYiVd-aZgPM4sUXx6XSdRm9-2cdlTgg6YpFRcl3C8xEPiRsV1083yV336Id4eqapS67doNLYHv8gM7r9QATN6fnptvxX1GdAw0fz6unUMcTDBMtF5kFXMQ9MV_TWKdDvegMWPNG6ukyGvsrAZ8Ur2TGlw8-in8XVb5NaNCkuEMS8oyaAGk9LQYepwaQ9k2eIQx2XPONbeekzDrZkeFIDpsP-8492YSQO8SffRgezWg5M0EFG5KJcwV5Wc02vgc5EUBMId4Gzf09a14hsgN6jNsuE7lsp_WoqhTVpgLdpqAqdUOQe5vpHbMzg8rjNhCBwmdNZrELo70zVNVftlm6FpLiHYx3v_9wql-LlRn1g8KE_v25N1deyVdeTI7GY0NTTNw-vn0GC1oONLvUwsNDuDv0eS_JA8vob_GJhBoCNOHPaxqk1CsrNHjiPozDPaLryoDPxphJRXiZZsD43MqE2cn62EdkVYq0u8K7WusXYihEuWHI8LF5W2Fo"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "ndaed"
+        },
+        "values": {}
+    },
+    "pgp_public_keys": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJzdGFmZiJ9LCJ2YWx1ZXMiOnsiYWxzbyI6IjUxY2RiZGM1ODE5NjQwMThhOTQxNDVlZGQ5Yjg5NWFmMDVhMmQ5MmMifX0.Z-D0z1A289Sq0Px37GUB6WBSd5CXH90i8iAmLZ4J8YHYJpOPlI_UIyqZBwz9khhdq1c8a_mzgBHsNBWTT5wU8yRnyMzgB7CWbDNPjTUyak_MKnLvKWLQTXoG2OjRiKDx7eFMOeEHUKtMRnHmkInbwT98-L5XGLxf8NPemB5uPD9vAtp9Ra-JHmFY88cU3MqxDi6F300KQu8cazmRKyLZdUKuPlxvWLNsbrNksbZxCHivLBXTC-5U1Kf0FoWaVlRIzh4MGIdqi3aJzGjufFm6wt-hwdGBMZ-1t9R3g7jRbcNzBAPShDch_UMMU9raxH0J2QO13CQ5UG-uZeAuYr-XwxlqjBzS5zljSo2H4mS9Rpz39emn2ZbOkwEwfowcQioMWbkjd52MY1y2ti3BE848fh1w7VFD9ABYjY8rb8t21ZZXp3hYGIk2jaMRshUitNh0CYdVjb0bkdniDT6pi4As-UX8H7Tt5vNd9Dir7vh6AywzjRjwfh5C8bbpY9o3Nl4wkBaVvnF-SfpZqgXteIJWAn7_beIuqwCfSHoY2EDl7kCYM3vV82RqBwvRTRKUiQB5r8AGn_dPOhC83UaICUqnQAlRrPTzJ1bo5jSyQneurvOAS6XW85ixNT0pNDcIEswU4OFqZR0hT9eRGq0qou810qOrt2Dv7vT5AAln9LB9f8E"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "staff"
+        },
+        "values": {
+            "also": "51cdbdc581964018a94145edd9b895af05a2d92c"
+        }
+    },
+    "access_information": {
+        "ldap": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOm51bGx9LCJ2YWx1ZXMiOnsibmVhcmx5IjpudWxsfX0.q5wEE7JLTq1P0m1duk6BNXNVDYnZPoggBV4CJtAAWOtzGxL321CBmeGXp5qGP5hDiEksVGYgFdaLJ6DYdVsbQj2TZ-JAG_A8pYF9UXW-TUYR8aVAC6oCalmEz-8vpG5frSqQ1T9cufDy1uZusCmjUSV-I1pdZIKnu9cRgYuPi4YU80JCmXGtwxKb8-l_V4UWmDxFbL_nFLAvu_U5ilrFnb26A6KTbdFuuoNNO4IswxYFigQcNNp69_4Iev-HI47T-PtGRXlG6COvKrZ5UOhQQOfSNpM-aYRSmYzsyix5Yv9j7W95MVWdI0-SSanqSBGu7XV602KmPBYcctdZoWUrPVqG7C8IFEoHI8JKyEZ8fgh7iZfSeDUzWt9m-lLvqpEIPQ1dpufcCID37vMf7HisJoqoTL4cApnpSP6NyRt5P5RUKWRSylnv91HkBzkQaa4Sk_jsCLOJ7FphbpZQtNSZfhy9KQGHrdWllEWYKAH2JvKmcX8BzIvIrLM1COg1ATHgRdjiB1O9GadnRdY1pOzoCTHEI844CFXZvuWlCE_38EMVMZnSCtnJkEk9u69LVc0lHL1pyjK0WMpjtWYJeP6wKU56M7iWpLz8cbLlyKVa9NG7kqvyuQeSAXWo5J_Z5R4XsS9_WCKVLWazwrRGtOViSJdY4v1Kdx-o2xZ7FDrBU5k"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": null
+            },
+            "values": {
+                "nearly": null
+            }
+        },
+        "mozilliansorg": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "mozilliansorg",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJuZGFlZCJ9LCJ2YWx1ZXMiOnsiaXNzdWUiOm51bGwsIm1lZGlhIjpudWxsLCJsYXd5ZXIiOm51bGx9fQ.C60csM6IYMYI8SysL-AMkNiJWr7MkI6u-Bofv4pNJIA3Y9kYXnmk5Bte9OQayUY2Y8EiKnpHAXl1g-74xGSuypQi6v4TvyLYfyIJq-8zRpmjbJpiaAjjRzkwxNMEa0imoKdA6fek_FIwQVD1bgcMZNDUDTFus9G0wZh-2eJKH0FJCZFCY5KVGKfQL1AguPJhZKhdxIXP1RJWLDXoNJSZlhj3bjeNRgGsg_Eu1B9ksiWujrEbm116iJ8b8_JjwkxAliZ2Djp790AojcLD7MEfPeWZsU901oHvpP2g0jUf9IvKPZ4f8GgSpyjVL386GCaHLF-0rCWIz7RCOuxlqSEXI6reKOVcFKsB972DvpD692A1bmsRdxv6lgfe60E7IEAHVIxKNvCrea_Hxf32Id88J62t9uWlPKXFR3LEQQg-Eu-6vGb3wGb90MJFuG17_Z40LPY6B8M5SvlB2qp3by8fQOCobs6ssYbm-a6mzm9gDeZN2fNSIBVngzBBxkZ-zdta-X0PuqaU54wQoRZb3GnoLfJulw-EAZA6KVK6bJ4jo6Z1hexKarYuPIGH_poF__t7GeMIHBCpX6b0GxOObRnjzaPxlbOUkWCna4XSyl58u8-57tYvQjdV8qczGBydQk0MMYlpzJrW-2AyqKHviZNO0zDur_45ZRKWBzeZgdEC8qg"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "PUBLIC",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "values": {
+                "issue": null,
+                "media": null,
+                "lawyer": null
+            }
+        },
+        "hris": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUw6IFNUQUZGIE9OTFkiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7ImVtcGxveWVlX2lkIjoxMjY5Nywid29ya2VyX3R5cGUiOiJDb250cmFjdG9yIiwibWFuYWdlcnNfZW1wbG95ZWVfaWQiOjM4NDUzLCJlZ2VuY2lhX3Bvc19jb3VudHJ5IjoiVVkifX0.mJwIFtsGp6pdN8v8mpcyElyONL5R4GHovVyWQkCj1lZ19IdfXT0ZkxXGEx6CMhwEoVisYCi3IiTcKoezKvaZXM68oE5ukCwd2pB6ibTkMz_kwgxYhxeECRsBCWLZD-KAhuFWteBXVSXEJtfYen_2XKXHatDts7GEq7DqwOF-JpleOGTWdBCj0q7PJ3ATtoyXjBV4lGG8M8p2gn1uDCsnduwuMoELzWTHlg8Wai3Lde7v1jL7PawTpY_6pqx0afBpNlBuliTLRNHSnexpYqiP8_3OStijVeyX_TT36-_GmLcLMrWiH_Chl86BPDfzV9L4xKCyfImh7LxJLTrEduKkR4sXiRMHQj1Lx9gIpfqBqWboYAQ2VRjd3Z2mqr5Tm5beUHiMINA34-NXXNA9ZNXNPKtZFORoQmZqoX5CR0DXQmEtNet29wCga97ygn5z-utSoy_yL6CUSU1pXZKv0dCtTCbjDMzf_UXBb642eRTPu8FAFwoEfvOHFat-ExvHIADq5Bo5cez6qrzSyNsAym2PlGQ63J8qzWsgoVbxuXqkNms3HcGC-RKeWgYd5Y-6rvghmmd1jaAIrVN5IIWUsL5iunKUhJURqP53hlR_XkWmchBMsz9t4iszFACZUb0aBus9h-jvTRKrk4jiy9kqvwMAbt4ykcTVLKo_CN0nlViUcCs"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": null
+            },
+            "values": {
+                "employee_id": 12697,
+                "worker_type": "Contractor",
+                "managers_employee_id": 38453,
+                "egencia_pos_country": "UY"
+            }
+        },
+        "access_provider": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "access_provider",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7fX0.v3DxRZbseZJ8ptpUFTEZkzZuzoKUMRRiMspFsyXtQxuuDSFlKA6e9LTLfnfR0ksZf5vzdPwk1qbEK1d-PYYmjG4ixb8rjJKRlta0Ump8TQiBaTj68j2-CdYAf4lPRs3rOFomLenKQg8D9sEezc9teTgmvEo5l5CJCzBUS26-yeuqCSzRfedG55tUQ3ZDh1QxTjO9ySq0gZTd4hx67YybchC3gVRk0qNhk8C_6oa1LyjUMwuI-2CjriZf_4QVOJ2vBR2S3bdA9-9ChmoT-HtK2l47pjcVc_yjQWOi6dqKZPxhFmkfRHYzDXiwHDIlPS-qB0RDQ6MWug6iozoTKapzVVeErqJErySmm1AEx9Qo95bNZBvNaiKK8vr9jiSmdcuuZ_sNWqmUoRZOI7fvTlezk91GXHKu50404bGgnxGvOGmnVWvwWoZF5UrJ6m67QaidpE-6p1eHLnFTOvEmw_UuMCsS672IkZXhKx4pSodf25GHgnh98D-bHSvfuSO6oChgjz3EToiYSSdJh1UGQeOOc0xENqi1RuFGzTu_E8gMuBUVXkVXm90XMA51YnyBoWAz22t5vfyvJErccW1rE1NOkc84IwMncvL9MXgHSEWRWIu8t0HNVudEPoE6OEzlOhsEiW8lVNwtqAZcOzmDjYSIUlP-AMwSX7ZbRZSb7r1G3r4"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": null
+            },
+            "values": {}
+        }
+    },
+    "fun_title": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "ldap",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZSI6IkNvbmZlcmVuY2UgY2VudHJlIG1hbmFnZXIifQ.4dd3GmpfcKtEDZctUYVTU4nAPvaS9kILvdbsUTRzIdeAtQuN6_OG62pZL0xc6_7spi1Jzi9vwN1vZFXmjzvCDxc0SkBsNaVQj8SNyHDVfuoEuS3jRmYLszqyBKc-vxxR-HUZ7uLEOa-wiXtUGbQP4UoCjG0WvlpntYxunR1UDj4074XYPMKk88Ccd77lgOZNFCS2ONyKm7dGWV7fSde1i6PFIQYc_YmHWOoBcuj_Z3EMjoq1nSgYZ2zP_jo3Gt4JuV_nrqDM2UZssSKdz7ANpaOCEv7aEVgPkNLGvUjbMG_7SjSTUDVTy3CVoZQrtkJpMybHmIsee_sW3VvbWpVlniVGpXLU2BqvFQyMHOKwDtav4-kTsXvufnl3WkTlU5pHcPitRBH0gbfhf3p2ioLt7bZejgxbp0XBmWaCFV0vUtf0Y93ZKZD9Mm9Jenfx1IsTMXT7Aix_6681nQC31JTS9-5ye4ZhgS3J2-t1h5jECwUY9Yi738jQzHatwC1_k9IaWyA16SZWxAnM0r0hDa5PV0gbtYLoBLQvrwF9qOwOm-J2KMce-tpO5NWNd4QZD4FztDzdkehzpznpl1mULUzWKXlv8QScBjk0WZ9My0pUijM_boah-KG_aEcmni0GLhD2TumqiSUnv2a_g5GA5vqthRFuJxOes0-7ga9E_WCcN1s"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "private"
+        },
+        "value": "Conference centre manager"
+    },
+    "description": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoidm91Y2hlZCJ9LCJ2YWx1ZSI6IkNvbnRpbnVlIHdyb25nIGFjY2VwdCBleHBlcmllbmNlIGRpZmZpY3VsdCBldmVyeWJvZHkuIFNpZ25pZmljYW50IG9uY2Ugd2F5IGZhc3QgcGljayBsb29rIHNvbWV0aGluZy4gSGVscCBtb3JlIHN1ZmZlci4ifQ.ThfEwWsy7HXeitCrRYEZJ4UhIIfejtvb-Q1SW0ERgJdQljUgn9ZAnE_TapcylbZKf78RKcdN3f6Nq6YWmujyV40h9gBg4uweJ4PO6MQZWGuahyF6AQpODySIY0No92Zh1-nsrsfhfidK3nmFZrZgLh0R4UgndVBGNp3xsqXRSJK5dkjVhd9-uq7ix7kKwgo85qha9cVgAaXZfF7yyEu3DA-wGWrordWn4T1TzFUgRfIXpifKGVX-gZbg0k__aPCM68VGZ_N2AFE07hKkrYw-NBKz7y4J8a9iRUiQ_mLZCGIBHaRljTU-cMvbHjhd7--i7Dg3rFcMDEXLVbrzVaNjt0lPpGrEqpPLnv7KMDHF2SFE83Y3ucGhl-Pm2TphS5sCgUQR3r5HEf5voZR87ZoY1bWJ78VeYj6H7ZIoUCThe6VYlaNmWN2cil44GwuEqQYGrUv-X_24N5FkllanmDzzvcH-QMpyoj292OsiU6sc_XGpn7-MvGWgyAIpY-bHptXHYPiROSsfQFnAOASmUmaNZVL6rz3j1BQI2X1Wfnne7-p-khhoWGtahr5dLuiaHeCjz_SQSeCp_7_RXYCRDZ-ZKT1VwID3frFbzEDxDnZP-m127dnmrXBGRfFvO0XYCg2cKW0NGRfQM-OOKxFhlDitEogEddt1jATCd3pBMCBDL_U"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "vouched"
+        },
+        "value": "Continue wrong accept experience difficult everybody. Significant once way fast pick look something. Help more suffer."
+    },
+    "location": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHVibGljIn0sInZhbHVlIjoiRnJlbmNoIFBvbHluZXNpYSJ9.JBcJaHw06jjb8JDO0YPIEbqDUEHMQLF-m73O_7VBAk65KExaZ67lotNKeZ7slyqM3ey8S64nPNZIhb4GZt-BNXn0ASsDxvnvd4mHHKlIcFdDjGnljcuih4JPn2sk6EVQxMG5SJv8UIJdhfqUIYuaUlZ8vYwHSLDt-MFMeIGDEi1jd0iw5-iF5i89Hizx6lXZxu_du5cJKSB2h5oZHKAhP6-XHAkSI7DsvRbTcIl1ej48cbKpX186CTlzPjSjYoQwLP6S6x5yDYsz89d_liyL0t1-OxbvcuMbXnSdqXZhDq2RpRkhrHn6laTxTOUUnz0VA4AxplNWaPc6HLKlu9kkiB4xxCm_kFcvlycd8QtrK0caMYLst-5SHZGN3HAJ7raxYp_ubMADeUhTnjRPn3MaPCW8h7rBYKDZeDMRGngVJeJerP66E9vZs98G3QLxsU8Zn-6NlCvInc37CBKo8LLdxCMUsPMHQ9uuwpiSsQvXyr2D7J4dmCZFiwWkwEQpP67zSQDeySKErXTEigmoDUfpsCUhDZdss7Umvc_iVddlWQS1t3LGyqscwN-keE8sk9pBiquXzrn66T8Bi6R6CTaB_Vqd2zwv6wTCTvry47bJfvsmMs5CtFRZhaCbBOdKmp7L4R9waTEhUREobW30m_cEMuNGV0xLXXpcfi4iPX0t5Mc"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "public"
+        },
+        "value": "French Polynesia"
+    },
+    "timezone": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "hris",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6IlVUQyswNTAwIEFzaWEvU2FpZ29uIn0.BFhkIvXd26zmiS2ilv_5jl34NOT2PWbYH01xSIR0OgW4vI_Q_BuNWh8IY4GMvGMoP6BxYOAchhPVvj3gZqXDueztbYqCuoCQkY25cPn8yZxeqE9TfsAYC9IgwCsJFarPP59rJC222zNYXI_DlaYUJFV4JoQzNg62T1-hBYu4nyIBnqjUPW1NZ63LFRDDn__aZGLdIEqqbgRyRs4zfTgxqkn2_t6YEGUOTfOO8z9r3ilkk03Mc0FlCh9QRVIFyEs9-T7gEVe_EpE3azeOUJtSkA8toFnr2OOKQUuyOcRdA-4yUqkI89a6rVWp84zMeZQEQRLTnsw3h9GfFBayR75jtXwfVmfULBdwXoTXrXXULk8HN9qaQ7NebQigdIJ7llSmT6WnUkx4AknAmWezWBBeOXIWhK-Ezh12kzxsYC8nIFo8hmNOUIzcch2yVYx1bQ0IhcRXXhdw3LCZtz-08c3ih51lb5GBK_Aq2OzUOVIv2NqCwzPYcxIuZ-1uLmP6A-r2rjOus2IxQrCSd7OINFbpL8hyM-6EzDc7oJVXVckTFU68vaq0p6U7b07xQZ5U_Il9iyuBOzmknN2_GOmUFGZ2ijoDmFoNo9s37xE8aScRErzi5OU8kwvh8s0ykafkZCOElROqk2MLTgwaiyOgIlHI_YMQQgmLUkH1FFfqRHzpP10"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "authenticated"
+        },
+        "value": "UTC+0500 Asia/Saigon"
+    },
+    "languages": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjpudWxsfSwidmFsdWVzIjp7Ikdlcm1hbiI6bnVsbCwiRW5nbGlzaCI6bnVsbCwiRnJlbmNoIjpudWxsLCJTcGFuaXNoIjpudWxsfX0.XiYcTxib6c8ubE48h9Yt8cnrzzk5XDp71Zzfp2EIwgCCBagadwrYR1MR5ZBriqLq8kpJofppLqJNFVfaIiSUwZ5wyFYG5DhL0ZPK35Z7vvMkRmOCttxO1XNIBGUonMKjf2ceYfMCThGZ_V0hziBG0nOgEfKzL13wwmktucO6LO_rVTD6zbAG7ZFIGStgbhzMNP_a0SAHHULVmcwEAMkGkvITW3GUGGyx0ZPKw_sqvjzbhrK8sHw8RiJf34L6r5Z0eROIpv7S0bBxi0xZ_c031Wjo8eXhZigI9wxLlcIERg5S57DkmLf077TtJS-xHggNM6p1AVtQ7mXdt9bAAUDGPCWhzXiEu00hBIixkXw-d7yVCMnVUjB2BOek2qzVx2yFVFYhBCi6_b_ZsIQq9y9lvCUQV1ZGLMtjcMAvO2_vsO_CFmCL8EfDgHrvtzXMrxh3CN_726Z561b_RmyuicsZxV8PfTHplsG9nmMUVI7QYTGiL4FfZt-6lQhqQ_RFjO6FU5OK8HmCjG0Q-4_YflpCH9MD_mQ1rSfk9uc28ajnY2OdoyeaRRAJqRF_mjjoSyQ-Owid4XEh9HtybzOL5US4OCnkovp-rM-FfcMRLmrcDa8ZPKMyvvMrK9F0ZraUSn669_83zGgTv4JYbE4IUdsMzAwdnko0PwIh3kriS6ToiOU"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": null
+        },
+        "values": {
+            "German": null,
+            "English": null,
+            "French": null,
+            "Spanish": null
+        }
+    },
+    "tags": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoibmRhZWQifSwidmFsdWVzIjp7ImRpc2N1c3Npb24iOm51bGwsInNwZWNpYWwiOm51bGx9fQ.bynNcfYq5At5i6aRvKa0Ez5KdpeerCWYCvJ2qNUfNJ-AbOO7qTr9w1s8PBrbc0RGbLDUBPntGRC3sjEeK9DhN9E2aFlDm6I85Twqxc4QSjwl48DgxzJwE2QHq1-suvVP6mb4PplaAWTpguO-_lW41MLHoD9kNXrbODfXTy0oNJcR-3MWfQ4oiGMF2ZEgj_8Sfit4NZKh1UuKq3lJNAh5oZh0K8lmH6pKQ_y3eLugjKVIql9WmvTxTGKGQHrnSBFI3lHXCkST3UtqN-K0pbk_thhp8T1YBdbxugCsCUyhv05l3MuYHQwyLrRbmUhGejGaf_p1v46eAGhZWeWx6JEhXzQxrAh9HpKd_zXrFCBD3xI4Ix0yogkSYF-IL2SF56mpDHERfcye2V63YGrzFk3py2tX0EYWlhXKGDgnq-gE7BM25X7u5w-cIbgc1KM6a6ods9O8uodx_Iu2AAru2bQ9oFoOf6aQpXHir5jwVIyFh8f_I8T79TZDqJfl4i0ikYCpNHUXIlJhhFQiIhjroL1Ni9buX0rqVh5Qz3Mke2FmemlJ2uV4sViejalCI0-FRZLfIEKTZf5eC2A2-9vJtPf3-VIKP-QLH7CIGtoRhU1rGYCA3-4jvyZVLSzC5tPDKtAwut3ndFaPi42Kkslm-WlwA4u3EDRaLAFEhjjiQ-LcwnM"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "ndaed"
+        },
+        "values": {
+            "discussion": null,
+            "special": null
+        }
+    },
+    "pronouns": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": ""
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "authenticated"
+        },
+        "value": null
+    },
+    "picture": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "ldap",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IlBVQkxJQyIsImxhc3RfbW9kaWZpZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJjcmVhdGVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwidmVyaWZpZWQiOnRydWUsImRpc3BsYXkiOiJwcml2YXRlIn0sInZhbHVlIjoiaHR0cHM6Ly9wbGFjZWtpdHRlbi5jb20vMjU4Lzk4NiJ9.D590_a-LphdOZlyrgtYWwyCXeKF0oDsx85j6zwV5XbBYWpQKZSaxR9drfiH27-BPnv7XZxPeIJ7X9W7HlNh62c76K1A-fYxGOCa4tc9LrSNAaQw_44GZ3YFRy5GZfrV95Eui5pAAczPURFLT1YxJxhfoz-GeX7eA6R81GUraXdOjYFpb5BR2J6FHyeuhV5QERBqD0iqfM9p8THgm7M6xqGAdpx6MYjYUTNkjyYisUlY5Yz7Sw4snyOS5Ghl49O4phDOZkT7JdjCcSw5yIZed9K0NFquU3zvWT9qsMdu7iFtBbaPVpIxfB1FafAbzeP3COXz1HJqrPnShRj6pwpOR4HpwJoUpy0lf3iFvEwEMfZdkhQI3VN_Ff994oIWpwTsRTl7MTtAhJlxCQIYhOW6JwECV8fLVrRtKVVOZfdqQiQSmbORwAYHP4A-ZAq3Vua6VjR8NQ4etMLCIjYyJxmrXtzuSRVW1tYV06gcSImttt-m-C_w4RrcH4INJImIX_cqJA-A_dgnCjO4HPDDhQmRd02WJfeolfOQPoSOkGOqplHQgIEdeDgaC2ubVfG6RfwtNhfadJuOHSRnm0LRVmMh4om75XmMrX0frmEJCOi0L0jYE4iLkCbIB-4JE1rlBk7ejWLWc70dICoOfCLgstaFMCKTnuPHYPzvxkMaT0ATOL00"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "PUBLIC",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "private"
+        },
+        "value": "https://placekitten.com/258/986"
+    },
+    "uris": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWVzIjp7Im1hdHRlciI6Imh0dHA6Ly93d3cubGV3aXMuY29tLyIsIm1ham9yIjoiaHR0cHM6Ly93d3cuZnJhbmstdGhvbXBzb24uY29tLyJ9fQ.ohii8hilrXMbfCt1eYkyDaUSys96KO6DKIkjFkqgIJcJ7ZimPB1ZLbq4FMRfU0jrBZRZr6DJUdHd6OJR-IA9-ANjEJeKJNK_Cnp0zj7XFgyOcKHaZAtGyxquKsjq7rp71ar0oTthjakZfhFnB08x42adBlIpIhn0aSAKORyWX29BM7EMoQj9ZB3P_uc2I4rdpOpyYVNmhTgbO8hvI70MyWQGceOpm3bDE4mwT5_PPJ6weFTOcwvCjmX0x3mNGLIcDjd7s7I8zbcGPzjN2IjHnB1YkFpfobhBBIT0vHD4UZkfrhklzKOqz9hnMlm7YWO5mSY9QjBnGypYwOVdX-qbz9h8QrM80rdtbfi0Ss_cEkNHztn9pns7AaLbUCrKtitKmghBPVSeA0xgO4hzjBbTyX7LM4IoBuhTYcFalK46gI-ETYxiIklSLuZK9IU9QQo1MCK2kxFm1FzrAcxg0RS4TsOfks4xKnKCOu2PG4aD01Yu5AgFrVTVbxaBxnQtsNhdx2-7UIe3JsKYOPHZ2Mp3tu-q_uTxzY-04LXVAzC9Lp5inFd7-28psLGrPY1xAdukAJUE9Wx0fU6Wl4JWitvKB1dcYSBYbAB0-JO29p_uMHrs2MLukmMH0vGEaNPPCLJBOh6ySMS1y_NdC3eJV1tsg9ngRO8EFrtOaRa5fQpQ4WU"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "staff"
+        },
+        "values": {
+            "matter": "http://www.lewis.com/",
+            "major": "https://www.frank-thompson.com/"
+        }
+    },
+    "phone_numbers": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "mozilliansorg",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoicHJpdmF0ZSJ9LCJ2YWx1ZXMiOnsicmlzayI6Iig3NDEpNzI4LTUwNzYifX0.rljkR4p_Cpgb2mu_mAW8t4dc2vYrqxwwqVoE2sp4UTn0XP0qazmmzm3Aey75DcifRkGKfzqcqJA_Emu5FejqrZvxHyMiHdoull47GX9w_dKtme1BKu6QKKiYSZcVz5vg8NmyxEFT3lDKfsstyHc1EpohKD8qmc_ljC3v9Be7emdH868OG8EiST-pvH-UVW9ZWKk9_jzCfBaLCUazQFowXS4ZJcgL7Lz7H_CdSF_e4KcOIykBL0gBj9tL-0_n6YtDHdD7OgRgx6Q3Jlz8mKg2vu2LYg37JqKOCDgRu42pcY4b4SOHF-EV-UZFn-A-cRTR5DnYKVo5LeLN4rj_EdRA5kKV46ixlFxlxsxlsF3vMV-bSS_fGVc6_9hM-O1mZDeFJOEaLZeT6zy2e7cE8dxwEZq-R-xH-24Q1dcqLEvi62HWrCIQjjswg5i1sA1XBV5uXz3tX5FLf9fANb9UO3c8KqgqyeGNtWrC4zXijPHoAx7IX11ZSK16wz3ruPUxC_qx4iE8lASKZv7vu7c8RSuS83Ks0FY6c9XspapoAHNpzfwpxCBrfWEEjGIi1Eg8AQ6Q6wmS_3vBHg69GhsvTw26mmiPYtLd7-e-P9sl8yqBELx_tPikTYZXT9gWDDB7oVS2KTRb7ezKwtNXXx0CqMTSL3ADgOsxPrdP422TinR7KAA"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "private"
+        },
+        "values": {
+            "risk": "(741)728-5076"
+        }
+    },
+    "alternative_name": {
+        "signature": {
+            "publisher": {
+                "alg": "RS256",
+                "typ": "JWS",
+                "name": "ldap",
+                "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUwiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5IjoiYXV0aGVudGljYXRlZCJ9LCJ2YWx1ZSI6IkNoYXJsZXMgTWNjYXJ0eSJ9.e8Q24Ird49DelN8eLLZR1Cjkvh2vcLw0beMblXedSn-yFpFhQa1Dr4ClclRXzes2iMiKF6Re-MFCOYdLFaYCUWCwhQSZxBSkDhApcnVGQDO_69AqLV0bv_2_KpffwZ9QiPrlrwDzbTJDZ2ScdFpSy2iWOa3P_25qxIlEdhdeqcVt0aXWCZTphrugmdELoGKeyIpRPQk1UZKhYFsREtLOZ74h_7fAlyLrzpCyk1_XE2wd_qNq06X2P-z7jOqjkjB8s7ZscJR2k5GH1f76P-LF1nsjEacAWmnjKZZ1QNs4M6rqk6-33pSTciX2GTtJ5LTHHBBw4zlF1laBNWiHfWiVg746SNuDvG29VHMwW55lhvC3DWtRk-JwluXWzZtNZJPvtYa-Qfa2jdNYxTSgq_efmPpWqQ7vTdOVWciEClde2yke38rghE9NpSse5fshuOcnkY7AzMXbIYciUvUtDX5FD6r_wddppR3GCKp022d0tCn5Vj-5KVWXMywhLKw2DrFBl7D5uqHIwyl-GJ8lnE7kRe-1M9q4SaTgyXw7P_xMEDxyHE_OPDGx5InGbte9zgw5bLi4harXfOkGiaKGcPHrPpMDlabLoL22ozv0raPvcLRN53KCO61unJSZXA3YbPXy7tsY01kcPeYY283lfBIlO4V7HrcS7y-IMAlObo4a0mI"
+            },
+            "additional": [
+                {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": null,
+                    "value": ""
+                }
+            ]
+        },
+        "metadata": {
+            "classification": "WORKGROUP CONFIDENTIAL",
+            "last_modified": "2019-02-27T11:23:00.000Z",
+            "created": "2019-02-27T11:23:00.000Z",
+            "verified": true,
+            "display": "authenticated"
+        },
+        "value": "Charles Mccarty"
+    },
+    "staff_information": {
+        "manager": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjp0cnVlfQ.QAPFFEdOhWrIjnMT0uXrHC5bIVvi_QObr63zDZuauBYghM7APWX2OuHLB48kanhrZViIYmHNWPsOA_M148oEYh6iWJOSs8pIrqKrqRqaQnmC5SAlFNndZpPT8VtKZAPcxCu888lfF2Pfleik4klNjLsIuBeA1lxtqc0Yr7RLCOYFRwyNNMPQxAo0x2ZLQJteu013D3Ch7DGaVR5gRM9Cka06BHttMDUsrA1u4D6XAbrXx7K8QLBvyfB7NbOq37syJPck6vObO8hZz3-FhZ8soKWkxIJjPW5BtiE9ODaSZWvBxQkgXi1tkTFfHoXMRhBcYKFtEEIs6beSEkxI1iIX3GIt9WjxVpHPiX_xRZ7vRo97PnEyEn4CKd6O4n0Mcw-XETsryxZI9-eO-dIo02ACDUJZCE-lWDmCAdXgFBIdYWDNcFs652dh-dJwdy5e0EaI-GYww1KiJ0gAEk7qtxKYYG4J2J_1Q-2FrwDNe3VhPSSIN3rNFpNL0m-iMXdog34cSE24zngPvFWaVcfe2cxSYJ2Hzu60L8sYyglLhQQgdU4m7bm3pOe_fMQtN-riPZ5VHCjuqfFTQZETH0qchtz7V2vnFVReti0K9cr63aI9YWq9I91QUFznePw9bLnvEIROmsH6t4hwyG6VrxTe2MlTeVQEGnGCODkjPsSW3nK87go"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": true
+        },
+        "director": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjpmYWxzZX0.ZClpQ2tHSV9QMxIk5wZnaPGZaVjnxqgoxNvKHXa6BdGaRSsOVb7DbKLc-Zw6V4Pnz1MNpxAxvl9yByvMXNLDJet809Vil1-51SJZ4uegUYYa95jfjj0HsfC305RgPWxnfHj1UwuAncr5dgvi94mlveSr5C8R7Ht_J5M5gsw9YheFkxbXmjS3-CDjeUv6KYt0C1kWN44KvSzLSjbdJc6wz3mDo7aQpGSlNuKV4yMUi-JE3yy-8GCOX0SXYUKqkrXkzD2_cPaMsn3dfL1G7FkfSU-zB4hUNr-1QF06JtFJec6NfSSAD2u_23RZJ_jox4wUzz7c8PSPs8igyNsPsKSAmUzXx4FC73CBMfJ-IKOCkEdFjy0SYAV1nPL0-bIEOLACnex68uYY5mQ64qOxm2U6FkBA47IDy89lUoP6mMa3iQeXRqAMLnFiJxcDhyOJTaxP5qVA-u84BmJsENJ12IWA6NjVRFTIoT0VNLi44gEZho44wc07ApHdndfUiszaz8O46DRGrqOutf0isYc3A7yhOzzss6wOhkuuFeJkl6lyipvGkz_3GOQS3zyJOZLBk5FoIWmp5MV0HRtCgaMLe8QUTYIjua4trFnJY1kRKgcuxAwBcLhRWHgcdrZ3VmcpK_XIirlw3nH8MKNjXBhhMqbNDGnl3xWYtVPNlqCQgFImY68"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": false
+        },
+        "staff": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjp0cnVlfQ.Y8ShSu7T98HeAuualD94Cby0d84jrIsuiW6n690tFw2fXbaAhFl0bsLWQNq51uTZkpzgTpPIjrmeVpyjAJfLy8YJNpasgcXBqXFUaaCaaMRg1zPOeKL4ENhp8GSW25Qj3W_VkwJTOvNPP1b7OA4DGrPenMGxiZuxDScCqLlX-0Vyxfe3XVyI5WgDfG_Jok20zlsj_kERbfnRI2EOC-VoTYBFZOJ_zT6DMHxCw3Xg4-aN638TpLh9T4aTSabmF-ie1mAFJgVffi-StPwZjkhJOM4BKH2bPE9rhlVR6WzTzpt_0uqMPm9_wTBiHMaWEK0Tx-TijcKFIF9rsY4LZsrhjL--zUmVlQaWX_QDB5UKw_xwW_auMpSkSIXBsVKxCl9PkSrzSZe-r7q4U75SS-AerF8Bresy1GaapOVMUjNWdEq-RDGB3ChQ356zt7z8Nm_29rHDMUZ5NK5OwZyjr8kNdn02AbhHTGsiwFBrVzupsKFSbF8Pc43BHtXeVXrZkJ8Dk4izeqY6kgcE03JrDV8GWAIbYUBhcRfTGgNjG8xoRkewA7AGA7thBWKrK4xc1T6TTZvP2SUYRxNtcvy0lP_fT9PzM_rnvVg0q9cbj51xAgznF_x6DhvWEfNuyOmtjLvNe9Q18PbmmUdotvNoFWY0MAB2UUsYvzvYAQBshu2l_NM"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": true
+        },
+        "title": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiVGhlcmFwZXV0aWMgcmFkaW9ncmFwaGVyIn0.hJkzzIszjfR9jcIbn0vPDNTTWrTcSd_i0R5gSfoU1LEt7SP0XdzQEPV3MerOrSUKvXsWHmbMjyqkAPTgIwqEPXP8u2ivO_J-EZXG48Uul12tlXJp6krgoLLBXz7T68QlEgc_9sjMnb5nCejHmoVN3fcyrhdDiwYlnUkmyeH1UaHX92iPqUR4BmYCA9nVxp_qfYg59TbTqn8rt-qcCTzwsGA2Ddu3RoCbC6LYEoJKb9C1fbnngcIRI8I9WCfe35zCyQ26MArTVKZ9RgOzqkqvEzOAPYssDjK2BgIryF1B17eqLinBknIKp9Vt0fsZIune_2omVySP-YOllzgEi5oPRybgXPB0NdbCDd0rVYL2n9KooNnnvjQ3T3lMR2hwl-PXDhkVd5obpHHM3hQyTUlvYkWPB68Rq3s5NY22F9X0TpI3-8MdKWbOqiDXdOg7RlCtt0---zat0q2cVQ8v8e40x1pXz0f5AvzKnZ_fF555qMzQl-45vdTBHV2GdRnPsLxZrmwx5QHXRraCpaThAC_6Vud-e-9Tflga8no7FdpIi81jYq8rAvG5Kz4hyfReCL2L-Z8ngnbrf_HmV3q__ScezGwRVYzyHncLxdn5IEZX9o-0R-ehOXFr3EASPnVm_thdDGGHjyfphl3BIKFK10o0mjYbbeklRAn6M4fKBOPe9Xo"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": "Therapeutic radiographer"
+        },
+        "team": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6InN0YWZmIn0sInZhbHVlIjoiUHJpY2UuIn0.GT8I219hoSqwrkddjsXdwwjQUzOWlhSUIbbqtOrnQZULG90LQpGR6ls2rsUv1XnvEXB764IQjT1L7rlAegFWw2r9D_cbi0wBhsYCfDVGnvv1z21MNykAf96Uem_R_9P5Y7Lafz_w39u3Ro3Jb-2WTJuXfDVNZtS1QRdkC7kuq7KC9d0RIjjlQ8DiKXsw4Lj6iJu3UhcsLKMClsip8HoU9l_OCrP8Q3wY4btaxyWSCuwSO7dE2X-umSX8cDBjgqSD8AX37z-95hmaoh0KzUH6In6FkJ9xxxvb-jAau7caAXHGotwg92F7py8Tsup0Wzj5594__hUqflOHm7gufikduMRwGlIN1zzIUq0DnxkO1ia52W9M6XpjiXsYTqsYPbexbDMrQ6jiE4A7MzQACJ8XQW33f-fE2zpVwcwlJrSYSwV8RlNXL8tlzMul7_J5LwjTq_lS1lA3tSmEWXTSsMbrNQtwPQIZGd_zS1xDMBrB122vHk7OfSKPMXTxMKVfdj8CYOLJrBtB49lf0PmAvZ6wbAZPbNSx17M7xb3Bb0hLS6iM5EqtgVgVpMux2W0gILQhRU3ytHmEcsZ8gx2FAY9NVHKZjUeCIVKTeOPEhVWf-ZdQN2tVHrahgnIYWq0ClW0QL6q-i8akFZSo3Tu359lGvjmtuUubg8js-FYWzx0ZKaE"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": "Price."
+        },
+        "cost_center": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6IldPUktHUk9VUCBDT05GSURFTlRJQUw6IFNUQUZGIE9OTFkiLCJsYXN0X21vZGlmaWVkIjoiMjAxOS0wMi0yN1QxMToyMzowMC4wMDBaIiwiY3JlYXRlZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsInZlcmlmaWVkIjp0cnVlLCJkaXNwbGF5Ijoic3RhZmYifSwidmFsdWUiOiI3MjI2IC0gUGVyaGFwcyBodWdlLiJ9.fniedFMUxwtnsFovCUyWcsupTXRP0eGLtcEIA-o3-KCSYVfV6JizaYK7D9OXOUVG1DLSIBoR9zm6v9L6pJLg1_rhm01CjlXPgwtMN8knLRDRlJGjLhsMLfBA6TK7DPg7Un6ixVzFTZaWF1jeR9ChvISzBT-QDTVQ3BSGlL_pPaC2DsiKuIChKz1oKQfvVi_KcZEo0vHeqfrFkfvoFk2oETsw7b8RPIir1oBXBZ39Ui8UtDozrzTXsvSEyi3YmJYMKOuk-LjbPFAS3zvHUJxhPSnI-kRH5TwjXJBWQgU_v49VUv7-1HlzqiwBPUafTkxyAbIYJc3eRNJRTN3-_CWwZCBUUEmgVAtXCyQQ6jRucZSX5GIb8VwnJsftonHuLquNRV7XnVKhxq40B9TbVpgt_yktAT2gkRF1c11g5meIQAeLwdnO8_pMykTrRG5Sxe8IYIVQKAkxsV4_3E_IGIZruFntt06M0xYnOypA4bZOJnjQZ__hSQQE31DFRv8_BuOsA5DN0nMlvQPkuXvkG9ZJ9j818RtOhgZGBWn1iaEQ8TkSFkm2kLUf_ZzHL5L91BhmG0zbuQ97fG402cxf0JmzJz1CtHnqLtIVeD03Bmmr3wzhgXlfBOkR2OWpsxbB5bLrIbxxDqKR5UlPhIDU5B4r2-GgdHhS7Cw_OHXLaNjB3vQ"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": "7226 - Perhaps huge."
+        },
+        "worker_type": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "hris",
+                    "value": ""
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "WORKGROUP CONFIDENTIAL: STAFF ONLY",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "staff"
+            },
+            "value": null
+        },
+        "wpr_desk_number": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiNjc1NTEifQ.Nf8EgnEI-mdse7AOSVXsSSuzxBx7DjkFfUvSFnB6JNozwfH7Y8WwYFhYxDb8u5Rc4UNWLjL_PHOy4hhQYnpfHSfMnXJDgTfjKDMeQJjgyxDK2Lt00Hb4D6WTN9SzIbfO3pHhhe3rkUw_BM9afwHay2Wy63etzcb4ifViwKniwaJSBySQFpT8rIxJuq8UFnOkvaaRq1b5Us-viQAc_m3gKB7M7vBb6PR4IFRB4FgWbRl0m8hzGFcnNDXRO0oUIWA2UbSgrkJPBDWIzNKk_7g9_noCsfWdrS-t9rdfm36LNQSj9AhZGVBQzzdNEuZx57xENfYsTn6jB33jx5XWlD7IzLKPRN7QNyyoSMT72wcKHSWFuO3p6W6lig_sAVD9VafPmzekEoCYm3sm1E4gFDOilewpHsVOfzUptO-guE5qwpk02nbeZVVX5Trxth5vIvPaPSTjsNN7WsTzEF9PhnCexpFxL_sGhvL9s7XS6w2BrVOInwdckzmo49EjnmysrMklBQfLub9z3HbWP8ocPV8Oo9v--8RWUwtYmlDpTk-lCxkkJnA0VypxEdRYEWkoZQZZIoO_LdnqNNNsJ0DEvZpjc40GpkYiHzvASUuKK2o0CQ1JuAsE209bzj0DIi5k35oar6nfkaMofOJgYthnNEcbm3QOO9iYBa4Qm_oAUeuQFEY"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": "67551"
+        },
+        "office_location": {
+            "signature": {
+                "publisher": {
+                    "alg": "RS256",
+                    "typ": "JWS",
+                    "name": "ldap",
+                    "value": "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJtZXRhZGF0YSI6eyJjbGFzc2lmaWNhdGlvbiI6Ik1PWklMTEEgQ09ORklERU5USUFMIiwibGFzdF9tb2RpZmllZCI6IjIwMTktMDItMjdUMTE6MjM6MDAuMDAwWiIsImNyZWF0ZWQiOiIyMDE5LTAyLTI3VDExOjIzOjAwLjAwMFoiLCJ2ZXJpZmllZCI6dHJ1ZSwiZGlzcGxheSI6Im5kYWVkIn0sInZhbHVlIjoiTGFrZSBEdXN0aW5oYXZlbiBPZmZpY2UifQ.RGRVl15osC-B5_pElL3Lobhy3FTlx30LJRB5NcbR5yCfK5nzyPwiMpWyBpWga6uzdqf11mprweUYd42b9trQ4m5y-E4dZ_8Ua9449SJyfqW-mLx6Mg1RsQ_MaEtWv4pgjT_9-88TOEN5v4XExztsdGEeYDsb4WrSHh_DGjSXNI7RH0CJ4Xh6k6ScGmSNsC50GMJ7jSwGzSkXu5kxHFJZ9kxitN_bWunad6unSY2I9LbQNCHlFE14MJjFJB7kzqbIEVvCZZcLZl5szmjs372d9BZ3Wu05oKFPLYk7Cqwsqsb27Qn5OuEfb6rjRgvL_EzvblOPBWGTUutm0PqH7RSGOCzbedi8YmTruqKTmOoN6pPwvGXiDhaHwrHc5O997tfXXcgfo00EFetgb6YFiEwhoIrwNJTV4NYIoCzcxw7DQp--9hu-eweY5v1JPwkhDzs2TGMOvKhAHJoO9nvMbs9uzo4dpqvBHPQbIiG1Ew_7br22a1ZNXX6W9kIzK9HdNWxy9bhw1GpGKk4YFBnveygHOotrZ4Z0_7K1AT6MXJvdNA2q0e486teWLvJ_cvKZNapt4D8A-FQbYOelVKfmzjrSBNQOvpFyUpNypjQca_tj72YvqA-jcu2FkwWsdbPyNedOa6uiGGa-kjqwRsrlVk5svlQFB_j3_iVS-Ms2rStRLQw"
+                },
+                "additional": [
+                    {
+                        "alg": "RS256",
+                        "typ": "JWS",
+                        "name": null,
+                        "value": ""
+                    }
+                ]
+            },
+            "metadata": {
+                "classification": "MOZILLA CONFIDENTIAL",
+                "last_modified": "2019-02-27T11:23:00.000Z",
+                "created": "2019-02-27T11:23:00.000Z",
+                "verified": true,
+                "display": "ndaed"
+            },
+            "value": "Lake Dustinhaven Office"
+        }
+    }
+}
