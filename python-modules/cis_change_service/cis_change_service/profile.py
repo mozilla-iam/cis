@@ -7,6 +7,7 @@ from cis_aws import connect
 from cis_change_service import common
 from cis_identity_vault.models import user
 from cis_profile.profile import User
+from cis_change_service.exceptions import AttributeMismatch
 from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from cis_profile.exceptions import PublisherVerificationFailure
@@ -20,11 +21,20 @@ logger = logging.getLogger(__name__)
 class Vault(object):
     """Handles flushing profiles to Dynamo when running local or in stream bypass mode."""
 
-    def __init__(self, sequence_number=None):
+    def __init__(self, sequence_number=None, profile_json=None, **kwargs):
         self.connection_object = connect.AWS()
         self.identity_vault_client = None
         self.config = common.get_config()
         self.condition = "unknown"
+        self.user_id = kwargs.get("user_id")
+        self.user_uuid = kwargs.get("user_uuid")
+        self.primary_email = kwargs.get("primary_email")
+        self.primary_username = kwargs.get("primary_username")
+
+        if self.user_id is None:
+            logger.info("No user_id arg was passed for the payload.  This is a new user or batch.")
+            self.user_id = User(user_structure_json=profile_json).as_dict()["user_id"]["value"]
+            self.condition = "create"
 
         if sequence_number is not None:
             self.sequence_number = str(sequence_number)
@@ -36,9 +46,30 @@ class Vault(object):
         self.identity_vault_client = self.connection_object.identity_vault_client()
         return self.identity_vault_client
 
+    def _sanity_check(self, profile_json):
+        cis_profile_object = User(user_structure_json=profile_json)
+        user_id = cis_profile_object.as_dict()["user_id"].get("value")
+
+        if (
+            user_id is not None
+            and user_id != self.user_id
+            and (self.condition == "update" or self.condition == "delete")
+        ):
+            # Perform a simple sanity check on the payload vs the arg to ensure there are no shenanigans.
+            raise AttributeMismatch(
+                {
+                    "code": "attribute_mismatch",
+                    "description": "user_id: {} does not match user_id: {} this combination is unstrusted.".format(
+                        user_id, self.user_id
+                    ),
+                },
+                403,
+            )
+        return profile_json
+
     def _verify(self, profile_json, old_profile=None):
         cis_profile_object = User(user_structure_json=profile_json)
-        user_id = cis_profile_object.as_dict()["user_id"].get("value", "")
+        user_id = cis_profile_object.as_dict()["user_id"].get("value")
 
         try:
             if self.config("verify_publishers", namespace="cis") == "true":
@@ -98,23 +129,23 @@ class Vault(object):
     def _search_and_merge(self, cis_profile_object):
         self._connect()
 
-        user_id = cis_profile_object.user_id.value
-
-        logger.info("Attempting to locate user: {}".format(user_id))
+        logger.info("Attempting to locate user: {}".format(self.user_id))
         vault = user.Profile(self.identity_vault_client.get("table"), self.identity_vault_client.get("client"))
 
         try:
-            res = vault.find_by_id(user_id)
+            # XXX TBD add more searches here to support additional parameters for partial updates.
+            self._sanity_check(cis_profile_object.as_dict())
+            res = vault.find_by_id(self.user_id)
             logger.info("The result of the search contained: {}".format(len(res["Items"])))
         except Exception as e:
             logger.error("Problem finding user profile in identity vault due to: {}".format(e))
-            res = {"Items": [0]}
+            res = {"Items": []}
 
         if len(res["Items"]) > 0:
             self.condition = "update"
             logger.info(
-                "A record already exists in the identity vault for user: {}.".format(user_id),
-                extra={"user_id": user_id},
+                "A record already exists in the identity vault for user: {}.".format(self.user_id),
+                extra={"user_id": self.user_id},
             )
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
@@ -123,8 +154,8 @@ class Vault(object):
         else:
             self.condition = "create"
             logger.info(
-                "A record does not exist in the identity vault for user: {}.".format(user_id),
-                extra={"user_id": user_id},
+                "A record does not exist in the identity vault for user: {}.".format(self.user_id),
+                extra={"user_id": self.user_id},
             )
             return User()
 
@@ -229,6 +260,7 @@ class Vault(object):
 
     def delete_profile(self, profile_json):
         condition = "delete"
+        self._sanity_check(profile_json)
         try:
             user_profile = dict(
                 id=profile_json["user_id"]["value"],
