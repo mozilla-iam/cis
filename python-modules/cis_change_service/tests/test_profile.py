@@ -84,7 +84,6 @@ class TestProfile(object):
         except Exception as e:
             logger.error("Table error: {}".format(e))
         self.user_profile = FakeUser().as_json()
-        print(self.user_profile)
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
@@ -224,7 +223,6 @@ class TestProfile(object):
         u.active.signature.publisher.name = "ldap"
         u.sign_attribute("active", "ldap")
         ud = v._update_attr_owned_by_cis(u.user_id.value, u)
-        print(ud)
         assert ud.active.signature.publisher.name == "cis"
 
     def teardown(self):

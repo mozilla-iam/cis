@@ -9,7 +9,6 @@ from cis_aws import connect
 from cis_change_service import common
 from cis_identity_vault.models import user
 from cis_profile.profile import User
-from cis_change_service.exceptions import AttributeMismatch
 from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from traceback import format_exc
@@ -124,8 +123,8 @@ class Vault(object):
             # This profile exists in the vault and will be merged and it's publishers verified
             self.condition = "update"
             logger.info(
-                "A record already exists in the identity vault for user: {}.".format(self.user_id),
-                extra={"user_id": self.user_id},
+                "A record already exists in the identity vault for user: {}.".format(user_id),
+                extra={"user_id": user_id},
             )
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
@@ -156,8 +155,8 @@ class Vault(object):
             # This profile as not merged, just verify publishers and return it
             self.condition = "create"
             logger.info(
-                "A record does not exist in the identity vault for user: {}.".format(self.user_id),
-                extra={"user_id": self.user_id},
+                "A record does not exist in the identity vault for user: {}.".format(user_id),
+                extra={"user_id": user_id},
             )
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
@@ -222,6 +221,16 @@ class Vault(object):
             # For single put_profile events the user_id is passed as argument
             if self.user_id:
                 user_id = self.user_id
+                # Verify that we're passing the same as the signed user_id for safety reasons
+                if user_profile._attribute_value_set(user_profile.user_id) and (user_id != user_profile.user_id.value):
+                    raise IntegrationError(
+                        {
+                            "code": "integration_exception",
+                            "description": "user_id query parameter does not match profile, that looks wrong",
+                        },
+                        400,
+                    )
+
             else:
                 user_id = user_profile.user_id.value
             logger.info("Attempting integration of profile data into the vault", extra={"user_id": user_id})
@@ -315,7 +324,6 @@ class Vault(object):
     def delete_profile(self, profile_json):
         # XXX This method should be refactored to look like put_profiles() / put_profile()
         self.condition = "delete"
-        user_id = profile_json["user_id"]["value"]
 
         try:
             user_profile = dict(

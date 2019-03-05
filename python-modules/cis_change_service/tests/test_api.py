@@ -251,7 +251,24 @@ class TestAPI(object):
         assert response["condition"] == "create"
 
         logger.info("A stub user has been created and verified to exist.")
-        logger.info("Attempting partial update.")
+
+        logger.info("Attempting failing partial update.")
+        null_profile = profile.User(user_structure_json=None)
+        null_profile.alternative_name.value = "iamanewpreferredlastname"
+        null_profile.sign_attribute("alternative_name", "mozilliansorg")
+        null_profile.user_id.value = "ad|wrong|LDAP"
+        null_profile.active.value = True
+        null_profile.sign_attribute("active", "access_provider")
+
+        result = self.app.post(
+            "/v2/user?user_id={}".format("mismatching_user_id"),
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(null_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert result.status_code == 400
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_succeed(self, fake_jwks):
