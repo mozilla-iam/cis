@@ -28,9 +28,9 @@ extras = {"test": test_requirements}
 setup(
     name="cis_publisher",
     version="0.0.1",
-    author="Andrew Krug",
-    author_email="akrug@mozilla.com",
-    description="Bindings to send a message with an attribute change to the change integration service.",
+    author="The Mozilla IAM Team",
+    author_email="gdestuynder@mozilla.com",
+    description="Publisher module for the CIS API.",
     long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=[
@@ -42,7 +42,6 @@ setup(
     license="Mozilla Public License 2.0",
     include_package_data=True,
     packages=find_packages(include=["cis_publisher"]),
-    package_data={"cis_publisher": ["profile.schema"]},
     setup_requires=setup_requirements,
     test_suite="tests",
     tests_require=test_requirements,

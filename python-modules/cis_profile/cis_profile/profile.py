@@ -48,9 +48,8 @@ class User(object):
         @discovery_url the well-known Mozilla IAM URL
         @kwargs any user profile attribute name to override on initializing, eg "user_id='test'"
         """
-        discovery_url = discovery_url = os.environ.get(
-            "CIS_DISCOVERY_URL", "https://auth.mozilla.com/.well-known/mozilla-iam"
-        )
+        if discovery_url is None:
+            discovery_url = os.environ.get("CIS_DISCOVERY_URL", "https://auth.mozilla.com/.well-known/mozilla-iam")
         self.__well_known = WellKnown(discovery_url)
 
         if user_structure_json is not None:
