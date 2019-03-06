@@ -361,7 +361,7 @@ class TestAPI(object):
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
 
-        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+        token = f.generate_bearer_without_scope()
         result = self.app.get(
             "/v2/users/id/all?connectionMethod=email",
             headers={"Authorization": "Bearer " + token},
