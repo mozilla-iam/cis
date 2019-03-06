@@ -143,7 +143,6 @@ class IdentityVault(object):
         else:
             waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 1, "MaxAttempts": 5})
 
-
         return result
 
     def destroy(self):
@@ -178,11 +177,9 @@ class IdentityVault(object):
         return self.dynamodb_client.describe_table(TableName=self._generate_table_name())
 
     def _has_stream(self):
-        result = self.dynamodb_client.describe_table(
-            TableName=self._generate_table_name()
-        ).get('Table')
+        result = self.dynamodb_client.describe_table(TableName=self._generate_table_name()).get("Table")
 
-        if result.get('StreamSpecification'):
+        if result.get("StreamSpecification"):
             return True
         else:
             return False
@@ -191,8 +188,5 @@ class IdentityVault(object):
         while self._has_stream() == False:
             return self.dynamodb_client.update_table(
                 TableName=self._generate_table_name(),
-                StreamSpecification={
-                    'StreamEnabled': True,
-                    'StreamViewType': 'KEYS_ONLY'
-                },
+                StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
             )
