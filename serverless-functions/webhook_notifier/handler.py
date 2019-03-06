@@ -1,3 +1,5 @@
+import json
+
 
 def handle(event, context):
-    pass
+    print(json.dumps(event))

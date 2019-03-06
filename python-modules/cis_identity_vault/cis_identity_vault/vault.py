@@ -4,6 +4,10 @@ from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from cis_identity_vault import autoscale
 from cis_identity_vault.common import get_config
+from logging import getLogger
+
+
+logger = getLogger(__name__)
 
 
 class IdentityVault(object):
@@ -56,8 +60,16 @@ class IdentityVault(object):
     def tag_vault(self):
         self.connect()
         arn = self.find()
-        tags = [{"Key": "cis_environment", "Value": "testing"}, {"Key": "application", "Value": "identity-vault"}]
-        return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
+        tags = [
+            {"Key": "cis_environment", "Value": self._get_cis_environment()},
+            {"Key": "application", "Value": "identity-vault"},
+        ]
+        try:
+            return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
+        except ClientError:
+            logger.error("The table does not support tagging.")
+        except Exception as e:
+            logger.error("The table did not tag for an unknown reason: {}".format(e))
 
     def find(self):
         self.connect()
@@ -135,13 +147,18 @@ class IdentityVault(object):
         )
 
         waiter = self.dynamodb_client.get_waiter("table_exists")
-        waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 1, "MaxAttempts": 5})
+
+        if self._get_cis_environment() in ["production", "development", "testing"]:
+            waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 20, "MaxAttempts": 20})
+            self.tag_vault()
+            self.setup_stream()
+        else:
+            waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 1, "MaxAttempts": 5})
 
         return result
 
     def destroy(self):
         result = self.dynamodb_client.delete_table(TableName=self._generate_table_name())
-
         return result
 
     def __get_table_resource(self):
@@ -170,3 +187,24 @@ class IdentityVault(object):
 
     def describe_indices(self):
         return self.dynamodb_client.describe_table(TableName=self._generate_table_name())
+
+    def _has_stream(self):
+        result = self.dynamodb_client.describe_table(TableName=self._generate_table_name()).get("Table")
+
+        if result.get("StreamSpecification"):
+            return True
+        else:
+            return False
+
+    def setup_stream(self):
+        if self._has_stream() is False:
+            try:
+                return self.dynamodb_client.update_table(
+                    TableName=self._generate_table_name(),
+                    StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
+                )
+            except ClientError as e:
+                logger.error("The table does not support streams: {}.".format(e))
+                return
+            except Exception as e:
+                logger.error("The table did not tag for an unknown reason: {}".format(e))

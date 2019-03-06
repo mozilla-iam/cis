@@ -52,7 +52,7 @@ class TestProfileDelegate(object):
         self.vault_client.boto_session = Stubber(boto3.session.Session(region_name="us-west-2")).client
         self.vault_client.dynamodb_client = self.dynamodb_client
         self.vault_client.find_or_create()
-        self.table = self.dynamodb_resource.Table("testing-identity-vault")
+        self.table = self.dynamodb_resource.Table("purple-identity-vault")
         self.mr_mozilla_profile = fake_profile.FakeUser(seed=1337).as_dict()
 
         self.mr_nozilla_tainted_profile = fake_profile.FakeUser(seed=1337).as_dict()
