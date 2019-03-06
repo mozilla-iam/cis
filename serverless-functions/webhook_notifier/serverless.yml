@@ -1,0 +1,65 @@
+service: webhook-notifications
+plugins:
+  - serverless-plugin-tracing
+custom:
+  webhookStage: ${opt:stage, self:provider.stage}
+  webhookEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+    DYNAMODB_TABLE:
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
+    IDENTIFIER:
+      production: notifications.sso.mozilla.com
+      development: notifications.dev.sso.allizom.org
+      testing: notifications.test.sso.allizom.org
+    CIS_DYNAMODB_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
+    WEBHOOK_NOTIFICATION_AUTH0_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_DYNAMODB_ARN: ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
+    CIS_ENVIRONMENT: ${self:custom.webhookEnvironment.CIS_ENVIRONMENT.${self:custom.webhookStage}}
+    WEBHOOK_NOTIFICATIONS_API_IDENTIFIER: ${self:custom.webhookEnvironment.IDENTIFIER.${self:custom.webhookStage}}
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:DescribeStream"
+        - "dynamodb:GetRecords"
+        - "dynamodb:GetShardIterator"
+        - "dynamodb:ListStreams"
+      Resource:
+        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
+        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+functions:
+  notifier:
+    handler: handler.handle
+    description: webhook notifications out of cis for profile updates.
+    memorySize: 512
+    timeout: 15
+
+
