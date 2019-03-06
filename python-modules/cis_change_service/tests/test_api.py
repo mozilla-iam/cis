@@ -146,28 +146,6 @@ class TestAPI(object):
         assert result.status_code == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
-    def test_change_endpoint_returns(self, fake_jwks):
-        os.environ["CIS_STREAM_BYPASS"] = "true"
-        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
-        from cis_change_service import api
-
-        f = FakeBearer()
-        fake_jwks.return_value = json_form_of_pk
-        token = f.generate_bearer_without_scope()
-        api.app.testing = True
-        self.app = api.app.test_client()
-        result = self.app.post(
-            "/v2/user",
-            headers={"Authorization": "Bearer " + token},
-            data=json.dumps(self.user_profile),
-            content_type="application/json",
-            follow_redirects=True,
-        )
-
-        json.loads(result.get_data())
-        assert result.status_code == 200
-
-    @mock.patch("cis_change_service.idp.get_jwks")
     def test_stream_bypass_publishing_mode_it_should_succeed(self, fake_jwks):
         os.environ["CIS_STREAM_BYPASS"] = "true"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
@@ -317,6 +295,7 @@ class TestAPI(object):
             content_type="application/json",
             follow_redirects=True,
         )
+        logger.info(result.get_data())
         response = json.loads(result.get_data())
         assert result.status_code == 200
         assert response["condition"] == "update"

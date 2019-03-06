@@ -234,6 +234,14 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
+    def all_filtered(self, query_filter=None):
+        all_users = self.all
+        users = []
+        for user in all_users:
+            if user["id"].startswith(query_filter):
+                users.append(user["id"])
+        return users
+
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
         if len(self.find_by_id(profilev2["user_id"]["value"])["Items"]) > 0:
