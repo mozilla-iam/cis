@@ -21,7 +21,8 @@ class LDAPPublisher:
         profiles_json = self.fetch_from_s3()
         profiles = []
         for p in profiles_json:
-            profiles.append(cis_profile.User(user_structure_json=p))
+            str_p = json.dumps(profiles_json[p])
+            profiles.append(cis_profile.User(user_structure_json=str_p))
 
         publisher = cis_publisher.Publish(profiles)
         try:
