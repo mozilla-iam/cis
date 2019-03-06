@@ -185,7 +185,7 @@ class IdentityVault(object):
             return False
 
     def setup_stream(self):
-        while self._has_stream() == False:
+        while self._has_stream() is False:
             return self.dynamodb_client.update_table(
                 TableName=self._generate_table_name(),
                 StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
