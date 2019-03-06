@@ -484,13 +484,15 @@ class User(object):
             )
         return attr
 
-    def sign_all(self, publisher_name):
+    def sign_all(self, publisher_name, safety=True):
         """
         Sign all child nodes with a non-null value(s) OR empty values (strict=False)
         This requires cis_crypto to be properly setup (i.e. with keys)
         To sign empty values, manually call sign_attribute()
 
         @publisher_name str a publisher name (will be set in signature.publisher.name at signing time)
+        @safety bool if off will not raise a SignatureRefused error when your publisher_name does not match (will not
+        sign either!)
         """
 
         logger.debug("Signing all profile fields that have a value set with publisher {}".format(publisher_name))
@@ -499,20 +501,37 @@ class User(object):
                 continue
             try:
                 attr = self.__dict__[item]
-                if self._attribute_value_set(attr, strict=True) and (
-                    attr["signature"]["publisher"]["name"] == publisher_name
-                ):
-                    logger.debug("Signing attribute {}".format(item))
-                    attr = self._sign_attribute(attr, publisher_name)
+                if self._attribute_value_set(attr, strict=True):
+                    if attr["signature"]["publisher"]["name"] == publisher_name:
+                        logger.debug("Signing attribute {}".format(item))
+                        attr = self._sign_attribute(attr, publisher_name)
+                    else:
+                        logger.error(
+                            "Attribute has value set but wrong publisher set, cannot sign: {} (publisher: {})".format(
+                                attr, publisher_name
+                            )
+                        )
+                        if safety:
+                            raise cis_profile.exceptions.SignatureRefused(
+                                "Attribute has value set but wrong publisher set, cannot" " sign", attr
+                            )
             except KeyError:
                 # This is the 2nd level attribute match, see also initialize_timestamps()
                 for subitem in self.__dict__[item]:
                     attr = self.__dict__[item][subitem]
-                    if self._attribute_value_set(attr, strict=True) and (
-                        attr["signature"]["publisher"]["name"] == publisher_name
-                    ):
-                        logger.debug("Signing attribute {}.{}".format(item, subitem))
-                        attr = self._sign_attribute(attr, publisher_name)
+                    if self._attribute_value_set(attr, strict=True):
+                        if attr["signature"]["publisher"]["name"] == publisher_name:
+                            logger.debug("Signing attribute {}.{}".format(item, subitem))
+                            attr = self._sign_attribute(attr, publisher_name)
+                        else:
+                            logger.error(
+                                "Attribute has value set but wrong publisher set, cannot sign: {} (publisher: "
+                                "{})".format(attr, publisher_name)
+                            )
+                            if safety:
+                                raise cis_profile.exceptions.SignatureRefused(
+                                    "Attribute has value set but wrong publisher set, cannot" " sign", attr
+                                )
 
     def sign_attribute(self, req_attr, publisher_name):
         """

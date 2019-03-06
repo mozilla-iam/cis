@@ -20,7 +20,6 @@ class Sign(object):
         self._jwk = None
         self.secret_manager = self.config("secret_manager", namespace="cis", default="file")
         self.payload = None
-        self.__key_cache = {}
 
     def load(self, data):
         """Loads a payload to the object and ensures that the thing is serializable."""
@@ -50,15 +49,8 @@ class Sign(object):
 
     def _get_key(self):
         if self._jwk is None:
-            if self.__key_cache.get(self.key_name):
-               logger.info('Key is already in the object cache for key_name: {}'.format(self.key_name))
-               self._jwk = self.__key_cache.get(self.key_name)
-            else:
-                logger.info('Key is not in the object cache for key_name: {}'.format(self.key_name))
-                manager = secret.Manager(provider_type=self.secret_manager)
-                self._jwk = manager.get_key(key_name=self.key_name)
-                # Support a key cache in object for multi publisher signatures.
-                self.__key_cache[self.key_name] = self._jwk
+            manager = secret.Manager(provider_type=self.secret_manager)
+            self._jwk = manager.get_key(key_name=self.key_name)
         return self._jwk
 
 
