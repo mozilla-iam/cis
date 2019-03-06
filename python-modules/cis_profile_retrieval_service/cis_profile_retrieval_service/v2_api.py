@@ -209,6 +209,27 @@ class v2UserByPrimaryUsername(Resource):
         return getUser(primary_username, user.Profile.find_by_username)
 
 
+class v2UsersById(Resource):
+    """Return a one page list of user ids to support smart publishing."""
+
+    decorators = [requires_auth]
+
+    def get(self):
+        parser = reqparse.RequestParser()
+        parser.add_argument("connectionMethod", type=str)
+        args = parser.parse_args()
+
+        logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
+        if transactions == "false":
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
+
+        if transactions == "true":
+            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+
+        logger.info("Returning all users for connection method: {}".format(args.get("connectionMethod")))
+        return identity_vault.all_filtered(args.get("connectionMethod"))
+
+
 def getUser(id, find_by):
     """Return a single user with identifier using find_by."""
     id = urllib.parse.unquote(id)
@@ -328,6 +349,9 @@ api.add_resource(v2UserByUserId, "/v2/user/user_id/<string:user_id>")
 api.add_resource(v2UserByUuid, "/v2/user/uuid/<string:uuid>")
 api.add_resource(v2UserByPrimaryEmail, "/v2/user/primary_email/<string:primary_email>")
 api.add_resource(v2UserByPrimaryUsername, "/v2/user/primary_username/<string:primary_username>")
+
+# Support batch retrieval of all user ids that are in the system. Make publishing "Smart".
+api.add_resource(v2UsersById, "/v2/users/id/all")
 
 
 @app.route("/v2")

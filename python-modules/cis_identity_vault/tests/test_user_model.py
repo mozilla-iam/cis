@@ -175,3 +175,10 @@ class TestUsersDynalite(object):
 
         result_for_username = profile.find_by_username(user["primary_username"]["value"])
         assert len(result_for_username.get("Items")) > 0
+
+    def test_all_by_filter(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        result = profile.all_filtered(query_filter="email")
+        assert len(result) > 0

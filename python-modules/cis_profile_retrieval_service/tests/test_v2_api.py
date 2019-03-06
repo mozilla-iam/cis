@@ -353,3 +353,19 @@ class TestAPI(object):
             assert not query.json.get("access_information").get("access_provider")
             assert not query.json.get("staff_information").get("cost_center")
             assert query.json.get("uuid")
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_returning_all_ids(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+        result = self.app.get(
+            "/v2/users/id/all?connectionMethod=email",
+            headers={"Authorization": "Bearer " + token},
+            follow_redirects=True,
+        )
+        assert isinstance(result.json, list)
+        assert len(result.json) > 0

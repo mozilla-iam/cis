@@ -61,21 +61,15 @@ class IdentityVault(object):
         self.connect()
         arn = self.find()
         tags = [
-            {
-                "Key": "cis_environment",
-                "Value": self._get_cis_environment()
-            },
-            {
-                "Key": "application",
-                "Value": "identity-vault"
-            }
+            {"Key": "cis_environment", "Value": self._get_cis_environment()},
+            {"Key": "application", "Value": "identity-vault"},
         ]
         try:
             return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
         except ClientError:
-            logger.error('The table does not support tagging.')
+            logger.error("The table does not support tagging.")
         except Exception as e:
-            logger.error('The table did not tag for an unknown reason: {}'.format(e))
+            logger.error("The table did not tag for an unknown reason: {}".format(e))
 
     def find(self):
         self.connect()
@@ -210,7 +204,7 @@ class IdentityVault(object):
                     StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
                 )
             except ClientError as e:
-                logger.error('The table does not support streams: {}.'.format(e))
+                logger.error("The table does not support streams: {}.".format(e))
                 return
             except Exception as e:
-                logger.error('The table did not tag for an unknown reason: {}'.format(e))
+                logger.error("The table did not tag for an unknown reason: {}".format(e))
