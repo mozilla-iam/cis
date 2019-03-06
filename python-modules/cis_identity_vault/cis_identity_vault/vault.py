@@ -136,7 +136,7 @@ class IdentityVault(object):
 
         waiter = self.dynamodb_client.get_waiter("table_exists")
 
-        if self._get_cis_environment() != "local":
+        if self._get_cis_environment() in ["production", "development", "testing"]:
             waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 20, "MaxAttempts": 20})
             self.tag_vault()
             self.setup_stream()

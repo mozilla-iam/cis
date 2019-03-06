@@ -1,6 +1,8 @@
+import mock
 import os
 import random
 import subprocess
+from cis_identity_vault import vault
 from moto import mock_dynamodb2
 
 
@@ -8,7 +10,6 @@ from moto import mock_dynamodb2
 class TestVault(object):
     def test_crud_it_should_succeed(self):
         from cis_identity_vault import vault
-
         v = vault.IdentityVault()
         os.environ["CIS_ENVIRONMENT"] = "purple"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
