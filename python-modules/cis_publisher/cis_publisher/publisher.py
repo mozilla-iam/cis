@@ -5,6 +5,7 @@ import os
 import time
 from cis_profile.common import WellKnown
 from cis_publisher import secret
+from cis_publisher import common
 
 logger = logging.getLogger(__name__)
 
@@ -30,6 +31,7 @@ class Publish:
         # retry_delay is passed to time.sleep
         self.retry_delay = 5
         self.secret_manager = secret.Manager()
+        self.config = common.get_config()
 
     def get_api_urls(self):
         """
@@ -38,6 +40,7 @@ class Publish:
         logger.info("Getting API URLs from well-known {}".format(self.__discovery_url))
         wk = self.__well_known.get_well_known()
         self.api_url = wk["api"]["endpoints"]
+        self.api_audience = wk["api"]["audience"]
         self.api_url_person = self.api_url["person"]
         self.api_url_change = self.api_url["change"]
 
@@ -61,7 +64,7 @@ class Publish:
                 logger.info(
                     "Attempting to post profile {} to API {}".format(profile.user_id.value, self.api_url_change)
                 )
-                response = requests.post(
+                response = self._request(
                     self.api_url_change,
                     data=profile.as_json(),
                     headers={"authorization": "Bearer {}".format(access_token)},
@@ -83,10 +86,14 @@ class Publish:
                         )
                         raise PublisherError("Failed to publish profile")
 
+    def _request(self, url, payload, headers):
+        return requests.post(url, payload, headers)
+
     def _get_authzero_client(self):
         authzero = secret.AuthZero(
             client_id=self.secret_manager.secret("client_id"),
             client_secret=self.secret_manager.secret("client_secret"),
+            api_identifier=self.api_audience,
             authzero_tenant=self.config("authzero_tenant", namespace="cis", default="auth.mozilla.auth0.com"),
         )
         return authzero

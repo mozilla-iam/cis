@@ -16,13 +16,11 @@ class AuthZero(object):
             object {[type]} -- [an instance of the class.]
             client_id {[type]} -- [The client ID of the auth zero client you would like to use to sign the request.]
             client_secret {[type]} -- [The client secret of the client you would like to use to sign the request.]
-            api_identifier {[type]} -- [The audience for the custom authorizer.]
             authzero_tenant {[type]} -- [The auth zero tenant to connect to in order to make the credential exchange.]
         """
 
         self.client_id = client_id
         self.client_secret = client_secret
-        self.api_identifier = api_identifier
         self.authzero_tenant = authzero_tenant
 
     def exchange_for_access_token(self):
