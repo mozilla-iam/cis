@@ -1,5 +1,5 @@
 import boto3
-
+import http.client
 from cis_notifications import common
 from logging import getLogger
 
@@ -33,8 +33,20 @@ class AuthZero(object):
         Returns:
             [type] -- [an access token base64 encoded JWT.]
         """
-        access_token = None
-        return access_token
+        conn = http.client.HTTPSConnection(self.authzero_tenant)
+        payload_dict = dict(
+            client_id=self.client_id,
+            client_secret=self.client_secret,
+            audience=self.api_identifier,
+            grant_type="client_credentials",
+        )
+
+        payload = json.dumps(payload_dict)
+        headers = {"content-type": "application/json"}
+        conn.request("POST", "/oauth/token", payload, headers)
+        res = conn.getresponse()
+        data = json.loads(res.read())
+        return data["access_token"]
 
 
 class Manager(object):
