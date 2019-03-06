@@ -6,18 +6,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = [
-    "boto",
-    "boto3",
-    "botocore",
-    "jsonschema",
-    "everett",
-    "everett[ini]",
-    "configobj",
-    "authzerolib"
-    # 'cis_crypto', # Uncomment when these are published in warehouse
-    # 'cis_aws' # Uncomment when these are published in warehouse
-]
+requirements = ["boto3", "botocore", "everett", "everett[ini]"]
 
 setup_requirements = ["pytest-runner"]
 
