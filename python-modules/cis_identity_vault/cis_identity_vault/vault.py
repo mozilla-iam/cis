@@ -4,6 +4,10 @@ from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from cis_identity_vault import autoscale
 from cis_identity_vault.common import get_config
+from logging import getLogger
+
+
+logger = getLogger(__name__)
 
 
 class IdentityVault(object):
@@ -56,8 +60,22 @@ class IdentityVault(object):
     def tag_vault(self):
         self.connect()
         arn = self.find()
-        tags = [{"Key": "cis_environment", "Value": "testing"}, {"Key": "application", "Value": "identity-vault"}]
-        return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
+        tags = [
+            {
+                "Key": "cis_environment",
+                "Value": self._get_cis_environment()
+            },
+            {
+                "Key": "application",
+                "Value": "identity-vault"
+            }
+        ]
+        try:
+            return self.dynamodb_client.tag_resource(ResourceArn=arn, Tags=tags)
+        except ClientError:
+            logger.error('The table does not support tagging.')
+        except Exception as e:
+            logger.error('The table did not tag for an unknown reason: {}'.format(e))
 
     def find(self):
         self.connect()
@@ -185,8 +203,14 @@ class IdentityVault(object):
             return False
 
     def setup_stream(self):
-        while self._has_stream() is False:
-            return self.dynamodb_client.update_table(
-                TableName=self._generate_table_name(),
-                StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
-            )
+        if self._has_stream() is False:
+            try:
+                return self.dynamodb_client.update_table(
+                    TableName=self._generate_table_name(),
+                    StreamSpecification={"StreamEnabled": True, "StreamViewType": "KEYS_ONLY"},
+                )
+            except ClientError as e:
+                logger.error('The table does not support streams: {}.'.format(e))
+                return
+            except Exception as e:
+                logger.error('The table did not tag for an unknown reason: {}'.format(e))

@@ -1,8 +1,6 @@
-import mock
 import os
 import random
 import subprocess
-from cis_identity_vault import vault
 from moto import mock_dynamodb2
 
 
