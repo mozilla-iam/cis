@@ -135,13 +135,19 @@ class IdentityVault(object):
         )
 
         waiter = self.dynamodb_client.get_waiter("table_exists")
-        waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 1, "MaxAttempts": 5})
+
+        if self._get_cis_environment() != "local":
+            waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 20, "MaxAttempts": 20})
+            self.tag_vault()
+            self.setup_stream()
+        else:
+            waiter.wait(TableName=self._generate_table_name(), WaiterConfig={"Delay": 1, "MaxAttempts": 5})
+
 
         return result
 
     def destroy(self):
         result = self.dynamodb_client.delete_table(TableName=self._generate_table_name())
-
         return result
 
     def __get_table_resource(self):
@@ -170,3 +176,23 @@ class IdentityVault(object):
 
     def describe_indices(self):
         return self.dynamodb_client.describe_table(TableName=self._generate_table_name())
+
+    def _has_stream(self):
+        result = self.dynamodb_client.describe_table(
+            TableName=self._generate_table_name()
+        ).get('Table')
+
+        if result.get('StreamSpecification'):
+            return True
+        else:
+            return False
+
+    def setup_stream(self):
+        while self._has_stream() == False:
+            return self.dynamodb_client.update_table(
+                TableName=self._generate_table_name(),
+                StreamSpecification={
+                    'StreamEnabled': True,
+                    'StreamViewType': 'KEYS_ONLY'
+                },
+            )
