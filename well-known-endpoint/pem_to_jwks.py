@@ -71,11 +71,11 @@ jwk = {
     "kid": args.kid,
     "kty": "RSA",
     "use": "sig",
-    "x5c": {}
+    "x5c": []
 }
 
 jwk['n'] = long_to_base64(public_numbers.n)
 jwk['e'] = long_to_base64(public_numbers.e)
-jwk['x5c'][0] = pem_bytes
+jwk['x5c'].append(pem_bytes)
 
 print(json.dumps(jwk))
