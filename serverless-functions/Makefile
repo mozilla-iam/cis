@@ -116,5 +116,5 @@ deploy-person-api:
 .PHONY:deploy-notifications
 deploy-notifications:
 	cd $(ROOT_DIR)/webhook_notifier && \
-	npm install serverless-domain-manager --save-dev serverless-plugin-tracing
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)

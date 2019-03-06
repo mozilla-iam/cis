@@ -65,5 +65,6 @@ functions:
     timeout: 15
     events:
       - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
-
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/lambda_layer_arn}
 
