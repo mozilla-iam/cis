@@ -1,5 +1,6 @@
 import boto3
 import http.client
+import json
 from cis_notifications import common
 from logging import getLogger
 

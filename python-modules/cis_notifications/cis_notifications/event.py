@@ -83,5 +83,7 @@ class Event(object):
             url {[type]} -- [the url of the publisher you woud like to notify.]
             json_payload {[type]} -- [the event to send to the publisher.]
         """
-        response = requests.post(url, data=json.dumps(json_payload), headers={"authorization": access_token})
+        response = requests.post(
+            url, data=json.dumps(json_payload), headers={"authorization": "Bearer {}".format(access_token)}
+        )
         return response.status_code
