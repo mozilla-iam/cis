@@ -72,7 +72,7 @@ class TestProfile(object):
         u = profile.User(user_id="test")
         u.fun_title.value = "test title"
         for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
-            u.sign_all(publisher_name=_)
+            u.sign_all(publisher_name=_, safety=False)
         # assert 2 different publisher attributes are signed properly
         assert u.user_id.signature.publisher.value is not None
         assert len(u.user_id.signature.publisher.value) > 0
@@ -80,6 +80,17 @@ class TestProfile(object):
         assert len(u.fun_title.signature.publisher.value) > 0
         # Empty attributes should not be signed
         assert u.last_name.value is None
+
+    def test_full_profile_signing_wrong_publisher(self):
+        u = profile.User()
+        u.fun_title.value = "test title"
+        u.fun_title.signature.publisher.name = "wrong"
+        try:
+            u.sign_all(publisher_name="ldap")
+        except cis_profile.exceptions.SignatureRefused:
+            pass
+        else:
+            raise Exception("ValidationFailure", "Should have failed validation, did not")
 
     def test_single_attribute_signing(self):
         u = profile.User(user_id="test")
@@ -113,7 +124,7 @@ class TestProfile(object):
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
         for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
-            u.sign_all(publisher_name=_)
+            u.sign_all(publisher_name=_, safety=False)
         ret = u.verify_all_signatures()
         assert ret is True
 
