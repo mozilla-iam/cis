@@ -24,6 +24,8 @@ custom:
       production: auth.mozilla.auth0.com
       development: auth.mozilla.auth0.com
       testing: auth.mozilla.auth0.com
+    CIS_DYNAMODB_STREAM_ARN:
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-06T14:02:10.803
 provider:
   name: aws
   runtime: python3.6
@@ -49,7 +51,7 @@ provider:
         - "dynamodb:ListStreams"
       Resource:
         - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
-        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}/*
+        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
     - Effect: Allow
       Action:
         - "kms:Decrypt"
@@ -61,5 +63,7 @@ functions:
     description: webhook notifications out of cis for profile updates.
     memorySize: 512
     timeout: 15
+    events:
+      - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
 
 

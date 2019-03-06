@@ -38,6 +38,7 @@ layer:
 	$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
 	$(CIS_MODULE_PATH)/cis_publisher/ \
 	$(CIS_MODULE_PATH)/cis_logger/ \
+	$(CIS_MODULE_PATH)/cis_notifications/ \
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
@@ -62,6 +63,7 @@ layer-codebuild:
 	../$(CIS_MODULE_PATH)/cis_profile_retrieval_service/ \
 	../$(CIS_MODULE_PATH)/cis_publisher/ \
 	../$(CIS_MODULE_PATH)/cis_logger/ \
+	../$(CIS_MODULE_PATH)/cis_notifications/ \
 	serverless_wsgi \
 	flask \
 	iam-profile-faker -t /tmp/build/$(PY_DIR) && \
@@ -109,4 +111,10 @@ deploy-person-api:
 	cd $(ROOT_DIR)/profile_retrieval && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+
+.PHONY:deploy-notifications
+deploy-notifications:
+	cd $(ROOT_DIR)/webhook_notifier && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
