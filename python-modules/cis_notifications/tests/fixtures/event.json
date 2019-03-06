@@ -1,0 +1,23 @@
+{
+    "Records": [
+        {
+            "eventID": "7954562c0a07b1e20e0eb4947455b2f8",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "us-west-2",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1551868482.0,
+                "Keys": {
+                    "id": {
+                        "S": "google-oauth2|2749"
+                    }
+                },
+                "SequenceNumber": "38413300000000001109054544",
+                "SizeBytes": 20,
+                "StreamViewType": "KEYS_ONLY"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-05T10:34:05.322"
+        }
+    ]
+}
