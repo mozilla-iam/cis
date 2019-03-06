@@ -23,7 +23,7 @@ class TestChangeEndpoint(object):
     def setup(self):
         os.environ["CIS_DISCOVERY_URL"] = "https://auth.allizom.org/.well-known/mozilla-iam"
         self.helper_configuration = helpers.Configuration()
-        u = fake_profile.FakeUser()
+        u = fake_profile.FakeUser(config=fake_profile.FakeProfileConfig().default().create())
         u = self.helper_configuration.ensure_appropriate_publishers_and_sign(fake_profile=u, condition="create")
         u.verify_all_publishers(profile.User(user_structure_json=None))
         self.durable_profile = u.as_json()
