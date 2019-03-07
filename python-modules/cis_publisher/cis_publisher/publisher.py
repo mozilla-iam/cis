@@ -38,6 +38,7 @@ class Publish:
         self.retry_delay = 1
         self.cis_user_list = None
         self.access_token = None
+        self.known_cis_users = None
         self.__inited = False
 
     def __deferred_init(self):
@@ -199,13 +200,13 @@ class Publish:
                         continue
 
                     # sub-item?
-                    if isinstance(allowed_updates[pfield], dict):
-                        for subpfield in allowed_updates[pfield]:
+                    elif pfield in ["identities", "staff_information", "access_information"]:
+                        for subpfield in p.__dict__[pfield]:
                             # Skip?
                             if subpfield in whitelist:
                                 continue
 
-                            if allowed_updates[pfield][subpfield] != self.publisher_name:
+                            if allowed_updates[pfield] != self.publisher_name:
                                 p.__dict__[pfield][subpfield]["signature"]["publisher"]["value"] = ""
                                 if "value" in p.__dict__[pfield][subpfield].keys():
                                     p.__dict__[pfield][subpfield]["value"] = None
