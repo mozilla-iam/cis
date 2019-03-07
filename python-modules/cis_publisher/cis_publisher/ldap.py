@@ -35,8 +35,9 @@ class LDAPPublisher:
             if (user_ids is None) or (str_p["user_id"]["value"] in user_ids):
                 profiles.append(cis_profile.User(user_structure_json=str_p))
 
-        publisher = cis_publisher.Publish(profiles)
+        publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="Mozilla-LDAP")
         try:
+            publisher.filter_known_cis_users()
             publisher.post_all()
         except Exception as e:
             logger.error("Failed to post all LDAP profiles. Trace: {}".format(format_exc()))
