@@ -9,12 +9,10 @@ class TestPublisher:
     def setup(self):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
 
-    def test_get_wk(self):
+    def test_obj(self):
         profiles = [cis_profile.User()]
         publisher = cis_publisher.Publish(profiles, login_method="Mozilla-LDAP", publisher_name="ldap")
-        publisher.get_api_urls()
         assert isinstance(publisher, object)
-        assert publisher.api_url is not None
 
     def test_profile_validate(self):
         profiles = [cis_profile.User()]
@@ -34,7 +32,7 @@ class TestPublisher:
 
         mock_request_post.return_value = FakeResponse()
         profiles = [cis_profile.User()]
-        publisher = cis_publisher.Publish(profiles, login_method="Mozilla-LDAP", publisher_name="ldap")
+        cis_publisher.Publish(profiles, login_method="Mozilla-LDAP", publisher_name="ldap")
 
     @mock.patch("cis_publisher.Publish._request_post")
     @mock.patch("cis_publisher.Publish._request_get")

@@ -23,10 +23,13 @@ class Publish:
         @discovery_url a discovery URL for CIS (CIS_DISCOVERY_URL env var will be used otherwise)
         """
         self.profiles = profiles
+        self.login_method = login_method
+        self.publisher_name = publisher_name
         if discovery_url is None:
             discovery_url = os.environ.get("CIS_DISCOVERY_URL", "https://auth.mozilla.com/.well-known/mozilla-iam")
         self.__discovery_url = discovery_url
-        self.__well_known = WellKnown(discovery_url)
+
+        # Defaults
         self.api_url = None
         self.api_url_person = None
         self.api_url_change = None
@@ -35,32 +38,33 @@ class Publish:
         self.retry_delay = 5
         self.cis_user_list = None
         self.access_token = None
-        self.login_method = login_method
-        self.publisher_name = publisher_name
-        self.secret_manager = secret.Manager()
-        self.config = common.get_config()
+        self.__inited = False
 
-    def get_api_urls(self):
+    def __deferred_init(self):
         """
-        Set api urls and data
+        Init all data that requires external resources
         """
+        if self.__inited:
+            return
         logger.info("Getting API URLs from well-known {}".format(self.__discovery_url))
+        self.__well_known = WellKnown(self.__discovery_url)
         wk = self.__well_known.get_well_known()
         self.api_url = wk["api"]["endpoints"]
         self.api_audience = wk["api"]["audience"]
         self.api_url_person = self.api_url["person"]
         self.api_url_change = self.api_url["change"]
         self.publisher_rules = self.__well_known.get_publisher_rules()
+        self.secret_manager = secret.Manager()
+        self.config = common.get_config()
+        self.__inited = True
 
     def post_all(self):
         """
         Post all profiles
         """
 
+        self.__deferred_init()
         self.validate()
-
-        if self.api_url is None:
-            self.get_api_urls()
 
         access_token = self._get_authzero_token()
 
@@ -121,8 +125,7 @@ class Publish:
         """
         Call CIS Person API and return a list of existing users
         """
-        if self.api_url is None:
-            self.get_api_urls()
+        self.__deferred_init()
 
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
         qs = "/v2/users/id/all?connectionMethod={}".format(self.login_method)
@@ -142,8 +145,7 @@ class Publish:
         Filters out fields that are not allowed to be updated by this publisher from the profile before posting
         This is for "new" users
         """
-        if self.api_url is None:
-            self.get_api_urls()
+        self.__deferred_init()
 
         if self.profiles is None:
             raise PublisherError("No profiles to operate on")
