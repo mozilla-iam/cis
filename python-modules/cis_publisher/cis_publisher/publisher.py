@@ -33,11 +33,12 @@ class Publish:
         self.api_url = None
         self.api_url_person = None
         self.api_url_change = None
-        self.max_retries = 5
+        self.max_retries = 3
         # retry_delay is passed to time.sleep
-        self.retry_delay = 5
+        self.retry_delay = 1
         self.cis_user_list = None
         self.access_token = None
+        self.known_cis_users = None
         self.__inited = False
 
     def __deferred_init(self):
@@ -84,8 +85,13 @@ class Publish:
 
         access_token = self._get_authzero_token()
         qs = "/v2/user"
+        cis_users = self.get_known_cis_users()
 
         for profile in self.profiles:
+            # New users should also pass this parameter
+            if profile.user_id.value in cis_users:
+                qs = "/v2/user?user_id={}".format(profile.user_id.value)
+
             response_ok = False
             retries = 0
             while not response_ok:
@@ -94,7 +100,7 @@ class Publish:
                 )
                 response = self._request_post(
                     url="{}{}".format(self.api_url_change, qs),
-                    payload=profile.as_json(),
+                    payload=profile.as_dict(),
                     headers={"authorization": "Bearer {}".format(access_token)},
                 )
                 response_ok = response.ok
@@ -144,6 +150,8 @@ class Publish:
         Call CIS Person API and return a list of existing users
         """
         self.__deferred_init()
+        if self.known_cis_users is not None:
+            return self.known_cis_users
 
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
         qs = "/v2/users/id/all?connectionMethod={}".format(self.login_method)
@@ -156,7 +164,8 @@ class Publish:
                 "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
-        return response.json()
+        self.known_cis_users = response.json()
+        return self.known_cis_users
 
     def filter_known_cis_users(self):
         """
@@ -170,6 +179,9 @@ class Publish:
 
         cis_users = self.get_known_cis_users()
 
+        # Never NULL/None these fields during filtering
+        whitelist = ["user_id"]
+
         allowed_updates = self.publisher_rules["update"]
         for n in range(0, len(self.profiles)):
             p = self.profiles[n]
@@ -180,19 +192,29 @@ class Publish:
                     )
                 )
                 for pfield in p.__dict__:
+                    # Skip? (see below for sub item)
+                    if pfield in whitelist:
+                        continue
+
                     if pfield not in allowed_updates:
                         continue
 
                     # sub-item?
-                    if isinstance(allowed_updates[pfield], dict):
-                        for subpfield in allowed_updates[pfield]:
-                            if allowed_updates[pfield][subpfield] != self.publisher_name:
+                    elif pfield in ["identities", "staff_information", "access_information"]:
+                        for subpfield in p.__dict__[pfield]:
+                            # Skip?
+                            if subpfield in whitelist:
+                                continue
+
+                            if allowed_updates[pfield] != self.publisher_name:
+                                p.__dict__[pfield][subpfield]["signature"]["publisher"]["value"] = ""
                                 if "value" in p.__dict__[pfield][subpfield].keys():
                                     p.__dict__[pfield][subpfield]["value"] = None
                                 elif "values" in p.__dict__[pfield][subpfield].keys():
                                     p.__dict__[pfield][subpfield]["values"] = None
                     else:
                         if allowed_updates[pfield] != self.publisher_name:
+                            p.__dict__[pfield]["signature"]["publisher"]["value"] = ""
                             if "value" in p.__dict__[pfield].keys():
                                 p.__dict__[pfield]["value"] = None
                             elif "values" in p.__dict__[pfield].keys():
