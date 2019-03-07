@@ -3,7 +3,6 @@ import logging
 import socket
 import sys
 
-import cis_logger
 from cis_notifications import common
 from cis_notifications import event as cis_event
 

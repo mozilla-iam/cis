@@ -1,0 +1,72 @@
+service: ldap-publisher
+plugins:
+  - serverless-plugin-tracing
+custom:
+  ldapPublisherStage: ${opt:stage, self:provider.stage}
+  ldapPublisherEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+    DYNAMODB_TABLE:
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
+    IDENTIFIER:
+      production: hook.sso.mozilla.com
+      development: hook.dev.sso.allizom.org
+      testing: hook.test.sso.allizom.org
+    CIS_DYNAMODB_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
+    CIS_AUTHZERO_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/ldap_publisher
+      development: /iam/cis/development/ldap_publisher
+      testing: /iam/cis/testing/ldap_publisher
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_DYNAMODB_ARN: ${self:custom.ldapPublisherEnvironment.CIS_DYNAMODB_ARN.${self:custom.ldapPublisherStage}}
+    CIS_ENVIRONMENT: ${self:custom.ldapPublisherEnvironment.CIS_ENVIRONMENT.${self:custom.ldapPublisherStage}}
+    CIS_API_IDENTIFIER: ${self:custom.ldapPublisherEnvironment.IDENTIFIER.${self:custom.ldapPublisherStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.ldapPublisherEnvironment.CIS_AUTH0_DOMAIN.${self:custom.ldapPublisherStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.ldapPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.ldapPublisherStage}}
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - arn:aws:ssm:*:*:parameter${self:custom.ldapPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.ldapPublisherStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+functions:
+  handler:
+    handler: handler.handle
+    description: ldap-publisher for synchronizing ldaptos3 json to identity vault.
+    memorySize: 512
+    timeout: 900
+    events:
+      - schedule: rate(15 minutes)
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.ldapPublisherStage}/lambda_layer_arn}
+
