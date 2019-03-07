@@ -20,6 +20,7 @@ class Publish:
         @profiles list of cis_profiles.User
         @login_method str a valid login_method for the user (such as "Mozilla-LDAP")
         @publisher_name str of your publisher name (such as 'ldap' or 'mozilliansorg')
+        @user_ids list of str such as user_ids=['ad|bob|test', 'oauth2|alice|test', ..] which will be sent to CIS. When
         @discovery_url a discovery URL for CIS (CIS_DISCOVERY_URL env var will be used otherwise)
         """
         self.profiles = profiles
@@ -58,12 +59,25 @@ class Publish:
         self.config = common.get_config()
         self.__inited = True
 
-    def post_all(self):
+    def post_all(self, user_ids=None):
         """
         Post all profiles
+        @user_ids list of str which are user ids like 'ad|test'
         """
 
         self.__deferred_init()
+
+        if user_ids is not None:
+            logger.info("Requesting a specific list of user_id's to post {}".format(user_ids))
+            if not isinstance(user_ids, list):
+                raise PublisherError("user_ids must be a list", user_ids)
+
+            for n in range(0, len(self.profiles)):
+                profile = self.profiles[n]
+                if profile.user_id.value not in user_ids:
+                    del self.profiles[n]
+            logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
+
         self.validate()
 
         access_token = self._get_authzero_token()

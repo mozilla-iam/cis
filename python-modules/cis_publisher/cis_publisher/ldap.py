@@ -14,11 +14,10 @@ class LDAPPublisher:
     def __init__(self):
         self.secret_manager = cis_publisher.secret.Manager()
 
-    def publish(self, user_ids=None):
+    def publish(self):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
-        @user_ids list of str such as user_ids=['ad|bob|test', 'oauth2|alice|test', ..] which will be sent to CIS. When
         None, ALL profiles are sent.
         """
         profiles_xz = self.fetch_from_s3()
@@ -32,8 +31,7 @@ class LDAPPublisher:
         profiles = []
         for p in profiles_json:
             str_p = json.dumps(profiles_json[p])
-            if (user_ids is None) or (str_p["user_id"]["value"] in user_ids):
-                profiles.append(cis_profile.User(user_structure_json=str_p))
+            profiles.append(cis_profile.User(user_structure_json=str_p))
 
         publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="Mozilla-LDAP")
         try:
