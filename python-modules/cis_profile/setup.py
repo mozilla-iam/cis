@@ -6,17 +6,7 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = [
-    "jsonschema",
-    "requests",
-    "requests-cache",
-    "graphene",
-    "Faker",
-    "everett",
-    "everett[ini]",
-    "configobj",
-    "click",
-]
+requirements = ["jsonschema", "requests", "graphene", "Faker", "everett", "everett[ini]", "configobj", "click"]
 test_requirements = ["pytest", "pytest-watch", "pytest-cov", "flake8", "flask", "flask_graphql", "flask_restful"]
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
