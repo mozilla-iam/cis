@@ -34,7 +34,7 @@ class LDAPPublisher:
             str_p = json.dumps(profiles_json[p])
             profiles.append(cis_profile.User(user_structure_json=str_p))
 
-        publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="Mozilla-LDAP")
+        publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="ad")
         try:
             publisher.filter_known_cis_users()
             publisher.post_all()
