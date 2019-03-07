@@ -203,11 +203,19 @@ class Publish:
         logger.info("Validating {} profiles".format(len(self.profiles)))
         null_user = cis_profile.User()
 
+        # XXX ensure ldap2s3 use the right login_method
+        # then remove this
+        lm_map = {"ad": ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]}
+        if self.login_method in lm_map:
+            local_login_method = lm_map[self.login_method]
+        else:
+            local_login_method = [self.login_method]
+
         for profile in self.profiles:
-            if profile.login_method.value != self.login_method:
+            if profile.login_method.value not in local_login_method:
                 logger.error(
                     "Incorrect login method for this user {} - looking for {} but got {}".format(
-                        profile.user_id.value, self.login_method, profile.login_method.value
+                        profile.user_id.value, local_login_method, profile.login_method.value
                     )
                 )
             profile.validate()
