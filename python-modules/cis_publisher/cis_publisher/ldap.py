@@ -20,6 +20,7 @@ class LDAPPublisher:
         Then pass everything over to the Publisher class
         None, ALL profiles are sent.
         """
+        logger.info("Starting LDAP Publisher")
         profiles_xz = self.fetch_from_s3()
         # If there are memory issues here, use lzma.LZMADecompressor() instead
         raw = lzma.decompress(profiles_xz)
