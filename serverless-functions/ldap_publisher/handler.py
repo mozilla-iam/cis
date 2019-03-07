@@ -4,6 +4,11 @@ import socket
 import sys
 
 import cis_publisher
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch_all
+
+
+patch_all()
 
 
 def setup_logging():
@@ -18,7 +23,8 @@ def setup_logging():
 
 
 def handle(event, context={}):
+    """Handle the publishing of users."""
     logger = setup_logging()
-
-    # Do stuff with cis_publisher for ldap publishing here.
-    pass
+    ldap = cis_publisher.ldap.LDAPPublisher()
+    ldap.publish()
+    return 200
