@@ -10,9 +10,7 @@ requirements = ["everett", "boto3", "configobj"]
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = [
-    "pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto"
-]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto"]
 
 extras = {"test": test_requirements}
 
@@ -21,8 +19,7 @@ setup(
     version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",
-    description="Notifies relying parties if there has been an"
-    "update to a user so they may see what has changed.",
+    description="Notifies relying parties if there has been an" "update to a user so they may see what has changed.",
     long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=(
