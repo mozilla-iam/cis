@@ -1,6 +1,10 @@
+import logging
 import requests
 from cis_notifications import common
 from cis_notifications import secret
+
+
+logger = logging.getLogger(__name__)
 
 
 class Event(object):
