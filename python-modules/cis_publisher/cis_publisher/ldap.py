@@ -20,6 +20,7 @@ class LDAPPublisher:
         Then pass everything over to the Publisher class
         None, ALL profiles are sent.
         """
+        logger.info("Starting LDAP Publisher")
         profiles_xz = self.fetch_from_s3()
         # If there are memory issues here, use lzma.LZMADecompressor() instead
         raw = lzma.decompress(profiles_xz)
@@ -33,13 +34,16 @@ class LDAPPublisher:
             str_p = json.dumps(profiles_json[p])
             profiles.append(cis_profile.User(user_structure_json=str_p))
 
-        publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="Mozilla-LDAP")
+        publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="ad")
+        failures = []
         try:
             publisher.filter_known_cis_users()
-            publisher.post_all()
+            failures = publisher.post_all()
         except Exception as e:
-            logger.error("Failed to post all LDAP profiles. Trace: {}".format(format_exc()))
+            logger.error("Failed to post_all() LDAP profiles. Trace: {}".format(format_exc()))
             raise e
+        if len(failures) > 0:
+            logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
 
     def fetch_from_s3(self):
         """

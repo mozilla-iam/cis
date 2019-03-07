@@ -22,6 +22,7 @@ class AuthZero(object):
         self.client_id = client_id
         self.client_secret = client_secret
         self.authzero_tenant = authzero_tenant
+        self.api_identifier = api_identifier
 
     def exchange_for_access_token(self):
         """[summary]

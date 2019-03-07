@@ -1,8 +1,9 @@
 import json
 import os
+import os.path
+import time
 import requests
 import requests.exceptions
-import requests_cache
 import logging
 
 from everett.ext.inifile import ConfigIniEnv
@@ -122,35 +123,28 @@ class WellKnown(object):
     """
 
     def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam"):
-        self._request_cache = "/var/tmp/cis_request_cache"  # XXX use `get_config` to configure that
+        self._request_cache = "/tmp/cis_request_cache"  # XXX use `get_config` to configure that
         self._request_cache_ttl = 3600
-        # Memory cached copies
         self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
         self.config = get_config()
-        logger.debug("Initializing requests_cache TTL={} at {}".format(self._request_cache_ttl, self._request_cache))
-        requests_cache.install_cache(
-            self._request_cache,
-            expire_after=self._request_cache_ttl,
-            backend=self.config("requests_cache_backend", namespace="cis", default="sqlite"),
-        )
 
     def get_publisher_rules(self):
         """
         Public wrapper for _load_rules
         """
-        self._well_known_json = self._load_well_known()
+        self._well_known_json = self.get_well_known()
         rules_url = self._well_known_json.get("publishers_rules_uri")
-        return self._load_publisher_rules(rules_url)
+        return self.__cache_file(self._load_publisher_rules(rules_url), name="publisher_rules")
 
     def get_schema(self):
         """
         Public wrapper for _load_well_known()
         """
-        self._well_known_json = self._load_well_known()
+        self._well_known_json = self.get_well_known()
         schema_url = self._well_known_json.get("api").get("data/profile_schema")
-        return self._load_schema(schema_url, stype="data/profile.schema")
+        return self.__cache_file(self._load_schema(schema_url, stype="data/profile.schema"), name="schema")
 
     def get_core_schema(self):
         """ Deprecated """
@@ -164,7 +158,27 @@ class WellKnown(object):
         """
         Public wrapper for _load_well_known
         """
-        return self._load_well_known()
+        return self.__cache_file(self._load_well_known(), name="well_known")
+
+    def __cache_file(self, data, name):
+        """
+        @data json dict
+        @name str name of the cached file, must be unique per file to cache
+        returns json dict of @data
+        """
+        fpath = self._request_cache + "_" + name
+        if not os.path.isfile(fpath) or (os.stat(fpath).st_mtime > time.time() + self._request_cache_ttl):
+            logger.debug(
+                "Caching file (well-known endpoint) at {} for {} seconds".format(fpath, self._request_cache_ttl)
+            )
+            with open(fpath, "w+") as fd:
+                fd.write(json.dumps(data))
+            return data
+        else:
+            logger.debug("Using cached file (well-known endpoint) at {}".format(fpath))
+            with open(fpath, "r") as fd:
+                ret = fd.read()
+            return json.loads(ret)
 
     def _load_publisher_rules(self, rules_url):
         """
@@ -175,8 +189,6 @@ class WellKnown(object):
             try:
                 r = requests.get(rules_url)
                 rules = r.json()
-                if r.from_cache:
-                    logger.debug("Loaded rules data from requests cache")
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
                 logger.debug("Failed to load rules data from rules_url {} ({})".format(rules_url, e))
 
@@ -204,8 +216,6 @@ class WellKnown(object):
         try:
             r = requests.get(self.discovery_url)
             self._well_known_json = r.json()
-            if r.from_cache:
-                logger.debug("Loaded well-known url from requests cache")
         except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
             logger.debug("Failed to fetch schema url from discovery {} ({})".format(self.discovery_url, e))
             logger.debug("Using builtin copy")
@@ -231,8 +241,6 @@ class WellKnown(object):
             try:
                 r = requests.get(schema_url)
                 schema = r.json()
-                if r.from_cache:
-                    logger.debug("Loaded schema data from requests cache")
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
                 logger.debug("Failed to load schema from schema_url {} ({})".format(schema_url, e))
 
