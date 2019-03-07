@@ -79,7 +79,7 @@ functions:
     events:
       - schedule:
           rate: rate(10 minutes)
-          enabled: true
+          enabled: false
     description: ldap-publisher for synchronizing ldaptos3 json to identity vault.
     memorySize: 3008 # This is HUGE because we load the entirety of users in Memory live.
     timeout: 900

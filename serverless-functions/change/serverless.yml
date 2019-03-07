@@ -134,6 +134,7 @@ provider:
         - "ssm:GetParameter"
       Resource:
         - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}/*
+        - arn:aws:ssm:*:*:parameter${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_UUID_SALT.${self:custom.changeStage}}
     - Effect: Allow
       Action:
         - "kms:Decrypt"
