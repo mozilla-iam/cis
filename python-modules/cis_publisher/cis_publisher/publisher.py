@@ -18,7 +18,7 @@ class Publish:
     def __init__(self, profiles, login_method, publisher_name, discovery_url=None):
         """
         @profiles list of cis_profiles.User
-        @login_method str a valid login_method for the user (such as "Mozilla-LDAP")
+        @login_method str a valid login_method for the user (such as "ad")
         @publisher_name str of your publisher name (such as 'ldap' or 'mozilliansorg')
         @user_ids list of str such as user_ids=['ad|bob|test', 'oauth2|alice|test', ..] which will be sent to CIS. When
         @discovery_url a discovery URL for CIS (CIS_DISCOVERY_URL env var will be used otherwise)
@@ -115,7 +115,7 @@ class Publish:
         return requests.post(url, payload, headers)
 
     def _request_get(self, url, qs, headers):
-        return requests.get("{}/{}".format(url, qs), headers)
+        return requests.get("{}{}".format(url, qs), headers)
 
     def _get_authzero_client(self):
         authzero = secret.AuthZero(
@@ -149,7 +149,7 @@ class Publish:
         )
         if not response.ok:
             logger.error(
-                "Failed to query CIS Person API: {}/{} response: {}".format(self.api_url_person, qs, response.text)
+                "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
         return response.json()
