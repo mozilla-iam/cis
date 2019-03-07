@@ -125,7 +125,6 @@ class WellKnown(object):
     def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam"):
         self._request_cache = "/tmp/cis_request_cache"  # XXX use `get_config` to configure that
         self._request_cache_ttl = 3600
-        # Memory cached copies
         self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
@@ -176,7 +175,7 @@ class WellKnown(object):
                 fd.write(json.dumps(data))
             return data
         else:
-            logger.info("Using cached file (well-known endpoint)")
+            logger.info("Using cached file (well-known endpoint) at {}".format(fpath))
             with open(fpath, "r") as fd:
                 ret = fd.read()
             return json.loads(ret)
