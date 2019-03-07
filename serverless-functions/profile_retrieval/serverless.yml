@@ -33,6 +33,10 @@ custom:
       production: person.api.sso.mozilla.com
       development: person.api.dev.sso.allizom.org
       testing: person.api.test.sso.allizom.org
+    CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
+      development: https://auth.allizom.org/.well-known/mozilla-iam
+      testing: https://auth.mozilla.com/.well-known/mozilla-iam
   customDomain:
     domainName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
     basePath: ''
@@ -51,6 +55,7 @@ provider:
     CIS_REQUESTS_CACHE_BACKEND: memory
     PERSON_API_AUTH0_DOMAIN: ${self:custom.profileRetrievalEnvironment.PERSON_API_AUTH0_DOMAIN.${self:custom.profileRetrievalStage}}
     PERSON_API_API_IDENTIFIER: ${self:custom.profileRetrievalEnvironment.IDENTIFIER.${self:custom.profileRetrievalStage}}
+    CIS_DISCOVERY_URL: ${self:custom.profileRetrievalEnvironment.CIS_DISCOVERY_URL.${self:custom.profileRetrievalStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:
