@@ -27,7 +27,7 @@ def handle(event, context):
 
     results = []
     for record in event.get("Records"):
-        event_mapper = cis_event.Event(event, subscriptions)
+        event_mapper = cis_event.Event(record, subscriptions)
         notification = event_mapper.to_notification()
         result = event_mapper.send(notification)
         results.append(result)
