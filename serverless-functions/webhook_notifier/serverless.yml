@@ -13,9 +13,9 @@ custom:
       development: development-identity-vault
       testing: testing-identity-vault
     IDENTIFIER:
-      production: notifications.sso.mozilla.com
-      development: notifications.dev.sso.allizom.org
-      testing: notifications.test.sso.allizom.org
+      production: hook.sso.mozilla.com
+      development: hook.dev.sso.allizom.org
+      testing: hook.test.sso.allizom.org
     CIS_DYNAMODB_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
@@ -24,6 +24,12 @@ custom:
       production: auth.mozilla.auth0.com
       development: auth.mozilla.auth0.com
       testing: auth.mozilla.auth0.com
+    CIS_DYNAMODB_STREAM_ARN:
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-06T14:02:10.803
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/webhook_notifier
+      development: /iam/cis/development/webhook_notifier
+      testing: /iam/cis/testing/webhook_notifier
 provider:
   name: aws
   runtime: python3.6
@@ -32,7 +38,10 @@ provider:
   environment:
     CIS_DYNAMODB_ARN: ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
     CIS_ENVIRONMENT: ${self:custom.webhookEnvironment.CIS_ENVIRONMENT.${self:custom.webhookStage}}
-    WEBHOOK_NOTIFICATIONS_API_IDENTIFIER: ${self:custom.webhookEnvironment.IDENTIFIER.${self:custom.webhookStage}}
+    CIS_API_IDENTIFIER: ${self:custom.webhookEnvironment.IDENTIFIER.${self:custom.webhookStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}}
+    WEBHOOK_NOTIFICATIONS_AUTH0_DOMAIN: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}} 
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.webhookEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.webhookStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:
@@ -49,7 +58,15 @@ provider:
         - "dynamodb:ListStreams"
       Resource:
         - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
-        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}/*
+        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - arn:aws:ssm:*:*:parameter${self:custom.webhookEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.webhookStage}}/*
     - Effect: Allow
       Action:
         - "kms:Decrypt"
@@ -61,5 +78,8 @@ functions:
     description: webhook notifications out of cis for profile updates.
     memorySize: 512
     timeout: 15
-
+    events:
+      - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.webhookStage}/lambda_layer_arn}
 

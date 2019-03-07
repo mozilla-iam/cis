@@ -22,14 +22,11 @@ class Configuration(object):
     def get_cis_environment(self):
         return os.getenv("CIS_ENVIRONMENT", "development")
 
-
     def get_client_id_path(self):
         return "/iam/cis/{}/change_client_id".format(self.get_cis_environment())
 
-
     def get_client_secret_path(self):
         return "/iam/cis/{}/change_service_client_secret".format(self.get_cis_environment())
-
 
     def get_url_dict(self):
         cis_environment = self.get_cis_environment()
@@ -51,7 +48,6 @@ class Configuration(object):
 
         return dict(change=change_url, person=person_url, audience=audience)
 
-
     def get_secure_parameter(self, parameter_name):
         """Gets the desired secret for secureStrings only from AWS Parameter Store.
         
@@ -67,10 +63,10 @@ class Configuration(object):
             self.client = boto3.client("ssm")
 
         if self.keys.get(parameter_name):
-            logger.info('Key is coming from object cache for: {}'.format(parameter_name))
+            logger.info("Key is coming from object cache for: {}".format(parameter_name))
             return self.keys.get(parameter_name)
         else:
-            logger.info('Key is not coming from object cache for: {}'.format(parameter_name))
+            logger.info("Key is not coming from object cache for: {}".format(parameter_name))
             response = self.client.get_parameter(Name=parameter_name, WithDecryption=True)
             self.keys[parameter_name] = response["Parameter"]["Value"]
             return response["Parameter"]["Value"]
@@ -78,14 +74,11 @@ class Configuration(object):
     def get_client_secret(self):
         return self.get_secure_parameter(self.get_client_secret_path())
 
-
     def get_client_id(self):
         return self.get_secure_parameter(self.get_client_id_path())
 
-
     def get_complex_structures(self):
         return ["staff_information", "access_information", "identities", "schema"]
-
 
     def ensure_appropriate_publishers_and_sign(self, fake_profile, condition):
         """Workaround the fact the FakerUser generator does not always generate valid profiles.

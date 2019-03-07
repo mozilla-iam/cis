@@ -3,3 +3,4 @@ cis.zip
 ldap-publisher/.serverless
 change/.serverless
 stream-processor/.serverless
+package-lock.json

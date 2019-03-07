@@ -52,6 +52,22 @@ class TestSecretManager(object):
         assert key_material is not None
 
     @mock_ssm
+    def test_ssm_provider_uuid_salt(self):
+        from cis_crypto import secret
+
+        os.environ["CIS_SECRET_MANAGER_SSM_UUID_SALT"] = "/salty"
+        client = boto3.client("ssm", region_name="us-west-2")
+        client.put_parameter(
+            Name="/salty",
+            Description="A fake salt",
+            Value="fancyseruresalt",
+            Type="SecureString",
+            KeyId="alias/aws/ssm",
+        )
+        salt = secret.AWSParameterstoreProvider().uuid_salt()
+        assert salt is not None
+
+    @mock_ssm
     @pytest.mark.xfail
     def test_ssm_provider_fail(self):
         from cis_crypto import secret

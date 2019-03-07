@@ -10,7 +10,7 @@ from moto import mock_dynamodb2
 @mock_dynamodb2
 class TestUsersDynalite(object):
     def setup(self):
-        os.environ["CIS_ENVIRONMENT"] = "testing"
+        os.environ["CIS_ENVIRONMENT"] = "purple"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
@@ -29,7 +29,7 @@ class TestUsersDynalite(object):
         self.boto_session = boto3.session.Session(region_name="us-east-1")
         self.dynamodb_resource = self.boto_session.resource("dynamodb")
         self.dynamodb_client = self.boto_session.client("dynamodb")
-        self.table = self.dynamodb_resource.Table("testing-identity-vault")
+        self.table = self.dynamodb_resource.Table("purple-identity-vault")
 
     def test_create_method(self):
         from cis_identity_vault.models import user
@@ -175,3 +175,10 @@ class TestUsersDynalite(object):
 
         result_for_username = profile.find_by_username(user["primary_username"]["value"])
         assert len(result_for_username.get("Items")) > 0
+
+    def test_all_by_filter(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        result = profile.all_filtered(query_filter="email")
+        assert len(result) > 0

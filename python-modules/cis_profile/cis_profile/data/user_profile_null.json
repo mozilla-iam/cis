@@ -57,7 +57,7 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "name": "access_provider",
+        "name": "mozilliansorg",
         "value": ""
       },
       "additional": [

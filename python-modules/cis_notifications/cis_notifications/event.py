@@ -73,6 +73,7 @@ class Event(object):
             api_identifier=self.config("api_identifier", namespace="cis", default="hook.dev.sso.allizom.org"),
             authzero_tenant=self.config("authzero_tenant", namespace="cis", default="auth.mozilla.auth0.com"),
         )
+
         return authzero
 
     def _notify_via_post(self, url, json_payload, access_token):

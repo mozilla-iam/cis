@@ -39,6 +39,7 @@ build:
 release:
 	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions deploy-notifications STAGE=$(STAGE)
 
 .PHONY: build-ci-container
 build-ci-container:

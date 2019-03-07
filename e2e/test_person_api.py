@@ -11,7 +11,6 @@ from cis_profile import profile
 from cis_profile import WellKnown
 from cis_identity_vault.models import user
 
-
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
@@ -20,6 +19,7 @@ logging.getLogger("cis_crypto").setLevel(logging.CRITICAL)
 
 class TestPersonApi(object):
     def setup(self):
+        self.helper_configuration = helpers.Configuration()
         cis_environment = os.getenv("CIS_ENVIRONMENT", "development")
         os.environ["CIS_ENVIRONMENT"] = cis_environment
         os.environ["CIS_ASSUME_ROLE_ARN"] = "None"
@@ -76,11 +76,10 @@ class TestPersonApi(object):
     def exchange_for_access_token(self):
         conn = http.client.HTTPSConnection("auth.mozilla.auth0.com")
         payload_dict = dict(
-            client_id=helpers.get_client_id(),
-            client_secret=helpers.get_client_secret(),
-            audience=helpers.get_url_dict().get("audience"),
+            client_id=self.helper_configuration.get_client_id(),
+            client_secret=self.helper_configuration.get_client_secret(),
+            audience=self.helper_configuration.get_url_dict().get("audience"),
             grant_type="client_credentials",
-            scopes="read:fullprofile",
         )
 
         payload = json.dumps(payload_dict)
@@ -109,3 +108,14 @@ class TestPersonApi(object):
         res = conn.getresponse()
         data = json.loads(res.read())
         return data
+
+    def test_get_user_ids_for_connection(self):
+        access_token = self.exchange_for_access_token()
+        base_url = "person.api.dev.sso.allizom.org"
+        conn = http.client.HTTPSConnection(base_url)
+        headers = {"authorization": "Bearer {}".format(access_token)}
+        conn.request("GET", "/v2/users/id/all?connectionMethod=email", headers=headers)
+        res = conn.getresponse()
+        data = json.loads(res.read())
+        assert isinstance(data, list)
+        assert len(data) > 0

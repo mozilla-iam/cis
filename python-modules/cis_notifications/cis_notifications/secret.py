@@ -34,6 +34,10 @@ class AuthZero(object):
         Returns:
             [type] -- [an access token base64 encoded JWT.]
         """
+        logger.info(
+            "Attempting to exchange for access token with: {}".format(self.authzero_tenant),
+            extra={"client_id": self.client_id, "client_secret": self.api_identifier, "tenant": self.authzero_tenant},
+        )
         conn = http.client.HTTPSConnection(self.authzero_tenant)
         payload_dict = dict(
             client_id=self.client_id,
