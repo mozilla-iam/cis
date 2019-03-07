@@ -1,4 +1,3 @@
-import cis_profile
 import requests
 import logging
 import os
@@ -63,9 +62,12 @@ class Publish:
         """
         Post all profiles
         @user_ids list of str which are user ids like 'ad|test'
+
+        Returns list of failed users (empty if no failure)
         """
 
         self.__deferred_init()
+        failed_users = []
 
         if user_ids is not None:
             logger.info("Requesting a specific list of user_id's to post {}".format(user_ids))
@@ -78,9 +80,10 @@ class Publish:
                     del self.profiles[n]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
-        self.validate()
+        #        self.validate()
 
         access_token = self._get_authzero_token()
+        qs = "/v2/user"
 
         for profile in self.profiles:
             response_ok = False
@@ -90,8 +93,8 @@ class Publish:
                     "Attempting to post profile {} to API {}".format(profile.user_id.value, self.api_url_change)
                 )
                 response = self._request_post(
-                    self.api_url_change,
-                    data=profile.as_json(),
+                    url="{}{}".format(self.api_url_change, qs),
+                    payload=profile.as_json(),
                     headers={"authorization": "Bearer {}".format(access_token)},
                 )
                 response_ok = response.ok
@@ -109,13 +112,14 @@ class Publish:
                                 retries, profile.user_id.value
                             )
                         )
-                        raise PublisherError("Failed to publish profile")
+                        failed_users.append(profile.user_id.value)
+        return failed_users
 
     def _request_post(self, url, payload, headers):
-        return requests.post(url, payload, headers)
+        return requests.post(url, json=payload, headers=headers)
 
     def _request_get(self, url, qs, headers):
-        return requests.get("{}{}".format(url, qs), headers)
+        return requests.get("{}{}".format(url, qs), headers=headers)
 
     def _get_authzero_client(self):
         authzero = secret.AuthZero(
@@ -198,10 +202,9 @@ class Publish:
 
     def validate(self):
         """
-        Validates all profiles
+        Validates all profiles are from the correct provider
         """
         logger.info("Validating {} profiles".format(len(self.profiles)))
-        null_user = cis_profile.User()
 
         # XXX ensure ldap2s3 use the right login_method
         # then remove this
@@ -218,8 +221,4 @@ class Publish:
                         profile.user_id.value, local_login_method, profile.login_method.value
                     )
                 )
-            profile.validate()
-            profile.verify_all_signatures()
-            # This should normally work since it's always like a create (even for update)
-            profile.verify_all_publishers(null_user)
         logger.info("Validation completed for all profiles")
