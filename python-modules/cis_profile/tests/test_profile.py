@@ -70,6 +70,20 @@ class TestProfile(object):
 
     def test_full_profile_signing(self):
         u = profile.User(user_id="test")
+        u.access_information.ldap.values = {
+            "SecurityWiki": None,
+            "communitybuild": None,
+            "all_scm_level_1": None,
+            "active_scm_level_1": None,
+            "all_scm_level_3": None,
+            "active_scm_level_3": None,
+            "active_scm_nss": None,
+            "all_scm_sec_sensitive": None,
+            "active_scm_sec_sensitive": None,
+            "all_scm_level_2": None,
+            "active_scm_level_2": None,
+            "all_scm_nss": None,
+        }
         u.fun_title.value = "test title"
         for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
             u.sign_all(publisher_name=_, safety=False)
@@ -78,6 +92,7 @@ class TestProfile(object):
         assert len(u.user_id.signature.publisher.value) > 0
         assert u.fun_title.signature.publisher.value is not None
         assert len(u.fun_title.signature.publisher.value) > 0
+        assert u.access_information.ldap.signature.publisher.value is not None
         # Empty attributes should not be signed
         assert u.last_name.value is None
 
