@@ -3,6 +3,7 @@ import cis_publisher
 import boto3
 import botocore
 import logging
+import lzma
 import json
 from traceback import format_exc
 
@@ -13,16 +14,26 @@ class LDAPPublisher:
     def __init__(self):
         self.secret_manager = cis_publisher.secret.Manager()
 
-    def publish(self):
+    def publish(self, user_ids=None):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
+        @user_ids list of str such as user_ids=['ad|bob|test', 'oauth2|alice|test', ..] which will be sent to CIS. When
+        None, ALL profiles are sent.
         """
-        profiles_json = self.fetch_from_s3()
+        profiles_xz = self.fetch_from_s3()
+        # If there are memory issues here, use lzma.LZMADecompressor() instead
+        raw = lzma.decompress(profiles_xz)
+        profiles_json = json.loads(raw)
+        # Free some memory
+        del profiles_xz
+        del raw
+
         profiles = []
         for p in profiles_json:
             str_p = json.dumps(profiles_json[p])
-            profiles.append(cis_profile.User(user_structure_json=str_p))
+            if (user_ids is None) or (str_p["user_id"]["value"] in user_ids):
+                profiles.append(cis_profile.User(user_structure_json=str_p))
 
         publisher = cis_publisher.Publish(profiles)
         try:
@@ -32,6 +43,10 @@ class LDAPPublisher:
             raise e
 
     def fetch_from_s3(self):
+        """
+        Fetches xz json data from S3 (ie ldap_blah.json.xz)
+        Returns the xz bytestream
+        """
         bucket = self.secret_manager.secret("bucket")
         bucket_key = self.secret_manager.secret("bucket_key")
         logger.info("Retrieving all LDAP profiles from S3 {}/{}".format(bucket, bucket_key))
@@ -44,4 +59,4 @@ class LDAPPublisher:
             logger.error("Failed to get LDAP S3 file from {}/{} trace: {}".format(bucket, bucket_key, format_exc()))
             raise e
 
-        return json.loads(data)
+        return data

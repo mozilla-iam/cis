@@ -108,5 +108,6 @@ class Publish:
         for profile in self.profiles:
             profile.validate()
             profile.verify_all_signatures()
+            # This should normally work since it's always like a create (even for update)
             profile.verify_all_publishers(null_user)
         logger.info("Validation completed for all profiles")

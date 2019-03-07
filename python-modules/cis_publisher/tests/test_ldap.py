@@ -1,7 +1,6 @@
 import cis_publisher
 import mock
 import os
-import json
 
 
 class TestLDAP:
@@ -23,8 +22,7 @@ class TestLDAP:
 
         mock_request.return_value = FakeResponse()
         mock_validate.return_value = True
-        data = None
-        with open("tests/fixture/ldap_profiles.json") as fd:
-            mock_s3.return_value = json.loads(fd.read())
+        with open("tests/fixture/ldap_profiles.json.xz", "rb") as fd:
+            mock_s3.return_value = fd.read()
         ldap = cis_publisher.ldap.LDAPPublisher()
         ldap.publish()
