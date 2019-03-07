@@ -71,3 +71,10 @@ class AWSParameterstoreProvider(object):
         except json.decoder.JSONDecodeError:
             key_construct = jwk.construct(result.get("Value"), "RS256")
         return key_construct
+
+    def uuid_salt(self):
+        ssm_path = self.config("secret_manager_ssm_uuid_salt", namespace="cis", default="/iam")
+        ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
+
+        logger.debug("Secret manager SSM provider loading uuid_salt: {}".format(ssm_path))
+        return ssm_response.get("Parameter").get("Value")

@@ -45,6 +45,10 @@ custom:
       production: /iam/cis/production/keys
       development: /iam/cis/development/keys
       testing: /iam/cis/testing/keys
+    CIS_SECRET_MANAGER_SSM_UUID_SALT:
+      production: /iam/cis/production/uuid_salt
+      development: /iam/cis/development/uuid_salt
+      testing: /iam/cis/testing/uuid_salt
     DOMAIN_NAME:
       production: change.api.sso.mozilla.com
       development: change.api.dev.sso.allizom.org
@@ -88,6 +92,7 @@ provider:
     CIS_ENFORCE_PUBLISHER_RULES: ${self:custom.changeEnvironment.CIS_ENFORCE_PUBLISHER_RULES.${self:custom.changeStage}}
     CHANGE_SERVICE_API_IDENTIFIER: ${self:custom.changeEnvironment.IDENTIFIER.${self:custom.changeStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.changeStage}}
+    CIS_SECRET_MANAGER_SSM_UUID_SALT: ${self:custom.changeEnvironment.CIS_SECRET_MANAGER_SSM_UUID_SALT.${self:custom.changeStage}}
     CIS_ALLOW_DELETE: ${self:custom.changeEnvironment.CIS_ALLOW_DELETE.${self:custom.changeStage}}
     CIS_SIGNING_KEY_NAME: change_service_signing_key
     CIS_SECRET_MANAGER: aws-ssm

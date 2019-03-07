@@ -7,6 +7,7 @@ import random
 import subprocess
 from boto3.dynamodb.conditions import Key
 from cis_profile import FakeUser
+from cis_profile.fake_profile import FakeProfileConfig
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 
@@ -83,7 +84,8 @@ class TestProfile(object):
             waiter.wait(TableName="local-identity-vault", WaiterConfig={"Delay": 5, "MaxAttempts": 5})
         except Exception as e:
             logger.error("Table error: {}".format(e))
-        self.user_profile = FakeUser().as_json()
+        user_profile = FakeUser(config=FakeProfileConfig().minimal())
+        self.user_profile = user_profile.as_json()
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
@@ -153,6 +155,72 @@ class TestProfile(object):
         assert results is not None
 
     @mock.patch("cis_change_service.idp.get_jwks")
+    def test_post_new_profile_with_primary_username_should_fail(self, fake_jwks):
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["CIS_STREAM_BYPASS"] = "true"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        from cis_change_service import api
+
+        f = FakeBearer()
+        user_profile = FakeUser(config=FakeProfileConfig().minimal())
+        user_profile.primary_username.value = "something"
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(user_profile.as_dict()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        results = json.loads(result.get_data())
+        expected_result = {
+            "code": "uuid_or_primary_username_set",
+            "description": "The fields primary_username or uuid have been set in a new profile.",
+        }
+
+        assert result.status_code == 403
+        assert results == expected_result
+
+    @mock.patch("cis_change_service.idp.get_jwks")
+    def test_post_new_profile_with_uuid_should_fail(self, fake_jwks):
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["CIS_STREAM_BYPASS"] = "true"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        from cis_change_service import api
+
+        f = FakeBearer()
+        user_profile = FakeUser(config=FakeProfileConfig().minimal())
+        user_profile.uuid.value = "something"
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(user_profile.as_dict()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        results = json.loads(result.get_data())
+        expected_result = {
+            "code": "uuid_or_primary_username_set",
+            "description": "The fields primary_username or uuid have been set in a new profile.",
+        }
+
+        assert result.status_code == 403
+        assert results == expected_result
+
+    @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_profiles_it_should_fail(self, fake_jwks):
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
@@ -162,8 +230,9 @@ class TestProfile(object):
         from cis_change_service import api
 
         f = FakeBearer()
-        user_profile = FakeUser()
-        user_profile.first_name.signature.publisher.name = "mozilliansorg"
+        user_profile = FakeUser(config=FakeProfileConfig().minimal())
+        user_profile.first_name.signature.publisher.name = "cis"
+        user_profile.first_name.value = "Something"
         fake_jwks.return_value = json_form_of_pk
         token = f.generate_bearer_without_scope()
         api.app.testing = True
@@ -179,7 +248,7 @@ class TestProfile(object):
         results = json.loads(result.get_data())
         expected_result = {
             "code": "invalid_publisher",
-            "description": "[create] mozilliansorg is NOT allowed to publish field first_name",
+            "description": "[create] cis is NOT allowed to publish field first_name",
         }
 
         assert result.status_code == 403

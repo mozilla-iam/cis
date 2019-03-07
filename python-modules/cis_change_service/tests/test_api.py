@@ -8,6 +8,7 @@ import subprocess
 import string
 from cis_profile import common
 from cis_profile import FakeUser
+from cis_profile.fake_profile import FakeProfileConfig
 from cis_profile import profile
 from datetime import datetime
 from datetime import timedelta
@@ -133,7 +134,8 @@ class TestAPI(object):
         except Exception as e:
             logger.error("Table error: {}".format(e))
 
-        self.user_profile = FakeUser().as_json()
+        user_profile = FakeUser(config=FakeProfileConfig().minimal())
+        self.user_profile = user_profile.as_json()
         from cis_change_service import api
 
         api.app.testing = True
@@ -205,7 +207,7 @@ class TestAPI(object):
         os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
         from cis_change_service import api
 
-        fake_new_user = FakeUser()
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal())
         # Create a brand new user
         patched_user_profile = ensure_appropriate_publishers_and_sign(
             fake_new_user.as_dict(), self.publisher_rules, "create"
@@ -255,7 +257,7 @@ class TestAPI(object):
         os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
         from cis_change_service import api
 
-        fake_new_user = FakeUser()
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal())
         # Create a brand new user
         patched_user_profile = ensure_appropriate_publishers_and_sign(
             fake_new_user.as_dict(), self.publisher_rules, "create"

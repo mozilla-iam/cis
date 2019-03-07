@@ -18,6 +18,7 @@ STAGE_FN	:= $(if $(STAGE),$(STAGE).,dev.)
 ## Change to test. or empty string (prod) as needed (see also DOMAIN above)
 STAGE		:= dev.
 INFOSEC_FP	:= 85D77543B3D624B63CEA9E6DBC17301B491B3F21
+DISTRIBUTION_ID:= E3565MF6FETN3E
 
 .PHONY:all
 all:
@@ -33,6 +34,7 @@ create-s3-bucket:
 upload-s3-bucket: test verify
 	@export AWS_REGION=$(AWS_REGION)
 	aws s3 sync --content-type 'application/json' s3/ $(S3_BUCKET_URI) --acl public-read
+	aws cloudfront create-invalidation --distribution-id ${DISTRIBUTION_ID} --paths '/*'
 
 .PHONY: templatize
 templatize:
