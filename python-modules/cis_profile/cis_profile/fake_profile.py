@@ -34,43 +34,48 @@ def non_hierarchy_iter():
 class FakeProfileConfig(object):
     def __init__(self):
         self._create = False
+        self._cis = False
         self._mozillians = False
         self._hris = False
         self._ldap = False
         self._auth0 = False
-        self._uuid = False
+        self._uuid_username = False
         self._minimal = False
         self._active_percent = 100
 
     def default(self):
-        return self.mozillians().hris().ldap().auth0().uuid()
+        return self.mozillians().hris().ldap().auth0().uuid_username()
 
-    def create(self):
-        self._create = True
+    def create(self, b=True):
+        self._create = b
         return self
 
-    def minimal(self):
-        self._minimal = True
+    def cis(self, b=True):
+        self._cis = b
         return self
 
-    def mozillians(self):
-        self._mozillians = True
+    def minimal(self, b=True):
+        self._minimal = b
         return self
 
-    def hris(self):
-        self._hris = True
+    def mozillians(self, b=True):
+        self._mozillians = b
         return self
 
-    def ldap(self):
-        self._ldap = True
+    def hris(self, b=True):
+        self._hris = b
         return self
 
-    def auth0(self):
-        self._auth0 = True
+    def ldap(self, b=True):
+        self._ldap = b
         return self
 
-    def uuid(self):
-        self._uuid = True
+    def auth0(self, b=True):
+        self._auth0 = b
+        return self
+
+    def uuid_username(self, b=True):
+        self._uuid_username = b
         return self
 
 
@@ -166,11 +171,11 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
         p = ["Mozilla-LDAP", "google-oauth2", "github", "firefoxaccounts", "email"]
         return self.generator.random.choice(p)
 
+    def primary_username_random(self):
+        return "r--{}".format(base64.urlsafe_b64encode(fake.uuid4(cast_to=lambda x: x.bytes)).decode("utf-8"))
+
     def primary_username(self):
-        if self.generator.boolean():
-            return "r--{}".format(base64.urlsafe_b64encode(fake.uuid4(cast_to=lambda x: x.bytes)).decode("utf-8"))
-        else:
-            return self.generator.user_name()
+        return self.generator.user_name()
 
     def usernames(self):
         u = {}
@@ -289,7 +294,8 @@ class FakeUser(cis_profile.profile.User):
         fake.add_provider(FakeCISProfileProvider)
 
         self._init_dicts()
-        self.generate_uuid(fake, config)
+        self.generate_minimal(fake, config)
+        self.generate_uuid_and_primary_username(fake, config)
         self.generate_ldap(fake, config)
         self.generate_hris(fake, config, hierarchy)
         self.generate_mozillians(fake, config)
@@ -314,14 +320,25 @@ class FakeUser(cis_profile.profile.User):
             v = v[a]
         v[last] = value
 
-    def generate_uuid(self, fake, config):
+    def generate_uuid_and_primary_username(self, fake, config):
         """
         Generate uuid (added by change API)
         """
-        if not config._uuid:
+        if not config._uuid_username:
             return
 
         self._d("uuid.value", str(fake.uuid4()))
+        self._d("primary_username.value", fake.primary_username_random())
+
+    def generate_minimal(self, fake, config):
+        if not config._minimal:
+            return
+        identities, user_id, email = fake.mozillians_identities()
+
+        self._d("user_id.value", user_id)
+        self._d("login_method.value", fake.login_method())
+        self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
+        self._d("primary_email.value", email)
 
     def generate_ldap(self, fake, config):
         """
@@ -333,17 +350,16 @@ class FakeUser(cis_profile.profile.User):
         identities, user_id, email = fake.ldap_identity()
 
         self._d("user_id.value", user_id)
-        self._d("primary_username.value", fake.primary_username())
         self._d("login_method.value", "Mozilla-LDAP")
         self._d("active.value", fake.boolean(chance_of_getting_true=config._active_percent))
         self._d("created.value", fake.iso8601())
         self._d("primary_email.value", email)
 
-        for k, v in identities.items():
-            self.__dict__["identities"][k]["value"] = v
-
         if config._minimal:
             return
+
+        for k, v in identities.items():
+            self.__dict__["identities"][k]["value"] = v
 
         self._d("first_name.value", fake.first_name())
         self._d("last_name.value", fake.last_name())
@@ -396,6 +412,9 @@ class FakeUser(cis_profile.profile.User):
 
         for k, v in identities.items():
             self.__dict__["identities"][k]["value"] = v
+
+        if not config._create:
+            self._d("primary_username.value", fake.primary_username())
 
         if config._minimal:
             return

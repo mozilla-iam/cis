@@ -136,6 +136,14 @@ class TestProfile(object):
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature("fun_title")  # Unsigned, so should raise and fail
 
+    def test_initialize_uuid_and_primary_username(self):
+        u = profile.User(user_id="test")
+        u.initialize_uuid_and_primary_username()
+        assert u.uuid["value"] is not None
+        assert u.uuid["value"] != ""
+        assert u.primary_username["value"] is not None
+        assert u.primary_username["value"].startswith("r--")
+
     def test_verify_can_publish(self):
         u_old = profile.User(user_id="test")
         u_new = copy.deepcopy(u_old)

@@ -152,12 +152,32 @@ class Vault(object):
                 )
             return new_user_profile
         else:
-            # This profile as not merged, just verify publishers and return it
+            # This is a new profile, set uuid and primary_username and verify.
             self.condition = "create"
             logger.info(
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
+            # We raise an exception if uuid oder primary_username is already set. This must not happen.
+            if cis_profile_object.uuid.value is not None or cis_profile_object.primary_username.value is not None:
+                logger.error(
+                    "Trying to create profile, but uuid or primary_username was already set",
+                    extra={
+                        "user_id": user_id,
+                        "profile": cis_profile_object.as_dict(),
+                    },
+                )
+                raise VerificationError(
+                    {
+                        "code": "uuid_or_primary_username_set",
+                        "description": "The fields primary_username or uuid have been set in a new profile.",
+                    },
+                    403,
+                )
+            cis_profile_object.initialize_uuid_and_primary_username()
+            cis_profile_object.sign_attribute("uuid", "cis")
+            cis_profile_object.sign_attribute("primary_username", "cis")
+
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
                 try:

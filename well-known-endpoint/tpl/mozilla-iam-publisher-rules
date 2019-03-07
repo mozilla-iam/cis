@@ -1,6 +1,6 @@
 {
   "create": {
-    "uuid": [ "ldap", "hris", "cis", "access_provider" ],
+    "uuid": [ "cis" ],
     "user_id": [ "ldap", "hris", "access_provider" ],
     "primary_username": [ "ldap", "hris", "cis", "access_provider" ],
     "login_method": [ "ldap", "hris", "access_provider" ],
@@ -9,8 +9,8 @@
     "created": [ "ldap", "hris", "cis", "access_provider" ],
     "usernames": [ "ldap", "access_provider", "mozilliansorg" ],
     "pronouns": [ "ldap", "mozilliansorg" ],
-    "first_name": [ "ldap", "hris", "access_provider" ],
-    "last_name": [ "ldap", "hris", "access_provider" ],
+    "first_name": [ "ldap", "hris", "access_provider", "mozilliansorg" ],
+    "last_name": [ "ldap", "hris", "access_provider", "mozilliansorg" ],
     "alternative_name": [ "ldap", "mozilliansorg" ],
     "primary_email": [ "ldap", "hris", "access_provider" ],
     "identities": [ "ldap", "hris", "access_provider" ],
@@ -34,7 +34,7 @@
     "staff_information": [ "ldap", "hris" ]
   },
   "update": {
-    "uuid": "cis",
+    "uuid": "",
     "user_id": "access_provider",
     "primary_username": "mozilliansorg",
     "login_method": "access_provider",

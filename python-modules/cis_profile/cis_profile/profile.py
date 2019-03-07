@@ -10,6 +10,10 @@ import cis_profile.exceptions
 import jose.exceptions
 import json
 import json.decoder
+from uuid import uuid5
+from uuid import NAMESPACE_URL
+from base64 import urlsafe_b64encode
+from botocore.exceptions import ClientError
 
 try:
     from json.decoder import JSONDecodeError
@@ -158,6 +162,22 @@ class User(object):
             # user does not match (ie is not null)
             if level[_].get("value") is not None or level[_].get("values") is not None:
                 _internal_level[_] = level[_]
+
+    def initialize_uuid_and_primary_username(self):
+        try:
+            salt = cis_crypto.secret.AWSParameterstoreProvider().uuid_salt()
+        except ClientError as e:
+            logger.error("No salt set for uuid generation. This is very very dangerous: {}".format(e))
+            salt = ""
+        now = self._get_current_utc_time()
+        uuid = uuid5(NAMESPACE_URL, "{}#{}".format(salt, self.__dict__["user_id"]["value"]))
+        self.__dict__["uuid"]["value"] = str(uuid)
+        self.__dict__["uuid"]["metadata"]["created"] = now
+        self.__dict__["uuid"]["metadata"]["last_modified"] = now
+        primary_username = "r--{}".format(urlsafe_b64encode(uuid.bytes).decode("utf-8"))
+        self.__dict__["primary_username"]["value"] = primary_username
+        self.__dict__["primary_username"]["metadata"]["created"] = now
+        self.__dict__["primary_username"]["metadata"]["last_modified"] = now
 
     def initialize_timestamps(self):
         now = self._get_current_utc_time()
