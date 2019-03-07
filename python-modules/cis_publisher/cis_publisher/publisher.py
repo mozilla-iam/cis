@@ -84,8 +84,13 @@ class Publish:
 
         access_token = self._get_authzero_token()
         qs = "/v2/user"
+        cis_users = self.get_known_cis_users()
 
         for profile in self.profiles:
+            # New users should also pass this parameter
+            if profile.user_id.value in cis_users:
+                qs = "/v2/user?user_id={}".format(profile.user_id.value)
+
             response_ok = False
             retries = 0
             while not response_ok:
@@ -144,6 +149,8 @@ class Publish:
         Call CIS Person API and return a list of existing users
         """
         self.__deferred_init()
+        if self.known_cis_users is not None:
+            return self.known_cis_users
 
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
         qs = "/v2/users/id/all?connectionMethod={}".format(self.login_method)
@@ -156,7 +163,8 @@ class Publish:
                 "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
-        return response.json()
+        self.known_cis_users = response.json()
+        return self.known_cis_users
 
     def filter_known_cis_users(self):
         """
