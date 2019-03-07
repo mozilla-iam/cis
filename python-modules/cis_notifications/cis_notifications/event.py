@@ -1,4 +1,3 @@
-import json
 import requests
 from cis_notifications import common
 from cis_notifications import secret
