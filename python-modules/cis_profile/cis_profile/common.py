@@ -168,14 +168,14 @@ class WellKnown(object):
         """
         fpath = self._request_cache + "_" + name
         if not os.path.isfile(fpath) or (os.stat(fpath).st_mtime > time.time() + self._request_cache_ttl):
-            logger.info(
+            logger.debug(
                 "Caching file (well-known endpoint) at {} for {} seconds".format(fpath, self._request_cache_ttl)
             )
             with open(fpath, "w+") as fd:
                 fd.write(json.dumps(data))
             return data
         else:
-            logger.info("Using cached file (well-known endpoint) at {}".format(fpath))
+            logger.debug("Using cached file (well-known endpoint) at {}".format(fpath))
             with open(fpath, "r") as fd:
                 ret = fd.read()
             return json.loads(ret)
