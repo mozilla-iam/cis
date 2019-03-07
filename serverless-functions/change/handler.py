@@ -29,5 +29,6 @@ def setup_logging():
 def handle(event, context):
     logger = setup_logging()
     logger.debug("Change Service Initialized.")
+    logger.debug(event)
     app = cis_change_service.api.app
     return serverless_wsgi.handle_request(app, event, context)
