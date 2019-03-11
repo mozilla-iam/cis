@@ -26,5 +26,8 @@ def handle(event, context={}):
     """Handle the publishing of users."""
     logger = setup_logging()
     ldap = cis_publisher.ldap.LDAPPublisher()
-    ldap.publish()
+    if isinstance(event, list):
+        ldap.publish(event)
+    else:
+        ldap.publish()
     return 200
