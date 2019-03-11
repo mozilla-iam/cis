@@ -69,9 +69,12 @@ class Publish:
 
         self.__deferred_init()
         failed_users = []
+        access_token = self._get_authzero_token()
+        qs = "/v2/user"
+        cis_users = self.get_known_cis_users()
 
         if user_ids is not None:
-            logger.info("Requesting a specific list of user_id's to post {}".format(user_ids))
+            logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
             if not isinstance(user_ids, list):
                 raise PublisherError("user_ids must be a list", user_ids)
 
@@ -82,10 +85,6 @@ class Publish:
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
         #        self.validate()
-
-        access_token = self._get_authzero_token()
-        qs = "/v2/user"
-        cis_users = self.get_known_cis_users()
 
         for profile in self.profiles:
             # New users should also pass this parameter
@@ -114,7 +113,7 @@ class Publish:
                     time.sleep(self.retry_delay)
                     if retries >= self.max_retries:
                         logger.error(
-                            "Maximum retries reached ({}), profile is not be sent {}".format(
+                            "Maximum retries reached ({}), profile is not to be sent {}".format(
                                 retries, profile.user_id.value
                             )
                         )

@@ -14,11 +14,12 @@ class LDAPPublisher:
     def __init__(self):
         self.secret_manager = cis_publisher.secret.Manager()
 
-    def publish(self):
+    def publish(self, user_ids=None):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
         None, ALL profiles are sent.
+        @user_ids: list of str - user ids to publish. If None, all users are published.
         """
         logger.info("Starting LDAP Publisher")
         profiles_xz = self.fetch_from_s3()
@@ -30,15 +31,18 @@ class LDAPPublisher:
         del raw
 
         profiles = []
+        logger.info("Processing {} profiles".format(len(profiles_json)))
         for p in profiles_json:
             str_p = json.dumps(profiles_json[p])
-            profiles.append(cis_profile.User(user_structure_json=str_p))
+            if (user_ids is None) or (profiles_json[p]["user_id"]["value"] in user_ids):
+                profiles.append(cis_profile.User(user_structure_json=str_p))
 
+        logger.info("Will publish {} profiles".format(len(profiles)))
         publisher = cis_publisher.Publish(profiles, publisher_name="ldap", login_method="ad")
         failures = []
         try:
             publisher.filter_known_cis_users()
-            failures = publisher.post_all()
+            failures = publisher.post_all(user_ids=user_ids)
         except Exception as e:
             logger.error("Failed to post_all() LDAP profiles. Trace: {}".format(format_exc()))
             raise e
