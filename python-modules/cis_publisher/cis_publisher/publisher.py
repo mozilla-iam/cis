@@ -96,7 +96,7 @@ class Publish:
             retries = 0
             while not response_ok:
                 logger.info(
-                    "Attempting to post profile {} to API {}".format(profile.user_id.value, self.api_url_change)
+                    "Attempting to post profile {} to API {}{}".format(profile.user_id.value, self.api_url_change, qs)
                 )
                 response = self._request_post(
                     url="{}{}".format(self.api_url_change, qs),
@@ -119,6 +119,9 @@ class Publish:
                             )
                         )
                         failed_users.append(profile.user_id.value)
+                        break
+                else:
+                    logger.info("Profile successfully posted to API {}".format(profile.user_id.value))
         return failed_users
 
     def _request_post(self, url, payload, headers):
@@ -187,7 +190,7 @@ class Publish:
             p = self.profiles[n]
             if p.user_id.value in cis_users:
                 logger.info(
-                    "Filtering out non-updateable values from user {} because it already exist in CIS".format(
+                    "Filtering out non-updatable values from user {} because it already exist in CIS".format(
                         p.user_id.value
                     )
                 )
