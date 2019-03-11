@@ -280,7 +280,7 @@ class Profile(object):
         try:
             if len(updates) > 0:
                 res_update = self.update_batch(updates)
-                logger.error("There are {} updates to perform in this batch.".format(len(updates)))
+                logger.debug("There are {} updates to perform in this batch.".format(len(updates)))
             else:
                 res_update = None
         except ClientError as e:
