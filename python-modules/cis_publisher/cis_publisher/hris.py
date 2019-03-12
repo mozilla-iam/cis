@@ -1,132 +1,83 @@
-import boto3
 import cis_profile
-import json
+import cis_publisher
+import boto3
+import botocore
 import logging
-import requests
-import sys
-from authzero import AuthZero
-from os import getenv
+import lzma
+import json
+from traceback import format_exc
+
+logger = logging.getLogger(__name__)
 
 
-class cisAPI(object):
-    """
-    This class requires cis_profile and authzero
-    """
+class HRISPublisher:
+    def __init__(self):
+        self.secret_manager = cis_publisher.secret.Manager()
 
-    def __init__(
-        self,
-        client_id,
-        client_secret,
-        authorizer_url,
-        api_type="change",
-        well_known="https://auth.allizom.org/.well-known/mozilla-iam",
-    ):
-        self.logger = self.setup_logging()
-        config = {"client_id": client_id, "client_secret": client_secret, "uri": authorizer_url}
-        self.az = AuthZero(config)
-        self.well_known = cis_profile.WellKnown()
-        wk = self.well_known.get_well_known()
-        self.api_url = wk.api.endpoints[api_type]
-        self.api_audience = wk.api.audience
+    def publish(self, user_ids=None):
+        """
+        Glue to create or fetch cis_profile.User profiles for this publisher
+        Then pass everything over to the Publisher class
+        None, ALL profiles are sent.
+        @user_ids: list of str - user ids to publish. If None, all users are published.
+        """
+        logger.info("Starting HRIS Publisher")
+        report_profiles = self.fetch_report()
+        profiles = self.convert_hris_to_cis_profiles(report_profiles)
+        del report_profiles
 
-    def setup_logging(self, stream=sys.stderr, level=logging.INFO):
-        formatstr = "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
-        logging.basicConfig(format=formatstr, datefmt="%H:%M:%S", stream=stream)
-        logger = logging.getLogger(__name__)
-        logger.setLevel(level)
-        return logger
+        logger.info("Processing {} profiles".format(len(profiles)))
 
-    def _check_http_response(self, response):
-        """Check that we got a 2XX response from the server, else bail out"""
-        if (response.status >= 300) or (response.status < 200):
-            self.logger.debug(
-                "_check_http_response() HTTP communication failed: {} {}".format(
-                    response.status, response.reason, response.read().decode("utf-8")
+        if user_ids is not None:
+            for n in range(0, len(profiles)):
+                if profiles[n].user_id.value not in user_ids:
+                    del profiles[n]
+
+        logger.info("Will publish {} profiles".format(len(profiles)))
+        publisher = cis_publisher.Publish(profiles, publisher_name="hris", login_method="ad")
+        failures = []
+        try:
+            publisher.filter_known_cis_users()
+            failures = publisher.post_all(user_ids=user_ids)
+        except Exception as e:
+            logger.error("Failed to post_all() HRIS profiles. Trace: {}".format(format_exc()))
+            raise e
+
+        if len(failures) > 0:
+            logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
+
+    def fetch_report(self):
+        """
+        Fetches the Workday report data
+        Strip out unused data
+        Returns the JSON document with only used data
+        """
+
+        hris_url = self.secret_manager.secret("hris_url")
+        hris_path = self.secret_manager.secret("hris_path")
+        hris_user = self.secret_manager.secret("hris_user")
+        hris_password = self.secret_manager.secret("hris_password")
+
+        logger.info("Fetching HRIS report from {}{}".format(hris_url, hris_path))
+        params = dict(format="json")
+
+        res = requests.get(
+            "{}{}".format(hris_url, hris_path),
+            auth=requests.auth.HTTPBasicAuth(hris_username, hris_password),
+            params=params,
+        )
+
+        del hris_password
+        del hris_user
+
+        if not res.ok:
+            logger.error(
+                "Error fetching the HRIS report, status_code: {}, reason: {}, text: {}".format(
+                    res.status_code, res.reason, res.text
                 )
             )
-            raise Exception("HTTPCommunicationFailed", (response.status, response.reason))
-
-    def post_profiles(self, profiles):
-        """
-        @profiles [] list of profiles as cis_profile.User objects
-        Return server response as {} dict
-        raises HTTPCommunicationFailed on any error
-        """
-        # Unroll profiles so that we have a list of json documents instead of objects
-        json_profiles = []
-        for _ in profiles:
-            json_profiles = _.as_json()
-
-        # This always gets a fresh or cached valid token (we use authzero lib)
-        token_info = self.az.get_access_token()
-        headers = {"authorization": "Bearer {}".format(token_info.access_token), "Content-type": "application/json"}
-        res = requests.post("{}/v2/users", self.api_curl, headers=headers, data=json.dumps(json_profiles))
-        self._check_http_response(res)
-        ret = json.loads(res.read().decode("utf-8"))
-        return ret
-
-
-class hris_processor(object):
-    def __init__(self, environment):
-        self.cis_environment = environment
-        self.logger = self.setup_logging()
-
-    def setup_logging(self, stream=sys.stderr, level=logging.INFO):
-        formatstr = "[%(asctime)s] %(levelname)s [%(name)s.%(funcName)s:%(lineno)d] %(message)s"
-        logging.basicConfig(format=formatstr, datefmt="%H:%M:%S", stream=stream)
-        logger = logging.getLogger(__name__)
-        logger.setLevel(level)
-        return logger
-
-    def get_parameters(self):
-        self.hris_url = self.get_secure_parameter("/iam/hris-publisher/{}/hris_url".format(self.cis_environment))
-        self.hris_path = self.get_secure_parameter("/iam/hris-publisher/{}/hris_path".format(self.cis_environment))
-        self.hris_username = self.get_secure_parameter("/iam/hris-publisher/{}/hris_user".format(self.cis_environment))
-        self.hris_password = self.get_secure_parameter(
-            "/iam/hris-publisher/{}/hris_password".format(self.cis_environment)
-        )
-        self.s3_bucket = self.get_secure_parameter("/iam/hris-publisher/{}/hris_bucket".format(self.cis_environment))
-        self.az_client_id = self.get_secure_parameter("/iam/hris-publisher/{}/client_id".format(self.cis_environment))
-        self.az_client_secret = self.get_secure_parameter(
-            "/iam/hris-publisher/{}/client_secret".format(self.cis_environment)
-        )
-        self.az_url = self.get_secure_parameter("/iam/hris-publisher/{}/authzero_url".format(self.cis_environment))
-
-    def get_secure_parameter(self, parameter_name):
-        self.logger.debug("Getting parameter: ".format(parameter_name))
-        client = boto3.client("ssm")
-        response = client.get_parameter(Name=parameter_name, WithDecryption=True)
-        return response["Parameter"]["Value"]
-
-    def get_file_from_hris(self):
-        params = dict(format="json")
-        route = "https://{}{}".format(self.hris_url, self.hris_path)
-        res = requests.get(
-            route, auth=requests.auth.HTTPBasicAuth(self.hris_username, self.hris_password), params=params
-        )
+            raise ValueError("Could not fetch HRIS report")
         return res.json()
-
-    def assume_role(self):
-        role_arn = getenv("HRIS_ASSUME_ROLE_ARN", None)
-        sts = boto3.client("sts")
-        credentials = sts.assume_role(RoleArn=role_arn, RoleSessionName="cis-hris-loader", DurationSeconds=900)
-
-        return credentials["Credentials"]
-
-    def store_in_s3(self, data):
-        if getenv("HRIS_ASSUME_ROLE_ARN", None) is None:
-            s3 = boto3.resource("s3")
-        else:
-            credentials = self.assume_role()
-            boto_session = boto3.session.Session(
-                aws_access_key_id=credentials["AccessKeyId"],
-                aws_secret_access_key=credentials["SecretAccessKey"],
-                aws_session_token=credentials["SessionToken"],
-            )
-            s3 = boto_session.resource("s3")
-        bucket = s3.Bucket(self.s3_bucket)
-        object = bucket.put_object(Body=data, Key="workday.json")
-        return object
 
     def convert_hris_to_cis_profiles(self, hris_data):
         """
@@ -245,36 +196,3 @@ class hris_processor(object):
             user_array.append(p)
 
         return user_array
-
-
-def handle(event=None, context={}):
-    cis_environment = getenv("CIS_ENVIRONMENT", "development")
-    hris = hris_processor(cis_environment)
-    hris.get_parameters()
-    hris_data = hris.get_file_from_hris()
-    hris_as_cis_profiles = hris.convert_hris_to_cis_profiles(hris_data)
-
-    # Compat with person api v1, can be removed when v1 is no longer used XXX
-    hris.store_in_s3(bytes(json.dumps(hris_data).encode("utf-8")))
-
-    # How many profiles to send per batch. API Max is 10.
-    per_batch = 5
-
-    to_send = []
-    p_index = 0
-    cis = cisAPI(client_id=hris.az_client_id, client_secret=hris.az_client_secret, authorizer_url=hris.az_url)
-    for p_nr in range(0, len(hris_as_cis_profiles)):
-        to_send = []
-        for _ in range(0, per_batch):
-            p_index = p_index + _
-            try:
-                to_send.append(hris_as_cis_profiles[p_index])
-            except IndexError:
-                # No more profiles
-                break
-        cis.post_profiles(to_send)
-    return 200
-
-
-if __name__ == "__main__":
-    handle()
