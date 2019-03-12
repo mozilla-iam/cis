@@ -1,10 +1,7 @@
 import cis_profile
 import cis_publisher
-import boto3
-import botocore
 import logging
-import lzma
-import json
+import requests
 from traceback import format_exc
 
 logger = logging.getLogger(__name__)
@@ -55,7 +52,7 @@ class HRISPublisher:
 
         hris_url = self.secret_manager.secret("hris_url")
         hris_path = self.secret_manager.secret("hris_path")
-        hris_user = self.secret_manager.secret("hris_user")
+        hris_username = self.secret_manager.secret("hris_user")
         hris_password = self.secret_manager.secret("hris_password")
 
         logger.info("Fetching HRIS report from {}{}".format(hris_url, hris_path))
@@ -68,7 +65,7 @@ class HRISPublisher:
         )
 
         del hris_password
-        del hris_user
+        del hris_username
 
         if not res.ok:
             logger.error(
@@ -126,7 +123,7 @@ class HRISPublisher:
             try:
                 tzmap[hris_tz]
             except KeyError:
-                self.logger.warning(
+                logger.warning(
                     "Unknown timezone in workday, defaulting to UTC. Timezone from HRIS was" " {}.".format(hris_tz)
                 )
                 return "UTC+0000 Europe/London"
@@ -163,6 +160,7 @@ class HRISPublisher:
             p.staff_information.wpr_desk_number.value = hruser.get("WPRDeskNumber")
             p.staff_information.office_location.value = hruser.get("LocationDescription")
 
+            p.access_information.hris["values"] = {}
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
             p.access_information.hris["values"]["manager_employee_id"] = hruser.get("WorkersManagersEmployeeID")
@@ -174,14 +172,14 @@ class HRISPublisher:
             try:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
-                self.logger.critical(
+                logger.critical(
                     "Profile data signing failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
             try:
                 p.validate()
             except Exception as e:
-                self.logger.critical(
+                logger.critical(
                     "Profile schema validation failed for user {} - skipped validation, verification "
                     "WILL FAIL({})".format(p.primary_email.value, e)
                 )
@@ -189,7 +187,7 @@ class HRISPublisher:
             try:
                 p.verify_all_publishers(cis_profile.User())
             except Exception as e:
-                self.logger.critical(
+                logger.critical(
                     "Profile signing failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
