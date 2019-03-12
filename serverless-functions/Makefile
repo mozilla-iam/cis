@@ -100,7 +100,10 @@ test-change-service:
 
 .PHONY:deploy-ldap-publisher
 deploy-ldap-publisher:
-	cd $(ROOT_DIR)/ldap-publisher && sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	cd $(ROOT_DIR)/ldap_publisher && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
+	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-stream-processor
 deploy-stream-processor:

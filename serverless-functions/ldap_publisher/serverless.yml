@@ -85,3 +85,4 @@ functions:
     timeout: 900
     layers:
       -  ${ssm:/iam/cis/${self:custom.ldapPublisherStage}/lambda_layer_arn}
+    reservedConcurrency: 1
