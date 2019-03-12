@@ -1,42 +1,58 @@
-service: hris-api
+service: hris-publisher
+plugins:
+  - serverless-plugin-tracing
 custom:
-  hrisStage: ${opt:stage, self:provider.stage}
-  hrisEnvironment:
+  hrisPublisherStage: ${opt:stage, self:provider.stage}
+  hrisPublisherEnvironment:
     CIS_ENVIRONMENT:
       production: production
       development: development
-    CIS_HRIS_JSON_FILE:
-      production: workday.json
-      development: workday.json
-    HRIS_ASSUME_ROLE_ARN:
-      production: arn:aws:iam::371522382791:role/cis-v2-production-hris-publisher
-      development: arn:aws:iam::656532927350:role/cisv2-development-hris-publisher
+      testing: testing
     DYNAMODB_TABLE:
-      production: hris_api_production
-      development: hris_api_development
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
     IDENTIFIER:
       production: api.sso.mozilla.com
       development: api.dev.sso.allizom.org
-    PARAMETERS_PATH:
-      production: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/production/*
-      development: arn:aws:ssm:us-west-2:320464205386:parameter/iam/hris-publisher/development/*
+      testing: api.test.sso.allizom.org
+    CIS_AUTHZERO_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/hris_publisher
+      development: /iam/cis/development/hris_publisher
+      testing: /iam/cis/testing/hris_publisher
+    CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
+      development: https://auth.allizom.org/.well-known/mozilla-iam
+      testing: https://auth.allizom.org/.well-known/mozilla-iam
+    BUCKET_ARN:
+      production: arn:aws:s3:::hris.sso.mozilla.com
+      development: arn:aws:s3:::hris.dev.sso.allizom.org
+      testing: arn:aws:s3:::hris.sso.mozilla.com
 provider:
   name: aws
   runtime: python3.6
-  stage: ${opt:stage}
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
   environment:
-    CIS_ENVIRONMENT: ${self:custom.hrisEnvironment.CIS_ENVIRONMENT.${self:custom.hrisStage}}
-    CIS_HRIS_JSON_FILE: ${self:custom.hrisEnvironment.CIS_HRIS_JSON_FILE.${self:custom.hrisStage}}
-    HRIS_ASSUME_ROLE_ARN: ${self:custom.hrisEnvironment.HRIS_ASSUME_ROLE_ARN.${self:custom.hrisStage}}
-    DYNAMODB_TABLE: ${self:custom.hrisEnvironment.DYNAMODB_TABLE.${self:custom.hrisStage}}
-    IDENTIFIER: ${self:custom.hrisEnvironment.IDENTIFIER.${self:custom.hrisStage}}
-    PARAMETERS_PATH: ${self:custom.hrisEnvironment.PARAMETERS_PATH.${self:custom.hrisStage}}
+    CIS_ENVIRONMENT: ${self:custom.hrisPublisherEnvironment.CIS_ENVIRONMENT.${self:custom.hrisPublisherStage}}
+    CIS_API_IDENTIFIER: ${self:custom.hrisPublisherEnvironment.IDENTIFIER.${self:custom.hrisPublisherStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.hrisPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.hrisPublisherStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.hrisPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.hrisPublisherStage}}
+    CIS_DISCOVERY_URL: ${self:custom.hrisPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.hrisPublisherStage}}
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CIS_WELL_KNOWN_MODE: https
+    CIS_PUBLIC_KEY_NAME: publisher
   iamRoleStatements:
-    - Effect: Allow
+    - Effect: "Allow" # xray permissions (required)
       Action:
-        - "sts:AssumeRole"
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
       Resource:
-        - ${self:custom.hrisEnvironment.HRIS_ASSUME_ROLE_ARN.${self:custom.hrisStage}}
+        - "*"
     - Effect: Allow
       Action:
         - "ssm:GetParameterHistory"
@@ -44,7 +60,7 @@ provider:
         - "ssm:GetParameters"
         - "ssm:GetParameter"
       Resource:
-        - ${self:custom.hrisEnvironment.PARAMETERS_PATH.${self:custom.hrisStage}}
+        - arn:aws:ssm:*:*:parameter${self:custom.hrisPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.hrisPublisherStage}}/*
     - Effect: Allow
       Action:
         - "kms:Decrypt"
@@ -52,35 +68,21 @@ provider:
         - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
     - Effect: Allow
       Action:
-        - dynamodb:GetItem
-        - dynamodb:UpdateItem
-      Resource: "arn:aws:dynamodb:${opt:region, self:provider.region}:*:table/${self:service}-${opt:stage}"
+        - "s3:ListBucket"
+        - "s3:GetObject"
+      Resource:
+        - ${self:custom.hrisPublisherEnvironment.BUCKET_ARN.${self:custom.hrisPublisherStage}}
+        - ${self:custom.hrisPublisherEnvironment.BUCKET_ARN.${self:custom.hrisPublisherStage}}/*
 functions:
-  loader:
-    handler: loader.handle
-    description: Load the data from the hris system to the dynamo table and s3 buckets.
-    memorySize: 1024
+  handler:
+    handler: handler.handle
+    events:
+      - schedule:
+          rate: rate(10 minutes)
+          enabled: false
+    description: hris-publisher for synchronizing hristos3 json to identity vault.
+    memorySize: 3008 # This is HUGE because we load the entirety of users in Memory live.
     timeout: 900
     layers:
-      -  ${ssm:/iam/cis/${self:custom.hrisStage}/lambda_layer_arn}
-    onError: arn:aws:sns:us-west-2:320464205386:cis-dev-dlq
-    events:
-    - schedule:
-        name: load-hris-every-2-hours-${opt:stage}
-        description: 'Fetch hris data every two hours.'
-        rate: rate(2 hours)
-resources:
-  Resources:
-    hrisTable:
-      Type: 'AWS::DynamoDB::Table'
-      Properties:
-        AttributeDefinitions:
-          - AttributeName: PrimaryWorkEmail
-            AttributeType: S
-        KeySchema:
-          - AttributeName: PrimaryWorkEmail
-            KeyType: HASH
-        ProvisionedThroughput:
-          ReadCapacityUnits: 1
-          WriteCapacityUnits: 1
-        TableName: ${self:service}-${opt:stage}
+      -  ${ssm:/iam/cis/${self:custom.hrisPublisherStage}/lambda_layer_arn}
+    reservedConcurrency: 1

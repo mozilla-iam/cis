@@ -6,7 +6,7 @@ from os import getenv
 class TestLoader(object):
     def test_load_parse_hris(self):
         hris_data = {}
-        with open("tests/fixtures/workday.json") as fd:
+        with open("tests/fixture/workday.json") as fd:
             hris_data = json.load(fd)
 
         hris = loader.hris_processor(getenv("CIS_ENVIRONMENT", "development"))
