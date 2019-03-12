@@ -2,6 +2,8 @@ import requests
 import logging
 import os
 import time
+import threading
+import queue
 from cis_profile.common import WellKnown
 from cis_publisher import secret
 from cis_publisher import common
@@ -34,6 +36,7 @@ class Publish:
         self.api_url_person = None
         self.api_url_change = None
         self.max_retries = 3
+        self.max_threads = 50
         # retry_delay is passed to time.sleep
         self.retry_delay = 1
         self.cis_user_list = None
@@ -68,10 +71,10 @@ class Publish:
         """
 
         self.__deferred_init()
-        failed_users = []
-        access_token = self._get_authzero_token()
         qs = "/v2/user"
         cis_users = self.get_known_cis_users()
+        threads = []
+        failed_users = queue.Queue()
 
         if user_ids is not None:
             logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
@@ -84,44 +87,72 @@ class Publish:
                     del self.profiles[n]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
+        # XXX - we already validate in the API, is this needed?
         #        self.validate()
 
         for profile in self.profiles:
             # New users should also pass this parameter
             if profile.user_id.value in cis_users:
                 qs = "/v2/user?user_id={}".format(profile.user_id.value)
+            else:
+                qs = "/v2/user"
 
-            response_ok = False
-            retries = 0
-            while not response_ok:
-                logger.info(
-                    "Attempting to post profile {} to API {}{}".format(profile.user_id.value, self.api_url_change, qs)
+            threads.append(threading.Thread(target=self._really_post, args=(qs, profile, failed_users)))
+            threads[-1].start()
+            num_threads = len(threading.enumerate())
+            while num_threads >= self.max_threads:
+                time.sleep(1)
+                num_threads = len(threading.enumerate())
+                logger.info("Too many concurrent threads, waiting a bit...")
+
+        logger.debug("Waiting for threads to terminate...")
+        for t in threads:
+            t.join()
+        logger.debug("Retrieving results from the queue...")
+        ret = []
+        while not failed_users.empty():
+            ret.append(failed_users.get())
+            failed_users.task_done()
+        return ret
+
+    def _really_post(self, qs, profile, failed_users):
+        response_ok = False
+        retries = 0
+        access_token = self._get_authzero_token()
+        while not response_ok:
+            logger.info(
+                "Attempting to post profile {} to API {}{}".format(profile.user_id.value, self.api_url_change, qs)
+            )
+            response = self._request_post(
+                url="{}{}".format(self.api_url_change, qs),
+                payload=profile.as_dict(),
+                headers={"authorization": "Bearer {}".format(access_token)},
+            )
+            response_ok = response.ok
+            if not response_ok:
+                logger.warning(
+                    "Posting profile {} to API failed, retry is {} retry_delay is {} status_code is {} reason is {}"
+                    "contents were {}".format(
+                        profile.user_id.value,
+                        retries,
+                        self.retry_delay,
+                        response.status_code,
+                        response.reason,
+                        response.text,
+                    )
                 )
-                response = self._request_post(
-                    url="{}{}".format(self.api_url_change, qs),
-                    payload=profile.as_dict(),
-                    headers={"authorization": "Bearer {}".format(access_token)},
-                )
-                response_ok = response.ok
-                if not response_ok:
-                    logger.warning(
-                        "Posting profile {} to API failed, retry is {} retry_delay is {}".format(
-                            profile.user_id.value, retries, self.retry_delay
+                retries = retries + 1
+                time.sleep(self.retry_delay)
+                if retries >= self.max_retries:
+                    logger.error(
+                        "Maximum retries reached ({}), profile is not to be sent {}".format(
+                            retries, profile.user_id.value
                         )
                     )
-                    retries = retries + 1
-                    time.sleep(self.retry_delay)
-                    if retries >= self.max_retries:
-                        logger.error(
-                            "Maximum retries reached ({}), profile is not to be sent {}".format(
-                                retries, profile.user_id.value
-                            )
-                        )
-                        failed_users.append(profile.user_id.value)
-                        break
-                else:
-                    logger.info("Profile successfully posted to API {}".format(profile.user_id.value))
-        return failed_users
+                    failed_users.put(profile.user_id.value)
+                    break
+            else:
+                logger.info("Profile successfully posted to API {}".format(profile.user_id.value))
 
     def _request_post(self, url, payload, headers):
         return requests.post(url, json=payload, headers=headers)

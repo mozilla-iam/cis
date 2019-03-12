@@ -46,6 +46,7 @@ class LDAPPublisher:
         except Exception as e:
             logger.error("Failed to post_all() LDAP profiles. Trace: {}".format(format_exc()))
             raise e
+
         if len(failures) > 0:
             logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
 
