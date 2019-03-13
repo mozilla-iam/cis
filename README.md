@@ -70,6 +70,7 @@ $ make test-tox
 
 This is what you expect. Tagged releases (SemVer, e.g. 1.2.3) from this repository are what run in production.
 It uses a specific set of signing and verifications keys.
+This is the environment you will get access to if you request API access to CIS. This is also the environment that DinoPark and DinoPark Beta access.
 
 URLs:
 - https://change.api.sso.mozilla.com
@@ -82,7 +83,7 @@ Audience:
 ### Testing (testing)
 
 This is what is usually called staging. It contains code and data similar to production and is used to ensure that the production deployment will work.
-It uses the same set of keys as production.
+It uses the same set of keys as production. This environment contains real data and is **not** guaranteed to persistent. In practice this means the data is reset periodically. This environment is meant for general QA.
 
 Tagged releases (SemVer pre-releases, e.g. 1.2.3-pre) from this repository are what run in testing.
 
@@ -97,7 +98,8 @@ Audience:
 ### Development (dev)
 
 This is for local testing and development. This is also what is in the `master` branch of this repository.
-It uses a development set of keys for signing and verification.
+It uses a development set of keys for signing and verification. This environment contains fake data and is neither persistent neither guaranteed to be stable, though it should be almost always functional.
+Access to this environment may be granted temporarily to diagnose specific issues, features, etc. as they're being developed, but is not meant for general QA.
 
 URLs:
 - https://change.api.dev.sso.allizom.org
