@@ -93,61 +93,109 @@ class IdentityVault(object):
                 raise
 
     def create(self):
-        result = self.dynamodb_client.create_table(
-            TableName=self._generate_table_name(),
-            KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
-            AttributeDefinitions=[
-                # auth0 user_id
-                {"AttributeName": "id", "AttributeType": "S"},
-                # user_uuid formerly dinopark id (uuid is a reserverd keyword in dynamo, hence user_uuid)
-                {"AttributeName": "user_uuid", "AttributeType": "S"},
-                # sequence number for the last integration
-                {"AttributeName": "sequence_number", "AttributeType": "S"},
-                # value of the primary_email attribute
-                {"AttributeName": "primary_email", "AttributeType": "S"},
-                # value of the primary_username attribute
-                {"AttributeName": "primary_username", "AttributeType": "S"},
-            ],
-            # ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-            BillingMode="PAY_PER_REQUEST",
-            GlobalSecondaryIndexes=[
-                {
-                    "IndexName": "{}-sequence_number".format(self._generate_table_name()),
-                    "KeySchema": [{"AttributeName": "sequence_number", "KeyType": "HASH"}],
-                    "Projection": {"ProjectionType": "ALL"},
-                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-                },
-                {
-                    "IndexName": "{}-primary_username".format(self._generate_table_name()),
-                    "KeySchema": [
-                        {"AttributeName": "primary_username", "KeyType": "HASH"},
-                        {"AttributeName": "id", "KeyType": "RANGE"},
-                    ],
-                    "Projection": {"ProjectionType": "ALL"},
-                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-                },
-                {
-                    "IndexName": "{}-primary_email".format(self._generate_table_name()),
-                    "KeySchema": [
-                        {"AttributeName": "primary_email", "KeyType": "HASH"},
-                        {"AttributeName": "id", "KeyType": "RANGE"},
-                    ],
-                    "Projection": {"ProjectionType": "ALL"},
-                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-                },
-                {
-                    "IndexName": "{}-user_uuid".format(self._generate_table_name()),
-                    "KeySchema": [
-                        {"AttributeName": "user_uuid", "KeyType": "HASH"},
-                        {"AttributeName": "id", "KeyType": "RANGE"},
-                    ],
-                    "Projection": {"ProjectionType": "ALL"},
-                    # Removed due to moving to pay per query.
-                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
-                },
-            ],
-        )
-
+        if self._get_cis_environment() not in ['production', 'development', 'testing']:
+            result = self.dynamodb_client.create_table(
+                TableName=self._generate_table_name(),
+                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+                AttributeDefinitions=[
+                    # auth0 user_id
+                    {"AttributeName": "id", "AttributeType": "S"},
+                    # user_uuid formerly dinopark id (uuid is a reserverd keyword in dynamo, hence user_uuid)
+                    {"AttributeName": "user_uuid", "AttributeType": "S"},
+                    # sequence number for the last integration
+                    {"AttributeName": "sequence_number", "AttributeType": "S"},
+                    # value of the primary_email attribute
+                    {"AttributeName": "primary_email", "AttributeType": "S"},
+                    # value of the primary_username attribute
+                    {"AttributeName": "primary_username", "AttributeType": "S"},
+                ],
+                ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                GlobalSecondaryIndexes=[
+                    {
+                        "IndexName": "{}-sequence_number".format(self._generate_table_name()),
+                        "KeySchema": [{"AttributeName": "sequence_number", "KeyType": "HASH"}],
+                        "Projection": {"ProjectionType": "ALL"},
+                        "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    },
+                    {
+                        "IndexName": "{}-primary_username".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "primary_username", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                        "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    },
+                    {
+                        "IndexName": "{}-primary_email".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "primary_email", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                        "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    },
+                    {
+                        "IndexName": "{}-user_uuid".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "user_uuid", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                        # Removed due to moving to pay per query.
+                        "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    },
+                ],
+            )
+        else:
+            result = self.dynamodb_client.create_table(
+                TableName=self._generate_table_name(),
+                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+                AttributeDefinitions=[
+                    # auth0 user_id
+                    {"AttributeName": "id", "AttributeType": "S"},
+                    # user_uuid formerly dinopark id (uuid is a reserverd keyword in dynamo, hence user_uuid)
+                    {"AttributeName": "user_uuid", "AttributeType": "S"},
+                    # sequence number for the last integration
+                    {"AttributeName": "sequence_number", "AttributeType": "S"},
+                    # value of the primary_email attribute
+                    {"AttributeName": "primary_email", "AttributeType": "S"},
+                    # value of the primary_username attribute
+                    {"AttributeName": "primary_username", "AttributeType": "S"},
+                ],
+                BillingMode="PAY_PER_REQUEST",
+                GlobalSecondaryIndexes=[
+                    {
+                        "IndexName": "{}-sequence_number".format(self._generate_table_name()),
+                        "KeySchema": [{"AttributeName": "sequence_number", "KeyType": "HASH"}],
+                        "Projection": {"ProjectionType": "ALL"},
+                    },
+                    {
+                        "IndexName": "{}-primary_username".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "primary_username", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                    },
+                    {
+                        "IndexName": "{}-primary_email".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "primary_email", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                    },
+                    {
+                        "IndexName": "{}-user_uuid".format(self._generate_table_name()),
+                        "KeySchema": [
+                            {"AttributeName": "user_uuid", "KeyType": "HASH"},
+                            {"AttributeName": "id", "KeyType": "RANGE"},
+                        ],
+                        "Projection": {"ProjectionType": "ALL"},
+                    },
+                ],
+            )
         waiter = self.dynamodb_client.get_waiter("table_exists")
 
         if self._get_cis_environment() in ["production", "development", "testing"]:
