@@ -1,0 +1,50 @@
+service: vault-curator
+plugins:
+  - serverless-plugin-tracing
+custom:
+  curatorStage: ${opt:stage, self:provider.stage}
+  curatorEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_ENVIRONMENT: ${self:custom.curatorEnvironment.CIS_ENVIRONMENT.${self:custom.curatorStage}}
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "dynamodb:*" # Curator must be able to create and destroy all tables.  We should probably also automate a backup job in future.
+      Resource:
+        - arn:aws:dynamodb:us-west-2:320464205386:table/*-identity-vault
+    - Effect: Allow
+      Action:
+        - "dynamodb:CreateTable" # Curator must be able to create and destroy all tables.
+        - "dynamodb:DescribeTable"
+        - "dynamodb:ListTables"
+        - "dynamodb:ListTagsOfResource"
+      Resource:
+        - '*'
+functions:
+  ensure-vaults:
+    handler: handler.handle
+    description: ensures that cis environments continue to exist per stage.  Allowing developers to recreate at will.
+    events:
+      - schedule:
+          rate: rate(6 hours)
+          enabled: true
+    memorySize: 512
+    timeout: 900
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.curatorStage}/lambda_layer_arn}
+
