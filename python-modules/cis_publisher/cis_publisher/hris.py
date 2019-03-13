@@ -47,18 +47,13 @@ class HRISPublisher:
         """
 
         hris_url = self.secret_manager.secret("hris_url")
-        hris_path = self.secret_manager.secret("hris_path")
         hris_username = self.secret_manager.secret("hris_user")
         hris_password = self.secret_manager.secret("hris_password")
 
-        logger.info("Fetching HRIS report from {}{}".format(hris_url, hris_path))
+        logger.info("Fetching HRIS report from {}".format(hris_url))
         params = dict(format="json")
 
-        res = requests.get(
-            "{}{}".format(hris_url, hris_path),
-            auth=requests.auth.HTTPBasicAuth(hris_username, hris_password),
-            params=params,
-        )
+        res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
 
         del hris_password
         del hris_username
