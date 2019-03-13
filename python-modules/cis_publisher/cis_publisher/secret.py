@@ -46,8 +46,8 @@ class AuthZero(object):
         conn.request("POST", "/oauth/token", payload, headers)
         res = conn.getresponse()
         data = json.loads(res.read())
-        if conn.status > 299 or conn.status < 200:
-            logger.error("Failed to exchange access token. status: {} text: {}".format(conn.status, data))
+        if res.status > 299 or res.status < 200:
+            logger.error("Failed to exchange access token. status: {} text: {}".format(res.status, data))
 
         return data["access_token"]
 
