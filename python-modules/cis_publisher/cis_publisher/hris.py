@@ -25,15 +25,11 @@ class HRISPublisher:
 
         logger.info("Processing {} profiles".format(len(profiles)))
 
-        if user_ids is not None:
-            for n in range(0, len(profiles)):
-                if profiles[n].user_id.value not in user_ids:
-                    del profiles[n]
-
-        logger.info("Will publish {} profiles".format(len(profiles)))
         publisher = cis_publisher.Publish(profiles, publisher_name="hris", login_method="ad")
+
         failures = []
         try:
+            publisher.resolve_user_id_by_email()
             publisher.filter_known_cis_users()
             failures = publisher.post_all(user_ids=user_ids)
         except Exception as e:
