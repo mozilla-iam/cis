@@ -16,6 +16,14 @@ custom:
       production: api.sso.mozilla.com
       development: api.dev.sso.allizom.org
       testing: api.test.sso.allizom.org
+    CIS_PERSON_API_URL:
+      production: person.api.sso.mozilla.com
+      development: person.api.dev.sso.allizom.org
+      testing: person.api.test.sso.allizom.org
+    CIS_CHANGE_API_URL:
+      production: change.api.sso.mozilla.com
+      development: change.api.dev.sso.allizom.org
+      testing: change.api.test.sso.allizom.org
     CIS_AUTHZERO_DOMAIN:
       production: auth.mozilla.auth0.com
       development: auth.mozilla.auth0.com
@@ -40,6 +48,8 @@ provider:
   environment:
     CIS_ENVIRONMENT: ${self:custom.ldapPublisherEnvironment.CIS_ENVIRONMENT.${self:custom.ldapPublisherStage}}
     CIS_API_IDENTIFIER: ${self:custom.ldapPublisherEnvironment.IDENTIFIER.${self:custom.ldapPublisherStage}}
+    CIS_PERSON_API_URL: ${self:custom.ldapPublisherEnvironment.CIS_PERSON_API_URL.${self:custom.ldapPublisherStage}}
+    CIS_CHANGE_API_URL: ${self:custom.ldapPublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.ldapPublisherStage}}
     CIS_AUTHZERO_TENANT: ${self:custom.ldapPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.ldapPublisherStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.ldapPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.ldapPublisherStage}}
     CIS_DISCOVERY_URL: ${self:custom.ldapPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.ldapPublisherStage}}
