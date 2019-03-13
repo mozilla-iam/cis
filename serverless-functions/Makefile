@@ -124,6 +124,6 @@ deploy-notifications:
 
 .PHONY:deploy-curator
 deploy-curator:
-	cd $(ROOT_DIR)/identity-vault-curator && \
+	cd $(ROOT_DIR)/identity_vault_curator && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
