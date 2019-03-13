@@ -164,7 +164,7 @@ class Publish:
         authzero = secret.AuthZero(
             client_id=self.secret_manager.secret("client_id"),
             client_secret=self.secret_manager.secret("client_secret"),
-            api_identifier=self.api_audience,
+            api_identifier=self.config("api_identifier", namespace="cis", default="api.test.sso.allizom.org"),
             authzero_tenant=self.config("authzero_tenant", namespace="cis", default="auth.mozilla.auth0.com"),
         )
         return authzero
