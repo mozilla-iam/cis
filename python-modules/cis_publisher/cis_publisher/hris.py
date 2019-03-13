@@ -20,7 +20,7 @@ class HRISPublisher:
         """
         logger.info("Starting HRIS Publisher")
         report_profiles = self.fetch_report()
-        profiles = self.convert_hris_to_cis_profiles(report_profiles)
+        profiles = self.convert_hris_to_cis_profiles(report_profiles, user_ids)
         del report_profiles
 
         logger.info("Processing {} profiles".format(len(profiles)))
@@ -29,7 +29,6 @@ class HRISPublisher:
 
         failures = []
         try:
-            publisher.resolve_user_id_by_email()
             publisher.filter_known_cis_users()
             failures = publisher.post_all(user_ids=user_ids)
         except Exception as e:
@@ -67,9 +66,10 @@ class HRISPublisher:
             raise ValueError("Could not fetch HRIS report")
         return res.json()
 
-    def convert_hris_to_cis_profiles(self, hris_data):
+    def convert_hris_to_cis_profiles(self, hris_data, user_ids=None):
         """
         @hris_data list dict of HRIS data
+        @user_ids list of user ids to convert
 
         returns: cis_profile.Profile
         """
@@ -132,33 +132,52 @@ class HRISPublisher:
 
         user_array = []
         for hruser in hris_data.get("Report_Entry"):
+            # Attempt a rough guess at the user-id. this may not match all user ids correctly
+            # We assume this is ok as user_ids are only passed for testing purposes or fixing purposes
+            if user_ids is not None:
+                if "ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0] not in user_ids:
+                    if "ad|Mozilla-LDAP-Dev|" + hruser.get("PrimaryWorkEmail").split("@")[0] not in user_ids:
+                        # Skip user
+                        continue
             p = cis_profile.User()
             # Note: Never use non-preferred names here
             p.primary_email.value = hruser.get("PrimaryWorkEmail")
+            p.primary_email.signature.publisher.name = "hris"
             p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
+            p.last_name.signature.publisher.name = "hris"
             p.first_name.value = hruser.get("PreferredFirstName")
+            p.first_name.signature.publisher.name = "hris"
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
+            p.timezone.signature.publisher.name = "hris"
             p.staff_information.manager.value = strbool_convert(hruser.get("IsManager"))
+            p.staff_information.manager.signature.publisher.name = "hris"
             p.staff_information.director.value = strbool_convert(hruser.get("isDirectorOrAbove"))
+            p.staff_information.director.signature.publisher.name = "hris"
             if len(hruser.get("EmployeeID")) > 0:
                 p.staff_information.staff.value = True
             else:
                 p.staff_information.staff.value = False
+            p.staff_information.staff.signature.publisher.name = "hris"
             p.staff_information.title.value = hruser.get("businessTitle")
+            p.staff_information.title.signature.publisher.name = "hris"
             p.staff_information.team.value = hruser.get("Team")
+            p.staff_information.team.signature.publisher.name = "hris"
             p.staff_information.cost_center.value = cost_center_convert(hruser.get("Cost_Center"))
+            p.staff_information.cost_center.signature.publisher.name = "hris"
             p.staff_information.worker_type.value = hruser.get("WorkerType")
+            p.staff_information.worker_type.signature.publisher.name = "hris"
             p.staff_information.wpr_desk_number.value = hruser.get("WPRDeskNumber")
+            p.staff_information.wpr_desk_number.signature.publisher.name = "hris"
             p.staff_information.office_location.value = hruser.get("LocationDescription")
+            p.staff_information.office_location.signature.publisher.name = "hris"
 
             p.access_information.hris["values"] = {}
+            p.access_information.hris.signature.publisher.name = "hris"
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
             p.access_information.hris["values"]["manager_employee_id"] = hruser.get("WorkersManagersEmployeeID")
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
 
-            # Typical required user values
-            p.active.value = True
             p.initialize_timestamps()
             try:
                 p.sign_all(publisher_name="hris")
@@ -182,6 +201,7 @@ class HRISPublisher:
                     "Profile signing failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
+            p.active.value = True
             user_array.append(p)
 
         return user_array

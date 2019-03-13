@@ -89,6 +89,7 @@ class Publish:
         threads = []
         failed_users = queue.Queue()
 
+        logger.info("Received {} user profiles to post".format(len(self.profiles)))
         if user_ids is not None:
             logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
             if not isinstance(user_ids, list):
@@ -96,7 +97,10 @@ class Publish:
 
             for n in range(0, len(self.profiles)):
                 profile = self.profiles[n]
-                if profile.user_id.value not in user_ids:
+                if profile.user_id.value is None:
+                    if cis_users_by_email.get(profile.primary_email.value) not in user_ids:
+                        del self.profiles[n]
+                elif profile.user_id.value not in user_ids:
                     del self.profiles[n]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
@@ -219,6 +223,7 @@ class Publish:
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
         self.known_cis_users = response.json()
+        logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
         return self.known_cis_users
 
     def filter_known_cis_users(self):

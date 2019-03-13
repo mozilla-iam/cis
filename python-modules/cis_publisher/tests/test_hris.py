@@ -9,7 +9,7 @@ class TestHRIS(object):
             hris_data = json.load(fd)
 
         hris = cis_publisher.hris.HRISPublisher()
-        profiles = hris.convert_hris_to_cis_profiles(hris_data)
+        profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=None)
         print("Parsed {} profiles".format(len(profiles)))
         c = 0
         for p in profiles:
