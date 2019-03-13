@@ -25,11 +25,21 @@ custom:
       development: auth.mozilla.auth0.com
       testing: auth.mozilla.auth0.com
     CIS_DYNAMODB_STREAM_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault/stream/2019-03-12T15:52:29.265
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-06T14:02:10.803
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2019-03-12T15:00:24.551
     CIS_SECRET_MANAGER_SSM_PATH:
       production: /iam/cis/production/webhook_notifier
       development: /iam/cis/development/webhook_notifier
       testing: /iam/cis/testing/webhook_notifier
+    CIS_SUBSCRIPTIONS:
+      production: https://dinopark.k8s.sso.allizom.org/beta/
+      development: https://dinopark.dev.k8s.sso.allizom.org/beta/
+      testing: https://dinopark.test.k8s.sso.allizom.org/beta/
+    CIS_RP_URLS:
+      production: https://dinopark.k8s.prod.sso.allizom.org/events/update
+      development: https://dinopark.k8s.dev.sso.allizom.org/events/update
+      testing: https://dinopark.k8s.test.sso.allizom.org/events/update
 provider:
   name: aws
   runtime: python3.6
@@ -58,7 +68,7 @@ provider:
         - "dynamodb:ListStreams"
       Resource:
         - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
-        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
+        - ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}/*
     - Effect: Allow
       Action:
         - "ssm:GetParameterHistory"

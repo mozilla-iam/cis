@@ -108,13 +108,14 @@ class IdentityVault(object):
                 # value of the primary_username attribute
                 {"AttributeName": "primary_username", "AttributeType": "S"},
             ],
-            ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+            # ProvisionedThroughput={"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+            BillingMode="PAY_PER_REQUEST",
             GlobalSecondaryIndexes=[
                 {
                     "IndexName": "{}-sequence_number".format(self._generate_table_name()),
                     "KeySchema": [{"AttributeName": "sequence_number", "KeyType": "HASH"}],
                     "Projection": {"ProjectionType": "ALL"},
-                    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },
                 {
                     "IndexName": "{}-primary_username".format(self._generate_table_name()),
@@ -123,7 +124,7 @@ class IdentityVault(object):
                         {"AttributeName": "id", "KeyType": "RANGE"},
                     ],
                     "Projection": {"ProjectionType": "ALL"},
-                    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },
                 {
                     "IndexName": "{}-primary_email".format(self._generate_table_name()),
@@ -132,7 +133,7 @@ class IdentityVault(object):
                         {"AttributeName": "id", "KeyType": "RANGE"},
                     ],
                     "Projection": {"ProjectionType": "ALL"},
-                    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },
                 {
                     "IndexName": "{}-user_uuid".format(self._generate_table_name()),
@@ -141,7 +142,8 @@ class IdentityVault(object):
                         {"AttributeName": "id", "KeyType": "RANGE"},
                     ],
                     "Projection": {"ProjectionType": "ALL"},
-                    "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
+                    # Removed due to moving to pay per query.
+                    # "ProvisionedThroughput": {"ReadCapacityUnits": 5, "WriteCapacityUnits": 5},
                 },
             ],
         )
