@@ -51,15 +51,23 @@ class Publish:
         if self.__inited:
             return
         logger.info("Getting API URLs from well-known {}".format(self.__discovery_url))
+        self.secret_manager = secret.Manager()
+        self.config = common.get_config()
         self.__well_known = WellKnown(self.__discovery_url)
         wk = self.__well_known.get_well_known()
         self.api_url = wk["api"]["endpoints"]
-        self.api_audience = wk["api"]["audience"]
-        self.api_url_person = self.api_url["person"]
-        self.api_url_change = self.api_url["change"]
+        # XXX These are not currently used
+        # self.api_audience = wk["api"]["audience"]
+        # self.api_url_person = self.api_url["person"]
+        # self.api_url_change = self.api_url["change"]
+        self.api_audience = self.config("api_identifier", namespace="cis", default="api.dev.sso.allizom.org")
+        self.api_url_person = "https://" + self.config(
+            "person_api_url", namespace="cis", default="person.api.dev.sso.allizom.org"
+        )
+        self.api_url_change = "https://" + self.config(
+            "change_api_url", namespace="cis", default="change.api.dev.sso.allizom.org"
+        )
         self.publisher_rules = self.__well_known.get_publisher_rules()
-        self.secret_manager = secret.Manager()
-        self.config = common.get_config()
         self.__inited = True
 
     def post_all(self, user_ids=None):
@@ -164,7 +172,7 @@ class Publish:
         authzero = secret.AuthZero(
             client_id=self.secret_manager.secret("client_id"),
             client_secret=self.secret_manager.secret("client_secret"),
-            api_identifier=self.config("api_identifier", namespace="cis", default="api.test.sso.allizom.org"),
+            api_identifier=self.api_audience,
             authzero_tenant=self.config("authzero_tenant", namespace="cis", default="auth.mozilla.auth0.com"),
         )
         return authzero
