@@ -209,8 +209,8 @@ class v2UserByPrimaryUsername(Resource):
         return getUser(primary_username, user.Profile.find_by_username)
 
 
-class v2UsersById(Resource):
-    """Return a one page list of user ids to support smart publishing."""
+class v2UsersByAny(Resource):
+    """Return a one page list of user ids, primary email, uuid to support smart publishing."""
 
     decorators = [requires_auth]
 
@@ -226,8 +226,17 @@ class v2UsersById(Resource):
         if transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
-        logger.info("Returning all users for connection method: {}".format(args.get("connectionMethod")))
-        return identity_vault.all_filtered(args.get("connectionMethod"))
+        logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
+        all_users = []
+        user_ids = identity_vault.all_filtered(args.get("connectionMethod"))
+
+        for u in user_ids:
+            fuser = getUser(u, user.Profile.find_by_id).json
+            all_users.append(
+                {"user_id": u, "uuid": fuser["uuid"]["value"], "primary_email": fuser["primary_email"]["value"]}
+            )
+        logger.info("Returning {} users".format(len(all_users)))
+        return all_users
 
 
 def getUser(id, find_by):
@@ -253,18 +262,21 @@ def getUser(id, find_by):
         v2_profile = User(user_structure_json=json.loads(vault_profile))
         if "read:fullprofile" in scopes:
             logger.info(
-                "read:fullprofile in token returning the full user profile.",
-                extra={"query_args": args, "scopes": scopes},
+                "read:fullprofile in token not filtering based on scopes.", extra={"query_args": args, "scopes": scopes}
             )
         else:
             v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
         if "display:all" in scopes:
-            logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
+            logger.info(
+                "display:all in token not filtering profile based on display.",
+                extra={"query_args": args, "scopes": scopes},
+            )
         else:
             v2_profile.filter_display(scope_to_display_level(scopes))
 
         if filter_display is not None:
+            logger.info("filter_display argument is passed, applying display level filter.", extra={"query_args": args})
             v2_profile.filter_display(DisplayLevelParms.map(filter_display))
 
         return jsonify(v2_profile.as_dict())
@@ -351,7 +363,7 @@ api.add_resource(v2UserByPrimaryEmail, "/v2/user/primary_email/<string:primary_e
 api.add_resource(v2UserByPrimaryUsername, "/v2/user/primary_username/<string:primary_username>")
 
 # Support batch retrieval of all user ids that are in the system. Make publishing "Smart".
-api.add_resource(v2UsersById, "/v2/users/id/all")
+api.add_resource(v2UsersByAny, "/v2/users/id/all")
 
 
 @app.route("/v2")

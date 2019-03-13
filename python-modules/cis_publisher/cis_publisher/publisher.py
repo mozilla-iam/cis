@@ -80,7 +80,10 @@ class Publish:
 
         self.__deferred_init()
         qs = "/v2/user"
-        cis_users = self.get_known_cis_users()
+        cis_users_data = self.get_known_cis_users()
+        cis_users = []
+        for u in cis_users_data:
+            cis_users.append(u["user_id"])
         threads = []
         failed_users = queue.Queue()
 
@@ -218,7 +221,10 @@ class Publish:
         if self.profiles is None:
             raise PublisherError("No profiles to operate on")
 
-        cis_users = self.get_known_cis_users()
+        cis_users_data = self.get_known_cis_users()
+        cis_users = []
+        for u in cis_users_data:
+            cis_users.append(u["user_id"])
 
         # Never NULL/None these fields during filtering
         whitelist = ["user_id"]
