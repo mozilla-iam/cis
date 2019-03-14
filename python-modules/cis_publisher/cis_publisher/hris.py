@@ -178,7 +178,6 @@ class HRISPublisher:
             p.access_information.hris["values"]["manager_employee_id"] = hruser.get("WorkersManagersEmployeeID")
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
 
-            p.initialize_timestamps()
             try:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
