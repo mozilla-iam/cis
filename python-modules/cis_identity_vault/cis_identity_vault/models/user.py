@@ -11,7 +11,6 @@ user_profile must be passed to this in the form required by dynamodb
 """
 import json
 import logging
-import threading
 import uuid
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError

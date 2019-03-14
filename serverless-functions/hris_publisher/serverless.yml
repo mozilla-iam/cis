@@ -57,6 +57,7 @@ provider:
     CIS_REQUESTS_CACHE_BACKEND: memory
     CIS_WELL_KNOWN_MODE: https
     CIS_PUBLIC_KEY_NAME: publisher
+    CIS_SECRET_MANAGER: aws-ssm
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:
