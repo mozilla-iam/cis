@@ -234,12 +234,42 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
+    def _get_segment(self, segment=0, total_segments=10, query_filter=None):
+        logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+        response = self.client.scan(
+            TableName=self.table.name,
+            TotalSegments=total_segments, 
+            Segment=segment, 
+            ProjectionExpression="id, primary_email, user_uuid", 
+            FilterExpression="begins_with(id, :id)", 
+            ExpressionAttributeValues={":id": {"S": query_filter}},
+        )
+        users = response.get("Items")
+        while "LastEvaluatedKey" in response:
+            response = self.client.scan(
+                TableName=self.table.name,
+                TotalSegments=total_segments, 
+                Segment=segment, 
+                ProjectionExpression="id, primary_email, user_uuid", 
+                FilterExpression="begins_with(id, :id)", 
+                ExpressionAttributeValues={":id": {"S": query_filter}},
+                ExclusiveStartKey=response["LastEvaluatedKey"],
+            )
+            users.extend(response["Items"])
+        return users
+
     def all_filtered(self, query_filter=None):
-        all_users = self.all
+        """
+        @query_filter str login_method
+        Returns a dict of all users filtered by query_filter
+        """
+        pool = []
+        # We're choosing to divide the table in 3, then...
+        pool_size = 5
         users = []
-        for user in all_users:
-            if user["id"].startswith(query_filter):
-                users.append(user["id"])
+        for x in range(pool_size):
+            # XXX TBD async this with asyncio
+            users.extend(self._get_segment(segment=x, total_segments=pool_size, query_filter=query_filter))
         return users
 
     def find_or_create(self, user_profile):

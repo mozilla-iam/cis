@@ -1,7 +1,6 @@
 import cis_publisher
 import mock
 import cis_profile
-import json
 import os
 
 
@@ -22,19 +21,19 @@ class TestPublisher:
         mock_authzero.return_value = "hi"
 
         class FakeResponse:
-            def __init__(self, fake="{}"):
+            def __init__(self, fake={}):
                 self.fake = fake
-                self.text = fake
+                self.text = str(fake)
 
             def json(self):
-                return json.loads(self.fake)
+                return self.fake
 
             def ok(self):
                 return True
 
-        mock_request_get.return_value = FakeResponse(fake='["auser"]')
+        mu = [{"user_id": "auser", "uuid": "093249324", "primary_email": "auser@u.net"}]
+        mock_request_get.return_value = FakeResponse(fake=mu)
 
-        mu = ["auser"]
         profiles = [cis_profile.User()]
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         u = publisher.get_known_cis_users()
@@ -71,12 +70,12 @@ class TestPublisher:
         mock_validate.return_value = True
 
         class FakeResponse:
-            def __init__(self, fake="{}"):
+            def __init__(self, fake={}):
                 self.fake = fake
-                self.text = fake
+                self.text = str(fake)
 
             def json(self):
-                return json.loads(self.fake)
+                return self.fake
 
             def ok(self):
                 return True
@@ -97,22 +96,25 @@ class TestPublisher:
         mock_secrets.return_value = "is_pretty_cool"
 
         class FakeResponse:
-            def __init__(self, fake="{}"):
+            def __init__(self, fake={}):
                 self.fake = fake
-                self.text = fake
+                self.text = str(fake)
 
             def json(self):
-                return json.loads(self.fake)
+                return self.fake
 
             def ok(self):
                 return True
 
         mock_request_post.return_value = FakeResponse()
-        mock_request_get.return_value = FakeResponse(fake='["ad|bob|test", "email|test"]')
+        mu = [{"user_id": "auser", "uuid": "0932493241", "primary_email": "auser@u.net"}]
+        mock_request_get.return_value = FakeResponse(fake=mu)
 
         profiles = [cis_profile.User()]
-        profiles[0].user_id.value = "email|test"
-        profiles[0].user_id.signature.publisher.name = "wrong"
+        profiles[0].user_id.value = "auser"
+        profiles[0].first_name.value = "firstname"
+        profiles[0].first_name.signature.publisher.name = "wrong"
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         publisher.filter_known_cis_users()
-        assert profiles[0].user_id.value != "test"
+
+        assert publisher.profiles[0].first_name.value != "firstname"

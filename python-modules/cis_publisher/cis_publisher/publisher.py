@@ -80,10 +80,16 @@ class Publish:
 
         self.__deferred_init()
         qs = "/v2/user"
-        cis_users = self.get_known_cis_users()
+        cis_users_data = self.get_known_cis_users()
+        cis_users = []
+        cis_users_by_email = {}
+        for u in cis_users_data:
+            cis_users.append(u["user_id"])
+            cis_users_by_email[u["primary_email"]]: u["user_id"]
         threads = []
         failed_users = queue.Queue()
 
+        logger.info("Received {} user profiles to post".format(len(self.profiles)))
         if user_ids is not None:
             logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
             if not isinstance(user_ids, list):
@@ -91,7 +97,10 @@ class Publish:
 
             for n in range(0, len(self.profiles)):
                 profile = self.profiles[n]
-                if profile.user_id.value not in user_ids:
+                if profile.user_id.value is None:
+                    if cis_users_by_email.get(profile.primary_email.value) not in user_ids:
+                        del self.profiles[n]
+                elif profile.user_id.value not in user_ids:
                     del self.profiles[n]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
@@ -99,9 +108,17 @@ class Publish:
         #        self.validate()
 
         for profile in self.profiles:
-            # New users should also pass this parameter
-            if profile.user_id.value in cis_users:
-                qs = "/v2/user?user_id={}".format(profile.user_id.value)
+            # If we have no user_id provided we need to find it here
+            # These are always considered updated users, not new users
+            if profile.user_id.value is None:
+                user_id = cis_users_by_email[profile.primary_email.value]
+            else:
+                user_id = profile.user_id.value
+
+            # Existing users (i.e. users to update) have to be passed as argument
+            if user_id in cis_users:
+                qs = "/v2/user?user_id={}".format(user_id)
+            # New users do not
             else:
                 qs = "/v2/user"
 
@@ -206,6 +223,7 @@ class Publish:
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
         self.known_cis_users = response.json()
+        logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
         return self.known_cis_users
 
     def filter_known_cis_users(self):
@@ -218,7 +236,11 @@ class Publish:
         if self.profiles is None:
             raise PublisherError("No profiles to operate on")
 
-        cis_users = self.get_known_cis_users()
+        cis_users_data = self.get_known_cis_users()
+        # Create some shorthands to easily lookup users by user_id or primary_email
+        cis_users = []
+        for u in cis_users_data:
+            cis_users.append(u["user_id"])
 
         # Never NULL/None these fields during filtering
         whitelist = ["user_id"]

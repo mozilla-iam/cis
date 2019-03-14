@@ -1,16 +1,15 @@
-import loader
+import cis_publisher
 import json
-from os import getenv
 
 
-class TestLoader(object):
-    def test_load_parse_hris(self):
+class TestHRIS(object):
+    def test_parse_hris(self):
         hris_data = {}
-        with open("tests/fixtures/workday.json") as fd:
+        with open("tests/fixture/workday.json") as fd:
             hris_data = json.load(fd)
 
-        hris = loader.hris_processor(getenv("CIS_ENVIRONMENT", "development"))
-        profiles = hris.convert_hris_to_cis_profiles(hris_data)
+        hris = cis_publisher.hris.HRISPublisher()
+        profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=None)
         print("Parsed {} profiles".format(len(profiles)))
         c = 0
         for p in profiles:

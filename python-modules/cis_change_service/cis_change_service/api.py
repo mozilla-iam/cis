@@ -26,7 +26,7 @@ logger = logging.getLogger(__name__)
 
 cis_environment = config("environment", namespace="cis")
 # Configure the X-Ray recorder to generate segments with our service name
-xray_recorder.configure(service="{}_profile_retrieval_serivce".format(cis_environment))
+xray_recorder.configure(service="{}_profile_retrieval_service".format(cis_environment))
 
 # Instrument the Flask application
 XRayMiddleware(app, xray_recorder)

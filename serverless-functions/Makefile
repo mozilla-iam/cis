@@ -105,6 +105,13 @@ deploy-ldap-publisher:
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
+.PHONY:deploy-hris-publisher
+deploy-hris-publisher:
+	cd $(ROOT_DIR)/hris_publisher && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
+	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
 	cd $(ROOT_DIR)/stream-processor && sls deploy --region $(AWS_REGION) --stage $(STAGE)

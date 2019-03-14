@@ -1,10 +1,14 @@
-import api
+import cis_logger
 import logging
-import serverless_wsgi
+import socket
 import sys
 
+import cis_publisher
+from aws_xray_sdk.core import xray_recorder
+from aws_xray_sdk.core import patch_all
 
-serverless_wsgi.TEXT_MIME_TYPES.append("application/custom+json")
+
+patch_all()
 
 
 def setup_logging():
@@ -12,14 +16,18 @@ def setup_logging():
     for h in logger.handlers:
         logger.removeHandler(h)
     h = logging.StreamHandler(sys.stdout)
-    FORMAT = "%(message)s"
-    h.setFormatter(logging.Formatter(FORMAT))
+    h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
     return logger
 
 
-def handle(event, context):
+def handle(event, context={}):
+    """Handle the publishing of users."""
     logger = setup_logging()
-    logger.debug("serverless handler for hris started")
-    return serverless_wsgi.handle_request(api.app, event, context)
+    hris = cis_publisher.hris.HRISPublisher()
+    if isinstance(event, list):
+        hris.publish(event)
+    else:
+        hris.publish()
+    return 200
