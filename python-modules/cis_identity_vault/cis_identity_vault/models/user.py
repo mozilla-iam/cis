@@ -235,11 +235,23 @@ class Profile(object):
         return users
 
     def all_filtered(self, query_filter=None):
+        """
+        @query_filter str login_method
+        Returns a dict of all users filtered by query_filter
+        """
         all_users = self.all
         users = []
         for user in all_users:
+            # XXX if user_id format changes this should be different
             if user["id"].startswith(query_filter):
-                users.append(user["id"])
+                profile_json = json.loads(user["profile"])
+                users.append(
+                    {
+                        "user_id": profile_json["user_id"]["value"],
+                        "uuid": profile_json["uuid"]["value"],
+                        "primary_email": profile_json["primary_email"]["value"],
+                    }
+                )
         return users
 
     def find_or_create(self, user_profile):

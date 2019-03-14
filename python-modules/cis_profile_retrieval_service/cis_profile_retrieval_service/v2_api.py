@@ -227,14 +227,8 @@ class v2UsersByAny(Resource):
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
-        all_users = []
-        user_ids = identity_vault.all_filtered(args.get("connectionMethod"))
+        all_users = identity_vault.all_filtered(args.get("connectionMethod"))
 
-        for u in user_ids:
-            fuser = getUser(u, user.Profile.find_by_id).json
-            all_users.append(
-                {"user_id": u, "uuid": fuser["uuid"]["value"], "primary_email": fuser["primary_email"]["value"]}
-            )
         logger.info("Returning {} users".format(len(all_users)))
         return all_users
 
