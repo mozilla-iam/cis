@@ -9,9 +9,9 @@ user_profile must be passed to this in the form required by dynamodb
     'profile': 'jsondumpofuserfullprofile'
 }
 """
-import asyncio
 import json
 import logging
+import threading
 import uuid
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
@@ -20,11 +20,6 @@ from traceback import format_exc
 
 
 logger = logging.getLogger(__name__)
-
-
-async def get_scan_segment(segment, dynamodb_client):
-    await asyncio.sleep(0)
-
 
 
 class Profile(object):
@@ -240,30 +235,43 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
+    def _get_segment(self, segment=0, total_segments=10, query_filter=None):
+        logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+        response = self.client.scan(
+            TableName=self.table.name,
+            TotalSegments=total_segments, 
+            Segment=segment, 
+            ProjectionExpression="id, primary_email, user_uuid", 
+            FilterExpression="begins_with(id, :id)", 
+            ExpressionAttributeValues={":id": {"S": query_filter}},
+        )
+        users = response.get("Items")
+        while "LastEvaluatedKey" in response:
+            response = self.client.scan(
+                TableName=self.table.name,
+                TotalSegments=total_segments, 
+                Segment=segment, 
+                ProjectionExpression="id, primary_email, user_uuid", 
+                FilterExpression="begins_with(id, :id)", 
+                ExpressionAttributeValues={":id": {"S": query_filter}},
+                ExclusiveStartKey=response["LastEvaluatedKey"],
+            )
+            users.extend(response["Items"])
+        return users
+
     def all_filtered(self, query_filter=None):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-
-        # XXX if this is still too slow we will need to move to parallel scans
-        response = self.table.scan(
-            FilterExpression=Key("id").begins_with(query_filter),
-            ProjectionExpression="id, primary_email, user_uuid",
-            Limit=1000,
-            Select="SPECIFIC_ATTRIBUTES",
-        )
-        all_users = response.get("Items")
-        while "LastEvaluatedKey" in response:
-            response = self.table.scan(
-                FilterExpression=Key("id").begins_with(query_filter),
-                ProjectionExpression="id, primary_email, user_uuid",
-                Limit=1000,
-                ExclusiveStartKey=response["LastEvaluatedKey"],
-            )
-            all_users.extend(response["Items"])
-
-        return all_users
+        pool = []
+        # We're choosing to divide the table in 3, then...
+        pool_size = 5
+        users = []
+        for x in range(pool_size):
+            # XXX TBD async this with asyncio
+            users.extend(self._get_segment(segment=x, total_segments=pool_size, query_filter=query_filter))
+        return users
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
