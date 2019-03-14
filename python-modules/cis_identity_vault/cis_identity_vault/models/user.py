@@ -9,6 +9,7 @@ user_profile must be passed to this in the form required by dynamodb
     'profile': 'jsondumpofuserfullprofile'
 }
 """
+import asyncio
 import json
 import logging
 import uuid
@@ -19,6 +20,11 @@ from traceback import format_exc
 
 
 logger = logging.getLogger(__name__)
+
+
+async def get_scan_segment(segment, dynamodb_client):
+    await asyncio.sleep(0)
+
 
 
 class Profile(object):
@@ -239,20 +245,25 @@ class Profile(object):
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        all_users = self.all
-        users = []
-        for user in all_users:
-            # XXX if user_id format changes this should be different
-            if user["id"].startswith(query_filter):
-                profile_json = json.loads(user["profile"])
-                users.append(
-                    {
-                        "user_id": profile_json["user_id"]["value"],
-                        "uuid": profile_json["uuid"]["value"],
-                        "primary_email": profile_json["primary_email"]["value"],
-                    }
-                )
-        return users
+
+        # XXX if this is still too slow we will need to move to parallel scans
+        response = self.table.scan(
+            FilterExpression=Key("id").begins_with(query_filter),
+            ProjectionExpression="id, primary_email, user_uuid",
+            Limit=1000,
+            Select="SPECIFIC_ATTRIBUTES",
+        )
+        all_users = response.get("Items")
+        while "LastEvaluatedKey" in response:
+            response = self.table.scan(
+                FilterExpression=Key("id").begins_with(query_filter),
+                ProjectionExpression="id, primary_email, user_uuid",
+                Limit=1000,
+                ExclusiveStartKey=response["LastEvaluatedKey"],
+            )
+            all_users.extend(response["Items"])
+
+        return all_users
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])

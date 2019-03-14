@@ -93,7 +93,7 @@ class IdentityVault(object):
                 raise
 
     def create(self):
-        if self._get_cis_environment() not in ['production', 'development', 'testing']:
+        if self._get_cis_environment() not in ["production", "development", "testing"]:
             result = self.dynamodb_client.create_table(
                 TableName=self._generate_table_name(),
                 KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
