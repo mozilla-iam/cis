@@ -53,6 +53,7 @@ provider:
     CIS_AUTHZERO_TENANT: ${self:custom.hrisPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.hrisPublisherStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.hrisPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.hrisPublisherStage}}
     CIS_DISCOVERY_URL: ${self:custom.hrisPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.hrisPublisherStage}}
+    CIS_SIGNING_KEY_NAME: hris_signing_key
     CIS_REQUESTS_CACHE_BACKEND: memory
     CIS_WELL_KNOWN_MODE: https
     CIS_PUBLIC_KEY_NAME: publisher
@@ -76,13 +77,6 @@ provider:
         - "kms:Decrypt"
       Resource:
         - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
-    - Effect: Allow
-      Action:
-        - "s3:ListBucket"
-        - "s3:GetObject"
-      Resource:
-        - ${self:custom.hrisPublisherEnvironment.BUCKET_ARN.${self:custom.hrisPublisherStage}}
-        - ${self:custom.hrisPublisherEnvironment.BUCKET_ARN.${self:custom.hrisPublisherStage}}/*
 functions:
   handler:
     handler: handler.handle
@@ -90,7 +84,7 @@ functions:
       - schedule:
           rate: rate(10 minutes)
           enabled: false
-    description: hris-publisher for synchronizing hristos3 json to identity vault.
+    description: hris-publisher for synchronizing HRIS to identity vault.
     memorySize: 3008 # This is HUGE because we load the entirety of users in Memory live.
     timeout: 900
     layers:

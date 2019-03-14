@@ -32,15 +32,15 @@ custom:
     CIS_JWT_VALIDATION:
       production: true
       development: true
-      testing: false
+      testing: true
     CIS_ENFORCE_PUBLISHER_RULES:
       production: true
       development: true
-      testing: false
+      testing: true
     CIS_ENFORCE_SIGNATURES:
       production: true
       development: true
-      testing: false
+      testing: true
     CIS_SECRET_MANAGER_SSM_PATH:
       production: /iam/cis/production/keys
       development: /iam/cis/development/keys
