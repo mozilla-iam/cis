@@ -1,4 +1,9 @@
-# Change
+# Serverless function handlers
+
+# How is it setup?
+
+Each function is a very simple handle/wrapper around a module that is located in the `/cis/python-modules` directory of
+this project. Functions are meant to be kept as simple as possible, where all the logic goes into the python module.
 
 ## About SSM parameter (secrets)
 
