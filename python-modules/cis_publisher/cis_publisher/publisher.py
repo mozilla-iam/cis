@@ -85,7 +85,7 @@ class Publish:
         cis_users_by_email = {}
         for u in cis_users_data:
             cis_users.append(u["user_id"])
-            cis_users_by_email[u["primary_email"]]: u["user_id"]
+            cis_users_by_email[u["primary_email"]] = u["user_id"]
         threads = []
         failed_users = queue.Queue()
 
@@ -155,15 +155,14 @@ class Publish:
             )
             response_ok = response.ok
             if not response_ok:
+                # We don't always get a user_id set
+                identifier = profile.user_id.value
+                if identifier is None:
+                    identifier = profile.primary_email.value
                 logger.warning(
                     "Posting profile {} to API failed, retry is {} retry_delay is {} status_code is {} reason is {}"
                     "contents were {}".format(
-                        profile.user_id.value,
-                        retries,
-                        self.retry_delay,
-                        response.status_code,
-                        response.reason,
-                        response.text,
+                        identifier, retries, self.retry_delay, response.status_code, response.reason, response.text
                     )
                 )
                 retries = retries + 1

@@ -185,6 +185,7 @@ class HRISPublisher:
                     "Profile data signing failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
+                logger.debug("Profile data {}".format(p.as_dict()))
             try:
                 p.validate()
             except Exception as e:
@@ -192,14 +193,16 @@ class HRISPublisher:
                     "Profile schema validation failed for user {} - skipped validation, verification "
                     "WILL FAIL({})".format(p.primary_email.value, e)
                 )
+                logger.debug("Profile data {}".format(p.as_dict()))
 
             try:
                 p.verify_all_publishers(cis_profile.User())
             except Exception as e:
                 logger.critical(
-                    "Profile signing failed for user {} - skipped signing, verification "
+                    "Profile publisher verification failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
+                logger.debug("Profile data {}".format(p.as_dict()))
             p.active.value = True
             user_array.append(p)
 
