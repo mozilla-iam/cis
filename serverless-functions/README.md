@@ -5,6 +5,33 @@
 Each function is a very simple handle/wrapper around a module that is located in the `/cis/python-modules` directory of
 this project. Functions are meant to be kept as simple as possible, where all the logic goes into the python module.
 
+# How do you test live functions?
+
+## Deploy
+
+`make STAGE=development deploy-ldap-publisher`
+
+NOTE: If you changed the python-modules you'll need to update the Lambda layers as such:
+```
+cd ..
+make STAGE=development build
+```
+
+NOTE: You can deploy all functions at once as well if you wish:
+```
+cd ..
+make STAGE=development release
+```
+
+
+## Invoke
+
+`aws lambda invoke --function-name ldap-publisher-development-handler:\$LATEST --payload '["ad|Mozilla-LDAP|gdestuynder"]' --log-type Tail /dev/stdout`
+
+## Watch logs
+
+`saw watch /aws/lambda/ldap-publisher-development-handler`
+
 ## About SSM parameter (secrets)
 
 Most parameters are in the namespace dedicated to the function, such as
