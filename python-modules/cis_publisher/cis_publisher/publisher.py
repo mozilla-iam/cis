@@ -114,6 +114,9 @@ class Publish:
             else:
                 user_id = profile.user_id.value
 
+            # Filter out non-updatable attributes as needed
+            self.filter_known_cis_users(profiles=[profile])
+
             # Existing users (i.e. users to update) have to be passed as argument
             if user_id in cis_users:
                 qs = "/v2/user?user_id={}".format(user_id)
@@ -145,7 +148,9 @@ class Publish:
         access_token = self._get_authzero_token()
         while not response_ok:
             logger.info(
-                "Attempting to post profile {} to API {}{}".format(profile.user_id.value, self.api_url_change, qs)
+                "Attempting to post profile (user_id: {}, primary_email: {} to API {}{}".format(
+                    profile.user_id.value, profile.primary_email.value, self.api_url_change, qs
+                )
             )
             response = self._request_post(
                 url="{}{}".format(self.api_url_change, qs),
@@ -227,33 +232,38 @@ class Publish:
         logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
         return self.known_cis_users
 
-    def filter_known_cis_users(self):
+    def filter_known_cis_users(self, profiles=None, save=True):
         """
         Filters out fields that are not allowed to be updated by this publisher from the profile before posting
         This is for "new" users
         """
         self.__deferred_init()
 
-        if self.profiles is None:
-            raise PublisherError("No profiles to operate on")
+        if profiles is None:
+            profiles = self.profiles
 
         cis_users_data = self.get_known_cis_users()
         # Create some shorthands to easily lookup users by user_id or primary_email
         cis_users = []
+        cis_users_by_email = {}
         for u in cis_users_data:
             cis_users.append(u["user_id"])
+            cis_users_by_email[u["primary_email"]] = u["user_id"]
 
-        # Never NULL/None these fields during filtering
+        # Never NULL/None these fields during filtering as they're used for knowing where to post
         whitelist = ["user_id"]
 
         allowed_updates = self.publisher_rules["update"]
-        for n in range(0, len(self.profiles)):
-            p = self.profiles[n]
-            if p.user_id.value in cis_users:
+        for n in range(0, len(profiles)):
+            p = profiles[n]
+            if p.user_id.value is None:
+                user_id = cis_users_by_email[p.primary_email.value]
+            else:
+                user_id = p.user_id.value
+
+            if user_id in cis_users:
                 logger.info(
-                    "Filtering out non-updatable values from user {} because it already exist in CIS".format(
-                        p.user_id.value
-                    )
+                    "Filtering out non-updatable values from user {} because it already exist in CIS".format(user_id)
                 )
                 for pfield in p.__dict__:
                     # Skip? (see below for sub item)
@@ -283,8 +293,11 @@ class Publish:
                                 p.__dict__[pfield]["value"] = None
                             elif "values" in p.__dict__[pfield].keys():
                                 p.__dict__[pfield]["values"] = None
-                logger.info("Filtered fields for user {}".format(p.user_id.value))
-                self.profiles[n] = p
+                logger.info("Filtered fields for user {}".format(user_id))
+                profiles[n] = p
+        if save:
+            self.profiles = profiles
+        return profiles
 
     def validate(self):
         """
