@@ -138,6 +138,7 @@ class TestProfile(object):
 
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
+        u.access_information.ldap.values = {"test_group": None, "test_group_2": None}
         for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
             u.sign_all(publisher_name=_, safety=False)
         ret = u.verify_all_signatures()

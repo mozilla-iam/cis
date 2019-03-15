@@ -21,7 +21,6 @@ class Publish:
         @profiles list of cis_profiles.User
         @login_method str a valid login_method for the user (such as "ad")
         @publisher_name str of your publisher name (such as 'ldap' or 'mozilliansorg')
-        @user_ids list of str such as user_ids=['ad|bob|test', 'oauth2|alice|test', ..] which will be sent to CIS. When
         @discovery_url a discovery URL for CIS (CIS_DISCOVERY_URL env var will be used otherwise)
         """
         self.profiles = profiles
