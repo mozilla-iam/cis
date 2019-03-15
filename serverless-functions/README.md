@@ -7,6 +7,15 @@ this project. Functions are meant to be kept as simple as possible, where all th
 
 ## About SSM parameter (secrets)
 
+Most parameters are in the namespace dedicated to the function, such as
+`/iam/cis/{lambda,..}/{development,testing,production}/function_name_here/*`
+However, some may be available to all functions as well (ie not within a `function_name_here` namespace).
+
+Warning: copy pasting certain type of data to the web console or through AWS CLI may add unwanted quoting to the
+variables, making them non-functional (e.g. if the code tries to load json, but it's double-quoted). Make sure you have
+variables that your or existing code will be able to parse!
+
+### Example
 Add them:
 
 ```
@@ -28,9 +37,9 @@ for i in ldap hris access_provider cis mozilliansorg;do
 done
 ```
 
-## Protips to convert PEM to JWK
+## Protips to convert PEM to JWK (for keys)
 
-Because you know you want to.
+Because you know you want to, sometimes.
 
 - Install nodejs if you somehow don't have it
 - Install https://www.npmjs.com/package/rsa-pem-to-jwk
