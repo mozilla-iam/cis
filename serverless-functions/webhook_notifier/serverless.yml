@@ -26,7 +26,7 @@ custom:
       testing: auth.mozilla.auth0.com
     CIS_DYNAMODB_STREAM_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault/stream/2019-03-12T15:52:29.265
-      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-06T14:02:10.803
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-15T15:35:47.739
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2019-03-12T15:00:24.551
     CIS_SECRET_MANAGER_SSM_PATH:
       production: /iam/cis/production/webhook_notifier
