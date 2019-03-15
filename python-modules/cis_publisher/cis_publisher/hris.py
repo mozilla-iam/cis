@@ -203,7 +203,9 @@ class HRISPublisher:
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
                 logger.debug("Profile data {}".format(p.as_dict()))
-            p.active.value = True
+            # XXX Change this whenever hris becomes the publisher for users
+            # When that happens, code to disable the user will also be necessary!
+            # p.active.value = True
             user_array.append(p)
 
         return user_array
