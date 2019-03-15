@@ -173,7 +173,10 @@ class Publish:
                             retries, profile.user_id.value
                         )
                     )
-                    failed_users.put(profile.user_id.value)
+                    identity = profile.user_id.value
+                    if identity is None:
+                        identity = profile.primary_email.value
+                    failed_users.put(identity)
                     break
             else:
                 logger.info("Profile successfully posted to API {}".format(profile.user_id.value))
