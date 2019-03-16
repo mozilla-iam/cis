@@ -70,7 +70,7 @@ provider:
         - "lambda:InvokeFunction"
         - "lambda:InvokeAsync"
       Resource:
-        - arn:aws:lambda:us-west-2:320464205386:function:hris-publisher-testing-handler
+        - arn:aws:lambda:us-west-2:320464205386:function:hris-publisher-${self:custom.hrisPublisherStage}-handler
     - Effect: Allow
       Action:
         - "ssm:GetParameterHistory"
