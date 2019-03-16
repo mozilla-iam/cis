@@ -228,9 +228,19 @@ class v2UsersByAny(Resource):
 
         logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
         all_users = identity_vault.all_filtered(args.get("connectionMethod"))
+        # Convert vault data to cis-profile-like data format
+        all_users_cis = []
+        for cuser in all_users:
+            all_users_cis.append(
+                {
+                    "uuid": cuser["user_uuid"]["S"],
+                    "user_id": cuser["id"]["S"],
+                    "primary_email": cuser["primary_email"]["S"],
+                }
+            )
 
-        logger.info("Returning {} users".format(len(all_users)))
-        return all_users
+        logger.info("Returning {} users".format(len(all_users_cis)))
+        return all_users_cis
 
 
 def getUser(id, find_by):

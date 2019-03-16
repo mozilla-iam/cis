@@ -138,6 +138,7 @@ class TestProfile(object):
 
     def test_full_profile_signing_verification(self):
         u = profile.User(user_id="test")
+        u.access_information.ldap.values = {"test_group": None, "test_group_2": None}
         for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
             u.sign_all(publisher_name=_, safety=False)
         ret = u.verify_all_signatures()
@@ -174,13 +175,15 @@ class TestProfile(object):
         u_orig = profile.User()
         u_orig.access_information.ldap.values = {"test": None}
         u_orig.uuid.value = "31337"
-        u_orig.active.value = True
-
+        u_orig.active.value = None
+        for _ in ["ldap", "access_provider", "cis", "hris", "mozilliansorg"]:
+            u_orig.sign_all(publisher_name=_, safety=False)
         u_patch = profile.User()
         u_patch.access_information.ldap.values = {"test_replacement": None}
         u_orig.merge(u_patch)
 
         u_orig.verify_all_publishers(u_patch)
+        assert u_orig.active.value is None
 
     def test_verify_all_publishers(self):
         u = profile.User(user_id="test")

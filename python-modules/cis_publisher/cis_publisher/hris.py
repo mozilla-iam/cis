@@ -29,7 +29,6 @@ class HRISPublisher:
 
         failures = []
         try:
-            publisher.filter_known_cis_users()
             failures = publisher.post_all(user_ids=user_ids)
         except Exception as e:
             logger.error("Failed to post_all() HRIS profiles. Trace: {}".format(format_exc()))
@@ -141,12 +140,15 @@ class HRISPublisher:
                         continue
             p = cis_profile.User()
             # Note: Never use non-preferred names here
+            # Uncomment when LDAP is no longer the creator for these
+            # When that happens, code to disable the user will also be necessary!
+            # p.active.value = True
+            #            p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
+            #            p.last_name.signature.publisher.name = "hris"
+            #            p.first_name.value = hruser.get("PreferredFirstName")
+            #            p.first_name.signature.publisher.name = "hris"
             p.primary_email.value = hruser.get("PrimaryWorkEmail")
             p.primary_email.signature.publisher.name = "hris"
-            p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
-            p.last_name.signature.publisher.name = "hris"
-            p.first_name.value = hruser.get("PreferredFirstName")
-            p.first_name.signature.publisher.name = "hris"
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
             p.timezone.signature.publisher.name = "hris"
             p.staff_information.manager.value = strbool_convert(hruser.get("IsManager"))
@@ -185,6 +187,7 @@ class HRISPublisher:
                     "Profile data signing failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
+                logger.debug("Profile data {}".format(p.as_dict()))
             try:
                 p.validate()
             except Exception as e:
@@ -192,15 +195,17 @@ class HRISPublisher:
                     "Profile schema validation failed for user {} - skipped validation, verification "
                     "WILL FAIL({})".format(p.primary_email.value, e)
                 )
+                logger.debug("Profile data {}".format(p.as_dict()))
 
             try:
                 p.verify_all_publishers(cis_profile.User())
             except Exception as e:
                 logger.critical(
-                    "Profile signing failed for user {} - skipped signing, verification "
+                    "Profile publisher verification failed for user {} - skipped signing, verification "
                     "WILL FAIL ({})".format(p.primary_email.value, e)
                 )
-            p.active.value = True
+                logger.debug("Profile data {}".format(p.as_dict()))
+
             user_array.append(p)
 
         return user_array
