@@ -177,7 +177,8 @@ class HRISPublisher:
             p.access_information.hris.signature.publisher.name = "hris"
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
-            p.access_information.hris["values"]["manager_employee_id"] = hruser.get("WorkersManagersEmployeeID")
+            p.access_information.hris["values"]["primary_work_email"] = hruser.get("PrimaryWorkEmail")
+            p.access_information.hris["values"]["managers_primary_work_email"] = hruser.get("Worker_s_Manager_s_Email_Address")
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
 
             try:
