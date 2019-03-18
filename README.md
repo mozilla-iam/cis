@@ -2,6 +2,10 @@
 [![Build Status](https://travis-ci.org/mozilla-iam/cis.svg?branch=master)](https://travis-ci.org/mozilla-iam/cis)
 CIS is the Mozilla IAM Change Integration Service.
 
+## I'm an API user, where do I start?
+
+See [PersonAPI](docs/PersonAPI.md) docs for querying the API.
+
 ## Build & Deploy (manual)
 
 Available environment/stages are: `development`, `testing`, `production` (see below for more information)
