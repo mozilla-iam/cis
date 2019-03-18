@@ -24,6 +24,11 @@ DISTRIBUTION_ID:= E3565MF6FETN3E
 all:
 	@echo 'Available make targets:'
 	@grep '^[^#[:space:]^\.PHONY.*].*:' Makefile
+	@echo
+	@echo "SHORTHANDS FOR DEPLOYMENT:"
+	@echo "DEV: make sign && make upload-s3-bucket"
+	@echo 'PROD/TESTING: make STAGE="" DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com sign && \ '
+	@echo 'make  STAGE="" DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com S3_BUCKET_NAME=iam-cis-well-known-endpoint-prod upload-s3-bucket'
 
 .PHONY: create-s3-bucket
 create-s3-bucket:
