@@ -39,9 +39,8 @@ class HRISPublisher:
                 all_user_ids.append("{}{}".format(user_id_tpl, u.get("PrimaryWorkEmail").split("@")[0]))
             sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
             logger.info(
-                "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and faning-out work to self".format(
-                    chunk_size, len(sliced), len(all_user_ids)
-                )
+                "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
+                "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
             )
             lambda_client = boto3.client("lambda")
             for s in sliced:
