@@ -1,7 +1,7 @@
 import cis_publisher
 
 # from moto import mock_lambda
-import boto3
+## import boto3
 import json
 
 
