@@ -65,7 +65,7 @@ The scope list is available [here](../well-known-endpoint/auth0-helper/scopes.js
 
 ## What is the API URL?
 
-You can find it here: https://auth.mozilla.com/.well-known/mozilla-iam (lookg for person api).
+You can find it here: https://auth.mozilla.com/.well-known/mozilla-iam (look for person api).
 
 ## What routes are available? (i.e. what queries can I make)
 
