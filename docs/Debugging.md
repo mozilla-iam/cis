@@ -10,6 +10,9 @@ aws dynamodb get-item --table-name testing-identity-vault --key '{"id": {"S": "a
 
 # Just a field (its a bit convoluted..)
 aws dynamodb get-item --table-name testing-identity-vault --key '{"id": {"S": "ad|Mozilla-LDAP|gdestuynder"}}'|jq '.Item.profile.S'|sed 's/\\//g'|sed 's/^"\|$"//'|jq '.user_id'
+
+# Get all field names for a list of values like `staff_information`
+aws dynamodb get-item --table-name testing-identity-vault --key '{"id": {"S": "ad|Mozilla-LDAP|gdestuynder"}}'|jq '.Item.profile.S'|sed 's/\\//g'|sed 's/^"\|$"//'|jq '.staff_information | .[] | .value' 
 ```
 
 ### Run a Lambda publisher function for a specific user (instead of all users)
