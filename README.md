@@ -10,6 +10,12 @@ $ make build STAGE=development
 $ make release STAGE=development
 ```
 
+Or you can deploy a single function as such, instead of running `make release` (note that you may still want to run
+`make build` which both builds and upload the Lambda layers:
+```
+$ make -C serverless deploy-ldap-publisher
+```
+
 Note that the build & release process happens automatically on the GitHub repository. The above steps are for manual
 deploys.
 
