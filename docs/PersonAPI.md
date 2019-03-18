@@ -84,3 +84,14 @@ Retrieve lists of users:
 
 Hey, that's great! Please look at [cis_profile_retrieval_service](../python-modules/cis_profile_retrieval_service) and send
 us a PR!
+
+
+# FAQ (Frequently Asked Questions)
+
+- I updated my name in the old Phonebook but the change does not appear in CIS Person API, why is that?
+CIS will allow certain publishers to write the attribute when the user is created, but not update it. Preferred names for example are created by LDAP (old Phonebook) but then owned by Dinopark. Once created, these can only be modified by DinoPark.
+When the old Phonebook is retired, this will no longer be an issue.
+
+- How often is the user profile data refreshed by publishers?
+CIS uses a batch-and-event model, which means certain changes happen very quickly (seconds) as an event occurs, while other changes may take longer (batches every 5,10,15 minutes for example).
+All writes should attempt to use both batch and event, to provide the best mix of latency and reliability.
