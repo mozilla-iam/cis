@@ -49,18 +49,25 @@ $ make test-tox
 
 ## Where is what?
 
-- e2e contains the end to end tests for CIS
+- e2e contains the end to end tests for CIS. These are a good source of examples on how to use the CIS API.
 - python-modules contains several libraries which can be called on their own. Many are inter-dependent.
-- serverless-functions are serverless.com lambda functions which load some of the python-modules into lambda
+- serverless-functions are serverless.com lambda functions which load some of the python-modules into AWS Lambda.
 - well-known-endpoint contains the Mozilla IAM Well Known endpoint data and it's deployment methods (this endpoint can
   only be manually deployed)
-- buildspec.yml contains the AWS Codebuild CD scripts
-- .travis.yml contains the travis CI scripts
+- buildspec.yml contains the AWS Codebuild CD scripts.
+- .travis.yml contains the Travis CI scripts.
+
+Note that many directories contain their own README.md, which has more detailed information.
 
 ## Docs
 
+These are the general docs for the concepts behind CIS.
+
 - [CIS Security](docs/Security.md)
 - [User Profiles](docs/Profiles.md)
+- [AuthenticatorAssuranceIndicator](docs/AuthenticatorAssuranceIndicator.md)
+- [AccessFile (apps.yml)](docs/AccessFile.md)
+- [Well-known endpoint](docs/Well-known Endpoint.md)
 
 ## Draft-RFCs & Proposals (informational-only)
 - [RFCs](docs/rfcs/)
