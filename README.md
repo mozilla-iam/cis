@@ -2,12 +2,22 @@
 [![Build Status](https://travis-ci.org/mozilla-iam/cis.svg?branch=master)](https://travis-ci.org/mozilla-iam/cis)
 CIS is the Mozilla IAM Change Integration Service.
 
+## I'm an API user, where do I start?
+
+See [PersonAPI](docs/PersonAPI.md) docs for querying the API.
+
 ## Build & Deploy (manual)
 
 Available environment/stages are: `development`, `testing`, `production` (see below for more information)
 ```
 $ make build STAGE=development
 $ make release STAGE=development
+```
+
+Or you can deploy a single function as such, instead of running `make release` (note that you may still want to run
+`make build` which both builds and upload the Lambda layers:
+```
+$ make -C serverless deploy-ldap-publisher
 ```
 
 Note that the build & release process happens automatically on the GitHub repository. The above steps are for manual
@@ -44,23 +54,34 @@ The tox test environment is stored in `python-modules/.cis-env` by default
 $ cd e2e
 $ make test-tox
 ```
+# How changes are published to CIS
 
-## Documentation & Resources
+![Publisher](/docs/images/publisher_flow.png?raw=true "Publisher Diagram")
+
+
+## Additional Documentation & Resources
 
 ## Where is what?
 
-- e2e contains the end to end tests for CIS
+- e2e contains the end to end tests for CIS. These are a good source of examples on how to use the CIS API.
 - python-modules contains several libraries which can be called on their own. Many are inter-dependent.
-- serverless-functions are serverless.com lambda functions which load some of the python-modules into lambda
+- serverless-functions are serverless.com lambda functions which load some of the python-modules into AWS Lambda.
 - well-known-endpoint contains the Mozilla IAM Well Known endpoint data and it's deployment methods (this endpoint can
   only be manually deployed)
-- buildspec.yml contains the AWS Codebuild CD scripts
-- .travis.yml contains the travis CI scripts
+- buildspec.yml contains the AWS Codebuild CD scripts.
+- .travis.yml contains the Travis CI scripts.
+
+Note that many directories contain their own README.md, which has more detailed information.
 
 ## Docs
 
+These are the general docs for the concepts behind CIS.
+
 - [CIS Security](docs/Security.md)
 - [User Profiles](docs/Profiles.md)
+- [AuthenticatorAssuranceIndicator](docs/AuthenticatorAssuranceIndicator.md)
+- [AccessFile (apps.yml)](docs/AccessFile.md)
+- [Well-known endpoint](docs/Well-known Endpoint.md)
 
 ## Draft-RFCs & Proposals (informational-only)
 - [RFCs](docs/rfcs/)

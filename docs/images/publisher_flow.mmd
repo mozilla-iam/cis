@@ -1,0 +1,12 @@
+graph LR
+Datasource("Datasource<br>(LDAP db, etc.)")-->Publisher["Publisher function<br>(cis_publisher/ldap.py, etc.)"]
+
+Publisher-->|GET existing users /v2/users/id/all?connectionMethod=......| CISP(CIS Person API)
+CISP-->CISV(Vault)
+CISC(CIS Change API)
+Publisher-->CISQ{Is user new?}
+
+CISQ-->|POST New User /v2/user/   .|CISC
+CISQ-->|POST update existing user /v2/user?user_id=.....|CISC
+
+
