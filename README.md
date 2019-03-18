@@ -50,8 +50,12 @@ The tox test environment is stored in `python-modules/.cis-env` by default
 $ cd e2e
 $ make test-tox
 ```
+# How changes are published to CIS
 
-## Documentation & Resources
+![Publisher](/docs/images/publisher_flow.png?raw=true "Publisher Diagram")
+
+
+## Additional Documentation & Resources
 
 ## Where is what?
 
