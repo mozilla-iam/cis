@@ -5,7 +5,11 @@
 ### Get a user from a table in CIS Vault
 
 ```
+# Full user
 aws dynamodb get-item --table-name testing-identity-vault --key '{"id": {"S": "ad|Mozilla-LDAP|gdestuynder"}}'
+
+# Just a field (its a bit convoluted..)
+aws dynamodb get-item --table-name testing-identity-vault --key '{"id": {"S": "ad|Mozilla-LDAP|gdestuynder"}}'|jq '.Item.profile.S'|sed 's/\\//g'|sed 's/^"\|$"//'|jq '.user_id'
 ```
 
 ### Run a Lambda publisher function for a specific user (instead of all users)
