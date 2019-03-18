@@ -1,6 +1,9 @@
 import cis_profile
 import cis_publisher
+import boto3
+import os
 import logging
+import json
 import requests
 from traceback import format_exc
 
@@ -8,18 +11,46 @@ logger = logging.getLogger(__name__)
 
 
 class HRISPublisher:
-    def __init__(self):
+    def __init__(self, context={}):
         self.secret_manager = cis_publisher.secret.Manager()
+        self.context = context
 
-    def publish(self, user_ids=None):
+    def publish(self, user_ids=None, chunk_size=50):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
         None, ALL profiles are sent.
         @user_ids: list of str - user ids to publish. If None, all users are published.
+        @chunk_size: int when no user_id is selected, this is the size of the chunk/slice we'll create to divide the
+        work between function calls (to self)
         """
         logger.info("Starting HRIS Publisher")
         report_profiles = self.fetch_report()
+
+        # Should we fan-out processing to multiple function calls?
+        if user_ids is None:
+            all_user_ids = []
+            if os.environ.get("CIS_ENVIRONMENT") == "development":
+                user_id_tpl = "ad|Mozilla-LDAP-Dev|"
+            else:
+                user_id_tpl = "ad|Mozilla-LDAP|"
+
+            for u in report_profiles.get("Report_Entry"):
+                all_user_ids.append("{}{}".format(user_id_tpl, u.get("PrimaryWorkEmail").split("@")[0]))
+            sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
+            logger.info(
+                "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
+                "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
+            )
+            lambda_client = boto3.client("lambda")
+            for s in sliced:
+                lambda_client.invoke(
+                    FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(s)
+                )
+
+            logger.info("Exiting slicing function successfully")
+            return 0
+
         profiles = self.convert_hris_to_cis_profiles(report_profiles, user_ids)
         del report_profiles
 
@@ -206,6 +237,7 @@ class HRISPublisher:
                 )
                 logger.debug("Profile data {}".format(p.as_dict()))
 
+            logger.info("Processed (signed and verified) HRIS report's user {}".format(p.primary_email.value))
             user_array.append(p)
 
         return user_array

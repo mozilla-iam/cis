@@ -97,8 +97,8 @@ class Verify(object):
             return access_file_keys
         else:
             # If not an access key verification this will attempt to verify against any listed publisher.
-            logger.debug("This is a publisher based verification.")
             keys = publishers_supported[keyname]["keys"]
+            logger.debug("Publisher based verification, will use {} public keys for verification.".format(keys))
         return keys
 
     def jws(self, keyname=None):
@@ -130,4 +130,4 @@ class Verify(object):
                         "The signature was not valid for the payload.", extra={"signature": self.jws_signature}
                     )
                     logger.error(e)
-        raise JWSError("The signature could not be verified for any trusted key.")
+        raise JWSError("The signature could not be verified for any trusted key", key_material)

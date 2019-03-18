@@ -25,7 +25,7 @@ def setup_logging():
 def handle(event, context={}):
     """Handle the publishing of users."""
     logger = setup_logging()
-    hris = cis_publisher.hris.HRISPublisher()
+    hris = cis_publisher.hris.HRISPublisher(context=context)
     if isinstance(event, list):
         hris.publish(event)
     else:
