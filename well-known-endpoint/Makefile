@@ -27,8 +27,8 @@ all:
 	@echo
 	@echo "SHORTHANDS FOR DEPLOYMENT:"
 	@echo "DEV: make sign && make upload-s3-bucket"
-	@echo 'PROD/TESTING: make STAGE="" DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com sign && \ '
-	@echo 'make  STAGE="" DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com S3_BUCKET_NAME=iam-cis-well-known-endpoint-prod upload-s3-bucket'
+	@echo 'PROD/TESTING: make STAGE=prod DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com sign && \ '
+	@echo 'make  STAGE=prod DISTRIBUTION_ID=E2QY4VRQMTTS72 DOMAIN=mozilla.com S3_BUCKET_NAME=iam-cis-well-known-endpoint-prod upload-s3-bucket'
 
 .PHONY: create-s3-bucket
 create-s3-bucket:
@@ -49,7 +49,9 @@ templatize:
 	mv s3/.well-known/$(STAGE_FN)mozilla-iam  s3/.well-known/mozilla-iam
 	rm s3/.well-known/*.mozilla-iam
 	sed -i 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
+ifneq ($(STAGE),prod)
 	sed -i 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
+endif
 
 .PHONY: cloudformation
 cloudformation: cloudformation.yml
