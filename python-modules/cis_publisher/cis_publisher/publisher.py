@@ -280,6 +280,19 @@ class Publish:
                             if subpfield in whitelist:
                                 continue
 
+                            # XXX access_information.{hris,ldap, ...} - this needs refactor
+                            exit_loop = False
+                            if isinstance(allowed_updates[pfield], dict):
+                                for sub_au in allowed_updates[pfield]:
+                                    if (
+                                        p.__dict__[pfield][subpfield]["signature"]["publisher"]["name"]
+                                        == self.publisher_name
+                                    ):
+                                        exit_loop = True
+                                        break
+                            if exit_loop:
+                                continue
+
                             if allowed_updates[pfield] != self.publisher_name:
                                 p.__dict__[pfield][subpfield]["signature"]["publisher"]["value"] = ""
                                 if "value" in p.__dict__[pfield][subpfield].keys():
