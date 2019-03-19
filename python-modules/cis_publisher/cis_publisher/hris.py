@@ -225,7 +225,6 @@ class HRISPublisher:
 
             p.access_information.hris["values"] = {}
             p.access_information.hris.signature.publisher.name = "hris"
-            p.access_information.hris.metadata.display = "private"
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
             p.access_information.hris["values"]["primary_work_email"] = hruser.get("PrimaryWorkEmail")

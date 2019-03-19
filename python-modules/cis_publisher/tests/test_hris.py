@@ -14,7 +14,12 @@ class TestHRIS(object):
         hris = cis_publisher.hris.HRISPublisher()
         profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=None)
         print("parsed {} profiles".format(len(profiles)))
+
+        # Check access information is populated
+        assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
+
         c = 0
+        # Verify data consistency
         for p in profiles:
             assert p.primary_email.value is not None
             if hris_data["Report_Entry"][c]["IsManager"] == "TRUE":
@@ -28,6 +33,10 @@ class TestHRIS(object):
             for i in d["staff_information"]:
                 si[i] = d["staff_information"][i]["value"]
             print(p.primary_email.value, p.last_name.value, d["access_information"]["hris"]["values"], si)
+
+            for i in d["access_information"]["hris"]["values"]:
+                si[i] = d["access_information"]["hris"]["values"]
+            print(si)
             c = c + 1
 
 
