@@ -173,11 +173,13 @@ class WellKnown(object):
             )
             with open(fpath, "w+") as fd:
                 fd.write(json.dumps(data))
+            logger.debug("File to cache is {} lines long".format(len(data)))
             return data
         else:
             logger.debug("Using cached file (well-known endpoint) at {}".format(fpath))
             with open(fpath, "r") as fd:
                 ret = fd.read()
+            logger.debug("Cached file is {} lines long".format(len(ret)))
             return json.loads(ret)
 
     def _load_publisher_rules(self, rules_url):

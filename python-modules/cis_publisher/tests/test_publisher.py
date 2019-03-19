@@ -112,9 +112,19 @@ class TestPublisher:
 
         profiles = [cis_profile.User()]
         profiles[0].user_id.value = "auser"
+
         profiles[0].first_name.value = "firstname"
         profiles[0].first_name.signature.publisher.name = "wrong"
+
+        profiles[0].access_information.hris.values = {"test": "test"}
+        profiles[0].access_information.hris.signature.publisher.name = "wrong"
+
+        profiles[0].access_information.ldap.values = {"test": "test"}
+        profiles[0].access_information.ldap.signature.publisher.name = "ldap"
+
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         publisher.filter_known_cis_users()
 
         assert publisher.profiles[0].first_name.value != "firstname"
+        assert publisher.profiles[0].as_dict()["access_information"]["ldap"]["values"] == {"test": "test"}
+        assert publisher.profiles[0].as_dict()["access_information"]["hris"]["values"] is None

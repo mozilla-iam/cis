@@ -17,10 +17,14 @@ example)
 
 # About `s3` and `tpl`
 
+WARNING: Make sure to `make clean` between templatizing environments you will sync to.
+
 - `tpl` contains the original templates for the files, CHANGE THESE!
 - `s3` is where the templates are copied after changing their values depending on the environment, DO NOT CHANGE THESE!
 - `profile.schema` comes from CIS's `cis_profile` module, if you change it, change it in the module then copy it back
   here.
+- You can monitor invalidations with `aws cloudfront get-invalidation --distribution-id DISTRIBUTION_ID_HERE --id
+  INVALIDATION_ID_HERE`
 
 # Signed files
 
