@@ -180,29 +180,48 @@ class HRISPublisher:
             #            p.first_name.signature.publisher.name = "hris"
             p.primary_email.value = hruser.get("PrimaryWorkEmail")
             p.primary_email.signature.publisher.name = "hris"
+
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
             p.timezone.signature.publisher.name = "hris"
+            p.timezone.metadata.display = "staff"
+
             p.staff_information.manager.value = strbool_convert(hruser.get("IsManager"))
             p.staff_information.manager.signature.publisher.name = "hris"
+            p.staff_information.manager.metadata.display = "staff"
+
             p.staff_information.director.value = strbool_convert(hruser.get("isDirectorOrAbove"))
             p.staff_information.director.signature.publisher.name = "hris"
+            p.staff_information.director.metadata.display = "staff"
             if len(hruser.get("EmployeeID")) > 0:
                 p.staff_information.staff.value = True
             else:
                 p.staff_information.staff.value = False
             p.staff_information.staff.signature.publisher.name = "hris"
+            p.staff_information.staff.metadata.display = "staff"
+
             p.staff_information.title.value = hruser.get("businessTitle")
             p.staff_information.title.signature.publisher.name = "hris"
+            p.staff_information.title.metadata.display = "staff"
+
             p.staff_information.team.value = hruser.get("Team")
             p.staff_information.team.signature.publisher.name = "hris"
+            p.staff_information.team.metadata.display = "staff"
+
             p.staff_information.cost_center.value = cost_center_convert(hruser.get("Cost_Center"))
             p.staff_information.cost_center.signature.publisher.name = "hris"
+            p.staff_information.cost_center.metadata.display = "staff"
+
             p.staff_information.worker_type.value = hruser.get("WorkerType")
             p.staff_information.worker_type.signature.publisher.name = "hris"
+            p.staff_information.worker_type.metadata.display = "staff"
+
             p.staff_information.wpr_desk_number.value = hruser.get("WPRDeskNumber")
             p.staff_information.wpr_desk_number.signature.publisher.name = "hris"
+            p.staff_information.wpr_desk_number.metadata.display = "staff"
+
             p.staff_information.office_location.value = hruser.get("LocationDescription")
             p.staff_information.office_location.signature.publisher.name = "hris"
+            p.staff_information.office_location.metadata.display = "staff"
 
             p.access_information.hris["values"] = {}
             p.access_information.hris.signature.publisher.name = "hris"
