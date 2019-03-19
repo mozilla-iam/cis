@@ -44,6 +44,7 @@ upload-s3-bucket: test verify
 .PHONY: templatize
 templatize:
 	@echo Templatizing...
+	mkdir -p s3/.well-known
 	cp tpl/* s3/.well-known
 	mv s3/.well-known/$(STAGE_FN)mozilla-iam  s3/.well-known/mozilla-iam
 	rm s3/.well-known/*.mozilla-iam
@@ -63,3 +64,7 @@ sign: templatize
 
 test: tests/test_format.py
 	pytest tests
+
+.PHONY: clean
+clean:
+	rm -fr s3
