@@ -56,7 +56,7 @@ $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.co
 "response_type":"client_credentials","client_id": "YOUR CLIENT ID", "client_secret": "YOUR CLIENT SECRET"}'
 
 # Use the token
-$ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/user_email/some_email@email.com
+$ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@email.com
 ```
 
 ## What are the available scopes exactly?
