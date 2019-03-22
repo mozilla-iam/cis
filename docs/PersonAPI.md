@@ -9,19 +9,69 @@ This is CIS Person API v2 (version 2).
 ## What are the access controls around CIS Person API?
 
 CIS Person API requires credentials for most routes (i.e. all routes that may expose non-PUBLIC data).
-It leverages Mozilla's data classification to decide which kind of data is to be returned, and will filter out anything
+It leverages Mozilla's [data classification](https://wiki.mozilla.org/Security/Data_Classification) to decide which kind of data is to be returned, and will filter out anything
 that does not match the classification levels you have been granted access to.
+Data is also filtered by something we call a display level, which is the level a user request the data to be filtered at, for displaying purposes.
 
-See also: https://wiki.mozilla.org/Security/Data_Classification
+In other words, the data `classification` is used to decide which data can be sent to machines, the `display` level is used by machines to decide if the data can be shown to other users (i.e. while they have access to it).
 
 You can check which fields of a user can be accessed with which classification here:
 https://auth.mozilla.com/.well-known/profile.schema (or in
 [cis_profile](../python-modules/cis_profile/cis_profile/data/user_profile_null.json) which can be slightly easier to
-read. Pro-tip, you can load this in a JSON viewer (Search for JSON viewer on the web). Pro-tip, you can load this in a
-JSON viewer (Search for JSON viewer on the web).
+read. Pro-tip, you can load this in a JSON viewer (Search for JSON viewer on the web).
 
-Data may also optionally be filtered by display level, which is the level a user request the data to be filtered at, for
-displaying purposes.
+
+### How are scopes used?
+NOTE: `classification:public` is default is always granted, even if no scope is present. This allows unauthenticated endpoints to query public data. The same is not true for `display:public`.
+
+#### Full list of scopes:
+The scope list is also available [here](../well-known-endpoint/auth0-helper/scopes.json).
+
+```
+classification:public
+classification:workgroup (non-public data)
+classification:workgroup:staff_only (Staff data)
+classification:mozilla_confidential (staff or/and NDA'd data)
+classification:individual (Individual confidential data - most sensitive)
+display:public
+display:authenticated (user indicate this is to be shown only to users that are authenticated with the system)
+display:vouched (user indicate this is to be shown to vouched profiles only)
+display:staff (user indicate this can only be shown to Mozilla staff)
+display:private (user indicate this should not be shown to any user, only machines/API should see it)
+display:all (overrides all display levels)
+read:fullprofile (overrides all classification levels)
+write (scope for CIS Change API which allows profile writes. Note that your signatures still need to match a trusted publisher, and that this scope alone is not sufficient to write data to the API - on it's own it effectively does not grant write access)
+```
+
+#### Access all public data and workgroup confidential fields that the user expressdly indicated can be shown publicly
+```
+classification:public
+classification:workgroup
+display:public
+```
+Same, but also get data that the user wants to be only shown to other authenticated users, if you chose to display it back.
+```
+classification:public
+classification:workgroup
+display:public
+display:authenticated
+```
+
+#### Access all staff data (office location, desk number, team name, users who do not want their name to be public but are staff, etc.)
+```
+classification:public
+classification:workgroup:staff_only
+display:public
+display:authenticated
+display:vouched
+display:staff
+```
+
+#### Access all data (dangerous! this will usually not be granted)
+```
+read:fullprofile
+display:all
+```
 
 ## How do I get credentials for access?
 
@@ -31,7 +81,7 @@ Indicate your use case, and the fields you need to access and/or their data clas
 
 For example:
 
-> I need access to the office location of all employees (classification: STAFF CONFIDENTIAL, display: staff) so that I can send messages about when
+> I need access to the office location of all employees (`classification:workgroup:staff_only`, `display:staff`) so that I can send messages about when
 > their office will be closed during the holidays.
 
 
@@ -39,7 +89,7 @@ Depending on the request, it's possible that we follow-up with a rapid risk asse
 (https://infosec.mozilla.org/guidelines/risk/rapid_risk_assessment), or simply grant the access.
 
 
-NOTE: If no use case or user story with a rational is present, no access will be granted to NON-PUBLIC data!
+NOTE: **If no use case or user story with a rational is present, no access will be granted to NON-PUBLIC data!**
 
 
 The credentials you will receive are OAuth2 credentials.
@@ -58,10 +108,6 @@ $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.co
 # Use the token
 $ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@email.com
 ```
-
-## What are the available scopes exactly?
-
-The scope list is available [here](../well-known-endpoint/auth0-helper/scopes.json).
 
 ## What is the API URL?
 
