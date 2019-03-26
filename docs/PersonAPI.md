@@ -98,6 +98,8 @@ The credentials you will receive are OAuth2 credentials.
 
 Yes, please look at our [end to end (E2E) tests](../e2e).
 
+As well, here is a [simple golang client library](https://github.com/mozilla-services/foxsec-pipeline-contrib/tree/master/common/persons_api).
+
 Here's a quick curl example as well:
 ```
 # Get a token
