@@ -103,7 +103,7 @@ Here's a quick curl example as well:
 # Get a token
 $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.com/oauth/token -d \
 '{"audience":"api.sso.mozilla.com","scope":"classification:staff_confidential display:staff",\
-"response_type":"client_credentials","client_id": "YOUR CLIENT ID", "client_secret": "YOUR CLIENT SECRET"}'
+"grant_type":"client_credentials","client_id": "YOUR CLIENT ID", "client_secret": "YOUR CLIENT SECRET"}'
 
 # Use the token
 $ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@email.com
