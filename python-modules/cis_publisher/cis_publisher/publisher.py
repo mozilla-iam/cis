@@ -90,7 +90,11 @@ class Publish:
 
         logger.info("Received {} user profiles to post".format(len(self.profiles)))
         if user_ids is not None:
-            logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
+            logger.info(
+                "Requesting a specific list of user_id's to post {} (total user_ids: {}, total profiles: {})".format(
+                    user_ids, len(user_ids), len(self.profiles)
+                )
+            )
             if not isinstance(user_ids, list):
                 raise PublisherError("user_ids must be a list", user_ids)
 

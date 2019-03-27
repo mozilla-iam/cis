@@ -36,7 +36,7 @@ class HRISPublisher:
                 user_id_tpl = "ad|Mozilla-LDAP|"
 
             for u in report_profiles.get("Report_Entry"):
-                all_user_ids.append("{}{}".format(user_id_tpl, u.get("PrimaryWorkEmail").split("@")[0]))
+                all_user_ids.append("{}{}".format(user_id_tpl, u.get("PrimaryWorkEmail").split("@")[0].lower()))
             sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
             logger.info(
                 "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
@@ -82,7 +82,10 @@ class HRISPublisher:
         logger.info("Fetching HRIS report from {}".format(hris_url))
         params = dict(format="json")
 
-        res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
+        if os.environ.get("CIS_ENVIRONMENT") == "development":
+            res = requests.get(hris_url, params=params)
+        else:
+            res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
 
         del hris_password
         del hris_username
@@ -165,10 +168,17 @@ class HRISPublisher:
             # Attempt a rough guess at the user-id. this may not match all user ids correctly
             # We assume this is ok as user_ids are only passed for testing purposes or fixing purposes
             if user_ids is not None:
-                if "ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0] not in user_ids:
-                    if "ad|Mozilla-LDAP-Dev|" + hruser.get("PrimaryWorkEmail").split("@")[0] not in user_ids:
+                user_ids_lower_case = [x.lower() for x in user_ids]
+                constructed_user_id = "ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0]
+                constructed_dev_user_id = "ad|Mozilla-LDAP-Dev|" + hruser.get("PrimaryWorkEmail").split("@")[0]
+
+                if constructed_user_id.lower() not in user_ids_lower_case:
+                    if constructed_dev_user_id.lower() not in user_ids_lower_case:
                         # Skip user
                         continue
+            logger.info(
+                "filtering fields for user {}".format("ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0])
+            )
             p = cis_profile.User()
             # Note: Never use non-preferred names here
             # Uncomment when LDAP is no longer the creator for these
@@ -178,7 +188,7 @@ class HRISPublisher:
             #            p.last_name.signature.publisher.name = "hris"
             #            p.first_name.value = hruser.get("PreferredFirstName")
             #            p.first_name.signature.publisher.name = "hris"
-            p.primary_email.value = hruser.get("PrimaryWorkEmail")
+            p.primary_email.value = hruser.get("PrimaryWorkEmail").lower()
             p.primary_email.signature.publisher.name = "hris"
 
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
@@ -227,7 +237,7 @@ class HRISPublisher:
             p.access_information.hris.signature.publisher.name = "hris"
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
-            p.access_information.hris["values"]["primary_work_email"] = hruser.get("PrimaryWorkEmail")
+            p.access_information.hris["values"]["primary_work_email"] = hruser.get("PrimaryWorkEmail").lower()
             p.access_information.hris["values"]["managers_primary_work_email"] = hruser.get(
                 "Worker_s_Manager_s_Email_Address"
             )
