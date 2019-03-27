@@ -268,7 +268,7 @@ class User(object):
         """
         self._filter_all(level=self.__dict__, valid=scopes, check="classification")
 
-    def filter_display(self, display_levels=[DisplayLevel.PUBLIC], level=None):
+    def filter_display(self, display_levels=[DisplayLevel.PUBLIC, DisplayLevel.NULL], level=None):
         """
         Filter in place/the current user profile object (self) to only contain attributes with display levels listed
         in @display_levels

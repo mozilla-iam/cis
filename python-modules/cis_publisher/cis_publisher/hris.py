@@ -82,10 +82,7 @@ class HRISPublisher:
         logger.info("Fetching HRIS report from {}".format(hris_url))
         params = dict(format="json")
 
-        if os.environ.get("CIS_ENVIRONMENT") == "development":
-            res = requests.get(hris_url, params=params)
-        else:
-            res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
+        res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
 
         del hris_password
         del hris_username
