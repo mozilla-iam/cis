@@ -55,6 +55,10 @@
           {
                 "value": "display:public",
                 "description": "Read access to data with this display level (classification scope is ALSO needed!)"
+          },
+          {
+                "value": "display:null",
+                "description": "Read access to data with this display level (classification scope is ALSO needed!)"
           }
 	]
 }
