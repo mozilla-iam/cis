@@ -96,4 +96,3 @@ functions:
     timeout: 900
     layers:
       -  ${ssm:/iam/cis/${self:custom.hrisPublisherStage}/lambda_layer_arn}
-    reservedConcurrency: 50

@@ -15,7 +15,7 @@ class HRISPublisher:
         self.secret_manager = cis_publisher.secret.Manager()
         self.context = context
 
-    def publish(self, user_ids=None, chunk_size=50):
+    def publish(self, user_ids=None, chunk_size=25):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
