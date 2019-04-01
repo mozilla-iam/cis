@@ -107,7 +107,7 @@ class Publish:
                         xlist.append(idx)
                 elif profile.user_id.value not in user_ids:
                     xlist.append(idx)
-            for i in reverse(xlist):
+            for i in reversed(xlist):
                 del self.profiles[i]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
