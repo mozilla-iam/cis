@@ -89,11 +89,10 @@ functions:
     handler: handler.handle
     events:
       - schedule:
-          rate: rate(60 minutes)
+          rate: rate(2 hours)
           enabled: true
     description: hris-publisher for synchronizing HRIS to identity vault.
     memorySize: 1024 # This is HUGE because we load the entirety of users in Memory live.
     timeout: 900
     layers:
       -  ${ssm:/iam/cis/${self:custom.hrisPublisherStage}/lambda_layer_arn}
-    reservedConcurrency: 50

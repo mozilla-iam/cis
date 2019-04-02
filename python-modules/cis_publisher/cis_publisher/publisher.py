@@ -90,17 +90,25 @@ class Publish:
 
         logger.info("Received {} user profiles to post".format(len(self.profiles)))
         if user_ids is not None:
-            logger.info("Requesting a specific list of user_id's to post {} ({})".format(user_ids, len(user_ids)))
+            logger.info(
+                "Requesting a specific list of user_id's to post {} (total user_ids: {}, total profiles: {})".format(
+                    user_ids, len(user_ids), len(self.profiles)
+                )
+            )
             if not isinstance(user_ids, list):
                 raise PublisherError("user_ids must be a list", user_ids)
 
-            for n in range(0, len(self.profiles)):
-                profile = self.profiles[n]
+            # list what to delete, then delete instead of slower copy list operations or filters
+            # This is because some data sets are huge / GBs of data
+            xlist = []
+            for idx, profile in enumerate(self.profiles):
                 if profile.user_id.value is None:
                     if cis_users_by_email.get(profile.primary_email.value) not in user_ids:
-                        del self.profiles[n]
+                        xlist.append(idx)
                 elif profile.user_id.value not in user_ids:
-                    del self.profiles[n]
+                    xlist.append(idx)
+            for i in reversed(xlist):
+                del self.profiles[i]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
         # XXX - we already validate in the API, is this needed?

@@ -39,6 +39,15 @@ class TestHRIS(object):
             print(si)
             c = c + 1
 
+    def test_single_user_id(self):
+        hris_data = {}
+        with open("tests/fixture/workday.json") as fd:
+            hris_data = json.load(fd)
+
+        hris = cis_publisher.hris.HRISPublisher()
+        profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=["ad|Mozilla-LDAP-Dev|DNoble"])
+        assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
+
 
 # Not yet supported by moto
 #    def test_reentrancy(self):
