@@ -24,7 +24,7 @@ The basic flow is as follows.
 
 ## Requesting Additional Hooks 
 
-Talk to @akrug on mozilla slack.
+External consumers for hooks are not currently supported.
 
 ## Setup in the IAM Account
 
