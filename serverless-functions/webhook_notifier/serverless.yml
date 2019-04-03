@@ -88,7 +88,7 @@ functions:
     handler: handler.handle
     description: webhook notifications out of cis for profile updates.
     memorySize: 512
-    timeout: 15
+    timeout: 120
     events:
       - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
     layers:
