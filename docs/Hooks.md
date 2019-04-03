@@ -25,3 +25,17 @@ The basic flow is as follows.
 ## Requesting Additional Hooks 
 
 Talk to @akrug on mozilla slack.
+
+## Setup in the IAM Account
+
+__Required Parameters__
+This service requires ssm parameter store.
+
+Required: 
+
+* auth0 client id: standard client id
+* auth0 client secret: standard client secret
+* api audience: the API aud you set in the auth0 machine to machine auth
+* rp_urls : A comma delimited list of strings of where to POST payloads
+
+> The paths for these are configurable using the CIS_SECRET_MANAGER_PATH var.  See the ![`serverless.yml`](serverless_functions/webhook_notifier/serverless.yml serverless.yml) for an example.
