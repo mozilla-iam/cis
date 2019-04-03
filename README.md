@@ -82,6 +82,7 @@ These are the general docs for the concepts behind CIS.
 - [AuthenticatorAssuranceIndicator](docs/AuthenticatorAssuranceIndicator.md)
 - [AccessFile (apps.yml)](docs/AccessFile.md)
 - [Well-known endpoint](docs/Well-known Endpoint.md)
+- [Webhook Notifications](docs/Hooks.md)
 
 ## Draft-RFCs & Proposals (informational-only)
 - [RFCs](docs/rfcs/)
