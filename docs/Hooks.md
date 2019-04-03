@@ -23,7 +23,6 @@ The basic flow is as follows.
 7.  The payload is then posted to all configured relying parties.  These RPs can choose (strongly reccomended) to authenticate the inbound notification using standard JWT verification with the auth0 .well-known metadata.
 
 
-Talk to @akrug on mozilla slack.
 
 ## Setup in the IAM Account
 
