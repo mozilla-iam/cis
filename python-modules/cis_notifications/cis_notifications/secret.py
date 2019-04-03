@@ -75,6 +75,6 @@ class Manager(object):
         ssm_response = self.ssm_client.get_parameter(
             Name="{}/{}".format(ssm_namespace, secret_name), WithDecryption=True
         )
-        logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, secret_name))
+        logger.debug("Secret manager SSM provider loading key: {}{}".format(ssm_namespace, secret_name))
         result = ssm_response.get("Parameter", {})
         return result.get("Value")
