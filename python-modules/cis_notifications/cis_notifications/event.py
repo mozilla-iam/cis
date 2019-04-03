@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 class Event(object):
     """Handle events from lambda and generate hooks out to publishers."""
 
-    def __init__(self, event, subscriptions):
+    def __init__(self, event):
         """[summary]
 
         Arguments:
@@ -20,7 +20,6 @@ class Event(object):
         """
         self.config = common.get_config()
         self.event = event
-        self.subscriptions = subscriptions
         self.secret_manager = secret.Manager()
 
     def to_notification(self):
@@ -34,7 +33,7 @@ class Event(object):
 
         updated_record = self.event.get("dynamodb")
 
-        operation = "foxy"
+        operation = "foxy"  # Just a place holder in case we have an unhandled event.
 
         if self.event.get("eventName") == "INSERT":
             operation = "create"
@@ -101,5 +100,17 @@ class Event(object):
             url {[type]} -- [the url of the publisher you woud like to notify.]
             json_payload {[type]} -- [the event to send to the publisher.]
         """
-        response = requests.post(url, json=json_payload, headers={"authorization": "Bearer {}".format(access_token)})
-        return response.status_code
+
+        try:
+            response = requests.post(
+                url, json=json_payload, headers={"authorization": "Bearer {}".format(access_token)}
+            )
+            return response.status_code
+        except requests.exceptions.RequestException:
+            return 'Unknown'
+        except requests.exceptions.HTTPError:
+            return 'HTTPError'
+        except requests.exceptions.ConnectionError:
+            return 'ConnectionError'
+        except requests.exceptions.Timeout:
+            return 'Timeout'

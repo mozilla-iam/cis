@@ -50,6 +50,7 @@ provider:
     CIS_ENVIRONMENT: ${self:custom.webhookEnvironment.CIS_ENVIRONMENT.${self:custom.webhookStage}}
     CIS_API_IDENTIFIER: ${self:custom.webhookEnvironment.IDENTIFIER.${self:custom.webhookStage}}
     CIS_AUTHZERO_TENANT: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}}
+    CIS_RP_URLS: ${self:custom.webhookEnvironment.CIS_RP_URLS.${self:custom.webhookStage}}
     WEBHOOK_NOTIFICATIONS_AUTH0_DOMAIN: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}} 
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.webhookEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.webhookStage}}
   iamRoleStatements:
@@ -87,7 +88,7 @@ functions:
     handler: handler.handle
     description: webhook notifications out of cis for profile updates.
     memorySize: 512
-    timeout: 15
+    timeout: 120
     events:
       - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
     layers:

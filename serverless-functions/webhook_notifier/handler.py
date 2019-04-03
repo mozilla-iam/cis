@@ -22,12 +22,9 @@ def handle(event, context):
     logger = setup_logging()
     config = common.get_config()
 
-    # Subscriptions is a comma delimited string of publishers who would like to recieve notifications.
-    subscriptions = config("subscriptions", namespace="cis", default="https://dinopark.k8s.sso.allizom.org/beta/")
-
     results = []
     for record in event.get("Records"):
-        event_mapper = cis_event.Event(record, subscriptions)
+        event_mapper = cis_event.Event(record)
         notification = event_mapper.to_notification()
         result = event_mapper.send(notification)
         results.append(result)

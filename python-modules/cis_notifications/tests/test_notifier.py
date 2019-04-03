@@ -18,15 +18,12 @@ class TestNotifier(object):
         mock_secrets.return_value = "is_pretty_cool"
         mock_request.return_value = 200
 
-        # This is an example of a event as ingested from the dynamodb stream.
-        subscriptions = ["https://dinopark.k8s.sso.allizom.org/beta/"]
-
         fh = open("tests/fixtures/event.json")
         event_fixture = json.loads(fh.read())
         fh.close()
 
         for record in event_fixture["Records"]:
-            e = cis_notifications.event.Event(event=record, subscriptions=subscriptions)
+            e = cis_notifications.event.Event(event=record)
             notification = e.to_notification()
             result = e.send(notification)
 
