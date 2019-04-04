@@ -30,7 +30,7 @@ class HRISPublisher:
         # Get access to the known_users function first
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
-        cis_publisher.get_known_cis_users()
+        publisher.get_known_cis_users()
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
