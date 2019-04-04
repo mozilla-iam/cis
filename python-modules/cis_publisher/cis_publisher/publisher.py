@@ -43,12 +43,12 @@ class Publish:
         self.retry_delay = 1
 
         # known_cis_users is the output of the Person API query
-        # known_cis_users_only_user_id is an array of user_id only
-        # known_cis_users_by_email is a dict that maps email: uid (instead of uid: email)
+        # known_cis_users_by_user_id is a dict that maps user_id: email
+        # known_cis_users_by_email is a dict that maps email: user_id (instead of user_id: email)
         self.cis_user_list = None
         self.known_cis_users = None
         self.known_cis_users_by_email = {}
-        self.known_cis_users_only_user_id = []
+        self.known_cis_users_by_user_id = {}
         self.__inited = False
 
     def __deferred_init(self):
@@ -129,7 +129,7 @@ class Publish:
             self.filter_known_cis_users(profiles=[profile])
 
             # Existing users (i.e. users to update) have to be passed as argument
-            if user_id in self.known_cis_users_only_user_id:
+            if user_id in self.known_cis_users_by_user_id:
                 qs = "/v2/user?user_id={}".format(user_id)
             # New users do not
             else:
@@ -244,7 +244,7 @@ class Publish:
 
         # Also save copies that are easier to query directly
         for u in self.known_cis_users:
-            self.known_cis_users_only_user_id.append(u["user_id"])
+            self.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
             self.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
 
         return self.known_cis_users
@@ -271,7 +271,7 @@ class Publish:
             else:
                 user_id = p.user_id.value
 
-            if user_id in self.known_cis_users_only_user_id:
+            if user_id in self.known_cis_users_by_user_id:
                 logger.info(
                     "Filtering out non-updatable values from user {} because it already exist in CIS".format(user_id)
                 )
