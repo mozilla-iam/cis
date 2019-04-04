@@ -175,7 +175,14 @@ class HRISPublisher:
         user_array = []
         for hruser in hris_data.get("Report_Entry"):
             if user_ids is not None:
-                current_user_id = cis_users_by_email[hruser.get("PrimaryWorkEmail")]
+                try:
+                    current_user_id = cis_users_by_email[hruser.get("PrimaryWorkEmail")]
+                except KeyError:
+                    logger.critical(
+                        "There is no user_id in CIS Person API for HRIS User {}."
+                        "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                    )
+                    continue
                 user_ids_lower_case = [x.lower() for x in user_ids]
 
                 if current_user_id.lower() not in user_ids_lower_case:
