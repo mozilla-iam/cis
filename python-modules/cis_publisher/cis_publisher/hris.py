@@ -41,9 +41,8 @@ class HRISPublisher:
                     all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
                 except KeyError:
                     logger.critical(
-                        "There is no user_id in CIS Person API for HRIS User {}. This user does may not be created in HRIS yet?".format(
-                            u.get("PrimaryWorkEmail")
-                        )
+                        "There is no user_id in CIS Person API for HRIS User {}."
+                        "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
                     )
                     continue
             sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
@@ -90,7 +89,11 @@ class HRISPublisher:
         logger.info("Fetching HRIS report from {}".format(hris_url))
         params = dict(format="json")
 
-        res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
+        if os.environ.get("CIS_ENVIRONMENT") == "development":
+            logger.debug("Dev environment, not using credentials")
+            res = requests.get(hris_url, params=params)
+        else:
+            res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
 
         del hris_password
         del hris_username
