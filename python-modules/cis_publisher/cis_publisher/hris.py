@@ -180,7 +180,7 @@ class HRISPublisher:
                 except KeyError:
                     logger.critical(
                         "There is no user_id in CIS Person API for HRIS User {}."
-                        "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                        "This user does may not be created in HRIS yet?".format(hruser.get("PrimaryWorkEmail"))
                     )
                     continue
                 user_ids_lower_case = [x.lower() for x in user_ids]
