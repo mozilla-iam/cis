@@ -45,7 +45,14 @@ class TestHRIS(object):
             hris_data = json.load(fd)
 
         hris = cis_publisher.hris.HRISPublisher()
-        profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=["ad|Mozilla-LDAP-Dev|DNoble"])
+        profiles = hris.convert_hris_to_cis_profiles(
+            hris_data,
+            {
+                "dnoble@mozilla.com": "ad|Mozilla-LDAP-Dev|DNoble",
+                "flastnamehere@mozilla.com": "ad|mozilla-LDAP-Dev|flastname",
+            },
+            user_ids=["ad|Mozilla-LDAP-Dev|DNoble"],
+        )
         assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
 
 

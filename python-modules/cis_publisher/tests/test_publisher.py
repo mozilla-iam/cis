@@ -125,6 +125,9 @@ class TestPublisher:
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         publisher.filter_known_cis_users()
 
+        # Should be filtered out because publisher = "wrong"
         assert publisher.profiles[0].first_name.value != "firstname"
+        # Should not because publisher = "ldap" and thats "us"
         assert publisher.profiles[0].as_dict()["access_information"]["ldap"]["values"] == {"test": "test"}
+        # Should be filtered out because publisher = "wrong"
         assert publisher.profiles[0].as_dict()["access_information"]["hris"]["values"] is None

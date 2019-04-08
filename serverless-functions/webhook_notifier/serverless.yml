@@ -37,7 +37,7 @@ custom:
       development: https://dinopark.dev.k8s.sso.allizom.org/beta/
       testing: https://dinopark.test.k8s.sso.allizom.org/beta/
     CIS_RP_URLS:
-      production: https://dinopark.k8s.prod.sso.allizom.org/events/update
+      production: https://dinopark.k8s.sso.mozilla.com/events/update
       development: https://dinopark.k8s.dev.sso.allizom.org/events/update
       testing: https://dinopark.k8s.test.sso.allizom.org/events/update
 provider:

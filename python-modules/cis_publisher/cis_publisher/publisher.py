@@ -34,13 +34,21 @@ class Publish:
         self.api_url = None
         self.api_url_person = None
         self.api_url_change = None
+        self.access_token = None
+
+        # Number of retries when calling CIS APIs, for robustness
         self.max_retries = 3
         self.max_threads = 50
         # retry_delay is passed to time.sleep
         self.retry_delay = 1
+
+        # known_cis_users is the output of the Person API query
+        # known_cis_users_by_user_id is a dict that maps user_id: email
+        # known_cis_users_by_email is a dict that maps email: user_id (instead of user_id: email)
         self.cis_user_list = None
-        self.access_token = None
         self.known_cis_users = None
+        self.known_cis_users_by_email = {}
+        self.known_cis_users_by_user_id = {}
         self.__inited = False
 
     def __deferred_init(self):
@@ -79,12 +87,7 @@ class Publish:
 
         self.__deferred_init()
         qs = "/v2/user"
-        cis_users_data = self.get_known_cis_users()
-        cis_users = []
-        cis_users_by_email = {}
-        for u in cis_users_data:
-            cis_users.append(u["user_id"])
-            cis_users_by_email[u["primary_email"]] = u["user_id"]
+
         threads = []
         failed_users = queue.Queue()
 
@@ -103,7 +106,7 @@ class Publish:
             xlist = []
             for idx, profile in enumerate(self.profiles):
                 if profile.user_id.value is None:
-                    if cis_users_by_email.get(profile.primary_email.value) not in user_ids:
+                    if self.known_cis_users_by_email.get(profile.primary_email.value) not in user_ids:
                         xlist.append(idx)
                 elif profile.user_id.value not in user_ids:
                     xlist.append(idx)
@@ -118,7 +121,7 @@ class Publish:
             # If we have no user_id provided we need to find it here
             # These are always considered updated users, not new users
             if profile.user_id.value is None:
-                user_id = cis_users_by_email[profile.primary_email.value]
+                user_id = self.known_cis_users_by_email[profile.primary_email.value]
             else:
                 user_id = profile.user_id.value
 
@@ -126,7 +129,7 @@ class Publish:
             self.filter_known_cis_users(profiles=[profile])
 
             # Existing users (i.e. users to update) have to be passed as argument
-            if user_id in cis_users:
+            if user_id in self.known_cis_users_by_user_id:
                 qs = "/v2/user?user_id={}".format(user_id)
             # New users do not
             else:
@@ -238,6 +241,12 @@ class Publish:
             raise PublisherError("Failed to query CIS Person API", response.text)
         self.known_cis_users = response.json()
         logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
+
+        # Also save copies that are easier to query directly
+        for u in self.known_cis_users:
+            self.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
+            self.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
+
         return self.known_cis_users
 
     def filter_known_cis_users(self, profiles=None, save=True):
@@ -246,17 +255,10 @@ class Publish:
         This is for "new" users
         """
         self.__deferred_init()
+        self.get_known_cis_users()
 
         if profiles is None:
             profiles = self.profiles
-
-        cis_users_data = self.get_known_cis_users()
-        # Create some shorthands to easily lookup users by user_id or primary_email
-        cis_users = []
-        cis_users_by_email = {}
-        for u in cis_users_data:
-            cis_users.append(u["user_id"])
-            cis_users_by_email[u["primary_email"]] = u["user_id"]
 
         # Never NULL/None these fields during filtering as they're used for knowing where to post
         whitelist = ["user_id"]
@@ -265,11 +267,11 @@ class Publish:
         for n in range(0, len(profiles)):
             p = profiles[n]
             if p.user_id.value is None:
-                user_id = cis_users_by_email[p.primary_email.value]
+                user_id = self.known_cis_users_by_email[p.primary_email.value]
             else:
                 user_id = p.user_id.value
 
-            if user_id in cis_users:
+            if user_id in self.known_cis_users_by_user_id:
                 logger.info(
                     "Filtering out non-updatable values from user {} because it already exist in CIS".format(user_id)
                 )

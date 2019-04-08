@@ -27,16 +27,24 @@ class HRISPublisher:
         logger.info("Starting HRIS Publisher")
         report_profiles = self.fetch_report()
 
+        # Get access to the known_users function first
+        # We override profiles from `publisher` object later on
+        publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
+        publisher.get_known_cis_users()
+
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
             all_user_ids = []
-            if os.environ.get("CIS_ENVIRONMENT") == "development":
-                user_id_tpl = "ad|Mozilla-LDAP-Dev|"
-            else:
-                user_id_tpl = "ad|Mozilla-LDAP|"
 
             for u in report_profiles.get("Report_Entry"):
-                all_user_ids.append("{}{}".format(user_id_tpl, u.get("PrimaryWorkEmail").split("@")[0].lower()))
+                try:
+                    all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
+                except KeyError:
+                    logger.critical(
+                        "There is no user_id in CIS Person API for HRIS User {}."
+                        "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                    )
+                    continue
             sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
             logger.info(
                 "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
@@ -51,12 +59,11 @@ class HRISPublisher:
             logger.info("Exiting slicing function successfully")
             return 0
 
-        profiles = self.convert_hris_to_cis_profiles(report_profiles, user_ids)
+        profiles = self.convert_hris_to_cis_profiles(report_profiles, publisher.known_cis_users_by_email, user_ids)
         del report_profiles
 
         logger.info("Processing {} profiles".format(len(profiles)))
-
-        publisher = cis_publisher.Publish(profiles, publisher_name="hris", login_method="ad")
+        publisher.profiles = profiles
 
         failures = []
         try:
@@ -82,7 +89,11 @@ class HRISPublisher:
         logger.info("Fetching HRIS report from {}".format(hris_url))
         params = dict(format="json")
 
-        res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
+        if os.environ.get("CIS_ENVIRONMENT") == "development":
+            logger.debug("Dev environment, not using credentials")
+            res = requests.get(hris_url, params=params)
+        else:
+            res = requests.get(hris_url, auth=requests.auth.HTTPBasicAuth(hris_username, hris_password), params=params)
 
         del hris_password
         del hris_username
@@ -96,9 +107,10 @@ class HRISPublisher:
             raise ValueError("Could not fetch HRIS report")
         return res.json()
 
-    def convert_hris_to_cis_profiles(self, hris_data, user_ids=None):
+    def convert_hris_to_cis_profiles(self, hris_data, cis_users_by_email=None, user_ids=None):
         """
         @hris_data list dict of HRIS data
+        @cis_users_by_email dict of Person API known users to convert to user_ids
         @user_ids list of user ids to convert
 
         returns: cis_profile.Profile
@@ -162,20 +174,21 @@ class HRISPublisher:
 
         user_array = []
         for hruser in hris_data.get("Report_Entry"):
-            # Attempt a rough guess at the user-id. this may not match all user ids correctly
-            # We assume this is ok as user_ids are only passed for testing purposes or fixing purposes
             if user_ids is not None:
+                try:
+                    current_user_id = cis_users_by_email[hruser.get("PrimaryWorkEmail")]
+                except KeyError:
+                    logger.critical(
+                        "There is no user_id in CIS Person API for HRIS User {}."
+                        "This user does may not be created in HRIS yet?".format(hruser.get("PrimaryWorkEmail"))
+                    )
+                    continue
                 user_ids_lower_case = [x.lower() for x in user_ids]
-                constructed_user_id = "ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0]
-                constructed_dev_user_id = "ad|Mozilla-LDAP-Dev|" + hruser.get("PrimaryWorkEmail").split("@")[0]
 
-                if constructed_user_id.lower() not in user_ids_lower_case:
-                    if constructed_dev_user_id.lower() not in user_ids_lower_case:
-                        # Skip user
-                        continue
-            logger.info(
-                "filtering fields for user {}".format("ad|Mozilla-LDAP|" + hruser.get("PrimaryWorkEmail").split("@")[0])
-            )
+                if current_user_id.lower() not in user_ids_lower_case:
+                    # Skip user
+                    continue
+            logger.info("filtering fields for user email {}".format(hruser.get("PrimaryWorkEmail")))
             p = cis_profile.User()
             # Note: Never use non-preferred names here
             # Uncomment when LDAP is no longer the creator for these

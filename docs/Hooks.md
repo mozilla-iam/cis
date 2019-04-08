@@ -20,9 +20,7 @@ The basic flow is as follows.
     }
 ```
 6.  The webhook service calls auth0 and signs an authenticated JWT for the API Aud: hook.{prod|dev|test}.{sso.allizom.org|sso.mozilla.com}.
-7.  The payload is then posted to all configured relying parties.  These RPs can choose (strongly reccomended) to authenticate the inbound notification using standard JWT verification with the auth0 .well-known metadata.
-
-## Requesting Additional Hooks 
+7.  The payload is then posted to all configured relying parties.  These RPs can choose (strongly recommended) to authenticate the inbound notification using standard JWT verification with the auth0 .well-known metadata.
 
 External consumers for hooks are not currently supported.
 
