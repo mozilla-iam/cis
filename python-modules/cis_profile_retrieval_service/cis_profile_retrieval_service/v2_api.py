@@ -108,7 +108,7 @@ def scope_to_mozilla_data_classification(scopes):
 
 
 class DisplayLevelParms(object):
-    public = [DisplayLevel.PUBLIC]
+    public = [DisplayLevel.PUBLIC, DisplayLevel.NULL]
     authenticated = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED]
     vouched = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED]
     ndaed = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED, DisplayLevel.NDAED]
@@ -138,6 +138,7 @@ def scope_to_display_level(scopes):
     if "display:all" in scopes:
         logger.debug("all display level in scope.")
         display_levels.append(DisplayLevel.NONE)
+        display_levels.append(DisplayLevel.NULL)
 
     if "display:staff" in scopes:
         logger.debug("staff display level in scope.")
@@ -154,6 +155,10 @@ def scope_to_display_level(scopes):
     if "display:authenticated" in scopes:
         logger.debug("authenticated display level in scope.")
         display_levels.append(DisplayLevel.AUTHENTICATED)
+
+    if "display:none" in scopes:
+        logger.debug("None/NULL display level in scope.")
+        display_levels.append(DisplayLevel.NULL)
 
     display_levels.append(DisplayLevel.PUBLIC)
     return display_levels
