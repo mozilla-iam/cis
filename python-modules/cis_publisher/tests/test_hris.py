@@ -48,10 +48,10 @@ class TestHRIS(object):
         profiles = hris.convert_hris_to_cis_profiles(
             hris_data,
             {
-                "dnoble@mozilla.com": "ad|Mozilla-LDAP-Dev|DNoble",
+                "ndonna@mozilla.com": "ad|Mozilla-LDAP-Dev|NDonna",
                 "flastnamehere@mozilla.com": "ad|mozilla-LDAP-Dev|flastname",
             },
-            user_ids=["ad|Mozilla-LDAP-Dev|DNoble"],
+            user_ids=["ad|Mozilla-LDAP-Dev|NDonna"],
         )
         assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
 
