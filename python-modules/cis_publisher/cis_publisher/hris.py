@@ -25,7 +25,6 @@ class HRISPublisher:
         work between function calls (to self)
         """
         logger.info("Starting HRIS Publisher")
-        report_profiles = self.fetch_report()
 
         # Get access to the known_users function first
         # We override profiles from `publisher` object later on
@@ -34,31 +33,16 @@ class HRISPublisher:
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
-            all_user_ids = []
+            self.fan_out(publisher, chunk_size)
+        else:
+            self.process(publisher, user_ids)
 
-            for u in report_profiles.get("Report_Entry"):
-                try:
-                    all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
-                except KeyError:
-                    logger.critical(
-                        "There is no user_id in CIS Person API for HRIS User {}."
-                        "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
-                    )
-                    continue
-            sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
-            logger.info(
-                "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
-                "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
-            )
-            lambda_client = boto3.client("lambda")
-            for s in sliced:
-                lambda_client.invoke(
-                    FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(s)
-                )
-
-            logger.info("Exiting slicing function successfully")
-            return 0
-
+    def process(self, publisher, user_ids):
+        """
+        Process profiles and post them
+        @publisher object the publisher object to operate on
+        @user_ids list of user ids to process in this batch
+        """
         profiles = self.convert_hris_to_cis_profiles(report_profiles, publisher.known_cis_users_by_email, user_ids)
         del report_profiles
 
@@ -74,6 +58,38 @@ class HRISPublisher:
 
         if len(failures) > 0:
             logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
+
+    def fan_out(self, publisher, chunk_size):
+        """
+        Splices all users to process into chunks
+        and self-invoke as many times as needed to complete all work in parallel lambda functions
+        When self-invoking, this will effectively call self.process() instead of self.fan_out()
+
+        @publisher object the cis_publisher object to operate on
+        @chunk_size int size of the chunk to process
+        """
+        all_user_ids = []
+        report_profiles = self.fetch_report()
+
+        for u in report_profiles.get("Report_Entry"):
+            try:
+                all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
+            except KeyError:
+                logger.critical(
+                    "There is no user_id in CIS Person API for HRIS User {}."
+                    "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                )
+                continue
+        sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
+        logger.info(
+            "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
+            "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
+        )
+        lambda_client = boto3.client("lambda")
+        for s in sliced:
+            lambda_client.invoke(FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(s))
+
+        logger.info("Exiting slicing function successfully")
 
     def fetch_report(self):
         """
