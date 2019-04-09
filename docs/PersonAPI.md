@@ -33,7 +33,7 @@ classification:workgroup (non-public data)
 classification:workgroup:staff_only (Staff data)
 classification:mozilla_confidential (staff or/and NDA'd data)
 classification:individual (Individual confidential data - most sensitive)
-display:null (fields that do not use the display levels such as `user_id` - this scope is necessary to get them!)
+display:none (fields that do not use the display levels such as `user_id` - this scope is necessary to get them!)
 display:public
 display:authenticated (user indicate this is to be shown only to users that are authenticated with the system)
 display:vouched (user indicate this is to be shown to vouched profiles only)
