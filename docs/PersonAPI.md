@@ -48,14 +48,14 @@ write (scope for CIS Change API which allows profile writes. Note that your sign
 ```
 classification:public
 classification:workgroup
-display:null
+display:none
 display:public
 ```
 Same, but also get data that the user wants to be only shown to other authenticated users, if you chose to display it back.
 ```
 classification:public
 classification:workgroup
-display:null
+display:none
 display:public
 display:authenticated
 ```
@@ -64,7 +64,7 @@ display:authenticated
 ```
 classification:public
 classification:workgroup:staff_only
-display:null
+display:none
 display:public
 display:authenticated
 display:vouched
