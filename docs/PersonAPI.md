@@ -33,7 +33,7 @@ classification:workgroup (non-public data)
 classification:workgroup:staff_only (Staff data)
 classification:mozilla_confidential (staff or/and NDA'd data)
 classification:individual (Individual confidential data - most sensitive)
-display:null (fields that do not use the display levels such as `user_id` - this scope is necessary to get them!)
+display:none (fields that do not use the display levels such as `user_id` - this scope is necessary to get them!)
 display:public
 display:authenticated (user indicate this is to be shown only to users that are authenticated with the system)
 display:vouched (user indicate this is to be shown to vouched profiles only)
@@ -48,14 +48,14 @@ write (scope for CIS Change API which allows profile writes. Note that your sign
 ```
 classification:public
 classification:workgroup
-display:null
+display:none
 display:public
 ```
 Same, but also get data that the user wants to be only shown to other authenticated users, if you chose to display it back.
 ```
 classification:public
 classification:workgroup
-display:null
+display:none
 display:public
 display:authenticated
 ```
@@ -64,7 +64,7 @@ display:authenticated
 ```
 classification:public
 classification:workgroup:staff_only
-display:null
+display:none
 display:public
 display:authenticated
 display:vouched

@@ -74,6 +74,7 @@ def seed(number_of_fake_users=100):
             identities = batch_create_fake_profiles(1337, number_of_fake_users)
 
             for identity in identities:
+                identity["pronouns"]["metadata"]["display"] = None
                 identity_vault_data_structure = {
                     "id": identity.get("user_id").get("value"),
                     "primary_email": identity.get("primary_email").get("value"),

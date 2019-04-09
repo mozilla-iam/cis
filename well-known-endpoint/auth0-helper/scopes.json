@@ -57,7 +57,7 @@
                 "description": "Read access to data with this display level (classification scope is ALSO needed!)"
           },
           {
-                "value": "display:null",
+                "value": "display:none",
                 "description": "Read access to data with this display level (classification scope is ALSO needed!)"
           }
 	]

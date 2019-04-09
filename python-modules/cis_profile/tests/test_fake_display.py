@@ -25,3 +25,9 @@ class TestFakeDisplay(object):
         profile = {"staff_information": {"title": {"metadata": {"display": "staff"}}}}
         f.populate(profile, policy=fake_display.DisplayFakerPolicy.max_display())
         assert profile["staff_information"]["title"]["metadata"]["display"] == "ndaed"
+
+    def test_fake_display_is_null(self):
+        f = fake_display.DisplayFaker()
+        profile = {"user_id": {"metadata": {"display": None}}}
+        f.populate(profile, policy=fake_display.DisplayFakerPolicy.min_display())
+        assert profile["user_id"]["metadata"]["display"] is None
