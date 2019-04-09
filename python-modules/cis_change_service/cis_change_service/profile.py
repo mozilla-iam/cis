@@ -53,7 +53,7 @@ class Vault(object):
         """
         Updates the attributes owned by CIS itself. Updated attributes:
         - last_modified
-        - active (XXX to be removed in the future, see comments below)
+        - active
 
         @user_id str of the user's user_id
         @user a cis_profile.User object to update the attributes of
@@ -66,11 +66,9 @@ class Vault(object):
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
 
-        # Currently we accept LDAP and Auth0 disabling a user
-        # but since CIS is authoritative on this attribute, we rewrite it here
-        # XXX THIS IS AN EXCEPTION AND SHOULD BE REMOVED WHEN ONLY HRIS CAN DISABLE USERS
-        # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
-        # publishers
+        # Currently we accept LDAP, HRIS and access_provider (auth0) disabling a user (eventually this could be only
+        # HRIS and Auth0, or HRIS and CIS with write back to auth0)
+        # Since CIS is authoritative on this attribute, we rewrite it here
         if user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]:
             if self.config("verify_signatures", namespace="cis") == "true":
                 logger.info("Verifying signature of attribute active", extra={"user_id": user_id})
@@ -162,10 +160,7 @@ class Vault(object):
             if cis_profile_object.uuid.value is not None or cis_profile_object.primary_username.value is not None:
                 logger.error(
                     "Trying to create profile, but uuid or primary_username was already set",
-                    extra={
-                        "user_id": user_id,
-                        "profile": cis_profile_object.as_dict(),
-                    },
+                    extra={"user_id": user_id, "profile": cis_profile_object.as_dict()},
                 )
                 raise VerificationError(
                     {
