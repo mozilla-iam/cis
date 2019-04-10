@@ -79,8 +79,8 @@ class TestHRIS(object):
         )
         # nolongerexist is returned by fake cis reply, but is not in hris workday fixture, so it should be active.value
         # = false
-        assert profiles[1].active.value == False
-        assert profiles[0].active.value == True
+        assert profiles[1].active.value is False
+        assert profiles[0].active.value is True
 
 
 # Not yet supported by moto
