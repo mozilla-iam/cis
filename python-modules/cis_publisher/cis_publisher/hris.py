@@ -35,7 +35,6 @@ class HRISPublisher:
         if user_ids is None:
             self.fan_out(publisher, chunk_size)
         else:
-            self.deactivate_users(publisher, user_ids)
             self.process(publisher, user_ids)
 
     def deactivate_users(self, cis_users_by_user_id, cis_users_by_email, profiles, report):
