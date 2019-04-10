@@ -61,7 +61,17 @@ class Profile(object):
     def _create_without_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
-        return self.table.put_item(Item=user_profile)
+        return self.table.put_item(
+            Item={
+                "id": user_profile["id"],
+                "user_uuid": user_profile["user_uuid"],
+                "profile": user_profile["profile"],
+                "primary_email": user_profile["primary_email"],
+                "primary_username": user_profile["primary_username"],
+                "sequence_number": user_profile["sequence_number"],
+                "active": json.loads(user_profile["profile"])["active"]["value"]
+            }
+        )
 
     def _create_with_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
@@ -75,6 +85,7 @@ class Profile(object):
                     "primary_email": {"S": user_profile["primary_email"]},
                     "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
+                    "active": {"S": json.loads(user_profile["profile"])["active"]["value"]},
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
                 "TableName": self.table.name,
@@ -100,9 +111,10 @@ class Profile(object):
                     ":pe": {"S": user_profile["primary_email"]},
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
+                    ":a": {"S": json.loads(user_profile["profile"])["active"]["value"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn active = :a",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -110,7 +122,17 @@ class Profile(object):
         return self._run_transaction([transact_items])
 
     def _update_without_transaction(self, user_profile):
-        return self.table.put_item(Item=user_profile)
+        return self.table.put_item(
+            Item={
+                "id": user_profile["id"],
+                "user_uuid": user_profile["user_uuid"],
+                "profile": user_profile["profile"],
+                "primary_email": user_profile["primary_email"],
+                "primary_username": user_profile["primary_username"],
+                "sequence_number": user_profile["sequence_number"],
+                "active": json.loads(user_profile["profile"])["active"]["value"]
+            }
+        )
 
     def delete(self, user_profile):
         res = self._delete_without_transaction(user_profile)
@@ -142,7 +164,17 @@ class Profile(object):
         sequence_numbers = []
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
-                batch.put_item(Item=profile)
+                batch.put_item(
+                    Item={
+                        "id": user_profile["id"],
+                        "user_uuid": user_profile["user_uuid"],
+                        "profile": user_profile["profile"],
+                        "primary_email": user_profile["primary_email"],
+                        "primary_username": user_profile["primary_username"],
+                        "sequence_number": user_profile["sequence_number"],
+                        "active": json.loads(user_profile["profile"])["active"]["value"]
+                    }
+                )
                 sequence_numbers.append(profile["sequence_number"])
 
         return {"status": "200", "ResponseMetadata": {"HTTPStatusCode": 200}, "sequence_numbers": sequence_numbers}
@@ -161,6 +193,7 @@ class Profile(object):
                         "primary_email": {"S": user_profile["primary_email"]},
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
+                        "active": {"S": json.loads(user_profile["profile"])["active"]["value"]},
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -190,9 +223,10 @@ class Profile(object):
                         ":pe": {"S": user_profile["primary_email"]},
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
+                        ":a": {"S": json.loads(user_profile["profile"])["active"]["value"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn active = :a",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -331,3 +365,6 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
+
+        
+
