@@ -17,6 +17,7 @@ class TestUsersDynalite(object):
         self.vault_client.find_or_create()
 
         self.user_profile = FakeUser().as_dict()
+        self.user_profile["active"]["value"] = True
         self.uuid = self.user_profile["uuid"]["value"]
         self.vault_json_datastructure = {
             "id": self.user_profile.get("user_id").get("value"),
@@ -25,6 +26,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(self.user_profile),
+            "active": True
         }
         self.boto_session = boto3.session.Session(region_name="us-east-1")
         self.dynamodb_resource = self.boto_session.resource("dynamodb")
@@ -43,7 +45,7 @@ class TestUsersDynalite(object):
 
         modified_profile = self.user_profile
         modified_profile["primary_email"]["value"] = "dummy@zxy.foo"
-
+        modified_profile["active"]["value"] = True
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
             "user_uuid": str(uuid.uuid4()),
@@ -51,6 +53,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
         result = profile.update(vault_json_datastructure)
@@ -62,7 +65,7 @@ class TestUsersDynalite(object):
         primary_email = "dummy@zxy.foo"
         modified_profile = self.user_profile
         modified_profile["primary_email"]["value"] = primary_email
-
+        modified_profile["active"]["value"] = True
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
             "user_uuid": str(uuid.uuid4()),
@@ -70,6 +73,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
 
@@ -88,7 +92,7 @@ class TestUsersDynalite(object):
         primary_email = "dummy@zxy.foo"
         modified_profile = self.user_profile
         modified_profile["primary_email"]["value"] = primary_email
-
+        modified_profile["active"]["value"] = True
         vault_json_datastructure_first_id = {
             "id": modified_profile.get("user_id").get("value"),
             "user_uuid": str(uuid.uuid4()),
@@ -96,6 +100,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
@@ -109,6 +114,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
 
         profile.update(vault_json_datastructure_second_id)
@@ -125,7 +131,7 @@ class TestUsersDynalite(object):
         primary_username = "foomcbar123"
         modified_profile = self.user_profile
         modified_profile["primary_username"]["value"] = primary_username
-
+        modified_profile["active"]["value"] = False
         vault_json_datastructure_first_id = {
             "id": modified_profile.get("user_id").get("value"),
             "user_uuid": str(uuid.uuid4()),
@@ -133,6 +139,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
@@ -146,6 +153,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
+            "active": True
         }
 
         profile.update(vault_json_datastructure_second_id)
@@ -180,5 +188,14 @@ class TestUsersDynalite(object):
         from cis_identity_vault.models import user
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
-        result = profile.all_filtered(query_filter="email")
+        result = profile.all_filtered(connection_method="email")
         assert len(result) > 0
+
+        result = profile.all_filtered(connection_method="email", active=True)
+        assert len(result) > 0
+        for record in result:
+            assert record["active"]["BOOL"] is True
+
+        result = profile.all_filtered(connection_method="email", active=False)
+        for record in result:
+            assert record["active"]["BOOL"] is False
