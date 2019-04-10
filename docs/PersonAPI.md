@@ -130,7 +130,14 @@ Retrieve specific user profiles:
 - `/v2/user/primary_username/<string:primary_username>`
 
 Retrieve lists of users:
-- `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method)
+- `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.
+
+- `/v2/users/id/all?[connectionMethod=ad&active=True]` (Returns all user ids for a specific login/connection method showing only active user IDs) **Highly Advised**
+
+- `/v2/users/id/all?[connectionMethod=ad&active=False]` (Returns all user ids for a specific login/connection method that are currently marked inactive)
+
+*Note true/false are case insensitive for ease.* 
+
 
 ## I want to help add features to this API!
 
