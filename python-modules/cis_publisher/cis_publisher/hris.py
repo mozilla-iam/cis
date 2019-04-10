@@ -35,7 +35,66 @@ class HRISPublisher:
         if user_ids is None:
             self.fan_out(publisher, chunk_size)
         else:
+            self.deactivate_users(publisher, user_ids)
             self.process(publisher, user_ids)
+
+    def deactivate_users(self, cis_users_by_user_id, cis_users_by_email, profiles, report):
+        """
+        Deactivate users present in CIS but not in HRIS
+        @cis_users_by_user_id dict of Person API known users by user_id=>email
+        @cis_users_by_email dict of Person API known users by email=>user_id to convert to user_ids
+        @profiles list of cis_profile.User that were converted
+        @report HRIS report
+        """
+        user_ids_in_hris = []
+        for hruser in report.get("Report_Entry"):
+            hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
+            try:
+                current_user_id = cis_users_by_email[hruser_work_email]
+            except KeyError:
+                logger.critical(
+                    "Repeated: There is no user_id in CIS Person API for HRIS User:{}".format(hruser_work_email)
+                )
+                continue
+            user_ids_in_hris.append(current_user_id)
+        delta = set(cis_users_by_user_id.keys()) - set(user_ids_in_hris)
+        if len(delta) > 0:
+            logger.info("Will deactivate {} users because they're in CIS but not in HRIS".format(delta))
+            for user in delta:
+                logger.info("User selected for deactivation: {}".format(user))
+                p = cis_profile.User()
+                p.primary_email.value = cis_users_by_user_id[user]
+                p.primary_email.signature.publisher.name = "hris"
+                p.active.value = False
+                p.active.signature.publisher.name = "hris"
+                try:
+                    p.sign_all(publisher_name="hris")
+                except Exception as e:
+                    logger.critical(
+                        "Profile data signing failed for user {} - skipped signing, verification "
+                        "WILL FAIL ({})".format(p.primary_email.value, e)
+                    )
+                    logger.debug("Profile data {}".format(p.as_dict()))
+                try:
+                    p.validate()
+                except Exception as e:
+                    logger.critical(
+                        "Profile schema validation failed for user {} - skipped validation, verification "
+                        "WILL FAIL({})".format(p.primary_email.value, e)
+                    )
+                    logger.debug("Profile data {}".format(p.as_dict()))
+                try:
+                    p.verify_all_publishers(cis_profile.User())
+                except Exception as e:
+                    logger.critical(
+                        "Profile publisher verification failed for user {} - skipped signing, verification "
+                        "WILL FAIL ({})".format(p.primary_email.value, e)
+                    )
+                    logger.debug("Profile data {}".format(p.as_dict()))
+
+                profiles.append(p)
+
+        return profiles
 
     def process(self, publisher, user_ids):
         """
@@ -43,7 +102,13 @@ class HRISPublisher:
         @publisher object the publisher object to operate on
         @user_ids list of user ids to process in this batch
         """
-        profiles = self.convert_hris_to_cis_profiles(report_profiles, publisher.known_cis_users_by_email, user_ids)
+        report_profiles = self.fetch_report()
+        profiles = self.convert_hris_to_cis_profiles(
+            report_profiles, publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, user_ids
+        )
+        profiles = self.deactivate_users(
+            publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, profiles, report_profiles
+        )
         del report_profiles
 
         logger.info("Processing {} profiles".format(len(profiles)))
@@ -123,13 +188,14 @@ class HRISPublisher:
             raise ValueError("Could not fetch HRIS report")
         return res.json()
 
-    def convert_hris_to_cis_profiles(self, hris_data, cis_users_by_email=None, user_ids=None):
+    def convert_hris_to_cis_profiles(self, hris_data, cis_users_by_user_id, cis_users_by_email, user_ids):
         """
         @hris_data list dict of HRIS data
-        @cis_users_by_email dict of Person API known users to convert to user_ids
+        @cis_users_by_user_id dict of Person API known users by user_id=>email
+        @cis_users_by_email dict of Person API known users by email=>user_id to convert to user_ids
         @user_ids list of user ids to convert
 
-        returns: cis_profile.Profile
+        returns: list of cis_profile.Profile
         """
 
         def tz_convert(hris_tz):
@@ -188,33 +254,36 @@ class HRISPublisher:
         def strbool_convert(v):
             return v.lower() in ("yes", "true", "t", "1")
 
+        # Convert
         user_array = []
         for hruser in hris_data.get("Report_Entry"):
-            if user_ids is not None:
-                try:
-                    current_user_id = cis_users_by_email[hruser.get("PrimaryWorkEmail")]
-                except KeyError:
-                    logger.critical(
-                        "There is no user_id in CIS Person API for HRIS User {}."
-                        "This user does may not be created in HRIS yet?".format(hruser.get("PrimaryWorkEmail"))
-                    )
-                    continue
-                user_ids_lower_case = [x.lower() for x in user_ids]
+            hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
+            logger.debug("filtering fields for user email {}".format(hruser_work_email))
+            current_user_id = None
+            try:
+                current_user_id = cis_users_by_email[hruser_work_email]
+            except KeyError:
+                logger.critical(
+                    "There is no user_id in CIS Person API for HRIS User {}."
+                    "This user does may not be created in HRIS yet?".format(hruser_work_email)
+                )
+                continue
+            user_ids_lower_case = [x.lower() for x in user_ids]
 
-                if current_user_id.lower() not in user_ids_lower_case:
-                    # Skip user
-                    continue
-            logger.info("filtering fields for user email {}".format(hruser.get("PrimaryWorkEmail")))
+            if current_user_id.lower() not in user_ids_lower_case:
+                # Skip this user, it's not in the list requested to convert
+                continue
+
             p = cis_profile.User()
             # Note: Never use non-preferred names here
-            # Uncomment when LDAP is no longer the creator for these
-            # When that happens, code to disable the user will also be necessary!
-            # p.active.value = True
             #            p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
             #            p.last_name.signature.publisher.name = "hris"
             #            p.first_name.value = hruser.get("PreferredFirstName")
             #            p.first_name.signature.publisher.name = "hris"
-            p.primary_email.value = hruser.get("PrimaryWorkEmail").lower()
+            p.active.value = True
+            p.active.signature.publisher.name = "hris"
+
+            p.primary_email.value = hruser_work_email
             p.primary_email.signature.publisher.name = "hris"
 
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
@@ -263,7 +332,7 @@ class HRISPublisher:
             p.access_information.hris.signature.publisher.name = "hris"
             p.access_information.hris["values"]["employee_id"] = hruser.get("EmployeeID")
             p.access_information.hris["values"]["worker_type"] = hruser.get("WorkerType")
-            p.access_information.hris["values"]["primary_work_email"] = hruser.get("PrimaryWorkEmail").lower()
+            p.access_information.hris["values"]["primary_work_email"] = hruser_work_email
             p.access_information.hris["values"]["managers_primary_work_email"] = hruser.get(
                 "Worker_s_Manager_s_Email_Address"
             )

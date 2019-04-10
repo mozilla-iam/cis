@@ -12,7 +12,7 @@ class TestHRIS(object):
             hris_data = json.load(fd)
 
         hris = cis_publisher.hris.HRISPublisher()
-        profiles = hris.convert_hris_to_cis_profiles(hris_data, user_ids=None)
+        profiles = hris.convert_hris_to_cis_profiles(hris_data, {}, {}, [])
         print("parsed {} profiles".format(len(profiles)))
 
         # Check access information is populated
@@ -47,13 +47,34 @@ class TestHRIS(object):
         hris = cis_publisher.hris.HRISPublisher()
         profiles = hris.convert_hris_to_cis_profiles(
             hris_data,
-            {
-                "ndonna@mozilla.com": "ad|Mozilla-LDAP-Dev|NDonna",
-                "flastnamehere@mozilla.com": "ad|mozilla-LDAP-Dev|flastname",
-            },
-            user_ids=["ad|Mozilla-LDAP-Dev|NDonna"],
+            {"ad|Mozilla-LDAP|NDonna": "ndonna@mozilla.com", "ad|Mozilla-LDAP|flastname": "flastnamehere@mozilla.com"},
+            {"ndonna@mozilla.com": "ad|Mozilla-LDAP|NDonna", "flastnamehere@mozilla.com": "ad|mozilla-LDAP|flastname"},
+            user_ids=["ad|Mozilla-LDAP|NDonna"],
         )
         assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
+
+    def test_user_deactivate(self):
+        hris_data = {}
+        with open("tests/fixture/workday.json") as fd:
+            hris_data = json.load(fd)
+
+        hris = cis_publisher.hris.HRISPublisher()
+        profiles = hris.convert_hris_to_cis_profiles(
+            hris_data,
+            {"ad|Mozilla-LDAP|NDonna": "ndonna@mozilla.com", "ad|Mozilla-LDAP|notexist": "nolongerexists@mozilla.com"},
+            {"ndonna@mozilla.com": "ad|Mozilla-LDAP|NDonna", "nolongerexists@mozilla.com": "ad|Mozilla-LDAP|notexist"},
+            user_ids=["ad|Mozilla-LDAP|NDonna", "ad|Mozilla-LDAP|notexist"],
+        )
+        profiles = hris.deactivate_users(
+            {"ad|Mozilla-LDAP|NDonna": "ndonna@mozilla.com", "ad|Mozilla-LDAP|notexist": "nolongerexists@mozilla.com"},
+            {"ndonna@mozilla.com": "ad|Mozilla-LDAP|NDonna", "nolongerexists@mozilla.com": "ad|Mozilla-LDAP|notexist"},
+            profiles,
+            hris_data,
+        )
+        # nolongerexist is returned by fake cis reply, but is not in hris workday fixture, so it should be active.value
+        # = false
+        assert profiles[1].active.value == False
+        assert profiles[0].active.value == True
 
 
 # Not yet supported by moto
