@@ -167,13 +167,13 @@ class Profile(object):
             for profile in list_of_profiles:
                 batch.put_item(
                     Item={
-                        "id": user_profile["id"],
-                        "user_uuid": user_profile["user_uuid"],
-                        "profile": user_profile["profile"],
-                        "primary_email": user_profile["primary_email"],
-                        "primary_username": user_profile["primary_username"],
-                        "sequence_number": user_profile["sequence_number"],
-                        "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                        "id": profile["id"],
+                        "user_uuid": profile["user_uuid"],
+                        "profile": profile["profile"],
+                        "primary_email": profile["primary_email"],
+                        "primary_username": profile["primary_username"],
+                        "sequence_number": profile["sequence_number"],
+                        "active": bool(json.loads(profile["profile"])["active"]["value"])
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
