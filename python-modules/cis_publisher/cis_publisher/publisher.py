@@ -4,6 +4,7 @@ import os
 import time
 import threading
 import queue
+from urllib.parse import urlencode, quote_plus
 from cis_profile.common import WellKnown
 from cis_publisher import secret
 from cis_publisher import common
@@ -248,6 +249,25 @@ class Publish:
             self.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
 
         return self.known_cis_users
+
+    def get_cis_user(self, user_id):
+        """
+        Call CIS Person API and return the matching user profile
+        @user_id str a user_id
+        """
+        self.__deferred_init()
+        logger.info("Requesting CIS Person API for a user profile {}".format(user_id))
+        access_token = self._get_authzero_token()
+        qs = "/v2/user/user_id/{}".format(urlencode(user_id, quote_via=quote_plus))
+        response = self._request_get(
+            self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
+        )
+        if not response.ok:
+            logger.error(
+                "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
+            )
+            raise PublisherError("Failed to query CIS Person API", response.text)
+        return cis_profile.User(response.json())
 
     def filter_known_cis_users(self, profiles=None, save=True):
         """

@@ -56,10 +56,24 @@ class HRISPublisher:
                 )
                 continue
             user_ids_in_hris.append(current_user_id)
+
         delta = set(cis_users_by_user_id.keys()) - set(user_ids_in_hris)
-        if len(delta) > 0:
-            logger.info("Will deactivate {} users because they're in CIS but not in HRIS".format(delta))
-            for user in delta:
+
+        # XXX this is a slow work-around to figure out who is staff
+        # This data should eventually be directly queriable from Person API with a filter (this does not currently
+        # exist)
+        publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
+        user_ids_to_deactivate = []
+        for potential_user_id in delta:
+            profile = publisher.get_cis_user(potential_user_id)
+            if profile.staff_information.staff.value == True:
+                user_ids_to_deactivate.append(potential_user_id)
+
+        if len(user_ids_to_deactivate) > 0:
+            logger.info(
+                "Will deactivate {} users because they're in CIS but not in HRIS".format(user_ids_to_deactivate)
+            )
+            for user in user_ids_to_deactivate:
                 logger.info("User selected for deactivation: {}".format(user))
                 p = cis_profile.User()
                 p.primary_email.value = cis_users_by_user_id[user]
