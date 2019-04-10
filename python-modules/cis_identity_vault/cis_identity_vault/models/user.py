@@ -12,6 +12,7 @@ user_profile must be passed to this in the form required by dynamodb
 import json
 import logging
 import uuid
+from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from botocore.exceptions import ClientError
 from botocore.exceptions import ParamValidationError
@@ -61,7 +62,17 @@ class Profile(object):
     def _create_without_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
-        return self.table.put_item(Item=user_profile)
+        return self.table.put_item(
+            Item={
+                "id": user_profile["id"],
+                "user_uuid": user_profile["user_uuid"],
+                "profile": user_profile["profile"],
+                "primary_email": user_profile["primary_email"],
+                "primary_username": user_profile["primary_username"],
+                "sequence_number": user_profile["sequence_number"],
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+            }
+        )
 
     def _create_with_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
@@ -75,6 +86,7 @@ class Profile(object):
                     "primary_email": {"S": user_profile["primary_email"]},
                     "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
+                    "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
                 "TableName": self.table.name,
@@ -100,9 +112,10 @@ class Profile(object):
                     ":pe": {"S": user_profile["primary_email"]},
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
+                    ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -110,7 +123,17 @@ class Profile(object):
         return self._run_transaction([transact_items])
 
     def _update_without_transaction(self, user_profile):
-        return self.table.put_item(Item=user_profile)
+        return self.table.put_item(
+            Item={
+                "id": user_profile["id"],
+                "user_uuid": user_profile["user_uuid"],
+                "profile": user_profile["profile"],
+                "primary_email": user_profile["primary_email"],
+                "primary_username": user_profile["primary_username"],
+                "sequence_number": user_profile["sequence_number"],
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+            }
+        )
 
     def delete(self, user_profile):
         res = self._delete_without_transaction(user_profile)
@@ -142,7 +165,17 @@ class Profile(object):
         sequence_numbers = []
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
-                batch.put_item(Item=profile)
+                batch.put_item(
+                    Item={
+                        "id": profile["id"],
+                        "user_uuid": profile["user_uuid"],
+                        "profile": profile["profile"],
+                        "primary_email": profile["primary_email"],
+                        "primary_username": profile["primary_username"],
+                        "sequence_number": profile["sequence_number"],
+                        "active": bool(json.loads(profile["profile"])["active"]["value"])
+                    }
+                )
                 sequence_numbers.append(profile["sequence_number"])
 
         return {"status": "200", "ResponseMetadata": {"HTTPStatusCode": 200}, "sequence_numbers": sequence_numbers}
@@ -161,6 +194,7 @@ class Profile(object):
                         "primary_email": {"S": user_profile["primary_email"]},
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
+                        "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -190,9 +224,10 @@ class Profile(object):
                         ":pe": {"S": user_profile["primary_email"]},
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
+                        ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -234,31 +269,47 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    def _get_segment(self, segment=0, total_segments=10, query_filter=None):
+    def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
         logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+
+        if connection_method:
+            expression_attr = {
+                ":id": {"S": connection_method}
+            }
+            filter_expression = "begins_with(id, :id)"
+
+        
+        if connection_method and active is not None:
+            logger.info("Asking for only the users with active state: {}".format(active))
+            expression_attr = {
+                ":id": {"S": connection_method},
+                ":a" : {"BOOL": active},
+            }
+            filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
+
         response = self.client.scan(
             TableName=self.table.name,
             TotalSegments=total_segments, 
             Segment=segment, 
-            ProjectionExpression="id, primary_email, user_uuid", 
-            FilterExpression="begins_with(id, :id)", 
-            ExpressionAttributeValues={":id": {"S": query_filter}},
+            ProjectionExpression="id, primary_email, user_uuid, active", 
+            FilterExpression=filter_expression, 
+            ExpressionAttributeValues=expression_attr,
         )
-        users = response.get("Items")
+        users = response.get("Items", [])
         while "LastEvaluatedKey" in response:
             response = self.client.scan(
                 TableName=self.table.name,
                 TotalSegments=total_segments, 
                 Segment=segment, 
-                ProjectionExpression="id, primary_email, user_uuid", 
-                FilterExpression="begins_with(id, :id)", 
-                ExpressionAttributeValues={":id": {"S": query_filter}},
+                ProjectionExpression="id, primary_email, user_uuid, active", 
+                FilterExpression=filter_expression, 
+                ExpressionAttributeValues=expression_attr,
                 ExclusiveStartKey=response["LastEvaluatedKey"],
             )
             users.extend(response["Items"])
         return users
 
-    def all_filtered(self, query_filter=None):
+    def all_filtered(self, connection_method=None, active=None):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
@@ -269,7 +320,7 @@ class Profile(object):
         users = []
         for x in range(pool_size):
             # XXX TBD async this with asyncio
-            users.extend(self._get_segment(segment=x, total_segments=pool_size, query_filter=query_filter))
+            users.extend(self._get_segment(segment=x, total_segments=pool_size, connection_method=connection_method, active=active))
         return users
 
     def find_or_create(self, user_profile):
@@ -331,3 +382,6 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
+
+        
+

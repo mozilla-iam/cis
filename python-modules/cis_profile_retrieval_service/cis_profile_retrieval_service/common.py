@@ -85,3 +85,19 @@ def seed(number_of_fake_users=100):
                 }
 
                 user_profile.create(identity_vault_data_structure)
+
+            identities = batch_create_fake_profiles(1337, 1)
+
+            for identity in identities:
+                identity["pronouns"]["metadata"]["display"] = None
+                identity["active"]["value"] = False
+                identity_vault_data_structure = {
+                    "id": identity.get("user_id").get("value"),
+                    "primary_email": identity.get("primary_email").get("value"),
+                    "user_uuid": identity.get("uuid").get("value"),
+                    "primary_username": identity.get("primary_username").get("value"),
+                    "sequence_number": "1234567890",
+                    "profile": dumps(identity),
+                }
+
+                user_profile.create(identity_vault_data_structure)

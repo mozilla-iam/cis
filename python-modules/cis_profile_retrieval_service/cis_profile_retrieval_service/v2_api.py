@@ -222,6 +222,8 @@ class v2UsersByAny(Resource):
     def get(self):
         parser = reqparse.RequestParser()
         parser.add_argument("connectionMethod", type=str)
+        parser.add_argument("active", type=str)
+
         args = parser.parse_args()
 
         logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
@@ -232,7 +234,14 @@ class v2UsersByAny(Resource):
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
-        all_users = identity_vault.all_filtered(args.get("connectionMethod"))
+
+        if args.get("active") is None or args.get("active").lower() == "true":
+            active = True  # Support returning only active users by default.
+
+        if args.get("active") is not None and args.get("active").lower() == "false":
+            active = False
+
+        all_users = identity_vault.all_filtered(connection_method=args.get("connectionMethod"), active=active)
         # Convert vault data to cis-profile-like data format
         all_users_cis = []
         for cuser in all_users:
@@ -241,6 +250,7 @@ class v2UsersByAny(Resource):
                     "uuid": cuser["user_uuid"]["S"],
                     "user_id": cuser["id"]["S"],
                     "primary_email": cuser["primary_email"]["S"],
+                    "active": cuser["active"]["BOOL"],
                 }
             )
 
@@ -306,6 +316,8 @@ class v2Users(Resource):
         parser.add_argument("nextPage", type=str)
         parser.add_argument("primaryEmail", type=str)
         parser.add_argument("filterDisplay", type=str)
+        parser.add_argument("active", type=str)
+
         args = parser.parse_args()
 
         filter_display = args.get("filterDisplay", None)
@@ -332,9 +344,20 @@ class v2Users(Resource):
             result = identity_vault.find_by_email(primary_email)
         v2_profiles = []
 
+        if args.get("active") is None or args.get("active").lower() == 'true':
+            active = True  # Support returning only active users by default.
+
+        if args.get("active") is not None and args.get("active").lower() == "false":
+            active = False
+
         for profile in result.get("Items"):
             vault_profile = json.loads(profile.get("profile"))
             v2_profile = User(user_structure_json=vault_profile)
+
+            # This must be a pre filtering check because mutation is real.
+            if v2_profile.active.value == active:
+                allowed_in_list = True
+
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
                 logger.info(
@@ -355,7 +378,11 @@ class v2Users(Resource):
             if filter_display is not None:
                 v2_profile.filter_display(DisplayLevelParms.map(filter_display))
 
-            v2_profiles.append(v2_profile.as_dict())
+            if allowed_in_list:
+                v2_profiles.append(v2_profile.as_dict())
+            else:
+                logger.debug("Skipping adding this profile to the list of profiles because it is: {}".format(active))
+                pass
 
         response = {"Items": v2_profiles, "nextPage": next_page_token}
         return jsonify(response)
