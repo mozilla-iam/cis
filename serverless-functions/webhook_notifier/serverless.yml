@@ -90,7 +90,11 @@ functions:
     memorySize: 512
     timeout: 120
     events:
-      - stream: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
+      - stream: 
+          arn: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
+          batchSize: 100
+          startingPosition: LATEST
+          enabled: true
     layers:
       -  ${ssm:/iam/cis/${self:custom.webhookStage}/lambda_layer_arn}
 

@@ -1,6 +1,8 @@
 import boto3
 import http.client
 import json
+import time
+from botocore.exceptions import ClientError
 from cis_notifications import common
 from logging import getLogger
 
@@ -36,7 +38,7 @@ class AuthZero(object):
         """
         logger.info(
             "Attempting to exchange for access token with: {}".format(self.authzero_tenant),
-            extra={"client_id": self.client_id, "client_secret": self.api_identifier, "tenant": self.authzero_tenant},
+            extra={"client_id": self.client_id, "api_identifier": self.api_identifier, "tenant": self.authzero_tenant},
         )
         conn = http.client.HTTPSConnection(self.authzero_tenant)
         payload_dict = dict(
@@ -71,10 +73,23 @@ class Manager(object):
         Returns:
             [type] -- [The result of the query or None in the case the secret does not exist.]
         """
-        ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
-        ssm_response = self.ssm_client.get_parameter(
-            Name="{}/{}".format(ssm_namespace, secret_name), WithDecryption=True
-        )
-        logger.debug("Secret manager SSM provider loading key: {}{}".format(ssm_namespace, secret_name))
-        result = ssm_response.get("Parameter", {})
-        return result.get("Value")
+        result = None
+        retry = 5
+        backoff = 1  # how long to sleep between attempts.
+
+        while result is None and retry != 0:
+            try:
+                ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+                ssm_response = self.ssm_client.get_parameter(
+                    Name="{}/{}".format(ssm_namespace, secret_name), WithDecryption=True
+                )
+                logger.debug("Secret manager SSM provider loading key: {}{}".format(ssm_namespace, secret_name))
+                result = ssm_response.get("Parameter", {})
+            except ClientError as e:
+                logger.error("Failed to fetch secret due to: {}".format(e))
+                retry = retry - 1
+                time.sleep(backoff)
+                backoff = backoff + 1
+                logger.debug("Backing off to try again.")
+        logger.debug("Secrets were returned from the function.")
+        return result["Value"]

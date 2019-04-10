@@ -21,6 +21,7 @@ class Event(object):
         self.config = common.get_config()
         self.event = event
         self.secret_manager = secret.Manager()
+        self.access_token = None
 
     def to_notification(self):
         """[summary]
@@ -69,16 +70,18 @@ class Event(object):
 
         [return] Dictionary of status codes by publisher.
         """
+        if not self.access_token:
+            authzero = self._get_authzero_client()
+            self.access_token = authzero.exchange_for_access_token()
 
         if notification != {}:
             rp_urls = self.config(
                 "rp_urls", namespace="cis", default="https://dinopark.k8s.dev.sso.allizom.org/events/update"
             )
-            authzero = self._get_authzero_client()
-            access_token = authzero.exchange_for_access_token()
+
             results = {}
             for url in rp_urls.split(","):
-                result = self._notify_via_post(url, notification, access_token)
+                result = self._notify_via_post(url, notification, self.access_token)
                 results[url] = result
             return results
 
@@ -107,10 +110,10 @@ class Event(object):
             )
             return response.status_code
         except requests.exceptions.RequestException:
-            return 'Unknown'
+            return "Unknown"
         except requests.exceptions.HTTPError:
-            return 'HTTPError'
+            return "HTTPError"
         except requests.exceptions.ConnectionError:
-            return 'ConnectionError'
+            return "ConnectionError"
         except requests.exceptions.Timeout:
-            return 'Timeout'
+            return "Timeout"
