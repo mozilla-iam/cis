@@ -12,7 +12,13 @@ class TestHRIS(object):
             hris_data = json.load(fd)
 
         hris = cis_publisher.hris.HRISPublisher()
-        profiles = hris.convert_hris_to_cis_profiles(hris_data, {}, {}, [])
+        profiles = hris.convert_hris_to_cis_profiles(
+            hris_data,
+            {"ad|Mozilla-LDAP|NDonna": "ndonna@mozilla.com", "ad|Mozilla-LDAP|flastname": "flastnamehere@mozilla.com"},
+            {"ndonna@mozilla.com": "ad|Mozilla-LDAP|NDonna", "flastnamehere@mozilla.com": "ad|mozilla-LDAP|flastname"},
+            user_ids=["ad|Mozilla-LDAP|NDonna"],
+        )
+
         print("parsed {} profiles".format(len(profiles)))
 
         # Check access information is populated
