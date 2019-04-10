@@ -80,6 +80,8 @@ class Manager(object):
         retry = 5
         backoff = 1  # how long to sleep between attempts
 
+        # XXX this should use:
+        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ssm.html#SSM.Client.get_waiter
         while result is None and retry != 0:
             try:
                 ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
