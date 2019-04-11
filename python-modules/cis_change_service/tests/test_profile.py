@@ -7,6 +7,7 @@ import random
 import subprocess
 from boto3.dynamodb.conditions import Key
 from cis_profile import FakeUser
+from cis_profile import User
 from cis_profile.fake_profile import FakeProfileConfig
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
@@ -86,6 +87,7 @@ class TestProfile(object):
             logger.error("Table error: {}".format(e))
         user_profile = FakeUser(config=FakeProfileConfig().minimal())
         self.user_profile = user_profile.as_json()
+        self.user_profile_dict = user_profile.as_dict()
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_a_profile_and_retreiving_status_it_should_succeed(self, fake_jwks):
@@ -153,6 +155,47 @@ class TestProfile(object):
 
         results = json.loads(result.get_data())
         assert results is not None
+
+    @mock.patch("cis_change_service.idp.get_jwks")
+    def test_post_profiles_and_update_it_and_retrieving_status_it_should_succeed(self, fake_jwks):
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        from cis_change_service import api
+
+        # Post a new user
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        my_fake_user = User(user_id="userA")
+        my_fake_user.active.value = True
+        my_fake_user.primary_email.value = "userA@example.net"
+        my_fake_user.uuid.value = None
+        my_fake_user.primary_username.value = None
+        result = self.app.post(
+            "/v2/user?user_id={}".format(my_fake_user.user_id.value),
+            headers={"Authorization": "Bearer " + token},
+            json=my_fake_user.as_dict(),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        results = json.loads(result.get_data())
+        print("user posted", results)
+        # Post it again
+        result = self.app.post(
+            "/v2/user?user_id={}".format(my_fake_user.user_id.value),
+            headers={"Authorization": "Bearer " + token},
+            json=my_fake_user.as_dict(),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        results = json.loads(result.get_data())
+        print("result", results)
+        assert results is not None
+        assert results.get("description") == "No operation occurred: {'creates': None, 'updates': None, 'status': 202}"
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_new_profile_with_primary_username_should_fail(self, fake_jwks):
