@@ -224,7 +224,11 @@ class Vault(object):
         Wrapper for a single profile, calls the batch put_profiles method
         """
         res = self.put_profiles([_profile])
-        if res["creates"] is not None and len(res["creates"]["sequence_numbers"]) == 1:
+        if res["status"] == 202:
+            # 202 means everything went OK but no processing was performed (ie no results and this normal)
+            condition = "noop"
+            sequence_number = None
+        elif res["creates"] is not None and len(res["creates"]["sequence_numbers"]) == 1:
             sequence_number = res["creates"]["sequence_numbers"][0]
             condition = "create"
         elif res["updates"] is not None and len(res["updates"]["sequence_numbers"]) == 1:
