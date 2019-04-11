@@ -195,7 +195,7 @@ class TestProfile(object):
         results = json.loads(result.get_data())
         print("result", results)
         assert results is not None
-        assert results.get("description") == "No operation occurred: {'creates': None, 'updates': None, 'status': 202}"
+        assert results.get("status_code") == 202
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_new_profile_with_primary_username_should_fail(self, fake_jwks):
