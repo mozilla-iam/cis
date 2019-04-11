@@ -132,9 +132,10 @@ class User(object):
         attributes). The level MUST be from user_to_merge_in, not from the original/current user.
         @_internal_level str attribute name  of previous level attribute from the current user. Used internally.
 
-        This function always returns None and is always successful.
+        This function returns a diff of what was changed and is always successful.
         """
         tomerge = []
+        different_attrs = []
         # Default to top level
         if level is None:
             level = user_to_merge_in.__dict__
@@ -147,20 +148,23 @@ class User(object):
                 continue
             # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
             if "signature" not in level[attr].keys():
-                self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
+                different_attrs = self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
             # We will merge this attribute back (granted its not null/None)
             else:
                 tomerge.append(attr)
 
-        for _ in tomerge:
-            logger.debug("Merging in attribute {}".format(_))
-
+        for attr in tomerge:
             # _internal_level is the original user attr
             # level is the patch/merged in user attr
             # This is where wee skip null/None attributes even if the original/current
             # user does not match (ie is not null)
-            if level[_].get("value") is not None or level[_].get("values") is not None:
-                _internal_level[_] = level[_]
+            if level[attr].get("value") is not None or level[attr].get("values") is not None:
+                if _internal_level[attr] != level[attr]:
+                    logger.debug("Merging in attribute {}".format(attr))
+                    different_attrs.append(attr)
+                    _internal_level[attr] = level[attr]
+
+        return different_attrs
 
     def initialize_uuid_and_primary_username(self):
         try:
