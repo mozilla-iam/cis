@@ -132,7 +132,8 @@ class Vault(object):
             difference = new_user_profile.merge(cis_profile_object)
 
             if (
-                (new_user_profile.active.value == old_user_profile.active.value and difference == ["active"])
+                (difference == ["user_id"])
+                or (new_user_profile.active.value == old_user_profile.active.value and difference == ["active"])
                 or (len(difference) == 0)
                 or (
                     (
@@ -179,7 +180,7 @@ class Vault(object):
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
-            # We raise an exception if uuid oder primary_username is already set. This must not happen.
+            # We raise an exception if uuid or primary_username is already set. This must not happen.
             if cis_profile_object.uuid.value is not None or cis_profile_object.primary_username.value is not None:
                 logger.error(
                     "Trying to create profile, but uuid ({}) or primary_username ({}) was already "
