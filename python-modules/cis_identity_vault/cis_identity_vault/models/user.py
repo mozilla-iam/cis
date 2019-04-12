@@ -70,7 +70,10 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
+                "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
+                "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
+                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
             }
         )
 
@@ -87,6 +90,7 @@ class Profile(object):
                     "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
                     "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                    "access_information": json.loads(user_profile["profile"])["access_information"],
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
                 "TableName": self.table.name,
@@ -113,9 +117,10 @@ class Profile(object):
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
                     ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                    ":ac": {"M": json.loads(user_profile["profile"])["access_information"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information = :ac",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -131,7 +136,10 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
+                "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
+                "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
+                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
             }
         )
 
@@ -173,7 +181,10 @@ class Profile(object):
                         "primary_email": profile["primary_email"],
                         "primary_username": profile["primary_username"],
                         "sequence_number": profile["sequence_number"],
-                        "active": bool(json.loads(profile["profile"])["active"]["value"])
+                        "active": bool(json.loads(profile["profile"])["active"]["value"]),
+                        "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
+                        "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
+                        "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
@@ -195,6 +206,9 @@ class Profile(object):
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
                         "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                        "access_information_ldap": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
+                        "access_information_hris": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
+                        "access_information_mozilliansorg": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -225,9 +239,12 @@ class Profile(object):
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
                         ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                        "ail": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
+                        "aih": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
+                        "aim": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information_ldap = :ail, access_information_hris = :aih, access_information_mozilliansorg = :aim",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
