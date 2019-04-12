@@ -159,7 +159,7 @@ class User(object):
             # This is where wee skip null/None attributes even if the original/current
             # user does not match (ie is not null)
             if level[attr].get("value") is not None or level[attr].get("values") is not None:
-                if _internal_level[attr] != level[attr]:
+                if _internal_level[attr].get("value") != level[attr].get("values"):
                     logger.debug("Merging in attribute {}".format(attr))
                     different_attrs.append(attr)
                     _internal_level[attr] = level[attr]
