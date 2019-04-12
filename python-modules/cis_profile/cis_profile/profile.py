@@ -156,11 +156,18 @@ class User(object):
         for attr in tomerge:
             # _internal_level is the original user attr
             # level is the patch/merged in user attr
-            # This is where wee skip null/None attributes even if the original/current
+            # This is where we skip null/None attributes even if the original/current
             # user does not match (ie is not null)
+            # What is considered equivalent:
+            # Same `value` or `values`
+            # Same `metadata.display` or `metadata.verified`
+            # Different `signature.*` is ignored if the rest matches (re-signing existing values is ignored)
+            # Different `metadata.{last_modified,created,classification}` is ignored if the rest matches
             if level[attr].get("value") is not None or level[attr].get("values") is not None:
                 if (_internal_level[attr].get("value") != level[attr].get("value")) or (
                     _internal_level[attr].get("values") != level[attr].get("values")
+                    or (_internal_level[attr]["metadata"]["display"] != level[attr]["metadata"]["display"])
+                    or (_internal_level[attr]["metadata"]["verified"] != level[attr]["metadata"]["verified"])
                 ):
                     logger.debug("Merging in attribute {}".format(attr))
                     different_attrs.append(attr)
@@ -172,7 +179,7 @@ class User(object):
         try:
             salt = cis_crypto.secret.AWSParameterstoreProvider().uuid_salt()
         except ClientError as e:
-            logger.error("No salt set for uuid generation. This is very very dangerous: {}".format(e))
+            logger.critical("No salt set for uuid generation. This is very very dangerous: {}".format(e))
             salt = ""
         now = self._get_current_utc_time()
         uuid = uuid5(NAMESPACE_URL, "{}#{}".format(salt, self.__dict__["user_id"]["value"]))
