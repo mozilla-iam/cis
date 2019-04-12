@@ -129,7 +129,29 @@ class Vault(object):
 
             old_user_profile = User(user_structure_json=json.loads(res["Items"][0]["profile"]))
             new_user_profile = copy.deepcopy(old_user_profile)
-            new_user_profile.merge(cis_profile_object)
+            difference = new_user_profile.merge(cis_profile_object)
+
+            if (
+                (difference == ["user_id"])
+                or (new_user_profile.active.value == old_user_profile.active.value and difference == ["active"])
+                or (len(difference) == 0)
+                or (
+                    (
+                        new_user_profile.active.value == old_user_profile.active.value
+                        and (new_user_profile.uuid.value is None and new_user_profile.primary_username.value is None)
+                    )
+                    and sorted(difference) == sorted(["active", "uuid", "primary_username"])
+                )
+            ):
+                logger.info(
+                    "Will not merge user as there were no difference found with the vault instance of the user".format(
+                        extra={"user_id": user_id}
+                    )
+                )
+                return None
+            else:
+                logger.info("Differences found during merge: {}".format(difference), extra={"user_id": user_id})
+
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
                 try:
@@ -158,14 +180,12 @@ class Vault(object):
                 "A record does not exist in the identity vault for user: {}.".format(user_id),
                 extra={"user_id": user_id},
             )
-            # We raise an exception if uuid oder primary_username is already set. This must not happen.
+            # We raise an exception if uuid or primary_username is already set. This must not happen.
             if cis_profile_object.uuid.value is not None or cis_profile_object.primary_username.value is not None:
                 logger.error(
-                    "Trying to create profile, but uuid or primary_username was already set",
-                    extra={
-                        "user_id": user_id,
-                        "profile": cis_profile_object.as_dict(),
-                    },
+                    "Trying to create profile, but uuid ({}) or primary_username ({}) was already "
+                    "set".format(cis_profile_object.uuid.value, cis_profile_object.primary_username.value),
+                    extra={"user_id": user_id, "profile": cis_profile_object.as_dict()},
                 )
                 raise VerificationError(
                     {
@@ -205,7 +225,11 @@ class Vault(object):
         Wrapper for a single profile, calls the batch put_profiles method
         """
         res = self.put_profiles([_profile])
-        if res["creates"] is not None and len(res["creates"]["sequence_numbers"]) == 1:
+        if res["status"] == 202:
+            # 202 means everything went OK but no processing was performed (ie no results and this normal)
+            condition = "noop"
+            sequence_number = None
+        elif res["creates"] is not None and len(res["creates"]["sequence_numbers"]) == 1:
             sequence_number = res["creates"]["sequence_numbers"][0]
             condition = "create"
         elif res["updates"] is not None and len(res["updates"]["sequence_numbers"]) == 1:
@@ -258,6 +282,13 @@ class Vault(object):
             # Ensure we merge user_profile data when we have an existing user in the vault
             # This also does publisher verification
             current_user = self._search_and_merge(user_id, user_profile)
+            # No difference found, no merging occured, skip!
+            if current_user is None:
+                logger.info(
+                    "User {} already exists and proposed update has no difference, skipping".format(user_id),
+                    extra={"user_id": user_id},
+                )
+                continue
 
             # Check profile signatures
             if self.config("verify_signatures", namespace="cis") == "true":
@@ -281,6 +312,10 @@ class Vault(object):
             current_user = self._update_attr_owned_by_cis(user_id, current_user)
 
             profiles_to_store.append(current_user)
+
+        if len(profiles_to_store) == 0:
+            logger.info("No profiles to store in vault")
+            return {"creates": None, "updates": None, "status": 202}
 
         # Store resulting user in the vault
         logger.info("Will store {} verified profiles".format(len(profiles_to_store)))

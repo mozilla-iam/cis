@@ -221,3 +221,10 @@ class TestProfile(object):
         u_orig.merge(u_patch)
         assert u_orig.as_dict()["access_information"]["ldap"]["values"] == {"test_replacement": None}
         assert u_orig.uuid.value == "31337"  # This has not changed because it was null/None in the patched profile
+
+    def test_merge_return_value(self):
+        a = profile.User(user_id="usera")
+        b = profile.User(user_id="userb")
+
+        res = a.merge(b)
+        assert "user_id" in res
