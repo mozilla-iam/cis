@@ -73,7 +73,9 @@ class Profile(object):
                 "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
                 "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
                 "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
-                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
+                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
+                    "mozilliansorg"
+                ]["values"],
             }
         )
 
@@ -117,10 +119,12 @@ class Profile(object):
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
                     ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                    ":ac": {"M": json.loads(user_profile["profile"])["access_information"]},
+                    "ail": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
+                    "aih": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
+                    "aim": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information = :ac",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information_ldap = :ail, access_information_hris = :aih, access_information_mozilliansorg = :aim",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -139,7 +143,9 @@ class Profile(object):
                 "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
                 "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
                 "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
-                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
+                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
+                    "mozilliansorg"
+                ]["values"],
             }
         )
 
@@ -182,9 +188,15 @@ class Profile(object):
                         "primary_username": profile["primary_username"],
                         "sequence_number": profile["sequence_number"],
                         "active": bool(json.loads(profile["profile"])["active"]["value"]),
-                        "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
-                        "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
-                        "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"],
+                        "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"][
+                            "values"
+                        ],
+                        "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"][
+                            "values"
+                        ],
+                        "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
+                            "mozilliansorg"
+                        ]["values"],
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
@@ -206,9 +218,15 @@ class Profile(object):
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
                         "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                        "access_information_ldap": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
-                        "access_information_hris": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
-                        "access_information_mozilliansorg": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
+                        "access_information_ldap": {
+                            "M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]
+                        },
+                        "access_information_hris": {
+                            "M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]
+                        },
+                        "access_information_mozilliansorg": {
+                            "M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]
+                        },
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -241,7 +259,9 @@ class Profile(object):
                         ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
                         "ail": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
                         "aih": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
-                        "aim": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
+                        "aim": {
+                            "M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]
+                        },
                     },
                     "ConditionExpression": "attribute_exists(id)",
                     "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information_ldap = :ail, access_information_hris = :aih, access_information_mozilliansorg = :aim",
@@ -287,39 +307,33 @@ class Profile(object):
         return users
 
     def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
-        logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+        logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
-            expression_attr = {
-                ":id": {"S": connection_method}
-            }
+            expression_attr = {":id": {"S": connection_method}}
             filter_expression = "begins_with(id, :id)"
 
-        
         if connection_method and active is not None:
             logger.info("Asking for only the users with active state: {}".format(active))
-            expression_attr = {
-                ":id": {"S": connection_method},
-                ":a" : {"BOOL": active},
-            }
+            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
         response = self.client.scan(
             TableName=self.table.name,
-            TotalSegments=total_segments, 
-            Segment=segment, 
-            ProjectionExpression="id, primary_email, user_uuid, active", 
-            FilterExpression=filter_expression, 
+            TotalSegments=total_segments,
+            Segment=segment,
+            ProjectionExpression="id, primary_email, user_uuid, active",
+            FilterExpression=filter_expression,
             ExpressionAttributeValues=expression_attr,
         )
         users = response.get("Items", [])
         while "LastEvaluatedKey" in response:
             response = self.client.scan(
                 TableName=self.table.name,
-                TotalSegments=total_segments, 
-                Segment=segment, 
-                ProjectionExpression="id, primary_email, user_uuid, active", 
-                FilterExpression=filter_expression, 
+                TotalSegments=total_segments,
+                Segment=segment,
+                ProjectionExpression="id, primary_email, user_uuid, active",
+                FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
                 ExclusiveStartKey=response["LastEvaluatedKey"],
             )
@@ -337,7 +351,11 @@ class Profile(object):
         users = []
         for x in range(pool_size):
             # XXX TBD async this with asyncio
-            users.extend(self._get_segment(segment=x, total_segments=pool_size, connection_method=connection_method, active=active))
+            users.extend(
+                self._get_segment(
+                    segment=x, total_segments=pool_size, connection_method=connection_method, active=active
+                )
+            )
         return users
 
     def find_or_create(self, user_profile):
@@ -399,6 +417,3 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
-
-        
-
