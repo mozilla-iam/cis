@@ -18,9 +18,11 @@ class TestProfile(object):
         u = profile.User()
         j = u.as_json()
         d = u.as_dict()
+        ddb = u.as_dynamo_flat_dict()
         assert j is not None
         assert d is not None
         assert u is not None
+        assert ddb is not None
 
     def test_filter_scopes(self):
         u = profile.User()
@@ -228,3 +230,9 @@ class TestProfile(object):
 
         res = a.merge(b)
         assert "user_id" in res
+
+    def test_dynamo_flat_dict(self):
+        a = profile.User(user_id="usera")
+        ddb = a.as_dynamo_flat_dict()
+        # Dict must be flat
+        assert ddb["user_id"] == "usera"
