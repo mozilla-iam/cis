@@ -47,3 +47,11 @@ class TestFakeProfile(object):
             update_profile.verify_all_publishers(empty_profile)
         assert create_profile.verify_all_publishers(empty_profile) is True
         assert update_profile.verify_all_publishers(create_profile) is True
+
+    def test_fake_dynamo_flat_dict_output(self):
+        # This profile must have ldap groups and staff data
+        p = fake_profile.FakeUser(seed=44)
+        ddb = p.as_dynamo_flat_dict()
+
+        assert len(ddb["access_information"]["ldap"]) > 0
+        assert len(ddb["staff_information"]["office_location"]) > 0

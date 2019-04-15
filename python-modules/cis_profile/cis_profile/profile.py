@@ -274,6 +274,24 @@ class User(object):
         user = self._clean_dict()
         return dict(user)
 
+    def as_dynamo_flat_dict(self):
+        user = self._clean_dict()
+
+        def flatten(attrs, field=None):
+            flat = {}
+            for f in attrs:
+                # Skip "schema"
+                if isinstance(attrs[f], str):
+                    continue
+                if not set(["value", "values"]).isdisjoint(set(attrs[f])):
+                    flat[f] = attrs[f].get("value", attrs[f].get("values"))
+                else:
+                    flat[f] = flatten(attrs[f])
+
+            return flat
+
+        return flatten(user)
+
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
