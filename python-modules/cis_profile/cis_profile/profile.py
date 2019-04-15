@@ -274,6 +274,33 @@ class User(object):
         user = self._clean_dict()
         return dict(user)
 
+    def as_dynamo_flat_dict(self):
+        """
+        Flattens out User.as_dict() output into a simple structure without any signature or metadata.
+        Effectively, this outputs something like this:
+        ```{'uuid': '11c8a5c8-0305-4524-8b41-95970baba84c', 'user_id': 'email|c3cbf9f5830f1358e28d6b68a3e4bf15', ...```
+        `flatten()` is recursive.
+        Note that this form cannot be verified or validated back since it's missing all attributes!
+
+        Return: dict of user in a "flattened" form for dynamodb consumption in particular
+        """
+        user = self._clean_dict()
+
+        def flatten(attrs, field=None):
+            flat = {}
+            for f in attrs:
+                # Skip "schema"
+                if isinstance(attrs[f], str):
+                    continue
+                if not set(["value", "values"]).isdisjoint(set(attrs[f])):
+                    flat[f] = attrs[f].get("value", attrs[f].get("values"))
+                else:
+                    flat[f] = flatten(attrs[f])
+
+            return flat
+
+        return flatten(user)
+
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """
         Filter in place/the current user profile object (self) to only contain attributes with scopes listed in @scopes
