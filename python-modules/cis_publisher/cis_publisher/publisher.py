@@ -195,7 +195,11 @@ class Publish:
                     failed_users.put(identity)
                     break
             else:
-                logger.info("Profile successfully posted to API {}".format(profile.user_id.value))
+                logger.info(
+                    "Profile successfully posted to API {}, status_code: {}".format(
+                        profile.user_id.value, response.status_code
+                    )
+                )
 
     def _request_post(self, url, payload, headers):
         return requests.post(url, json=payload, headers=headers)

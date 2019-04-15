@@ -132,9 +132,10 @@ class User(object):
         attributes). The level MUST be from user_to_merge_in, not from the original/current user.
         @_internal_level str attribute name  of previous level attribute from the current user. Used internally.
 
-        This function always returns None and is always successful.
+        This function returns a diff of what was changed and is always successful.
         """
         tomerge = []
+        different_attrs = []
         # Default to top level
         if level is None:
             level = user_to_merge_in.__dict__
@@ -147,26 +148,38 @@ class User(object):
                 continue
             # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
             if "signature" not in level[attr].keys():
-                self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
+                different_attrs = self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
             # We will merge this attribute back (granted its not null/None)
             else:
                 tomerge.append(attr)
 
-        for _ in tomerge:
-            logger.debug("Merging in attribute {}".format(_))
-
+        for attr in tomerge:
             # _internal_level is the original user attr
             # level is the patch/merged in user attr
-            # This is where wee skip null/None attributes even if the original/current
+            # This is where we skip null/None attributes even if the original/current
             # user does not match (ie is not null)
-            if level[_].get("value") is not None or level[_].get("values") is not None:
-                _internal_level[_] = level[_]
+            # What is considered equivalent:
+            # Same `value` or `values`
+            # Same `metadata.display` or `metadata.verified`
+            # Different `signature.*` is ignored if the rest matches (re-signing existing values is ignored)
+            # Different `metadata.{last_modified,created,classification}` is ignored if the rest matches
+            if level[attr].get("value") is not None or level[attr].get("values") is not None:
+                if (_internal_level[attr].get("value") != level[attr].get("value")) or (
+                    _internal_level[attr].get("values") != level[attr].get("values")
+                    or (_internal_level[attr]["metadata"]["display"] != level[attr]["metadata"]["display"])
+                    or (_internal_level[attr]["metadata"]["verified"] != level[attr]["metadata"]["verified"])
+                ):
+                    logger.debug("Merging in attribute {}".format(attr))
+                    different_attrs.append(attr)
+                    _internal_level[attr] = level[attr]
+
+        return different_attrs
 
     def initialize_uuid_and_primary_username(self):
         try:
             salt = cis_crypto.secret.AWSParameterstoreProvider().uuid_salt()
         except ClientError as e:
-            logger.error("No salt set for uuid generation. This is very very dangerous: {}".format(e))
+            logger.critical("No salt set for uuid generation. This is very very dangerous: {}".format(e))
             salt = ""
         now = self._get_current_utc_time()
         uuid = uuid5(NAMESPACE_URL, "{}#{}".format(salt, self.__dict__["user_id"]["value"]))
@@ -260,6 +273,33 @@ class User(object):
         """
         user = self._clean_dict()
         return dict(user)
+
+    def as_dynamo_flat_dict(self):
+        """
+        Flattens out User.as_dict() output into a simple structure without any signature or metadata.
+        Effectively, this outputs something like this:
+        ```{'uuid': '11c8a5c8-0305-4524-8b41-95970baba84c', 'user_id': 'email|c3cbf9f5830f1358e28d6b68a3e4bf15', ...```
+        `flatten()` is recursive.
+        Note that this form cannot be verified or validated back since it's missing all attributes!
+
+        Return: dict of user in a "flattened" form for dynamodb consumption in particular
+        """
+        user = self._clean_dict()
+
+        def flatten(attrs, field=None):
+            flat = {}
+            for f in attrs:
+                # Skip "schema"
+                if isinstance(attrs[f], str):
+                    continue
+                if not set(["value", "values"]).isdisjoint(set(attrs[f])):
+                    flat[f] = attrs[f].get("value", attrs[f].get("values"))
+                else:
+                    flat[f] = flatten(attrs[f])
+
+            return flat
+
+        return flatten(user)
 
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """
