@@ -129,7 +129,10 @@ Retrieve specific user profiles:
 - `/v2/user/primary_email/<string:primary_email>`
 - `/v2/user/primary_username/<string:primary_username>`
 
-Retrieve lists of users:
+Retrieve paginated list of all user profiles:
+- `/v2/users/`
+
+Retrieve lists of users (not full profiles):
 - `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.
 
 - `/v2/users/id/all?[connectionMethod=ad&active=True]` (Returns all user ids for a specific login/connection method showing only active user IDs) **Highly Advised**
