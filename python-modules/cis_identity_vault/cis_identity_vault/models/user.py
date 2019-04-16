@@ -14,9 +14,12 @@ import logging
 import uuid
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.types import TypeDeserializer
 from botocore.exceptions import ClientError
 from botocore.exceptions import ParamValidationError
 from traceback import format_exc
+
+from cis_profile import User
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +31,7 @@ class Profile(object):
         self.table = dynamodb_table_resource
         self.client = dynamodb_client
         self.transactions = transactions
+        self.deserializer = TypeDeserializer()
 
     def _run_transaction(self, transact_items):
         sequence_numbers = []
@@ -62,6 +66,9 @@ class Profile(object):
     def _create_without_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
+        
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         return self.table.put_item(
             Item={
                 "id": user_profile["id"],
@@ -71,17 +78,16 @@ class Profile(object):
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
                 "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
-                "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
-                "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
-                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
-                    "mozilliansorg"
-                ]["values"],
+                "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
             }
         )
 
     def _create_with_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
+        
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         transact_items = {
             "Put": {
                 "Item": {
@@ -92,7 +98,7 @@ class Profile(object):
                     "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
                     "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                    "access_information": json.loads(user_profile["profile"])["access_information"],
+                    "flat_profile": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
                 "TableName": self.table.name,
@@ -109,6 +115,7 @@ class Profile(object):
         return res
 
     def _update_with_transaction(self, user_profile):
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
         transact_items = {
             "Update": {
                 "Key": {"id": {"S": user_profile["id"]}},
@@ -119,12 +126,11 @@ class Profile(object):
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
                     ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                    "ail": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
-                    "aih": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
-                    "aim": {"M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]},
+                    ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information_ldap = :ail, access_information_hris = :aih, access_information_mozilliansorg = :aim",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u," 
+                    "primary_username = :pn, active = :a, flat_profile = :fp",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -132,6 +138,8 @@ class Profile(object):
         return self._run_transaction([transact_items])
 
     def _update_without_transaction(self, user_profile):
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         return self.table.put_item(
             Item={
                 "id": user_profile["id"],
@@ -141,11 +149,7 @@ class Profile(object):
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
                 "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
-                "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"],
-                "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"]["values"],
-                "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
-                    "mozilliansorg"
-                ]["values"],
+                "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
             }
         )
 
@@ -179,6 +183,8 @@ class Profile(object):
         sequence_numbers = []
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
+                cis_profile_user_object = User(user_structure_json=json.loads(profile["profile"]))
+
                 batch.put_item(
                     Item={
                         "id": profile["id"],
@@ -188,15 +194,7 @@ class Profile(object):
                         "primary_username": profile["primary_username"],
                         "sequence_number": profile["sequence_number"],
                         "active": bool(json.loads(profile["profile"])["active"]["value"]),
-                        "access_information_ldap": json.loads(user_profile["profile"])["access_information"]["ldap"][
-                            "values"
-                        ],
-                        "access_information_hris": json.loads(user_profile["profile"])["access_information"]["hris"][
-                            "values"
-                        ],
-                        "access_information_mozilliansorg": json.loads(user_profile["profile"])["access_information"][
-                            "mozilliansorg"
-                        ]["values"],
+                        "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
@@ -208,6 +206,8 @@ class Profile(object):
         for user_profile in list_of_profiles:
             if user_profile["sequence_number"] is None:
                 user_profile["sequence_number"] = str(uuid.uuid4().int)
+            
+            cis_profile_user_object = User(user_structure_json=json.loads(profile["profile"]))
             transact_item = {
                 "Put": {
                     "Item": {
@@ -218,15 +218,7 @@ class Profile(object):
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
                         "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                        "access_information_ldap": {
-                            "M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]
-                        },
-                        "access_information_hris": {
-                            "M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]
-                        },
-                        "access_information_mozilliansorg": {
-                            "M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]
-                        },
+                        "flat_profile": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -247,6 +239,8 @@ class Profile(object):
     def _update_batch_with_transaction(self, list_of_profiles):
         transact_items = []
         for user_profile in list_of_profiles:
+            cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+            logger.info(cis_profile_user_object.as_dynamo_flat_dict())
             transact_item = {
                 "Update": {
                     "Key": {"id": {"S": user_profile["id"]}},
@@ -257,14 +251,11 @@ class Profile(object):
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
                         ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
-                        "ail": {"M": json.loads(user_profile["profile"])["access_information"]["ldap"]["values"]},
-                        "aih": {"M": json.loads(user_profile["profile"])["access_information"]["hris"]["values"]},
-                        "aim": {
-                            "M": json.loads(user_profile["profile"])["access_information"]["mozilliansorg"]["values"]
-                        },
+                        ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a, access_information_ldap = :ail, access_information_hris = :aih, access_information_mozilliansorg = :aim",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn," 
+                        "active = :a, flat_profile = :fp",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
