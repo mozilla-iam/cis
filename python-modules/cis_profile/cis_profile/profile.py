@@ -13,7 +13,9 @@ import json.decoder
 from uuid import uuid5
 from uuid import NAMESPACE_URL
 from base64 import urlsafe_b64encode
+from boto3.dynamodb.types import TypeSerializer
 from botocore.exceptions import ClientError
+
 
 try:
     from json.decoder import JSONDecodeError
@@ -282,7 +284,7 @@ class User(object):
         `flatten()` is recursive.
         Note that this form cannot be verified or validated back since it's missing all attributes!
 
-        Return: dict of user in a "flattened" form for dynamodb consumption in particular
+        Return: dynamodb serialized low level dict of user in a "flattened" form for dynamodb consumption in particular
         """
         user = self._clean_dict()
 
@@ -293,13 +295,15 @@ class User(object):
                 if isinstance(attrs[f], str):
                     continue
                 if not set(["value", "values"]).isdisjoint(set(attrs[f])):
-                    flat[f] = attrs[f].get("value", attrs[f].get("values"))
+                    res = attrs[f].get("value", attrs[f].get("values"))
+                    if res is not None and res != "":
+                        flat[f] = res
                 else:
                     flat[f] = flatten(attrs[f])
 
             return flat
-
-        return flatten(user)
+        serializer = TypeSerializer()
+        return {k: serializer.serialize(v) for k, v in flatten(user).items()}
 
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """
