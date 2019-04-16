@@ -132,6 +132,20 @@ Retrieve specific user profiles:
 Retrieve paginated list of all user profiles:
 - `/v2/users/`
 
+In this case you will receive a JSON document such as :
+```
+{
+  "Items": [profile_1, profile_2, ...],
+  "nextPage": None
+}
+```
+where `nextPage` will be set to a `user_id` if there are more pages to fetch.
+
+To fetch the next page simply call:
+- `/v2/users?nextPage=user_id_here`
+
+Until `nextPage` is set to `None`.
+
 Retrieve lists of users (not full profiles):
 - `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.
 
