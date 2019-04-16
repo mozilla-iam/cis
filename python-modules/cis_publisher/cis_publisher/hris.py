@@ -30,6 +30,7 @@ class HRISPublisher:
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
         publisher.get_known_cis_users()
+        publisher.get_known_cis_users_paginated()
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:

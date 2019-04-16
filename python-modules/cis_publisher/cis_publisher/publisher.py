@@ -50,6 +50,7 @@ class Publish:
         self.known_cis_users = None
         self.known_cis_users_by_email = {}
         self.known_cis_users_by_user_id = {}
+        self.all_known_profiles = []
         self.__inited = False
 
     def __deferred_init(self):
@@ -225,9 +226,49 @@ class Publish:
             self.access_token = authzero.exchange_for_access_token()
             return self.access_token
 
+    def get_known_cis_users_paginated(self):
+        """
+        Call CIS Person API and return a list of all known profiles
+        return: list of cis_profile.User profiles
+        """
+        self.__deferred_init()
+        if len(self.all_known_profiles) > 0:
+            return self.all_known_profiles
+
+        all_profiles = []
+        logger.info("Requesting CIS Person API for a list of all user profiles")
+        qs = "/v2/users"
+        access_token = self._get_authzero_token()
+        nextPage = ""
+
+        while nextPage is not None:
+            if nextPage != "":
+                real_qs = "{}?nextPage={}".format(qs, nextPage)
+            else:
+                real_qs = qs
+            response = self._request_get(
+                self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
+            )
+            if not response.ok:
+                logger.error(
+                    "Failed to query CIS Person API: {}{} response: {}".format(
+                        self.api_url_person, real_qs, response.text
+                    )
+                )
+                raise PublisherError("Failed to query CIS Person API", response.text)
+            response_json = response.json()
+            all_profiles.extend(response_json["Items"])
+            nextPage = response_json.get("nextPage")
+            print("Next page...")
+
+        logger.info("Got {} users known to CIS".format(len(all_profiles)))
+        self.all_known_profiles = all_profiles
+        return self.all_known_profiles
+
     def get_known_cis_users(self):
         """
-        Call CIS Person API and return a list of existing users
+        Call CIS Person API and return a list of existing user ids and/or remails
+        return: list of str: cis user ids
         """
         self.__deferred_init()
         if self.known_cis_users is not None:
