@@ -1,3 +1,4 @@
+import base64
 import cis_profile
 import cis_publisher
 import boto3
@@ -5,6 +6,7 @@ import os
 import logging
 import json
 import requests
+import lzma
 from traceback import format_exc
 
 logger = logging.getLogger(__name__)
@@ -16,7 +18,7 @@ class HRISPublisher:
         self.context = context
         self.report = None
 
-    def publish(self, user_ids=None, cache=None, chunk_size=25):
+    def publish(self, user_ids=None, cache=None, chunk_size=20):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
@@ -30,12 +32,16 @@ class HRISPublisher:
         # Get access to the known_users function first
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
-        publisher.get_known_cis_users()
         if cache is not None:
             publisher.all_known_profiles = json.loads(cache["all_known_profiles"])
+            publisher.known_cis_users = json.loads(cache["known_cis_users"])
+            for u in publisher.known_cis_users:
+                publisher.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
+                publisher.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
             self.report = json.loads(cache["report"])
         else:
             publisher.get_known_cis_users_paginated()
+            publisher.get_known_cis_users()
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
@@ -71,13 +77,16 @@ class HRISPublisher:
         for potential_user_id in delta:
             if potential_user_id in publisher.all_known_profiles:
                 profile = publisher.all_known_profiles[potential_user_id]
-                ldap_groups = profile.as_dict()["access_information"]["ldap"]["values"]
-                if (profile.staff_information.staff.value is True) or (
+                try:
+                    profile = profile.as_dict()
+                except:
+                    pass
+                ldap_groups = profile["access_information"]["ldap"]["values"]
+                if (profile["staff_information"]["staff"]["value"] is True) or (
                     ldap_groups is not None and "admin_accounts" in ldap_groups
                 ):
                     user_ids_to_deactivate.append(potential_user_id)
 
-        print(user_ids_to_deactivate)
         if len(user_ids_to_deactivate) > 0:
             logger.info(
                 "Will deactivate {} users because they're in CIS but not in HRIS".format(user_ids_to_deactivate)
@@ -147,7 +156,7 @@ class HRISPublisher:
         Splices all users to process into chunks
         and self-invoke as many times as needed to complete all work in parallel lambda functions
         When self-invoking, this will effectively call self.process() instead of self.fan_out()
-
+"]
         Note: chunk_size should never result in the invoke() argument to exceed 128KB (len(Payload.encode('utf-8') <
         128KB) as this is the maximum AWS Lambda payload size.
 
@@ -163,7 +172,7 @@ class HRISPublisher:
             except KeyError:
                 logger.critical(
                     "There is no user_id in CIS Person API for HRIS User {}."
-                    "This user does may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                    "This user may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
                 )
                 continue
         sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
@@ -173,22 +182,24 @@ class HRISPublisher:
         )
         lambda_client = boto3.client("lambda")
         for s in sliced:
-            payload = json.dumps(
-                {
-                    "user_ids": s,
-                    "cache": {"report": report_profiles, "all_known_profiles": publisher.all_known_profiles},
-                }
+            # Make a json, compress it, pack the bytes to string so that we can transmit it (bytes arent a valid
+            # parameter type)
+            lzc = lzma.LZMACompressor()
+            tmp = lzc.compress(
+                json.dumps(
+                    {
+                        "user_ids": s,
+                        "cache": {
+                            "report": report_profiles,
+                            "all_known_profiles": publisher.all_known_profiles,
+                            "known_cis_users": publisher.known_cis_users,
+                        },
+                    }
+                ).encode("utf-8")
             )
-            payload_size = len(payload.encode("utf-8"))
-            if payload_size > 128 * 1024:
-                logger.critical(
-                    "Argument to lambda_client.invoke() too large: {}KB > 128KB, will fail to trigger the function".format(
-                        payload_size / 1024
-                    )
-                )
-            lambda_client.invoke(
-                FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(payload)
-            )
+            tmpf = lzc.flush()
+            payload = base64.encodebytes(b"".join([tmp, tmpf])).decode("ascii")
+            lambda_client.invoke(FunctionName=self.context.function_name, InvocationType="Event", Payload=payload)
 
         logger.info("Exiting slicing function successfully")
 
