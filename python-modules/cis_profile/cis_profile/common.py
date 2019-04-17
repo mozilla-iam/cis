@@ -122,13 +122,14 @@ class WellKnown(object):
     <Dict: schema>
     """
 
-    def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam"):
+    def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam", always_use_local_file=False):
         self._request_cache = "/tmp/cis_request_cache"  # XXX use `get_config` to configure that
         self._request_cache_ttl = 900
         self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
         self.config = get_config()
+        self.always_use_local_file = always_use_local_file
 
     def get_publisher_rules(self):
         """
@@ -187,15 +188,15 @@ class WellKnown(object):
         Get the CIS integration rules
         """
         rules = None
-        if rules_url is not None:
-            try:
-                r = requests.get(rules_url)
-                rules = r.json()
-            except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug("Failed to load rules data from rules_url {} ({})".format(rules_url, e))
-
+        if not self.always_use_local_file:
+            if rules_url is not None:
+                try:
+                    r = requests.get(rules_url)
+                    rules = r.json()
+                except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
+                    logger.debug("Failed to load rules data from rules_url {} ({})".format(rules_url, e))
         # Fall-back to built-in copy
-        if rules is None:
+        if self.always_use_local_file or rules is None:
             rules_file = "data/well-known/mozilla-iam-publisher-rules"
             if not os.path.isfile(rules_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
@@ -215,12 +216,15 @@ class WellKnown(object):
         if self._well_known_json is not None:
             return self._well_known_json
 
-        try:
-            r = requests.get(self.discovery_url)
-            self._well_known_json = r.json()
-        except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-            logger.debug("Failed to fetch schema url from discovery {} ({})".format(self.discovery_url, e))
-            logger.debug("Using builtin copy")
+        if not self.always_use_local_file:
+            try:
+                r = requests.get(self.discovery_url)
+                self._well_known_json = r.json()
+            except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
+                logger.debug("Failed to fetch schema url from discovery {} ({})".format(self.discovery_url, e))
+                logger.debug("Using builtin copy")
+
+        if self._well_known_json is None or self.always_use_local_file:
             well_known_file = "data/well-known/mozilla-iam"  # Local fall-back
             if not os.path.isfile(well_known_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
@@ -239,15 +243,16 @@ class WellKnown(object):
         Return dict JSON object which is the CIS Profile Schema
         """
         schema = None
-        if schema_url is not None:
-            try:
-                r = requests.get(schema_url)
-                schema = r.json()
-            except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
-                logger.debug("Failed to load schema from schema_url {} ({})".format(schema_url, e))
+        if not self.always_use_local_file:
+            if schema_url is not None:
+                try:
+                    r = requests.get(schema_url)
+                    schema = r.json()
+                except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
+                    logger.debug("Failed to load schema from schema_url {} ({})".format(schema_url, e))
 
         # That did not work, fall-back to local, built-in copy
-        if schema is None:
+        if schema is None or self.always_use_local_file:
             # Builtin, hardcoded schema from library
             schema_file = stype
             if not os.path.isfile(schema_file):

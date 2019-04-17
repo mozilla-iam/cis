@@ -4,6 +4,12 @@ import os
 
 
 class Test_WellKnown(object):
+    def test_wellknown_file_force(self):
+        wk = WellKnown(always_use_local_file=True)
+        data = wk.get_well_known()
+        assert isinstance(data, dict)
+        assert isinstance(data.get("api"), dict)
+
     def test_wellknown_retrieve(self):
         wk = WellKnown()
         data = wk.get_well_known()
