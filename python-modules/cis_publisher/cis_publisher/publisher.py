@@ -230,7 +230,7 @@ class Publish:
     def get_known_cis_users_paginated(self):
         """
         Call CIS Person API and return a list of all known profiles
-        return: list of cis_profile.User profiles
+        return: list of dict JSON profiles
         """
         self.__deferred_init()
         if len(self.all_known_profiles) > 0:
@@ -336,7 +336,7 @@ class Publish:
                 user_id = p.user_id.value
 
             if user_id in self.known_cis_users_by_user_id:
-                logger.info(
+                logger.debug(
                     "Filtering out non-updatable values from user {} because it already exist in CIS".format(user_id)
                 )
                 for pfield in p.__dict__:
@@ -380,7 +380,7 @@ class Publish:
                                 p.__dict__[pfield]["value"] = None
                             elif "values" in p.__dict__[pfield].keys():
                                 p.__dict__[pfield]["values"] = None
-                logger.info("Filtered fields for user {}".format(user_id))
+                logger.debug("Filtered fields for user {}".format(user_id))
                 profiles[n] = p
         if save:
             self.profiles = profiles

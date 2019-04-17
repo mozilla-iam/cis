@@ -1,12 +1,14 @@
-import base64
 import cis_profile
 import cis_publisher
 import boto3
+import botocore
 import os
 import logging
 import json
+import time
 import requests
-import lzma
+import cis_profile
+from datetime import datetime, timezone, timedelta
 from traceback import format_exc
 
 logger = logging.getLogger(__name__)
@@ -18,7 +20,43 @@ class HRISPublisher:
         self.context = context
         self.report = None
 
-    def publish(self, user_ids=None, cache=None, chunk_size=20):
+    def get_s3_cache(self):
+        """
+        If cache exists and is not older than timedelta() then return it, else don't
+        return: dict JSON
+        """
+        s3 = boto3.client("s3")
+        bucket = os.environ.get("CIS_BUCKET_URL")
+        recent = datetime.now(timezone.utc) - timedelta(hours=1)
+        try:
+            objects = s3.list_objects_v2(Bucket=bucket)
+            # bucket has zero contents?
+            if not "Contents" in objects:
+                logger.info("No S3 cache present")
+                return None
+            # Recent file?
+            for o in objects["Contents"]:
+                if o["Key"] == "cache.json" and o["LastModified"] < recent:
+                    logger.info("S3 cache too old, not using")
+                    return None
+            response = s3.get_object(Bucket=bucket, Key="cache.json")
+            data = response["Body"].read()
+        except botocore.exceptions.ClientError as e:
+            logger.error("Could not find S3 cache file")
+            return None
+        logger.info("Using S3 cache")
+        return json.loads(data)
+
+    def save_s3_cache(self, data):
+        """
+        @data dict JSON
+        """
+        s3 = boto3.client("s3")
+        bucket = os.environ.get("CIS_BUCKET_URL")
+        response = s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
+        logger.info("Wrote S3 cache file")
+
+    def publish(self, user_ids=None, chunk_size=25):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
@@ -28,20 +66,29 @@ class HRISPublisher:
         work between function calls (to self)
         """
         logger.info("Starting HRIS Publisher")
+        cache = self.get_s3_cache()
 
         # Get access to the known_users function first
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
-        if cache is not None:
-            publisher.all_known_profiles = json.loads(cache["all_known_profiles"])
-            publisher.known_cis_users = json.loads(cache["known_cis_users"])
+        if cache is None:
+            publisher.get_known_cis_users()
+            publisher.get_known_cis_users_paginated()
+            self.fetch_report()
+            self.save_s3_cache(
+                {
+                    "all_known_profiles": publisher.all_known_profiles,
+                    "known_cis_users": publisher.known_cis_users,
+                    "report": self.report,
+                }
+            )
+        else:
+            publisher.all_known_profiles = cache["all_known_profiles"]
+            publisher.known_cis_users = cache["known_cis_users"]
             for u in publisher.known_cis_users:
                 publisher.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
                 publisher.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
-            self.report = json.loads(cache["report"])
-        else:
-            publisher.get_known_cis_users_paginated()
-            publisher.get_known_cis_users()
+            self.report = cache["report"]
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
@@ -77,13 +124,10 @@ class HRISPublisher:
         for potential_user_id in delta:
             if potential_user_id in publisher.all_known_profiles:
                 profile = publisher.all_known_profiles[potential_user_id]
-                try:
-                    profile = profile.as_dict()
-                except:
-                    pass
                 ldap_groups = profile["access_information"]["ldap"]["values"]
-                if (profile["staff_information"]["staff"]["value"] is True) or (
-                    ldap_groups is not None and "admin_accounts" in ldap_groups
+                is_staff = profile["staff_information"]["staff"]["value"]
+                if (is_staff is True) or (
+                    is_staff is False and (ldap_groups is not None and "admin_accounts" not in ldap_groups)
                 ):
                     user_ids_to_deactivate.append(potential_user_id)
 
@@ -93,36 +137,24 @@ class HRISPublisher:
             )
             for user in user_ids_to_deactivate:
                 logger.info("User selected for deactivation: {}".format(user))
-                p = publisher.all_known_profiles[user]
-                p.active.value = False
-                p.active.signature.publisher.name = "hris"
+                # user from cis
+                p = cis_profile.User(publisher.all_known_profiles[user])
+                # our partial update
+                newp = cis_profile.User()
+                newp.user_id = p.user_id
+                newp.primary_email = p.primary_email
+                newp.active.value = False
+                newp.active.signature.publisher.name = "hris"
                 try:
-                    p.sign_all(publisher_name="hris")
+                    newp.sign_attribute("active", publisher_name="hris")
                 except Exception as e:
                     logger.critical(
                         "Profile data signing failed for user {} - skipped signing, verification "
-                        "WILL FAIL ({})".format(p.primary_email.value, e)
+                        "WILL FAIL ({})".format(newp.primary_email.value, e)
                     )
-                    logger.debug("Profile data {}".format(p.as_dict()))
-                try:
-                    p.validate()
-                except Exception as e:
-                    logger.critical(
-                        "Profile schema validation failed for user {} - skipped validation, verification "
-                        "WILL FAIL({})".format(p.primary_email.value, e)
-                    )
-                    logger.debug("Profile data {}".format(p.as_dict()))
-                try:
-                    p.verify_all_publishers(cis_profile.User())
-                except Exception as e:
-                    logger.critical(
-                        "Profile publisher verification failed for user {} - skipped signing, verification "
-                        "WILL FAIL ({})".format(p.primary_email.value, e)
-                    )
-                    logger.debug("Profile data {}".format(p.as_dict()))
+                    logger.debug("Profile data {}".format(newp.as_dict()))
 
-                profiles.append(p)
-
+                profiles.append(newp)
         return profiles
 
     def process(self, publisher, user_ids):
@@ -182,24 +214,8 @@ class HRISPublisher:
         )
         lambda_client = boto3.client("lambda")
         for s in sliced:
-            # Make a json, compress it, pack the bytes to string so that we can transmit it (bytes arent a valid
-            # parameter type)
-            lzc = lzma.LZMACompressor()
-            tmp = lzc.compress(
-                json.dumps(
-                    {
-                        "user_ids": s,
-                        "cache": {
-                            "report": report_profiles,
-                            "all_known_profiles": publisher.all_known_profiles,
-                            "known_cis_users": publisher.known_cis_users,
-                        },
-                    }
-                ).encode("utf-8")
-            )
-            tmpf = lzc.flush()
-            payload = base64.encodebytes(b"".join([tmp, tmpf])).decode("ascii")
-            lambda_client.invoke(FunctionName=self.context.function_name, InvocationType="Event", Payload=payload)
+            lambda_client.invoke(FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(s))
+            time.sleep(3)  # give api calls a chance, otherwise this storms resources
 
         logger.info("Exiting slicing function successfully")
 
