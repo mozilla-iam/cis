@@ -14,8 +14,9 @@ class HRISPublisher:
     def __init__(self, context={}):
         self.secret_manager = cis_publisher.secret.Manager()
         self.context = context
+        self.report = None
 
-    def publish(self, user_ids=None, chunk_size=25):
+    def publish(self, user_ids=None, cache=None, chunk_size=25):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
@@ -30,7 +31,11 @@ class HRISPublisher:
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
         publisher.get_known_cis_users()
-        publisher.get_known_cis_users_paginated()
+        if cache is not None:
+            publisher.all_known_profiles = json.loads(cache["all_known_profiles"])
+            self.report = json.loads(cache["report"])
+        else:
+            publisher.get_known_cis_users_paginated()
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
@@ -38,11 +43,10 @@ class HRISPublisher:
         else:
             self.process(publisher, user_ids)
 
-    def deactivate_users(self, cis_users_by_user_id, cis_users_by_email, profiles, report):
+    def deactivate_users(self, publisher, profiles, report):
         """
         Deactivate users present in CIS but not in HRIS
-        @cis_users_by_user_id dict of Person API known users by user_id=>email
-        @cis_users_by_email dict of Person API known users by email=>user_id to convert to user_ids
+        @publisher cis_publisher.Publisher object
         @profiles list of cis_profile.User that were converted
         @report HRIS report
         """
@@ -50,7 +54,7 @@ class HRISPublisher:
         for hruser in report.get("Report_Entry"):
             hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
             try:
-                current_user_id = cis_users_by_email[hruser_work_email]
+                current_user_id = publisher.known_cis_users_by_email[hruser_work_email]
             except KeyError:
                 logger.critical(
                     "Repeated: There is no user_id in CIS Person API for HRIS User:{}".format(hruser_work_email)
@@ -58,27 +62,29 @@ class HRISPublisher:
                 continue
             user_ids_in_hris.append(current_user_id)
 
-        delta = set(cis_users_by_user_id.keys()) - set(user_ids_in_hris)
+        delta = set(publisher.known_cis_users_by_user_id.keys()) - set(user_ids_in_hris)
 
         # XXX this is a slow work-around to figure out who is staff
         # This data should eventually be directly queriable from Person API with a filter (this does not currently
         # exist)
-        publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
         user_ids_to_deactivate = []
         for potential_user_id in delta:
-            profile = publisher.get_cis_user(potential_user_id)
-            if profile.staff_information.staff.value == True:
-                user_ids_to_deactivate.append(potential_user_id)
+            if potential_user_id in publisher.all_known_profiles:
+                profile = publisher.all_known_profiles[potential_user_id]
+                ldap_groups = profile.as_dict()["access_information"]["ldap"]["values"]
+                if (profile.staff_information.staff.value is True) or (
+                    ldap_groups is not None and "admin_accounts" in ldap_groups
+                ):
+                    user_ids_to_deactivate.append(potential_user_id)
 
+        print(user_ids_to_deactivate)
         if len(user_ids_to_deactivate) > 0:
             logger.info(
                 "Will deactivate {} users because they're in CIS but not in HRIS".format(user_ids_to_deactivate)
             )
             for user in user_ids_to_deactivate:
                 logger.info("User selected for deactivation: {}".format(user))
-                p = cis_profile.User()
-                p.primary_email.value = cis_users_by_user_id[user]
-                p.primary_email.signature.publisher.name = "hris"
+                p = publisher.all_known_profiles[user]
                 p.active.value = False
                 p.active.signature.publisher.name = "hris"
                 try:
@@ -120,9 +126,7 @@ class HRISPublisher:
         profiles = self.convert_hris_to_cis_profiles(
             report_profiles, publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, user_ids
         )
-        profiles = self.deactivate_users(
-            publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, profiles, report_profiles
-        )
+        profiles = self.deactivate_users(publisher, profiles, report_profiles)
         del report_profiles
 
         logger.info("Processing {} profiles".format(len(profiles)))
@@ -143,6 +147,9 @@ class HRISPublisher:
         Splices all users to process into chunks
         and self-invoke as many times as needed to complete all work in parallel lambda functions
         When self-invoking, this will effectively call self.process() instead of self.fan_out()
+
+        Note: chunk_size should never result in the invoke() argument to exceed 128KB (len(Payload.encode('utf-8') <
+        128KB) as this is the maximum AWS Lambda payload size.
 
         @publisher object the cis_publisher object to operate on
         @chunk_size int size of the chunk to process
@@ -166,7 +173,22 @@ class HRISPublisher:
         )
         lambda_client = boto3.client("lambda")
         for s in sliced:
-            lambda_client.invoke(FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(s))
+            payload = json.dumps(
+                {
+                    "user_ids": s,
+                    "cache": {"report": report_profiles, "all_known_profiles": publisher.all_known_profiles},
+                }
+            )
+            payload_size = len(payload.encode("utf-8"))
+            if payload_size > 128 * 1024:
+                logger.critical(
+                    "Argument to lambda_client.invoke() too large: {}KB > 128KB, will fail to trigger the function".format(
+                        payload_size / 1024
+                    )
+                )
+            lambda_client.invoke(
+                FunctionName=self.context.function_name, InvocationType="Event", Payload=json.dumps(payload)
+            )
 
         logger.info("Exiting slicing function successfully")
 
@@ -176,6 +198,8 @@ class HRISPublisher:
         Strip out unused data
         Returns the JSON document with only used data
         """
+        if self.report is not None:
+            return self.report
 
         hris_url = self.secret_manager.secret("hris_url")
         hris_username = self.secret_manager.secret("hris_user")
@@ -200,7 +224,8 @@ class HRISPublisher:
                 )
             )
             raise ValueError("Could not fetch HRIS report")
-        return res.json()
+        self.report = res.json()
+        return self.report
 
     def convert_hris_to_cis_profiles(self, hris_data, cis_users_by_user_id, cis_users_by_email, user_ids):
         """

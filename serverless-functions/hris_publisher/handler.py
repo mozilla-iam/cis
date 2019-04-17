@@ -27,7 +27,9 @@ def handle(event, context={}):
     logger = setup_logging()
     hris = cis_publisher.hris.HRISPublisher(context=context)
     if isinstance(event, list):
-        hris.publish(event)
+        hris.publish(user_ids=event)
+    elif isinstance(event, dict):
+        hris.publish(user_ids=event.get("user_ids"), cache=event.get("cache"))
     else:
         hris.publish()
     return 200

@@ -6,6 +6,7 @@ import threading
 import queue
 from urllib.parse import urlencode, quote_plus
 from cis_profile.common import WellKnown
+from cis_profile import User
 from cis_publisher import secret
 from cis_publisher import common
 
@@ -50,7 +51,7 @@ class Publish:
         self.known_cis_users = None
         self.known_cis_users_by_email = {}
         self.known_cis_users_by_user_id = {}
-        self.all_known_profiles = []
+        self.all_known_profiles = {}
         self.__inited = False
 
     def __deferred_init(self):
@@ -235,7 +236,6 @@ class Publish:
         if len(self.all_known_profiles) > 0:
             return self.all_known_profiles
 
-        all_profiles = []
         logger.info("Requesting CIS Person API for a list of all user profiles")
         qs = "/v2/users"
         access_token = self._get_authzero_token()
@@ -257,12 +257,14 @@ class Publish:
                 )
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
-            all_profiles.extend(response_json["Items"])
+            logger.info("len {}".format(len(response_json["Items"])))
+            logger.info("Next {}".format(response_json["nextPage"]))
+            for p in response_json["Items"]:
+                logger.info("Profile  {}".format(p.keys()))
+                self.all_known_profiles[p["user_id"]["value"]] = p
             nextPage = response_json.get("nextPage")
-            print("Next page...")
 
-        logger.info("Got {} users known to CIS".format(len(all_profiles)))
-        self.all_known_profiles = all_profiles
+        logger.info("Got {} users known to CIS".format(len(self.all_known_profiles)))
         return self.all_known_profiles
 
     def get_known_cis_users(self):
@@ -312,7 +314,7 @@ class Publish:
                 "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
             )
             raise PublisherError("Failed to query CIS Person API", response.text)
-        return cis_profile.User(response.json())
+        return User(response.json())
 
     def filter_known_cis_users(self, profiles=None, save=True):
         """
