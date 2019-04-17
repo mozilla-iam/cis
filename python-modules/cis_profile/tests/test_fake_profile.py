@@ -1,6 +1,4 @@
 import pytest
-
-from boto3.dynamodb.types import TypeDeserializer
 from cis_profile import fake_profile
 from cis_profile import profile
 from cis_profile import exceptions
@@ -54,7 +52,6 @@ class TestFakeProfile(object):
         # This profile must have ldap groups and staff data
         p = fake_profile.FakeUser(seed=44)
         ddb = p.as_dynamo_flat_dict()
-        deserializer = TypeDeserializer()
-        res = {k: deserializer.deserialize(v) for k, v in ddb.items()}
-        assert len(res["access_information"]["ldap"]) > 0
-        assert len(res["staff_information"]["office_location"]) > 0
+
+        assert len(ddb["access_information"]["ldap"]) > 0
+        assert len(ddb["staff_information"]["office_location"]) > 0
