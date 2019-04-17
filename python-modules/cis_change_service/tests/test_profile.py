@@ -183,7 +183,6 @@ class TestProfile(object):
             follow_redirects=True,
         )
         results = json.loads(result.get_data())
-        print("user posted", results)
         # Post it again
         result = self.app.post(
             "/v2/user?user_id={}".format(my_fake_user.user_id.value),
@@ -193,9 +192,8 @@ class TestProfile(object):
             follow_redirects=True,
         )
         results = json.loads(result.get_data())
-        print("result", results)
         assert results is not None
-        assert results.get("status_code") == 202
+        assert results.get("status_code") == 202 or results.get("status_code") == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_post_new_profile_with_primary_username_should_fail(self, fake_jwks):

@@ -14,9 +14,12 @@ import logging
 import uuid
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
+from boto3.dynamodb.types import TypeDeserializer
 from botocore.exceptions import ClientError
 from botocore.exceptions import ParamValidationError
 from traceback import format_exc
+
+from cis_profile import User
 
 
 logger = logging.getLogger(__name__)
@@ -28,6 +31,7 @@ class Profile(object):
         self.table = dynamodb_table_resource
         self.client = dynamodb_client
         self.transactions = transactions
+        self.deserializer = TypeDeserializer()
 
     def _run_transaction(self, transact_items):
         sequence_numbers = []
@@ -62,6 +66,9 @@ class Profile(object):
     def _create_without_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
+        
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         return self.table.put_item(
             Item={
                 "id": user_profile["id"],
@@ -70,13 +77,17 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
+                "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
             }
         )
 
     def _create_with_transaction(self, user_profile):
         if user_profile["sequence_number"] is None:
             user_profile["sequence_number"] = str(uuid.uuid4().int)
+        
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         transact_items = {
             "Put": {
                 "Item": {
@@ -87,6 +98,7 @@ class Profile(object):
                     "primary_username": {"S": user_profile["primary_username"]},
                     "sequence_number": {"S": user_profile["sequence_number"]},
                     "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                    "flat_profile": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                 },
                 "ConditionExpression": "attribute_not_exists(id)",
                 "TableName": self.table.name,
@@ -103,6 +115,7 @@ class Profile(object):
         return res
 
     def _update_with_transaction(self, user_profile):
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
         transact_items = {
             "Update": {
                 "Key": {"id": {"S": user_profile["id"]}},
@@ -113,9 +126,11 @@ class Profile(object):
                     ":pn": {"S": user_profile["primary_username"]},
                     ":sn": {"S": user_profile["sequence_number"]},
                     ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                    ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                 },
                 "ConditionExpression": "attribute_exists(id)",
-                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
+                "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u," 
+                    "primary_username = :pn, active = :a, flat_profile = :fp",
                 "TableName": self.table.name,
                 "ReturnValuesOnConditionCheckFailure": "NONE",
             }
@@ -123,6 +138,8 @@ class Profile(object):
         return self._run_transaction([transact_items])
 
     def _update_without_transaction(self, user_profile):
+        cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+
         return self.table.put_item(
             Item={
                 "id": user_profile["id"],
@@ -131,7 +148,8 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
+                "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
             }
         )
 
@@ -165,6 +183,8 @@ class Profile(object):
         sequence_numbers = []
         with self.table.batch_writer() as batch:
             for profile in list_of_profiles:
+                cis_profile_user_object = User(user_structure_json=json.loads(profile["profile"]))
+
                 batch.put_item(
                     Item={
                         "id": profile["id"],
@@ -173,7 +193,8 @@ class Profile(object):
                         "primary_email": profile["primary_email"],
                         "primary_username": profile["primary_username"],
                         "sequence_number": profile["sequence_number"],
-                        "active": bool(json.loads(profile["profile"])["active"]["value"])
+                        "active": bool(json.loads(profile["profile"])["active"]["value"]),
+                        "flat_profile": {k: self.deserializer.deserialize(v) for k, v in cis_profile_user_object.as_dynamo_flat_dict().items()}
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
@@ -185,6 +206,8 @@ class Profile(object):
         for user_profile in list_of_profiles:
             if user_profile["sequence_number"] is None:
                 user_profile["sequence_number"] = str(uuid.uuid4().int)
+            
+            cis_profile_user_object = User(user_structure_json=json.loads(profile["profile"]))
             transact_item = {
                 "Put": {
                     "Item": {
@@ -195,6 +218,7 @@ class Profile(object):
                         "primary_username": {"S": user_profile["primary_username"]},
                         "sequence_number": {"S": user_profile["sequence_number"]},
                         "active": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                        "flat_profile": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                     },
                     "ConditionExpression": "attribute_not_exists(id)",
                     "TableName": self.table.name,
@@ -215,6 +239,8 @@ class Profile(object):
     def _update_batch_with_transaction(self, list_of_profiles):
         transact_items = []
         for user_profile in list_of_profiles:
+            cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
+            logger.info(cis_profile_user_object.as_dynamo_flat_dict())
             transact_item = {
                 "Update": {
                     "Key": {"id": {"S": user_profile["id"]}},
@@ -225,9 +251,11 @@ class Profile(object):
                         ":pn": {"S": user_profile["primary_username"]},
                         ":sn": {"S": user_profile["sequence_number"]},
                         ":a": {"BOOL": json.loads(user_profile["profile"])["active"]["value"]},
+                        ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()}
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn, active = :a",
+                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn," 
+                        "active = :a, flat_profile = :fp",
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -270,39 +298,33 @@ class Profile(object):
         return users
 
     def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
-        logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+        logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
-            expression_attr = {
-                ":id": {"S": connection_method}
-            }
+            expression_attr = {":id": {"S": connection_method}}
             filter_expression = "begins_with(id, :id)"
 
-        
         if connection_method and active is not None:
             logger.info("Asking for only the users with active state: {}".format(active))
-            expression_attr = {
-                ":id": {"S": connection_method},
-                ":a" : {"BOOL": active},
-            }
+            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
         response = self.client.scan(
             TableName=self.table.name,
-            TotalSegments=total_segments, 
-            Segment=segment, 
-            ProjectionExpression="id, primary_email, user_uuid, active", 
-            FilterExpression=filter_expression, 
+            TotalSegments=total_segments,
+            Segment=segment,
+            ProjectionExpression="id, primary_email, user_uuid, active",
+            FilterExpression=filter_expression,
             ExpressionAttributeValues=expression_attr,
         )
         users = response.get("Items", [])
         while "LastEvaluatedKey" in response:
             response = self.client.scan(
                 TableName=self.table.name,
-                TotalSegments=total_segments, 
-                Segment=segment, 
-                ProjectionExpression="id, primary_email, user_uuid, active", 
-                FilterExpression=filter_expression, 
+                TotalSegments=total_segments,
+                Segment=segment,
+                ProjectionExpression="id, primary_email, user_uuid, active",
+                FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
                 ExclusiveStartKey=response["LastEvaluatedKey"],
             )
@@ -320,7 +342,11 @@ class Profile(object):
         users = []
         for x in range(pool_size):
             # XXX TBD async this with asyncio
-            users.extend(self._get_segment(segment=x, total_segments=pool_size, connection_method=connection_method, active=active))
+            users.extend(
+                self._get_segment(
+                    segment=x, total_segments=pool_size, connection_method=connection_method, active=active
+                )
+            )
         return users
 
     def find_or_create(self, user_profile):
@@ -382,6 +408,3 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
-
-        
-
