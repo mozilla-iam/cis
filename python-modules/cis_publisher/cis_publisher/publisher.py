@@ -258,7 +258,6 @@ class Publish:
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
             for p in response_json["Items"]:
-                logger.info("Profile  {}".format(p.keys()))
                 self.all_known_profiles[p["user_id"]["value"]] = p
             nextPage = response_json.get("nextPage")
 
