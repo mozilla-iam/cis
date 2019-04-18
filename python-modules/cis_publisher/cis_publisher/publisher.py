@@ -187,20 +187,13 @@ class Publish:
                 time.sleep(self.retry_delay)
                 if retries >= self.max_retries:
                     logger.error(
-                        "Maximum retries reached ({}), profile is not to be sent {}".format(
-                            retries, profile.user_id.value
-                        )
+                        "Maximum retries reached ({}), profile is not to be sent {}".format(retries, identifier)
                     )
-                    identity = profile.user_id.value
-                    if identity is None:
-                        identity = profile.primary_email.value
-                    failed_users.put(identity)
+                    failed_users.put(identifier)
                     break
             else:
                 logger.info(
-                    "Profile successfully posted to API {}, status_code: {}".format(
-                        profile.user_id.value, response.status_code
-                    )
+                    "Profile successfully posted to API {}, status_code: {}".format(identifier, response.status_code)
                 )
 
     def _request_post(self, url, payload, headers):
