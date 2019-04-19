@@ -160,6 +160,16 @@ class Publish:
         response_ok = False
         retries = 0
         access_token = self._get_authzero_token()
+
+        # We don't always get a user_id set
+        identifier = profile.user_id.value
+        if identifier is None:
+            identifier = profile.primary_email.value
+        if identifier is None:
+            logger.critical("Could not find profile identifier!")
+
+        logger.debug("Posting user profile: {}".format(profile.as_dict()))
+
         while not response_ok:
             logger.info(
                 "Attempting to post profile (user_id: {}, primary_email: {} to API {}{}".format(
@@ -172,11 +182,8 @@ class Publish:
                 headers={"authorization": "Bearer {}".format(access_token)},
             )
             response_ok = response.ok
+
             if not response_ok:
-                # We don't always get a user_id set
-                identifier = profile.user_id.value
-                if identifier is None:
-                    identifier = profile.primary_email.value
                 logger.warning(
                     "Posting profile {} to API failed, retry is {} retry_delay is {} status_code is {} reason is {}"
                     "contents were {}".format(
@@ -318,7 +325,7 @@ class Publish:
             profiles = self.profiles
 
         # Never NULL/None these fields during filtering as they're used for knowing where to post
-        whitelist = ["user_id"]
+        whitelist = ["user_id", "active"]
 
         allowed_updates = self.publisher_rules["update"]
         for n in range(0, len(profiles)):

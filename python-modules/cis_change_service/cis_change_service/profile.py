@@ -150,6 +150,16 @@ class Vault(object):
             else:
                 logger.info("Differences found during merge: {}".format(difference), extra={"user_id": user_id})
 
+            # XXX This is safe but this is not great. Probably should have a route to deactivate since its a CIS
+            # attribute.
+            if difference == ["active"]:
+                logger.info(
+                    "Partial update only contains the `active` attribute, bypassing publisher verification as CIS "
+                    "will enforce this check on it's own'",
+                    extra={"user_id": user_id},
+                )
+                return new_user_profile
+
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
                 try:
