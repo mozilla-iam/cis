@@ -344,11 +344,10 @@ class v2Users(Resource):
             result = identity_vault.find_by_email(primary_email)
         v2_profiles = []
 
-        if args.get("active") is None or args.get("active").lower() == "true":
-            active = True  # Support returning only active users by default.
-
         if args.get("active") is not None and args.get("active").lower() == "false":
             active = False
+        else:
+            active = True  # Support returning only active users by default.
 
         for profile in result.get("Items"):
             vault_profile = json.loads(profile.get("profile"))
