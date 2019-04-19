@@ -344,7 +344,7 @@ class v2Users(Resource):
             result = identity_vault.find_by_email(primary_email)
         v2_profiles = []
 
-        if args.get("active") is None or args.get("active").lower() == 'true':
+        if args.get("active") is None or args.get("active").lower() == "true":
             active = True  # Support returning only active users by default.
 
         if args.get("active") is not None and args.get("active").lower() == "false":
@@ -357,6 +357,8 @@ class v2Users(Resource):
             # This must be a pre filtering check because mutation is real.
             if v2_profile.active.value == active:
                 allowed_in_list = True
+            else:
+                allowed_in_list = False
 
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
