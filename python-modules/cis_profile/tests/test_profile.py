@@ -9,7 +9,6 @@ import pytest
 import os
 import json
 import jsonschema
-import cis_crypto
 
 
 class TestProfile(object):

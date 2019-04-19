@@ -70,7 +70,7 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
             }
         )
 
@@ -131,7 +131,7 @@ class Profile(object):
                 "primary_email": user_profile["primary_email"],
                 "primary_username": user_profile["primary_username"],
                 "sequence_number": user_profile["sequence_number"],
-                "active": bool(json.loads(user_profile["profile"])["active"]["value"])
+                "active": bool(json.loads(user_profile["profile"])["active"]["value"]),
             }
         )
 
@@ -173,7 +173,7 @@ class Profile(object):
                         "primary_email": profile["primary_email"],
                         "primary_username": profile["primary_username"],
                         "sequence_number": profile["sequence_number"],
-                        "active": bool(json.loads(profile["profile"])["active"]["value"])
+                        "active": bool(json.loads(profile["profile"])["active"]["value"]),
                     }
                 )
                 sequence_numbers.append(profile["sequence_number"])
@@ -270,39 +270,33 @@ class Profile(object):
         return users
 
     def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
-        logger.info('Getting segment: {} of total: {}'.format(segment, total_segments))
+        logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
-            expression_attr = {
-                ":id": {"S": connection_method}
-            }
+            expression_attr = {":id": {"S": connection_method}}
             filter_expression = "begins_with(id, :id)"
 
-        
         if connection_method and active is not None:
             logger.info("Asking for only the users with active state: {}".format(active))
-            expression_attr = {
-                ":id": {"S": connection_method},
-                ":a" : {"BOOL": active},
-            }
+            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
         response = self.client.scan(
             TableName=self.table.name,
-            TotalSegments=total_segments, 
-            Segment=segment, 
-            ProjectionExpression="id, primary_email, user_uuid, active", 
-            FilterExpression=filter_expression, 
+            TotalSegments=total_segments,
+            Segment=segment,
+            ProjectionExpression="id, primary_email, user_uuid, active",
+            FilterExpression=filter_expression,
             ExpressionAttributeValues=expression_attr,
         )
         users = response.get("Items", [])
         while "LastEvaluatedKey" in response:
             response = self.client.scan(
                 TableName=self.table.name,
-                TotalSegments=total_segments, 
-                Segment=segment, 
-                ProjectionExpression="id, primary_email, user_uuid, active", 
-                FilterExpression=filter_expression, 
+                TotalSegments=total_segments,
+                Segment=segment,
+                ProjectionExpression="id, primary_email, user_uuid, active",
+                FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
                 ExclusiveStartKey=response["LastEvaluatedKey"],
             )
@@ -320,7 +314,11 @@ class Profile(object):
         users = []
         for x in range(pool_size):
             # XXX TBD async this with asyncio
-            users.extend(self._get_segment(segment=x, total_segments=pool_size, connection_method=connection_method, active=active))
+            users.extend(
+                self._get_segment(
+                    segment=x, total_segments=pool_size, connection_method=connection_method, active=active
+                )
+            )
         return users
 
     def find_or_create(self, user_profile):
@@ -382,6 +380,3 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
-
-        
-

@@ -3,8 +3,10 @@ import boto3
 import json
 import os
 import logging
+import time
 from cis_crypto import common
 from jose import jwk
+from botocore.exceptions import ClientError
 
 
 logger = logging.getLogger(__name__)
@@ -96,7 +98,7 @@ class AWSParameterstoreProvider(object):
 
         if "uuid_salt" in self._cache:
             logger.debug("Returning memory-cached version of uuid_salt")
-            return self._cache[uuid_salt]
+            return self._cache["uuid_salt"]
 
         while result is None or retries == 0:
             try:
