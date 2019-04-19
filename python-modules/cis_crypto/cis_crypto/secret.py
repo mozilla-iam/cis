@@ -57,24 +57,58 @@ class AWSParameterstoreProvider(object):
         self.region_name = self.config("secret_manager_ssm_region", namespace="cis", default="us-west-2")
         self.boto_session = boto3.session.Session(region_name=self.region_name)
         self.ssm_client = self.boto_session.client("ssm")
+        self._cache = {}
 
     def key(self, key_name):
-        ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
-        ssm_response = self.ssm_client.get_parameter(Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True)
+        retries = 30
+        backoff = 1
+        result = None
 
-        logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
+        if "key_construct" in self._cache:
+            logger.debug("Returning memory-cached version of the parameter key_construct")
+            return self._cache["key_construct"]
 
-        result = ssm_response.get("Parameter")
+        try:
+            ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+            ssm_response = self.ssm_client.get_parameter(
+                Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True
+            )
+            logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
+            result = ssm_response.get("Parameter")
+        except ClientError as e:
+            retries = retries - 1
+            backoff = backoff + 1
+            logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+            time.sleep(backoff)
+
         try:
             key_dict = json.loads(result.get("Value"))
             key_construct = jwk.construct(key_dict, "RS256")
         except json.decoder.JSONDecodeError:
             key_construct = jwk.construct(result.get("Value"), "RS256")
+        self._cache["key_construct"] = key_construct
         return key_construct
 
     def uuid_salt(self):
-        ssm_path = self.config("secret_manager_ssm_uuid_salt", namespace="cis", default="/iam")
-        ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
+        retries = 30
+        backoff = 1
+        result = None
 
-        logger.debug("Secret manager SSM provider loading uuid_salt: {}".format(ssm_path))
-        return ssm_response.get("Parameter").get("Value")
+        if "uuid_salt" in self._cache:
+            logger.debug("Returning memory-cached version of uuid_salt")
+            return self._cache[uuid_salt]
+
+        while result is None or retries == 0:
+            try:
+                ssm_path = self.config("secret_manager_ssm_uuid_salt", namespace="cis", default="/iam")
+                ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
+                result = ssm_response.get("Parameter").get("Value")
+                logger.debug("Secret manager SSM provider loading uuid_salt: {}".format(ssm_path))
+            except ClientError as e:
+                retries = retries - 1
+                backoff = backoff + 1
+                logger.error("Failed to fetch uuid_salt due to: {} retries {} backoff {}".format(e, retries, backoff))
+                time.sleep(backoff)
+
+        self._cache["uuid_salt"] = result
+        return result
