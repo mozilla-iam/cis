@@ -130,7 +130,7 @@ class HRISPublisher:
                 # Convert as needed to a dict
                 try:
                     profile = profile.as_dict()
-                except TypeError:
+                except (TypeError, AttributeError):
                     pass
                 # Check if it has the attributes
                 try:
