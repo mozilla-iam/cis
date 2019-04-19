@@ -26,7 +26,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(self.user_profile),
-            "active": True,
+            "active": True
         }
         self.boto_session = boto3.session.Session(region_name="us-east-1")
         self.dynamodb_resource = self.boto_session.resource("dynamodb")
@@ -53,7 +53,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
         result = profile.update(vault_json_datastructure)
@@ -73,7 +73,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
 
@@ -100,7 +100,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
@@ -114,7 +114,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
 
         profile.update(vault_json_datastructure_second_id)
@@ -139,7 +139,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
@@ -153,7 +153,7 @@ class TestUsersDynalite(object):
             "primary_username": self.user_profile.get("primary_username").get("value"),
             "sequence_number": "12345678",
             "profile": json.dumps(modified_profile),
-            "active": True,
+            "active": True
         }
 
         profile.update(vault_json_datastructure_second_id)

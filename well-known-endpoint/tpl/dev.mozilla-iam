@@ -40,7 +40,8 @@
       "display:ndaed",
       "display:vouched",
       "display:authenticated",
-      "display:public"
+      "display:public",
+      "display:none"
     ],
     "publishers_rules_uri": "https://auth.${DOMAIN}/.well-known/mozilla-iam-publisher-rules",
     "publishers_jwks": {

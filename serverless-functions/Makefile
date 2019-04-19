@@ -29,7 +29,8 @@ clean-layer:
 .PHONY:layer
 layer:
 	$(LAMBDA_PACKAGE_CMD) \
-	/bin/bash -c "$(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ \
+	/bin/bash -c "\
+	$(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ \
 	$(CIS_MODULE_PATH)/cis_change_service/ \
 	$(CIS_MODULE_PATH)/cis_crypto/ \
 	$(CIS_MODULE_PATH)/cis_identity_vault/ \

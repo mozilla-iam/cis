@@ -53,7 +53,7 @@ class Vault(object):
         """
         Updates the attributes owned by CIS itself. Updated attributes:
         - last_modified
-        - active (XXX to be removed in the future, see comments below)
+        - active
 
         @user_id str of the user's user_id
         @user a cis_profile.User object to update the attributes of
@@ -66,11 +66,9 @@ class Vault(object):
         user.last_modified.value = user._get_current_utc_time()
         user.sign_attribute("last_modified", "cis")
 
-        # Currently we accept LDAP and Auth0 disabling a user
-        # but since CIS is authoritative on this attribute, we rewrite it here
-        # XXX THIS IS AN EXCEPTION AND SHOULD BE REMOVED WHEN ONLY HRIS CAN DISABLE USERS
-        # A separate scope/endpoint should be made available to disable+delete users on demand, that isn't using their
-        # publishers
+        # Currently we accept LDAP, HRIS and access_provider (auth0) disabling a user (eventually this could be only
+        # HRIS and Auth0, or HRIS and CIS with write back to auth0)
+        # Since CIS is authoritative on this attribute, we rewrite it here
         if user.active.signature.publisher.name in ["ldap", "access_provider", "hris"]:
             if self.config("verify_signatures", namespace="cis") == "true":
                 logger.info("Verifying signature of attribute active", extra={"user_id": user_id})
@@ -151,6 +149,16 @@ class Vault(object):
                 return None
             else:
                 logger.info("Differences found during merge: {}".format(difference), extra={"user_id": user_id})
+
+            # XXX This is safe but this is not great. Probably should have a route to deactivate since its a CIS
+            # attribute.
+            if difference == ["active"]:
+                logger.info(
+                    "Partial update only contains the `active` attribute, bypassing publisher verification as CIS "
+                    "will enforce this check on it's own'",
+                    extra={"user_id": user_id},
+                )
+                return new_user_profile
 
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})

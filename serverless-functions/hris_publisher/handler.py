@@ -19,6 +19,9 @@ def setup_logging():
     h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
+
+    # Quiet botocore verbose logging...
+    logging.getLogger("botocore").setLevel(logging.WARNING)
     return logger
 
 
@@ -27,7 +30,7 @@ def handle(event, context={}):
     logger = setup_logging()
     hris = cis_publisher.hris.HRISPublisher(context=context)
     if isinstance(event, list):
-        hris.publish(event)
+        hris.publish(user_ids=event)
     else:
         hris.publish()
     return 200

@@ -4,7 +4,9 @@ import os
 import time
 import threading
 import queue
+from urllib.parse import urlencode, quote_plus
 from cis_profile.common import WellKnown
+from cis_profile import User
 from cis_publisher import secret
 from cis_publisher import common
 
@@ -49,6 +51,7 @@ class Publish:
         self.known_cis_users = None
         self.known_cis_users_by_email = {}
         self.known_cis_users_by_user_id = {}
+        self.all_known_profiles = {}
         self.__inited = False
 
     def __deferred_init(self):
@@ -111,7 +114,8 @@ class Publish:
                 elif profile.user_id.value not in user_ids:
                     xlist.append(idx)
             for i in reversed(xlist):
-                del self.profiles[i]
+                if self.profiles[i].active.value:
+                    del self.profiles[i]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
         # XXX - we already validate in the API, is this needed?
@@ -128,14 +132,7 @@ class Publish:
             # Filter out non-updatable attributes as needed
             self.filter_known_cis_users(profiles=[profile])
 
-            # Existing users (i.e. users to update) have to be passed as argument
-            if user_id in self.known_cis_users_by_user_id:
-                qs = "/v2/user?user_id={}".format(user_id)
-            # New users do not
-            else:
-                qs = "/v2/user"
-
-            threads.append(threading.Thread(target=self._really_post, args=(qs, profile, failed_users)))
+            threads.append(threading.Thread(target=self._really_post, args=(user_id, qs, profile, failed_users)))
             threads[-1].start()
             num_threads = len(threading.enumerate())
             while num_threads >= self.max_threads:
@@ -153,10 +150,26 @@ class Publish:
             failed_users.task_done()
         return ret
 
-    def _really_post(self, qs, profile, failed_users):
+    def _really_post(self, user_id, qs, profile, failed_users):
         response_ok = False
         retries = 0
         access_token = self._get_authzero_token()
+
+        # Existing users (i.e. users to update) have to be passed as argument
+        if user_id in self.known_cis_users_by_user_id:
+            qs = "/v2/user?user_id={}".format(user_id)
+        # New users do not
+        else:
+            qs = "/v2/user"
+        # We don't always get a user_id set
+        identifier = user_id
+        if identifier is None:
+            identifier = profile.primary_email.value
+            if identifier is None:
+                logger.critical("Could not find profile identifier!")
+
+        logger.debug("Posting user profile: {}".format(profile.as_dict()))
+
         while not response_ok:
             logger.info(
                 "Attempting to post profile (user_id: {}, primary_email: {} to API {}{}".format(
@@ -169,11 +182,8 @@ class Publish:
                 headers={"authorization": "Bearer {}".format(access_token)},
             )
             response_ok = response.ok
+
             if not response_ok:
-                # We don't always get a user_id set
-                identifier = profile.user_id.value
-                if identifier is None:
-                    identifier = profile.primary_email.value
                 logger.warning(
                     "Posting profile {} to API failed, retry is {} retry_delay is {} status_code is {} reason is {}"
                     "contents were {}".format(
@@ -184,20 +194,13 @@ class Publish:
                 time.sleep(self.retry_delay)
                 if retries >= self.max_retries:
                     logger.error(
-                        "Maximum retries reached ({}), profile is not to be sent {}".format(
-                            retries, profile.user_id.value
-                        )
+                        "Maximum retries reached ({}), profile is not to be sent {}".format(retries, identifier)
                     )
-                    identity = profile.user_id.value
-                    if identity is None:
-                        identity = profile.primary_email.value
-                    failed_users.put(identity)
+                    failed_users.put(identifier)
                     break
             else:
                 logger.info(
-                    "Profile successfully posted to API {}, status_code: {}".format(
-                        profile.user_id.value, response.status_code
-                    )
+                    "Profile successfully posted to API {}, status_code: {}".format(identifier, response.status_code)
                 )
 
     def _request_post(self, url, payload, headers):
@@ -224,16 +227,54 @@ class Publish:
             self.access_token = authzero.exchange_for_access_token()
             return self.access_token
 
+    def get_known_cis_users_paginated(self):
+        """
+        Call CIS Person API and return a list of all known profiles
+        return: list of dict JSON profiles
+        """
+        self.__deferred_init()
+        if len(self.all_known_profiles) > 0:
+            return self.all_known_profiles
+
+        logger.info("Requesting CIS Person API for a list of all user profiles")
+        qs = "/v2/users"
+        access_token = self._get_authzero_token()
+        nextPage = ""
+
+        while nextPage is not None:
+            if nextPage != "":
+                real_qs = "{}?nextPage={}".format(qs, nextPage)
+            else:
+                real_qs = qs
+            response = self._request_get(
+                self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
+            )
+            if not response.ok:
+                logger.error(
+                    "Failed to query CIS Person API: {}{} response: {}".format(
+                        self.api_url_person, real_qs, response.text
+                    )
+                )
+                raise PublisherError("Failed to query CIS Person API", response.text)
+            response_json = response.json()
+            for p in response_json["Items"]:
+                self.all_known_profiles[p["user_id"]["value"]] = p
+            nextPage = response_json.get("nextPage")
+
+        logger.info("Got {} users known to CIS".format(len(self.all_known_profiles)))
+        return self.all_known_profiles
+
     def get_known_cis_users(self):
         """
-        Call CIS Person API and return a list of existing users
+        Call CIS Person API and return a list of existing user ids and/or remails
+        return: list of str: cis user ids
         """
         self.__deferred_init()
         if self.known_cis_users is not None:
             return self.known_cis_users
 
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
-        qs = "/v2/users/id/all?connectionMethod={}".format(self.login_method)
+        qs = "/v2/users/id/all?connectionMethod={}&active=True".format(self.login_method)
         access_token = self._get_authzero_token()
         response = self._request_get(
             self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
@@ -253,6 +294,25 @@ class Publish:
 
         return self.known_cis_users
 
+    def get_cis_user(self, user_id):
+        """
+        Call CIS Person API and return the matching user profile
+        @user_id str a user_id
+        """
+        self.__deferred_init()
+        logger.info("Requesting CIS Person API for a user profile {}".format(user_id))
+        access_token = self._get_authzero_token()
+        qs = "/v2/user/user_id/{}".format(urlencode(user_id, quote_via=quote_plus))
+        response = self._request_get(
+            self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
+        )
+        if not response.ok:
+            logger.error(
+                "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
+            )
+            raise PublisherError("Failed to query CIS Person API", response.text)
+        return User(response.json())
+
     def filter_known_cis_users(self, profiles=None, save=True):
         """
         Filters out fields that are not allowed to be updated by this publisher from the profile before posting
@@ -265,7 +325,7 @@ class Publish:
             profiles = self.profiles
 
         # Never NULL/None these fields during filtering as they're used for knowing where to post
-        whitelist = ["user_id"]
+        whitelist = ["user_id", "active"]
 
         allowed_updates = self.publisher_rules["update"]
         for n in range(0, len(profiles)):
@@ -276,7 +336,7 @@ class Publish:
                 user_id = p.user_id.value
 
             if user_id in self.known_cis_users_by_user_id:
-                logger.info(
+                logger.debug(
                     "Filtering out non-updatable values from user {} because it already exist in CIS".format(user_id)
                 )
                 for pfield in p.__dict__:
@@ -320,7 +380,7 @@ class Publish:
                                 p.__dict__[pfield]["value"] = None
                             elif "values" in p.__dict__[pfield].keys():
                                 p.__dict__[pfield]["values"] = None
-                logger.info("Filtered fields for user {}".format(user_id))
+                logger.debug("Filtered fields for user {}".format(user_id))
                 profiles[n] = p
         if save:
             self.profiles = profiles

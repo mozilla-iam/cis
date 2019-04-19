@@ -72,17 +72,15 @@ class Manager(object):
         Returns:
             [type] -- [The result of the query or None in the case the secret does not exist.]
         """
+        retries = 30
+        backoff = 1
+        result = None
+
         if secret_name in self._cache:
             logger.debug("Returning memory-cached version of the parameter: {}".format(secret_name))
             return self._cache[secret_name]
 
-        result = None
-        retry = 5
-        backoff = 1  # how long to sleep between attempts
-
-        # XXX this should use:
-        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ssm.html#SSM.Client.get_waiter
-        while result is None and retry != 0:
+        while result is None or retries == 0:
             try:
                 ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
                 ssm_response = self.ssm_client.get_parameter(
@@ -91,11 +89,10 @@ class Manager(object):
                 logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, secret_name))
                 result = ssm_response.get("Parameter", {})
             except ClientError as e:
-                logger.error("Failed to fetch secret due to: {}".format(e))
-                retry = retry - 1
-                time.sleep(backoff)
+                retries = retries - 1
                 backoff = backoff + 1
-                logger.debug("Backing off to try again.")
+                logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+                time.sleep(backoff)
 
         self._cache[secret_name] = result["Value"]
         logger.debug("Secrets were fetched successfully from the function.")

@@ -51,6 +51,8 @@ templatize:
 	sed -i 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
 ifneq ($(STAGE),prod)
 	sed -i 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
+else
+	sed -i 's/$${STAGE}//g' s3/.well-known/*
 endif
 
 .PHONY: cloudformation

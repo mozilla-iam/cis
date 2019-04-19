@@ -2,10 +2,10 @@
   "create": {
     "uuid": [ "cis" ],
     "user_id": [ "ldap", "hris", "access_provider" ],
-    "primary_username": [ "ldap", "hris", "cis", "access_provider" ],
+    "primary_username": [ "cis" ],
     "login_method": [ "ldap", "hris", "access_provider" ],
     "active": [ "ldap", "hris", "access_provider", "cis" ],
-    "last_modified": [ "ldap", "hris", "access_provider" ],
+    "last_modified": [ "ldap", "hris", "cis", "access_provider" ],
     "created": [ "ldap", "hris", "cis", "access_provider" ],
     "usernames": [ "ldap", "access_provider", "mozilliansorg" ],
     "pronouns": [ "ldap", "mozilliansorg" ],
@@ -31,7 +31,17 @@
     "picture": [ "ldap", "mozilliansorg" ],
     "uris": [ "ldap", "mozilliansorg" ],
     "phone_numbers": [ "ldap", "mozilliansorg" ],
-    "staff_information": [ "ldap", "hris" ]
+    "staff_information": {
+        "manager": ["ldap", "hris"],
+        "director": ["ldap", "hris"],
+        "staff": ["ldap", "hris"],
+        "title": ["ldap", "hris"],
+        "team": ["ldap", "hris"],
+        "cost_center": ["ldap", "hris"],
+        "worker_type": ["ldap", "hris"],
+        "wpr_desk_number": ["ldap", "hris"],
+        "office_location": ["ldap", "hris"]
+    }
   },
   "update": {
     "uuid": "",
@@ -65,6 +75,16 @@
     "picture": "mozilliansorg",
     "uris": "mozilliansorg",
     "phone_numbers": "mozilliansorg",
-    "staff_information": "hris"
+    "staff_information": {
+        "manager": "hris",
+        "director": "hris",
+        "staff": "hris",
+        "title": "hris",
+        "team": "hris",
+        "cost_center": "hris",
+        "worker_type": "hris",
+        "wpr_desk_number": "hris",
+        "office_location": "hris"
+    }
   }
 }
