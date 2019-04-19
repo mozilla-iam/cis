@@ -114,7 +114,8 @@ class Publish:
                 elif profile.user_id.value not in user_ids:
                     xlist.append(idx)
             for i in reversed(xlist):
-                del self.profiles[i]
+                if self.profiles[i].active.value:
+                    del self.profiles[i]
             logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
         # XXX - we already validate in the API, is this needed?
