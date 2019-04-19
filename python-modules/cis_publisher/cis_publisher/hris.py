@@ -128,8 +128,18 @@ class HRISPublisher:
         for potential_user_id in delta:
             if potential_user_id in publisher.all_known_profiles:
                 profile = publisher.all_known_profiles[potential_user_id]
-                ldap_groups = profile["access_information"]["ldap"]["values"]
-                is_staff = profile["staff_information"]["staff"]["value"]
+                try:
+                    ldap_groups = profile["access_information"]["ldap"]["values"]
+                    is_staff = profile["staff_information"]["staff"]["value"]
+                # Not a staff user f these fields don't exist
+                except KeyError:
+                    logger.debug(
+                        "staff_information.staff or access_information.ldap fields are null,"
+                        " won't deactivate {}".format(potential_user_id)
+                    )
+                    is_staff = False
+                    ldap_groups = []
+
                 if (is_staff is True) or (
                     is_staff is False and (ldap_groups is not None and "admin_accounts" not in ldap_groups)
                 ):
