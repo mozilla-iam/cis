@@ -2,12 +2,14 @@ from cis_profile import profile
 from cis_profile.common import MozillaDataClassification
 from cis_profile.common import DisplayLevel
 
+import mock
 import copy
 import cis_profile.exceptions
 import pytest
 import os
 import json
 import jsonschema
+import cis_crypto
 
 
 class TestProfile(object):
@@ -154,7 +156,9 @@ class TestProfile(object):
         with pytest.raises(cis_profile.exceptions.SignatureVerificationFailure):
             u.verify_attribute_signature("fun_title")  # Unsigned, so should raise and fail
 
-    def test_initialize_uuid_and_primary_username(self):
+    @mock.patch("cis_crypto.secret.AWSParameterstoreProvider.uuid_salt")
+    def test_initialize_uuid_and_primary_username(self, mock_salt):
+        mock_salt.return_value = "12345"
         u = profile.User(user_id="test")
         u.initialize_uuid_and_primary_username()
         assert u.uuid["value"] is not None
