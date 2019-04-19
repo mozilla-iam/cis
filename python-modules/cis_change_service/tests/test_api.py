@@ -53,10 +53,10 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
         else:
             if attr != "schema" and attr in complex_structures:
                 for k in temp_profile[attr]:
-                    if attr == "access_information":
-                        successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
-                    if attr == "staff_information" or attr == "identities":
+                    try:
                         successful_random_publisher = random.choice(publisher_rules[condition][attr])
+                    except KeyError:
+                        successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
                     temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                     u = profile.User(user_structure_json=temp_profile)
                     attribute = "{}.{}".format(attr, k)
