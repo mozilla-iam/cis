@@ -97,7 +97,7 @@ class TestAPI(object):
             follow_redirects=True,
         )
 
-        assert len(paged_query.json["Items"]) == 25
+        assert len(paged_query.json["Items"]) == 24
         assert paged_query.json["nextPage"] is not None
         assert paged_query.json["nextPage"] != ""
         assert paged_query.json["Items"] != result.json["Items"]
