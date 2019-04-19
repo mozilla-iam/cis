@@ -3,6 +3,7 @@ import http.client
 import json
 import time
 from botocore.exceptions import ClientError
+from botocore.config import Config
 from cis_publisher import common
 from logging import getLogger
 
@@ -57,9 +58,10 @@ class AuthZero(object):
 class Manager(object):
     def __init__(self):
         self.config = common.get_config()
+        botoconfig = Config(retries=dict(max_attempts=30))
         self.region_name = self.config("secret_manager_ssm_region", namespace="cis", default="us-west-2")
         self.boto_session = boto3.session.Session(region_name=self.region_name)
-        self.ssm_client = self.boto_session.client("ssm")
+        self.ssm_client = self.boto_session.client("ssm", config=botoconfig)
         self._cache = {}
 
     def secret(self, secret_name):
@@ -76,26 +78,15 @@ class Manager(object):
             logger.debug("Returning memory-cached version of the parameter: {}".format(secret_name))
             return self._cache[secret_name]
 
-        result = None
-        retry = 5
-        backoff = 1  # how long to sleep between attempts
-
-        # XXX this should use:
-        # https://boto3.amazonaws.com/v1/documentation/api/latest/reference/services/ssm.html#SSM.Client.get_waiter
-        while result is None and retry != 0:
-            try:
-                ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
-                ssm_response = self.ssm_client.get_parameter(
-                    Name="{}/{}".format(ssm_namespace, secret_name), WithDecryption=True
-                )
-                logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, secret_name))
-                result = ssm_response.get("Parameter", {})
-            except ClientError as e:
-                logger.error("Failed to fetch secret due to: {}".format(e))
-                retry = retry - 1
-                time.sleep(backoff)
-                backoff = backoff + 1
-                logger.debug("Backing off to try again.")
+        try:
+            ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+            ssm_response = self.ssm_client.get_parameter(
+                Name="{}/{}".format(ssm_namespace, secret_name), WithDecryption=True
+            )
+            logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, secret_name))
+            result = ssm_response.get("Parameter", {})
+        except ClientError as e:
+            logger.error("Failed to fetch secret due to: {}".format(e))
 
         self._cache[secret_name] = result["Value"]
         logger.debug("Secrets were fetched successfully from the function.")
