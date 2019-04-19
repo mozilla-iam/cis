@@ -29,7 +29,7 @@ clean-layer:
 .PHONY:layer
 layer:
 	$(LAMBDA_PACKAGE_CMD) \
-	/bin/bash -c "cp serverless-functions/boto.cfg /etc/ && \
+	/bin/bash -c "\
 	$(PIP_CMD) $(CIS_MODULE_PATH)/cis_aws/ \
 	$(CIS_MODULE_PATH)/cis_change_service/ \
 	$(CIS_MODULE_PATH)/cis_crypto/ \
@@ -44,7 +44,6 @@ layer:
 	flask \
 	iam-profile-faker -t /var/task/serverless-functions/$(PY_DIR) && \
 	ls /var/task/serverless-functions/build/ && \
-	zip -r /var/task/serverless-functions/cis.zip /etc/boto.cfg && \
 	zip -r /var/task/serverless-functions/cis.zip /var/task/serverless-functions/build/ && \
 	aws lambda publish-layer-version \
 	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 \

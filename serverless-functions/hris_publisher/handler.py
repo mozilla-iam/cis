@@ -19,6 +19,9 @@ def setup_logging():
     h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
     logger.setLevel(logging.INFO)
+
+    # Quiet botocore verbose logging...
+    logging.getLogger("botocore").setLevel(logging.WARNING)
     return logger
 
 
