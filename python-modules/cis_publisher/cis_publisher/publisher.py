@@ -131,14 +131,7 @@ class Publish:
             # Filter out non-updatable attributes as needed
             self.filter_known_cis_users(profiles=[profile])
 
-            # Existing users (i.e. users to update) have to be passed as argument
-            if user_id in self.known_cis_users_by_user_id:
-                qs = "/v2/user?user_id={}".format(user_id)
-            # New users do not
-            else:
-                qs = "/v2/user"
-
-            threads.append(threading.Thread(target=self._really_post, args=(qs, profile, failed_users)))
+            threads.append(threading.Thread(target=self._really_post, args=(user_id, qs, profile, failed_users)))
             threads[-1].start()
             num_threads = len(threading.enumerate())
             while num_threads >= self.max_threads:
@@ -156,17 +149,23 @@ class Publish:
             failed_users.task_done()
         return ret
 
-    def _really_post(self, qs, profile, failed_users):
+    def _really_post(self, user_id, qs, profile, failed_users):
         response_ok = False
         retries = 0
         access_token = self._get_authzero_token()
 
+        # Existing users (i.e. users to update) have to be passed as argument
+        if user_id in self.known_cis_users_by_user_id:
+            qs = "/v2/user?user_id={}".format(user_id)
+        # New users do not
+        else:
+            qs = "/v2/user"
         # We don't always get a user_id set
-        identifier = profile.user_id.value
+        identifier = user_id
         if identifier is None:
             identifier = profile.primary_email.value
-        if identifier is None:
-            logger.critical("Could not find profile identifier!")
+            if identifier is None:
+                logger.critical("Could not find profile identifier!")
 
         logger.debug("Posting user profile: {}".format(profile.as_dict()))
 
@@ -274,7 +273,7 @@ class Publish:
             return self.known_cis_users
 
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
-        qs = "/v2/users/id/all?connectionMethod={}".format(self.login_method)
+        qs = "/v2/users/id/all?connectionMethod={}&active=True".format(self.login_method)
         access_token = self._get_authzero_token()
         response = self._request_get(
             self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}

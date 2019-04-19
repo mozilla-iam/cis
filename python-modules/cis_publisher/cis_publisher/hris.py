@@ -27,7 +27,7 @@ class HRISPublisher:
         """
         s3 = boto3.client("s3")
         bucket = os.environ.get("CIS_BUCKET_URL")
-        recent = datetime.now(timezone.utc) - timedelta(hours=1)
+        recent = datetime.now(timezone.utc) - timedelta(hours=2)
         try:
             objects = s3.list_objects_v2(Bucket=bucket)
             # bucket has zero contents?
@@ -56,7 +56,7 @@ class HRISPublisher:
         response = s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
         logger.info("Wrote S3 cache file")
 
-    def publish(self, user_ids=None, chunk_size=25):
+    def publish(self, user_ids=None, chunk_size=30):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
@@ -65,7 +65,11 @@ class HRISPublisher:
         @chunk_size: int when no user_id is selected, this is the size of the chunk/slice we'll create to divide the
         work between function calls (to self)
         """
-        logger.info("Starting HRIS Publisher")
+        if user_ids is None:
+            l = "All"
+        else:
+            l = len(user_ids)
+        logger.info("Starting HRIS Publisher [{} users]".format(l))
         cache = self.get_s3_cache()
 
         # Get access to the known_users function first
@@ -167,6 +171,7 @@ class HRISPublisher:
         profiles = self.convert_hris_to_cis_profiles(
             report_profiles, publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, user_ids
         )
+        profiles = self.sign_profiles(profiles)
         profiles = self.deactivate_users(publisher, profiles, report_profiles)
         del report_profiles
 
@@ -254,6 +259,31 @@ class HRISPublisher:
         self.report = res.json()
         return self.report
 
+    def dedup_changes(self, publisher, profiles):
+        """
+        Remove profiles that have no HRIS changes so that we don't send them for no reason
+        XXX this function is not currently used (check!)
+
+        @publisher cis_publisher.Publisher object
+        @profiles list of cis_profile.User
+        """
+        dedup = []
+        for p in profiles:
+            user_id = publisher.known_cis_users_by_email[p.primary_email.value]
+            if user_id is None:
+                dedup.append(p)
+                continue
+            cis_p = cis_profile.User(publisher.all_known_profiles[user_id])
+            if p.timezone.value != None:
+                if (
+                    (p.staff_information == cis_p.staff_information)
+                    and (p.access_information.hris == cis_p.access_information.hris)
+                    and (p.active == cis_p.active)
+                ):
+                    continue
+            dedup.append(p)
+        return dedup
+
     def convert_hris_to_cis_profiles(self, hris_data, cis_users_by_user_id, cis_users_by_email, user_ids):
         """
         @hris_data list dict of HRIS data
@@ -331,7 +361,7 @@ class HRISPublisher:
             except KeyError:
                 logger.critical(
                     "There is no user_id in CIS Person API for HRIS User {}."
-                    "This user does may not be created in HRIS yet?".format(hruser_work_email)
+                    " This user may not be created in HRIS yet?".format(hruser_work_email)
                 )
                 continue
             user_ids_lower_case = [x.lower() for x in user_ids]
@@ -403,7 +433,11 @@ class HRISPublisher:
                 "Worker_s_Manager_s_Email_Address"
             )
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
+            user_array.append(p)
+        return user_array
 
+    def sign_profiles(self, profiles):
+        for p in profiles:
             try:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
@@ -431,6 +465,4 @@ class HRISPublisher:
                 logger.debug("Profile data {}".format(p.as_dict()))
 
             logger.info("Processed (signed and verified) HRIS report's user {}".format(p.primary_email.value))
-            user_array.append(p)
-
-        return user_array
+        return profiles
