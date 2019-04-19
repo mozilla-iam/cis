@@ -171,7 +171,6 @@ class HRISPublisher:
         profiles = self.convert_hris_to_cis_profiles(
             report_profiles, publisher.known_cis_users_by_user_id, publisher.known_cis_users_by_email, user_ids
         )
-        profiles = self.sign_profiles(profiles)
         profiles = self.deactivate_users(publisher, profiles, report_profiles)
         del report_profiles
 
@@ -433,11 +432,6 @@ class HRISPublisher:
                 "Worker_s_Manager_s_Email_Address"
             )
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
-            user_array.append(p)
-        return user_array
-
-    def sign_profiles(self, profiles):
-        for p in profiles:
             try:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
@@ -465,4 +459,5 @@ class HRISPublisher:
                 logger.debug("Profile data {}".format(p.as_dict()))
 
             logger.info("Processed (signed and verified) HRIS report's user {}".format(p.primary_email.value))
-        return profiles
+            user_array.append(p)
+        return user_array

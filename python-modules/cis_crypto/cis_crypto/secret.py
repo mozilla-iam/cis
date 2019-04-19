@@ -3,7 +3,6 @@ import boto3
 import json
 import os
 import logging
-from botocore.config import Config
 from cis_crypto import common
 from jose import jwk
 
@@ -57,8 +56,7 @@ class AWSParameterstoreProvider(object):
         self.config = common.get_config()
         self.region_name = self.config("secret_manager_ssm_region", namespace="cis", default="us-west-2")
         self.boto_session = boto3.session.Session(region_name=self.region_name)
-        botoconfig = Config(retries=dict(max_attempts=30))
-        self.ssm_client = self.boto_session.client("ssm", botoconfig)
+        self.ssm_client = self.boto_session.client("ssm")
 
     def key(self, key_name):
         ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
