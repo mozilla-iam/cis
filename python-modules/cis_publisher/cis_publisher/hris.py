@@ -372,19 +372,34 @@ class HRISPublisher:
         for hruser in hris_data.get("Report_Entry"):
             hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
             logger.debug("filtering fields for user email {}".format(hruser_work_email))
+
+            # NOTE:
+            # The HRIS setup will DELETE users when they need to be deactivated and removed. It will set INACTIVE when
+            # users may not yet be provisioned. This is important as if this changes the code here would have to also
+            # change.
+            hruser_active_state = int(hruser.get("CurrentlyActive"))
+            if hruser_active_state == 0:
+                logger.debug(
+                    "User {} is currently set to inactive in HRIS Report, skipping integration".format(
+                        hruser_work_email
+                    )
+                )
+                continue
+
             current_user_id = None
             try:
                 current_user_id = cis_users_by_email[hruser_work_email]
             except KeyError:
                 logger.critical(
                     "There is no user_id in CIS Person API for HRIS User {}."
-                    " This user may not be created in HRIS yet?".format(hruser_work_email)
+                    " This user may not be created by HRIS yet?".format(hruser_work_email)
                 )
                 continue
             user_ids_lower_case = [x.lower() for x in user_ids]
 
             if current_user_id.lower() not in user_ids_lower_case:
                 # Skip this user, it's not in the list requested to convert
+                logger.debug("skipping user {}, not in requested conversion list".format(current_user_id))
                 continue
 
             p = cis_profile.User()
