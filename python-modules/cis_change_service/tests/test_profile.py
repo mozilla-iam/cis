@@ -25,6 +25,8 @@ logger = logging.getLogger(__name__)
 
 class TestProfile(object):
     def setup(self):
+        self.patcher_salt = mock.patch("cis_crypto.secret.AWSParameterstoreProvider.uuid_salt")
+        self.patcher_salt = self.patcher_salt.start()
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         name = "local-identity-vault"
@@ -339,3 +341,4 @@ class TestProfile(object):
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
+        self.patcher_salt.stop()

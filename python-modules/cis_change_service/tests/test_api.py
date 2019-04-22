@@ -76,6 +76,9 @@ class TestAPI(object):
 
         from cis_change_service.common import get_config
 
+        self.patcher_salt = mock.patch("cis_crypto.secret.AWSParameterstoreProvider.uuid_salt")
+        self.mock_salt = self.patcher_salt.start()
+
         config = get_config()
         os.environ["CIS_DYNALITE_PORT"] = str(random.randint(32000, 34000))
         self.dynalite_port = config("dynalite_port", namespace="cis")
@@ -304,3 +307,4 @@ class TestAPI(object):
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
+        self.patcher_salt.stop()
