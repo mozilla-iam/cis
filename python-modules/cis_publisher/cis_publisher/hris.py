@@ -7,7 +7,6 @@ import logging
 import json
 import time
 import requests
-import cis_profile
 from datetime import datetime, timezone, timedelta
 from traceback import format_exc
 
@@ -31,7 +30,7 @@ class HRISPublisher:
         try:
             objects = s3.list_objects_v2(Bucket=bucket)
             # bucket has zero contents?
-            if not "Contents" in objects:
+            if "Contents" not in objects:
                 logger.info("No S3 cache present")
                 return None
             # Recent file?
@@ -42,7 +41,7 @@ class HRISPublisher:
             response = s3.get_object(Bucket=bucket, Key="cache.json")
             data = response["Body"].read()
         except botocore.exceptions.ClientError as e:
-            logger.error("Could not find S3 cache file")
+            logger.error("Could not find S3 cache file: {}".format(e))
             return None
         logger.info("Using S3 cache")
         return json.loads(data)
@@ -53,7 +52,7 @@ class HRISPublisher:
         """
         s3 = boto3.client("s3")
         bucket = os.environ.get("CIS_BUCKET_URL")
-        response = s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
+        s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
         logger.info("Wrote S3 cache file")
 
     def publish(self, user_ids=None, chunk_size=30):
@@ -66,10 +65,10 @@ class HRISPublisher:
         work between function calls (to self)
         """
         if user_ids is None:
-            l = "All"
+            le = "All"
         else:
-            l = len(user_ids)
-        logger.info("Starting HRIS Publisher [{} users]".format(l))
+            le = len(user_ids)
+        logger.info("Starting HRIS Publisher [{} users]".format(le))
         cache = self.get_s3_cache()
 
         # Get access to the known_users function first
@@ -128,8 +127,23 @@ class HRISPublisher:
         for potential_user_id in delta:
             if potential_user_id in publisher.all_known_profiles:
                 profile = publisher.all_known_profiles[potential_user_id]
-                ldap_groups = profile["access_information"]["ldap"]["values"]
-                is_staff = profile["staff_information"]["staff"]["value"]
+                # Convert as needed to a dict
+                try:
+                    profile = profile.as_dict()
+                except (TypeError, AttributeError):
+                    pass
+                # Check if it has the attributes
+                try:
+                    ldap_groups = profile["access_information"]["ldap"]["values"]
+                    is_staff = profile["staff_information"]["staff"]["value"]
+                # Not a staff user f these fields don't exist
+                except KeyError:
+                    logger.debug(
+                        "staff_information.staff or access_information.ldap fields are null,"
+                        " won't deactivate {}".format(potential_user_id)
+                    )
+                    continue
+
                 if (is_staff is True) or (
                     is_staff is False and (ldap_groups is not None and "admin_accounts" not in ldap_groups)
                 ):
@@ -142,7 +156,11 @@ class HRISPublisher:
             for user in user_ids_to_deactivate:
                 logger.info("User selected for deactivation: {}".format(user))
                 # user from cis
-                p = cis_profile.User(publisher.all_known_profiles[user])
+                try:
+                    p = cis_profile.User(publisher.all_known_profiles[user])
+                except TypeError:
+                    p = publisher.all_known_profiles[user]
+
                 # our partial update
                 newp = cis_profile.User()
                 newp.user_id = p.user_id
@@ -273,7 +291,7 @@ class HRISPublisher:
                 dedup.append(p)
                 continue
             cis_p = cis_profile.User(publisher.all_known_profiles[user_id])
-            if p.timezone.value != None:
+            if p.timezone.value is not None:
                 if (
                     (p.staff_information == cis_p.staff_information)
                     and (p.access_information.hris == cis_p.access_information.hris)
@@ -354,19 +372,34 @@ class HRISPublisher:
         for hruser in hris_data.get("Report_Entry"):
             hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
             logger.debug("filtering fields for user email {}".format(hruser_work_email))
+
+            # NOTE:
+            # The HRIS setup will DELETE users when they need to be deactivated and removed. It will set INACTIVE when
+            # users may not yet be provisioned. This is important as if this changes the code here would have to also
+            # change.
+            hruser_active_state = int(hruser.get("CurrentlyActive"))
+            if hruser_active_state == 0:
+                logger.debug(
+                    "User {} is currently set to inactive in HRIS Report, skipping integration".format(
+                        hruser_work_email
+                    )
+                )
+                continue
+
             current_user_id = None
             try:
                 current_user_id = cis_users_by_email[hruser_work_email]
             except KeyError:
                 logger.critical(
                     "There is no user_id in CIS Person API for HRIS User {}."
-                    " This user may not be created in HRIS yet?".format(hruser_work_email)
+                    " This user may not be created by HRIS yet?".format(hruser_work_email)
                 )
                 continue
             user_ids_lower_case = [x.lower() for x in user_ids]
 
             if current_user_id.lower() not in user_ids_lower_case:
                 # Skip this user, it's not in the list requested to convert
+                logger.debug("skipping user {}, not in requested conversion list".format(current_user_id))
                 continue
 
             p = cis_profile.User()

@@ -53,10 +53,10 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
         else:
             if attr != "schema" and attr in complex_structures:
                 for k in temp_profile[attr]:
-                    if attr == "access_information":
-                        successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
-                    if attr == "staff_information" or attr == "identities":
+                    try:
                         successful_random_publisher = random.choice(publisher_rules[condition][attr])
+                    except KeyError:
+                        successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
                     temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                     u = profile.User(user_structure_json=temp_profile)
                     attribute = "{}.{}".format(attr, k)
@@ -75,6 +75,9 @@ class TestAPI(object):
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
 
         from cis_change_service.common import get_config
+
+        self.patcher_salt = mock.patch("cis_crypto.secret.AWSParameterstoreProvider.uuid_salt")
+        self.mock_salt = self.patcher_salt.start()
 
         config = get_config()
         os.environ["CIS_DYNALITE_PORT"] = str(random.randint(32000, 34000))
@@ -304,3 +307,4 @@ class TestAPI(object):
 
     def teardown(self):
         os.killpg(os.getpgid(self.dynaliteprocess.pid), 15)
+        self.patcher_salt.stop()
