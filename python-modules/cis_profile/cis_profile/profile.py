@@ -150,7 +150,9 @@ class User(object):
                 continue
             # If we have no signature (or metadata in theory), this is not a "User attribute", keep doing deeper
             if "signature" not in level[attr].keys():
-                different_attrs = self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
+                different_attrs.extend(
+                    self.merge(user_to_merge_in, level=level[attr], _internal_level=_internal_level[attr])
+                )
             # We will merge this attribute back (granted its not null/None)
             else:
                 tomerge.append(attr)
@@ -302,6 +304,7 @@ class User(object):
                     flat[f] = flatten(attrs[f])
 
             return flat
+
         serializer = TypeSerializer()
         return {k: serializer.serialize(v) for k, v in flatten(user).items()}
 
