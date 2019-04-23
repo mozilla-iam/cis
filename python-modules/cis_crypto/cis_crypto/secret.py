@@ -81,8 +81,11 @@ class AWSParameterstoreProvider(object):
             except ClientError as e:
                 retries = retries - 1
                 backoff = backoff + 1
-                logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
                 time.sleep(backoff)
+                logger.debug("Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+
+        if result is None:
+            logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
 
         try:
             key_dict = json.loads(result.get("Value"))
@@ -110,8 +113,11 @@ class AWSParameterstoreProvider(object):
             except ClientError as e:
                 retries = retries - 1
                 backoff = backoff + 1
-                logger.error("Failed to fetch uuid_salt due to: {} retries {} backoff {}".format(e, retries, backoff))
+                logger.debug("Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
                 time.sleep(backoff)
+
+        if result is None:
+            logger.error("Failed to fetch uuid_salt due to: {} retries {} backoff {}".format(e, retries, backoff))
 
         self._cache["uuid_salt"] = result
         return result
