@@ -70,18 +70,19 @@ class AWSParameterstoreProvider(object):
             logger.debug("Returning memory-cached version of the parameter key_construct")
             return self._cache["key_construct"]
 
-        try:
-            ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
-            ssm_response = self.ssm_client.get_parameter(
-                Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True
-            )
-            logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
-            result = ssm_response.get("Parameter")
-        except ClientError as e:
-            retries = retries - 1
-            backoff = backoff + 1
-            logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
-            time.sleep(backoff)
+        while result is None or retries == 0:
+            try:
+                ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+                ssm_response = self.ssm_client.get_parameter(
+                    Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True
+                )
+                logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
+                result = ssm_response.get("Parameter")
+            except ClientError as e:
+                retries = retries - 1
+                backoff = backoff + 1
+                logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+                time.sleep(backoff)
 
         try:
             key_dict = json.loads(result.get("Value"))
