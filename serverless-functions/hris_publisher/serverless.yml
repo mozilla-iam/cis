@@ -44,6 +44,10 @@ custom:
       production: cache.hris.sso.mozilla.com
       testing: cache.hris.test.sso.allizom.org
       development: cache.hris.dev.sso.allizom.org
+    CIS_HRIS_CACHE_TIME_HOURS:
+      production: 1
+      testing: 1
+      development: 1
 provider:
   name: aws
   runtime: python3.6
@@ -63,6 +67,7 @@ provider:
     CIS_PUBLIC_KEY_NAME: publisher
     CIS_SECRET_MANAGER: aws-ssm
     CIS_BUCKET_URL: ${self:custom.hrisPublisherEnvironment.CIS_BUCKET_URL.${self:custom.hrisPublisherStage}}
+    CIS_HRIS_CACHE_TIME_HOURS: ${self:custom.hrisPublisherEnvironment.CIS_HRIS_CACHE_TIME_HOURS.${self:custom.hrisPublisherStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:

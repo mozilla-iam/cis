@@ -26,7 +26,8 @@ class HRISPublisher:
         """
         s3 = boto3.client("s3")
         bucket = os.environ.get("CIS_BUCKET_URL")
-        recent = datetime.now(timezone.utc) - timedelta(hours=2)
+        cache_time = int(os.environ.get("CIS_HRIS_CACHE_TIME_HOURS")) or 1
+        recent = datetime.now(timezone.utc) - timedelta(hours=cache_time)
         try:
             objects = s3.list_objects_v2(Bucket=bucket)
             # bucket has zero contents?
