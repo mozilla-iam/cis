@@ -14,4 +14,9 @@ It does not:
 - support event-based publishing (at this time)
 
 
-It aims to be run as a serverless function every 15 minutes.
+It aims to be run as a serverless function every X amount of time.
+
+## HRIS
+
+If any warning, critical or error message is issued by the HRIS publisher and it's relevant to the data source, please
+contact `hrisintg [_AT_] mozilla.com`
