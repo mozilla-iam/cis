@@ -45,9 +45,9 @@ custom:
       testing: cache.hris.test.sso.allizom.org
       development: cache.hris.dev.sso.allizom.org
     CIS_HRIS_CACHE_TIME_HOURS:
-      production: 1
-      testing: 1
-      development: 1
+      production: 2
+      testing: 2
+      development: 2
 provider:
   name: aws
   runtime: python3.6
