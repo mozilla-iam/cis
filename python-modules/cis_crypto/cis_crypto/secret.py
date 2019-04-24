@@ -70,7 +70,7 @@ class AWSParameterstoreProvider(object):
             logger.debug("Returning memory-cached version of the parameter key_construct")
             return self._cache["key_construct"]
 
-        while result is None or retries != 0:
+        while result is None:
             try:
                 ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
                 ssm_response = self.ssm_client.get_parameter(
@@ -83,6 +83,8 @@ class AWSParameterstoreProvider(object):
                 backoff = backoff + 1
                 time.sleep(backoff)
                 logger.debug("Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+            if retries <= 0:
+                break
 
         if result is None:
             logger.error("Failed to fetch secret due to: retries {} backoff {}".format(retries, backoff))
@@ -115,6 +117,8 @@ class AWSParameterstoreProvider(object):
                 backoff = backoff + 1
                 logger.debug("Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
                 time.sleep(backoff)
+            if retries <= 0:
+                break
 
         if result is None:
             logger.error("Failed to fetch uuid_salt due to: retries {} backoff {}".format(retries, backoff))
