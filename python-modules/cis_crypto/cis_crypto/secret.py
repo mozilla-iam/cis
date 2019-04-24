@@ -106,7 +106,7 @@ class AWSParameterstoreProvider(object):
             logger.debug("Returning memory-cached version of uuid_salt")
             return self._cache["uuid_salt"]
 
-        while result is None or retries != 0:
+        while result is None:
             try:
                 ssm_path = self.config("secret_manager_ssm_uuid_salt", namespace="cis", default="/iam")
                 ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
