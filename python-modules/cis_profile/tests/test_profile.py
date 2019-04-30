@@ -239,3 +239,9 @@ class TestProfile(object):
         ddb = a.as_dynamo_flat_dict()
         # Dict must be flat
         assert ddb["user_id"] is not None
+
+    def test_dynamo_flat_dict_with_failing_phone(self):
+        a = profile.User(user_id="usera")
+        a.phone_numbers['values'] = { "foo": "" }
+        ddb = a.as_dynamo_flat_dict()
+        assert ddb["user_id"] is not None

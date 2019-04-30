@@ -294,9 +294,10 @@ class User(object):
                 # Skip "schema"
                 if isinstance(attrs[f], str):
                     continue
-                if not set(["value", "values"]).isdisjoint(set(attrs[f])):
+                elif not set(["value", "values"]).isdisjoint(set(attrs[f])):
                     res = attrs[f].get("value", attrs[f].get("values"))
-                    if res is not None and res != "":
+
+                    if res is not None and res != "" and isinstance(res, str):
                         flat[f] = res
                 else:
                     flat[f] = flatten(attrs[f])
