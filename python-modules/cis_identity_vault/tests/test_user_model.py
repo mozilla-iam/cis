@@ -46,6 +46,7 @@ class TestUsersDynalite(object):
         modified_profile = self.user_profile
         modified_profile["primary_email"]["value"] = "dummy@zxy.foo"
         modified_profile["active"]["value"] = True
+        modified_profile["phone_numbers"]["values"] = { "foo": "" }
         vault_json_datastructure = {
             "id": modified_profile.get("user_id").get("value"),
             "user_uuid": str(uuid.uuid4()),
