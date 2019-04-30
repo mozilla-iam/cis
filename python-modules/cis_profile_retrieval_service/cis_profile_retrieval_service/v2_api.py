@@ -264,9 +264,14 @@ def getUser(id, find_by):
     parser = reqparse.RequestParser()
     parser.add_argument("Authorization", location="headers")
     parser.add_argument("filterDisplay", type=str)
+    parser.add_argument("active", type=str)
     args = parser.parse_args()
     scopes = get_scopes(args.get("Authorization"))
     filter_display = args.get("filterDisplay", None)
+
+    active = True
+    if args.get("active") is not None and args.get("active").lower() == "false":
+        active = False
 
     if transactions == "false":
         identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
@@ -279,29 +284,34 @@ def getUser(id, find_by):
     if len(result["Items"]) > 0:
         vault_profile = result["Items"][0]["profile"]
         v2_profile = User(user_structure_json=json.loads(vault_profile))
-        if "read:fullprofile" in scopes:
-            logger.info(
-                "read:fullprofile in token not filtering based on scopes.", extra={"query_args": args, "scopes": scopes}
-            )
-        else:
-            v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
-        if "display:all" in scopes:
-            logger.info(
-                "display:all in token not filtering profile based on display.",
-                extra={"query_args": args, "scopes": scopes},
-            )
-        else:
-            v2_profile.filter_display(scope_to_display_level(scopes))
+        if v2_profile.active.value == active:
+            if "read:fullprofile" in scopes:
+                logger.info(
+                    "read:fullprofile in token not filtering based on scopes.",
+                    extra={"query_args": args, "scopes": scopes},
+                )
+            else:
+                v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
-        if filter_display is not None:
-            logger.info("filter_display argument is passed, applying display level filter.", extra={"query_args": args})
-            v2_profile.filter_display(DisplayLevelParms.map(filter_display))
+            if "display:all" in scopes:
+                logger.info(
+                    "display:all in token not filtering profile based on display.",
+                    extra={"query_args": args, "scopes": scopes},
+                )
+            else:
+                v2_profile.filter_display(scope_to_display_level(scopes))
 
-        return jsonify(v2_profile.as_dict())
-    else:
-        logger.info("No user was found for the query", extra={"query_args": args, "scopes": scopes})
-        return jsonify({})
+            if filter_display is not None:
+                logger.info(
+                    "filter_display argument is passed, applying display level filter.", extra={"query_args": args}
+                )
+                v2_profile.filter_display(DisplayLevelParms.map(filter_display))
+
+            return jsonify(v2_profile.as_dict())
+
+    logger.info("No user was found for the query", extra={"query_args": args, "scopes": scopes})
+    return jsonify({})
 
 
 class v2Users(Resource):
