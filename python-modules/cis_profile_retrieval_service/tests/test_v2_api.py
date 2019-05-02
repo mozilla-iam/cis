@@ -241,6 +241,90 @@ class TestAPI(object):
             assert query.json.get("access_information").get("access_provider") is not None
             assert query.json.get("staff_information").get("cost_center") is not None
             assert query.json.get("uuid") is not None
+            assert query.json.get("active").get("value") is True
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x_active_true(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get(
+            "/v2/users?active=true", headers={"Authorization": "Bearer " + token}, follow_redirects=True
+        )
+
+        profile = result.json["Items"][0]
+        for field in indexed_fields:
+
+            # data classification: ALL, display scope: ALL, display parameter: -
+            token = f.generate_bearer_with_scope("read:fullprofile display:all")
+            query = self.app.get(
+                "/v2/user/{}/{}?active=true".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is not None
+            assert query.json.get("staff_information").get("cost_center") is not None
+            assert query.json.get("uuid") is not None
+            assert query.json.get("active").get("value") is True
+
+            query = self.app.get(
+                "/v2/user/{}/{}?active=false".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json == {}
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_find_by_x_active_false(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get(
+            "/v2/users?active=false", headers={"Authorization": "Bearer " + token}, follow_redirects=True
+        )
+        next_page = result.json["nextPage"]
+
+        while next_page and len(result.json["Items"]) == 0:
+            result = self.app.get(
+                "/v2/users?active=false&nextPage={}".format(json.dumps(next_page)),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+            next_page = result.json["nextPage"]
+
+        profile = result.json["Items"][0]
+        for field in indexed_fields:
+
+            # data classification: ALL, display scope: ALL, display parameter: -
+            token = f.generate_bearer_with_scope("read:fullprofile display:all")
+            query = self.app.get(
+                "/v2/user/{}/{}?active=false".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json.get("access_information").get("access_provider") is not None
+            assert query.json.get("staff_information").get("cost_center") is not None
+            assert query.json.get("uuid") is not None
+            assert query.json.get("active").get("value") is False
+
+            query = self.app.get(
+                "/v2/user/{}/{}?active=true".format(field, profile[field]["value"]),
+                headers={"Authorization": "Bearer " + token},
+                follow_redirects=True,
+            )
+
+            assert query.json == {}
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x_with_data_classification_scopes(self, fake_jwks):

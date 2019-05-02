@@ -234,6 +234,10 @@ class TestProfile(object):
         res = a.merge(b)
         assert "user_id" in res
 
+        b.access_information.hris.values = {"test_group": None}
+        res = a.merge(b)
+        assert "hris" in res
+
     def test_dynamo_flat_dict(self):
         a = profile.User(user_id="usera")
         ddb = a.as_dynamo_flat_dict()
