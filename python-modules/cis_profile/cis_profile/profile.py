@@ -288,23 +288,36 @@ class User(object):
         """
         user = self._clean_dict()
 
-        def flatten(attrs, field=None):
-            flat = {}
-            for f in attrs:
-                # Skip "schema"
-                if isinstance(attrs[f], str):
-                    continue
-                elif not set(["value", "values"]).isdisjoint(set(attrs[f])):
-                    res = attrs[f].get("value", attrs[f].get("values"))
+        def sanitize(attrs):
+            # Types whose values need no sanitization to serialize.
+            supported_base_types = [type(None), bool, int, float]
 
-                    if res is not None and res != "" and isinstance(res, str):
-                        flat[f] = res
-                else:
-                    flat[f] = flatten(attrs[f])
+            # Empty strings cannot be sanitized.
+            is_nonempty_str = lambda s: isinstance(s, str) and len(s) > 0
 
-            return flat
+            if type(attrs) in supported_base_types or is_nonempty_str(attrs):
+                return attrs
+
+            # We want to remove empty strings from lists and sanitize everything else.
+            if isinstance(attrs, list):
+                not_empty_str = lambda v: not isinstance(v, str) or is_nonempty_str(v)
+                cleaned = filter(non_empty_str, attrs)
+
+                return list(map(sanitize, cleaned))
+
+            # If we have a dictionary, we want to ensure it only has one of either
+            # the "value" key or "values" key.
+            has_only_value = ("value" in attrs) and ("values" not in attrs)
+            has_only_values = ("value" not in attrs) and ("values" in attrs)
+
+            if has_only_value or has_only_values:
+                return sanitize(attrs.get("value", attrs.get("values")))
+                
+            return attrs
+
+
         serializer = TypeSerializer()
-        return {k: serializer.serialize(v) for k, v in flatten(user).items()}
+        return {k: serializer.serialize(v) for k, v in sanitize(user).items()}
 
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """
