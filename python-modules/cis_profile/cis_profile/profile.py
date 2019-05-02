@@ -324,7 +324,6 @@ class User(object):
                 
             return attrs
 
-
         serializer = TypeSerializer()
         return {k: serializer.serialize(v) for k, v in sanitize(user).items()}
 
