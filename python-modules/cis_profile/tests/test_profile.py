@@ -234,7 +234,7 @@ class TestProfile(object):
         res = a.merge(b)
         assert "user_id" in res
 
-    def test_dynamo_sanitized_dict(self):
+    def test_dynamo_flat_dict(self):
         a = profile.User(user_id="usera")
         ddb = a.as_dynamo_flat_dict()
         # Dict must be flat
