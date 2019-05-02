@@ -294,23 +294,30 @@ class User(object):
 
             # Empty strings cannot be sanitized.
             is_nonempty_str = lambda s: isinstance(s, str) and len(s) > 0
+            not_empty_str = lambda v: not isinstance(v, str) or is_nonempty_str(v)
 
             if type(attrs) in supported_base_types or is_nonempty_str(attrs):
                 return attrs
 
             # We want to remove empty strings from lists and sanitize everything else.
             if isinstance(attrs, list):
-                not_empty_str = lambda v: not isinstance(v, str) or is_nonempty_str(v)
                 cleaned = filter(non_empty_str, attrs)
 
                 return list(map(sanitize, cleaned))
 
+            # We are dealing with a dictionary.
+            cleaned = {
+                key: value
+                for key, value in attrs.items()
+                if not_empty_str(value)
+            }
+
             # If we have a dictionary, we want to ensure it only has one of either
             # the "value" key or "values" key.
-            has_only_value = ("value" in attrs) and ("values" not in attrs)
-            has_only_values = ("value" not in attrs) and ("values" in attrs)
+            has_value = "value" in attrs
+            has_values = "values" in attrs
 
-            if has_only_value or has_only_values:
+            if (has_value and not has_values) or (has_values and not has_value):
                 return sanitize(attrs.get("value", attrs.get("values")))
                 
             return attrs
