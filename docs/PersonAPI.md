@@ -123,14 +123,14 @@ You can find it here: https://auth.mozilla.com/.well-known/mozilla-iam (look for
 
 The easiest is to mimic the E2E tests, otherwise:
 
-Retrieve specific user profiles:
+Retrieve specific user profiles. By default these only includes active users:
 - `/v2/user/user_id/<string:user_id>`
 - `/v2/user/uuid/<string:uuid>`
 - `/v2/user/primary_email/<string:primary_email>`
 - `/v2/user/primary_username/<string:primary_username>`
 
-Retrieve paginated list of all user profiles:
-- `/v2/users/`
+Retrieve paginated list of all user profiles. By default this only includes active users:
+- `/v2/users`
 
 In this case you will receive a JSON document such as :
 ```
