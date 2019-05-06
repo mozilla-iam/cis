@@ -323,7 +323,7 @@ class User(object):
             has_values = "values" in cleaned
 
             if (has_value and not has_values) or (has_values and not has_value):
-                return sanitize(cleaned.get("value", cleaned.get("values")))
+                return cleaned.get("value", cleaned.get("values"))
 
             return cleaned
 
