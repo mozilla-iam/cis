@@ -290,23 +290,45 @@ class User(object):
         """
         user = self._clean_dict()
 
-        def flatten(attrs, field=None):
-            flat = {}
-            for f in attrs:
-                # Skip "schema"
-                if isinstance(attrs[f], str):
-                    continue
-                if not set(["value", "values"]).isdisjoint(set(attrs[f])):
-                    res = attrs[f].get("value", attrs[f].get("values"))
-                    if res is not None and res != "":
-                        flat[f] = res
-                else:
-                    flat[f] = flatten(attrs[f])
+        def sanitize(attrs):
+            # Types whose values need no sanitization to serialize.
+            supported_base_types = [type(None), bool, int, float]
 
-            return flat
+            # Empty strings cannot be sanitized.
+            def is_nonempty_str(s):
+                return isinstance(s, str) and len(s) > 0
+
+            def not_empty_str(v):
+                return not isinstance(v, str) or is_nonempty_str(v)
+
+            if type(attrs) in supported_base_types or is_nonempty_str(attrs):
+                return attrs
+
+            # We want to remove empty strings from lists and sanitize everything else.
+            if isinstance(attrs, list):
+                cleaned = filter(not_empty_str, attrs)
+
+                return list(map(sanitize, cleaned))
+
+            # We are dealing with a dictionary.
+            cleaned = {
+                key: sanitize(value)
+                for key, value in attrs.items()
+                if not_empty_str(key) and not_empty_str(value)
+            }
+
+            # If we have a dictionary, we want to ensure it only has one of either
+            # the "value" key or "values" key.
+            has_value = "value" in cleaned
+            has_values = "values" in cleaned
+
+            if (has_value and not has_values) or (has_values and not has_value):
+                return cleaned.get("value", cleaned.get("values"))
+
+            return cleaned
 
         serializer = TypeSerializer()
-        return {k: serializer.serialize(v) for k, v in flatten(user).items()}
+        return {k: serializer.serialize(v) for k, v in sanitize(user).items()}
 
     def filter_scopes(self, scopes=MozillaDataClassification.PUBLIC, level=None):
         """

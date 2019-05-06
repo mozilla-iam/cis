@@ -11,6 +11,26 @@ import json
 import jsonschema
 
 
+def _is_or_contains_empty_str(value):
+    '''Private.
+    Determine whether a value is or contains an empty string.
+    '''
+
+    if value == '':
+        return True
+
+    if isinstance(value, list):
+        return any([_is_or_contains_empty_str(v) for v in value])
+
+    if isinstance(value, dict):
+        return any([
+            _is_or_contains_empty_str(k) or _is_or_contains_empty_str(v)
+            for k, v in value.items()
+        ])
+
+    return False
+
+
 class TestProfile(object):
     def setup(self):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
@@ -234,12 +254,15 @@ class TestProfile(object):
         res = a.merge(b)
         assert "user_id" in res
 
-        b.access_information.hris.values = {"test_group": None}
-        res = a.merge(b)
-        assert "hris" in res
-
     def test_dynamo_flat_dict(self):
         a = profile.User(user_id="usera")
         ddb = a.as_dynamo_flat_dict()
         # Dict must be flat
+        assert ddb["user_id"] is not None
+        assert not _is_or_contains_empty_str(ddb)
+
+    def test_dynamo_flat_dict_with_failing_phone(self):
+        a = profile.User(user_id="usera")
+        a.phone_numbers['values'] = {"foo": ""}
+        ddb = a.as_dynamo_flat_dict()
         assert ddb["user_id"] is not None
