@@ -295,8 +295,11 @@ class User(object):
             supported_base_types = [type(None), bool, int, float]
 
             # Empty strings cannot be sanitized.
-            is_nonempty_str = lambda s: isinstance(s, str) and len(s) > 0
-            not_empty_str = lambda v: not isinstance(v, str) or is_nonempty_str(v)
+            def is_nonempty_str(s):
+                return isinstance(s, str) and len(s) > 0
+
+            def not_empty_str(v):
+                return not isinstance(v, str) or is_nonempty_str(v)
 
             if type(attrs) in supported_base_types or is_nonempty_str(attrs):
                 return attrs
@@ -321,7 +324,7 @@ class User(object):
 
             if (has_value and not has_values) or (has_values and not has_value):
                 return sanitize(cleaned.get("value", cleaned.get("values")))
-                
+
             return cleaned
 
         serializer = TypeSerializer()
