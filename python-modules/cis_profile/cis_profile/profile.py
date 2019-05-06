@@ -303,26 +303,26 @@ class User(object):
 
             # We want to remove empty strings from lists and sanitize everything else.
             if isinstance(attrs, list):
-                cleaned = filter(non_empty_str, attrs)
+                cleaned = filter(not_empty_str, attrs)
 
                 return list(map(sanitize, cleaned))
 
             # We are dealing with a dictionary.
             cleaned = {
-                key: value
+                key: sanitize(value)
                 for key, value in attrs.items()
-                if not_empty_str(value)
+                if not_empty_str(key) and not_empty_str(value)
             }
 
             # If we have a dictionary, we want to ensure it only has one of either
             # the "value" key or "values" key.
-            has_value = "value" in attrs
-            has_values = "values" in attrs
+            has_value = "value" in cleaned
+            has_values = "values" in cleaned
 
             if (has_value and not has_values) or (has_values and not has_value):
-                return sanitize(attrs.get("value", attrs.get("values")))
+                return sanitize(cleaned.get("value", cleaned.get("values")))
                 
-            return attrs
+            return cleaned
 
         serializer = TypeSerializer()
         return {k: serializer.serialize(v) for k, v in sanitize(user).items()}
