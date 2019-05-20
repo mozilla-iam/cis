@@ -111,7 +111,7 @@ class FakeCISProfileProvider(faker.providers.BaseProvider):
 
         def custom3():
             email = self.generator.email()
-            return ({"custom_2_primary_email": email}, "email|{}".format(self.generator.md5()), email)
+            return ({"custom_3_primary_email": email}, "email|{}".format(self.generator.md5()), email)
 
         def github():
             id = self.generator.pyint()
