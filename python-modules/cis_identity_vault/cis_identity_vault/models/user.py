@@ -216,7 +216,8 @@ class Profile(object):
             if user_profile["sequence_number"] is None:
                 user_profile["sequence_number"] = str(uuid.uuid4().int)
 
-            cis_profile_user_object = User(user_structure_json=json.loads(profile["profile"]))
+            # XXX TBD cover this with tests.  Currently dynalite does not support tests for transactions.
+            cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
             transact_item = {
                 "Put": {
                     "Item": {
