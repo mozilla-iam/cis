@@ -312,9 +312,7 @@ class User(object):
 
             # We are dealing with a dictionary.
             cleaned = {
-                key: sanitize(value)
-                for key, value in attrs.items()
-                if not_empty_str(key) and not_empty_str(value)
+                key: sanitize(value) for key, value in attrs.items() if not_empty_str(key) and not_empty_str(value)
             }
 
             # If we have a dictionary, we want to ensure it only has one of either
@@ -431,9 +429,11 @@ class User(object):
         else:
             try:
                 allowed_creators = rules["create"][parent_name][attr_name]
-                allowed_updators = rules["update"][parent_name][attr_name]
             except TypeError:  # This is not access_information, this is identities or staff_information
                 allowed_creators = rules["create"][parent_name]
+            try:
+                allowed_updators = rules["update"][parent_name][attr_name]
+            except TypeError:  # This is not access_information, this is identities or staff_information
                 allowed_updators = rules["create"][parent_name]
 
         # Do we have an attribute to check against?
