@@ -434,7 +434,7 @@ class User(object):
             try:
                 allowed_updators = rules["update"][parent_name][attr_name]
             except TypeError:  # This is not access_information, this is identities or staff_information
-                allowed_updators = rules["create"][parent_name]
+                allowed_updators = rules["update"][parent_name]
 
         # Do we have an attribute to check against?
         if previous_attribute is not None:
