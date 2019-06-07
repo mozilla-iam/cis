@@ -75,8 +75,8 @@
     "alternative_name": "mozilliansorg",
     "primary_email": "access_provider",
     "identities": "mozilliansorg",
-    "ssh_public_keys": "mozilliansorg",
-    "pgp_public_keys": "mozilliansorg",
+    "ssh_public_keys": "ldap",
+    "pgp_public_keys": "ldap",
     "access_information": {
         "access_provider": "access_provider",
         "ldap": "ldap",

@@ -709,7 +709,7 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "name": "mozilliansorg",
+        "name": "ldap",
         "value": ""
       },
       "additional": [
@@ -735,7 +735,7 @@
       "publisher": {
         "alg": "RS256",
         "typ": "JWS",
-        "name": "mozilliansorg",
+        "name": "ldap",
         "value": ""
       },
       "additional": [
