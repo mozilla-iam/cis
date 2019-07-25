@@ -1,0 +1,24 @@
+---
+version: '3.7'
+services:
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: cis_user
+      POSTGRES_PASSWORD: testing
+      POSTGRES_DB: testing-identity-vault
+    ports:
+      - 5432:5432
+    networks:
+      - default
+  tester:
+    build:
+      context: ci/
+      dockerfile: Dockerfile
+    volumes:
+      - ./python-modules:/var/task
+    networks:
+      - default
+    depends_on:
+      - db

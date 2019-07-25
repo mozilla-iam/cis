@@ -12,6 +12,7 @@ class TestUsersDynalite(object):
     def setup(self):
         os.environ["CIS_ENVIRONMENT"] = "purple"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
+        os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
         self.vault_client.find_or_create()

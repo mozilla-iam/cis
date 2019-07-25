@@ -1,10 +1,13 @@
 """Create, destroy, and configure the appropriate vault for the environment."""
 import boto3
+import time
 from botocore.exceptions import ClientError
 from botocore.stub import Stubber
 from cis_identity_vault import autoscale
 from cis_identity_vault.common import get_config
+from cis_identity_vault.models import rds
 from logging import getLogger
+from sqlalchemy import create_engine
 
 
 logger = getLogger(__name__)
@@ -223,7 +226,7 @@ class IdentityVault(object):
             )
             table = dynamodb_resource.Table(self._generate_table_name())
         else:
-            dynamodb_resource = boto3.resource("dynamodb")
+            dynamodb_resource = boto3.resource("dynamodb", region_name=region)
             table = dynamodb_resource.Table(self._generate_table_name())
         return table
 
@@ -258,3 +261,66 @@ class IdentityVault(object):
                 return
             except Exception as e:
                 logger.error("The table did not tag for an unknown reason: {}".format(e))
+
+
+class RelationalIdentityVault(object):
+    """Create a postgres model of the data that is in DynamoDb in order to support advanced search."""
+
+    def __init__(self):
+        self.config = get_config()
+        self.environment = self.config("environment", namespace="cis", default="testing")
+        self.postgres_host = self.config("postgres_host", namespace="cis", default="localhost")
+        self.postgres_port = int(self.config("postgres_port", namespace="cis", default="5432"))
+        self.db_name = self.config("identity_vault", namespace="cis", default=f"{self.environment}-identity-vault")
+        self.db_user = self.config("db_user", namespace="cis", default="cis_user")
+        self.db_password = self._db_password_from_ssm()
+
+    def _db_password_from_ssm(self):
+        password_from_environment = self.config("db_password", namespace="cis", default="None")
+        retries = 5
+        backoff = 15
+        if password_from_environment != "None":
+            return password_from_environment
+        else:
+            result = None
+            while result is None:
+                try:
+                    self.ssm_client = boto3.client("ssm")
+                    ssm_path = self.config("db_password_path", namespace="cis", default="/iam/development")
+                    ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
+                    result = ssm_response.get("Parameter").get("Value")
+                    logger.debug("Secret manager SSM provider loading db_password: {}".format(ssm_path))
+                except ClientError as e:
+                    retries = retries - 1
+                    backoff = backoff + 1
+                    logger.debug(
+                        "Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff)
+                    )
+                    time.sleep(backoff)
+                if retries <= 0:
+                    break
+                else:
+                    pass
+            return result
+
+    def _db_string(self):
+        proto = "postgresql+psycopg2://"
+        access_information = f"{self.db_user}:{self.db_password}"
+        connection_information = f"@{self.postgres_host}:{self.postgres_port}/{self.db_name}"
+        return proto + access_information + connection_information
+
+    def engine(self):
+        db = create_engine(self._db_string())
+        engine = db.connect()
+        return engine
+
+    def create(self):
+        return rds.Base.metadata.create_all(self.engine())
+
+    def delete(self):
+        return rds.Base.metadata.drop_all(self.engine())
+
+    def table(self):
+        metadata = rds.Base.metadata
+        metadata.bind = self.engine()
+        return metadata.tables.get("people")
