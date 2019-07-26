@@ -51,3 +51,8 @@ build-ci-container:
 .PHONY: login-to-ecr upload-ci-container
 push-ci-container:
 	docker push 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
+
+.PHONY: test
+test:
+	docker-compose build
+	docker-compose run tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -j4 test-tox'
