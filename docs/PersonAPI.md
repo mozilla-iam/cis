@@ -142,9 +142,9 @@ In this case you will receive a JSON document such as :
 where `nextPage` will be set to a `user_id` if there are more pages to fetch.
 
 To fetch the next page simply call:
-- `/v2/users?nextPage=user_id_here`
+- `/v2/users?nextPage={"id":"your user_id here"}.`
 
-Until `nextPage` is set to `None`.
+Until `nextPage` is set to `None`. Note that the recommended way to do this is to take the `nextPage` value returned by the API reply and pass it for the next call, instead of creating the object yourself.
 
 Retrieve lists of users (not full profiles):
 - `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.
