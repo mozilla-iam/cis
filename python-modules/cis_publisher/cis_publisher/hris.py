@@ -404,58 +404,74 @@ class HRISPublisher:
                 continue
 
             p = cis_profile.User()
+            ts_now = time.strftime("%Y-%m-%dT:%H:%M:%SZ")
             # Note: Never use non-preferred names here
             #            p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
             #            p.last_name.signature.publisher.name = "hris"
             #            p.first_name.value = hruser.get("PreferredFirstName")
             #            p.first_name.signature.publisher.name = "hris"
             p.active.value = True
+            p.active.metadata.last_modified = ts_now
             p.active.signature.publisher.name = "hris"
 
             p.primary_email.value = hruser_work_email
             p.primary_email.signature.publisher.name = "hris"
+            p.primary_email.metadata.last_modified = ts_now
 
             p.timezone.value = tz_convert(hruser.get("Time_Zone"))
             p.timezone.signature.publisher.name = "hris"
             p.timezone.metadata.display = "staff"
+            p.timezone.metadata.last_modified = ts_now
 
             p.staff_information.manager.value = strbool_convert(hruser.get("IsManager"))
             p.staff_information.manager.signature.publisher.name = "hris"
             p.staff_information.manager.metadata.display = "staff"
+            ## This is OK because cis_change_service uses the cis_profile.merge() function, which in turn, ignores
+            ## timestamps when checking for changes if the value is identical.
+            p.staff_information.manager.metadata.last_modified = ts_now
 
             p.staff_information.director.value = strbool_convert(hruser.get("isDirectorOrAbove"))
             p.staff_information.director.signature.publisher.name = "hris"
             p.staff_information.director.metadata.display = "staff"
+            p.staff_information.director.metadata.last_modified = ts_now
+
             if len(hruser.get("EmployeeID")) > 0:
                 p.staff_information.staff.value = True
             else:
                 p.staff_information.staff.value = False
             p.staff_information.staff.signature.publisher.name = "hris"
             p.staff_information.staff.metadata.display = "staff"
+            p.staff_information.staff.metadata.last_modified = ts_now
 
             p.staff_information.title.value = hruser.get("businessTitle")
             p.staff_information.title.signature.publisher.name = "hris"
             p.staff_information.title.metadata.display = "staff"
+            p.staff_information.title.metadata.last_modified = ts_now
 
             p.staff_information.team.value = hruser.get("Team")
             p.staff_information.team.signature.publisher.name = "hris"
             p.staff_information.team.metadata.display = "staff"
+            p.staff_information.team.metadata.last_modified = ts_now
 
             p.staff_information.cost_center.value = cost_center_convert(hruser.get("Cost_Center"))
             p.staff_information.cost_center.signature.publisher.name = "hris"
             p.staff_information.cost_center.metadata.display = "staff"
+            p.staff_information.cost_center.metadata.last_modified = ts_now
 
             p.staff_information.worker_type.value = hruser.get("WorkerType")
             p.staff_information.worker_type.signature.publisher.name = "hris"
             p.staff_information.worker_type.metadata.display = "staff"
+            p.staff_information.worker_type.metadata.last_modified = ts_now
 
             p.staff_information.wpr_desk_number.value = hruser.get("WPRDeskNumber")
             p.staff_information.wpr_desk_number.signature.publisher.name = "hris"
             p.staff_information.wpr_desk_number.metadata.display = "staff"
+            p.staff_information.wpr_desk_number.metadata.last_modified = ts_now
 
             p.staff_information.office_location.value = hruser.get("LocationDescription")
             p.staff_information.office_location.signature.publisher.name = "hris"
             p.staff_information.office_location.metadata.display = "staff"
+            p.staff_information.office_location.metadata.last_modified = ts_now
 
             p.access_information.hris["values"] = {}
             p.access_information.hris.signature.publisher.name = "hris"
@@ -466,6 +482,7 @@ class HRISPublisher:
                 "Worker_s_Manager_s_Email_Address"
             )
             p.access_information.hris["values"]["egencia_pos_country"] = hruser.get("EgenciaPOSCountry")
+            p.access_information.hris.metadata.last_modified = ts_now
             try:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
