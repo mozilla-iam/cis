@@ -29,8 +29,12 @@ class TestHRIS(object):
         # Check access information is populated
         assert profiles[0].access_information.hris["values"]["employee_id"] == "31337"
 
-        c = 0
         # Verify data consistency
+        ## Verify last_modified set
+        assert profiles[0].primary_email.metadata.last_modified != "1970-01-01T00:00:00Z"
+
+        ## Verify various attributes set
+        c = 0
         for p in profiles:
             assert p.primary_email.value is not None
             if hris_data["Report_Entry"][c]["IsManager"] == "TRUE":
