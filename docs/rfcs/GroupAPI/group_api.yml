@@ -1,0 +1,250 @@
+---
+swagger: "2.0"
+info:
+  description: This is an API for the new Group API
+  version: 1.0.0
+  title: IAM Group API
+host: virtserver.swaggerhub.com
+basePath: /Mozilla-IAM/iam_group_api/1.0.0
+schemes:
+- https
+security:
+- application:
+  - read
+  - write
+paths:
+  /v2/group/{groupId}:
+    get:
+      summary: Get information about a group
+      description: Group
+      parameters:
+      - name: groupId
+        in: path
+        description: ID of group to return
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+        404:
+          description: No groups in the system
+    post:
+      summary: Add a group
+      description: Group
+      parameters:
+      - name: groupId
+        in: path
+        description: ID of group to add
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update a group
+      description: Group
+      parameters:
+      - name: groupId
+        in: path
+        description: ID of group to update
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: groupData
+        required: false
+        schema:
+          $ref: '#/definitions/group'
+      responses:
+        200:
+          description: OK
+        404:
+          description: This group does not exist
+    delete:
+      summary: Delete a group
+      description: Group
+      parameters:
+      - name: groupId
+        in: path
+        description: ID of group to delete
+        required: true
+        type: integer
+        format: int64
+      responses:
+        200:
+          description: OK
+        404:
+          description: This group does not exist
+  /v2/member/{memberId}:
+    get:
+      summary: Get information about a membership
+      description: Membership
+      parameters:
+      - name: memberId
+        in: path
+        description: ID of member to return
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: This member id does not exist
+    post:
+      summary: Add a group
+      description: Group
+      parameters:
+      - name: groupId
+        in: path
+        description: ID of group to add
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+    put:
+      summary: Update a membership
+      description: membership
+      parameters:
+      - name: memberId
+        in: path
+        description: ID of membership to update
+        required: true
+        type: integer
+        format: int64
+      - in: body
+        name: memberData
+        required: false
+        schema:
+          $ref: '#/definitions/member'
+      responses:
+        200:
+          description: OK
+        404:
+          description: This membership does not exist
+    delete:
+      summary: Delete a membership
+      description: membership
+      parameters:
+      - name: memberId
+        in: path
+        description: ID of membership to delete
+        required: true
+        type: integer
+      responses:
+        200:
+          description: OK
+        404:
+          description: This membership does not exist
+  /v2/capability/{all}:
+    get:
+      summary: Get information about a capability
+      description: Capability
+      parameters:
+      - name: all
+        in: path
+        description: Returns all capabilities
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/allCapabilities'
+  /v2/permission/{all}:
+    get:
+      summary: Get information about a permission
+      description: Permission
+      parameters:
+      - name: all
+        in: path
+        description: Returns all permissions
+        required: true
+        type: string
+      responses:
+        200:
+          description: OK
+          schema:
+            $ref: '#/definitions/allPermissions'
+securityDefinitions:
+  application:
+    type: oauth2
+    tokenUrl: http://example.com/oauth/token
+    flow: application
+    scopes:
+      write: allows modifying resources
+      read: allows reading resources
+definitions:
+  member:
+    type: object
+    properties:
+      user_id:
+        type: string
+        example: ad|Mozilla-LDAP|kang
+        description: The IAM user_id.
+      group_id:
+        type: integer
+        description: The group id.
+      role_id:
+        type: integer
+        description: The role id.
+      created_at:
+        type: string
+        format: date-time
+      last_modified:
+        type: string
+        format: date-time
+  group:
+    type: object
+    properties:
+      name:
+        type: string
+        example: nda
+      path:
+        type: string
+        example: /iam/access_information/hello
+      description:
+        type: string
+        example: This is a markdown description about the nda group
+      capabilities:
+        type: array
+        items:
+          type: integer
+  capability:
+    type: object
+    properties:
+      name:
+        type: string
+        example: terms_of_service
+        enum:
+        - terms_of_service
+        - team_drive
+        - slack_channel
+        - webhook
+      id:
+        type: integer
+        example: 1
+  allCapabilities:
+    type: array
+    items:
+      $ref: '#/definitions/capability'
+  permission:
+    type: object
+    properties:
+      name:
+        type: string
+        example: group:read
+        enum:
+        - group:read
+        - group:write
+        - group:edit
+        - group:admin
+      id:
+        type: integer
+        example: 1
+  allPermissions:
+    type: array
+    items:
+      $ref: '#/definitions/permission'
