@@ -7,6 +7,8 @@ import logging
 import json
 import time
 import requests
+from auth0.v3.authentication import GetToken
+from auth0.v3.management import Auth0
 from datetime import datetime, timezone, timedelta
 from traceback import format_exc
 
@@ -18,6 +20,20 @@ class Auth0Publisher:
         self.secret_manager = cis_publisher.secret.Manager()
         self.context = context
         self.report = None
+        self.config = cis_publisher.common.get_config()
+        # Only fields we care about for the user entries
+        # auth0 field->cis field map
+        self.az_cis_fields = {
+            "created_at": "created",
+            "updated_at": "last_modified",
+            "given_name": "first_name",
+            "family_name": "last_name",
+            "name": None,
+            "nickname": None,
+            "picture": "picture",
+            "user_id": "user_id",
+            "email": "primary_email",
+        }
 
     def publish(self, user_ids=None, chunk_size=30):
         """
@@ -40,12 +56,83 @@ class Auth0Publisher:
         else:
             self.process(publisher, user_ids)
 
+    def fetch_az_users(self):
+        """
+        Fetches ALL valid users from auth0'z database
+        Returns list of user attributes
+        """
+        az_api_url = self.config("auth0_api_url", namespace="cis", default="auth-dev.mozilla.auth0.com")
+        az_client_id = (self.secret_manager.secret("client_id"),)
+        az_client_secret = (self.secret_manager.secret("client_secret"),)
+        az_fields = self.az_cis_fields.keys()
+
+        # Build the connection query (excludes LDAP)
+        az_blacklist_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
+        # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
+        # users
+        az_query = "email_verified:true AND NOT ("
+        t = ""
+        for azc in az_connections:
+            az_query = azquery + t + 'identities.connection:"{}"'.format(az_connections)
+            t = " OR "
+        az_query = az_query + ")"
+
+        logger.debug("About to get Auth0 user list")
+        az_getter = GetToken(az_api_url)
+        az_token = az_getter.client_credentials(as_client_id, az_client_secret, "https://{}/api/v2/".format(az_api_url))
+        auth0 = Auth0(az_api_url, az_token["access_token"])
+
+        # Query the entire thing
+        p = 0
+        user_list = []
+        # This is an artificial upper limit of 100*99999 (per_page*page) i.e. 9 999 900 users max - just in case things
+        # go wrong
+        for p in range(0, 99999):
+            tmp = auth0.users.list(page=p, per_page=100, fields=az_fields, q=az_query)
+            if tmp == []:
+                # stop when our page is empty
+                logger.debug("Crawled {} pages from auth0 users API".format(p))
+                break
+            else:
+                user_list.extend(tmp)
+        logger.info("Received {} users from auth0".format(len(user_list)))
+        return user_list
+
+    def convert_az_users(self, az_users):
+        """
+        Convert a list of auth0 user fields to cis_profile Users
+        @az_users list of dicts with user attributes
+        Returns [cis_profile.Users]
+        """
+        profiles = []
+        for u in az_users:
+            p = cis_profile.User()
+            for k, v in self.az_cis_fields.items():
+                if k not in u.keys():
+                    continue
+                p.__dict__[v]["value"] = u[k]
+
+            # Hack:
+            # In case no names were passed, try to fix things up with what we have
+            if p.__dict__["first_name"]["value"] is None:
+                logger.debug("User {} has no name, asserting a name from other values".format(u["user_id"]))
+                if "name" in u.keys():
+                    p.__dict__["first_name"]["value"] = u["name"]
+                elif "nickname" in u.keys():
+                    p.__dict__["first_name"]["value"] = u["nickname"]
+                else:
+                    p.__dict__["first_name"]["value"] = u["email"].split("@")[0]
+            profiles.append(p)
+        return profiles
+
     def process(self, publisher, user_ids):
         """
         Process profiles and post them
         @publisher object the publisher object to operate on
         @user_ids list of user ids to process in this batch
         """
+
+        profiles = self.convert_az_users(self.fetch_az_users())
         logger.info("Processing {} profiles".format(len(profiles)))
         publisher.profiles = profiles
 
