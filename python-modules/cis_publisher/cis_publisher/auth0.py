@@ -56,7 +56,7 @@ class Auth0Publisher:
         else:
             self.process(publisher, user_ids)
 
-    def fetch_az_users(self):
+    def fetch_az_users(self, user_ids=[]):
         """
         Fetches ALL valid users from auth0'z database
         Returns list of user attributes
@@ -76,6 +76,16 @@ class Auth0Publisher:
             az_query = azquery + t + 'identities.connection:"{}"'.format(az_connections)
             t = " OR "
         az_query = az_query + ")"
+
+        # Build query for user_ids if some are specified (else it gets all of them)
+        if user_ids:
+            logger.info("Restriction auth0 user query to user_ids: {}".format(user_ids))
+            t = ""
+            az_query = az_query + "AND ("
+            for u in user_ids:
+                az_query = az_query + t + 'user_id:"{}"'.format(u)
+                t = " OR "
+            az_query = az_query + ")"
 
         logger.debug("About to get Auth0 user list")
         az_getter = GetToken(az_api_url)
@@ -132,7 +142,7 @@ class Auth0Publisher:
         @user_ids list of user ids to process in this batch
         """
 
-        profiles = self.convert_az_users(self.fetch_az_users())
+        profiles = self.convert_az_users(self.fetch_az_users(user_ids))
         logger.info("Processing {} profiles".format(len(profiles)))
         publisher.profiles = profiles
 
