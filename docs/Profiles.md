@@ -158,3 +158,63 @@ A YAML-equivalent profile may be generated and verified, for example at <https:/
 
 Note that profiles may be written in YAML instead of JSON, albeit **all** processing will be performed in JSON. This
 means all profiles must be converted to JSON before being submitted or used.
+
+## Simplified view of Profile v2 fields
+
+These are the fields available in profile v2. Note that access to view the field depends on your API `scopes`. Full documentation is available at https://auth.mozilla.com/.well-known/profile.schema
+**Please do read the schema if you're going to use the profile v2**. The list below is provided for convenience only and does not include all the information about how the fields are used.
+
+```
+user_id
+login_method
+active
+last_modified
+created
+usernames
+first_name
+last_name
+primary_email
+identities
+  github_id_v3
+  github_id_v4
+  github_primary_email
+  dinopark_id
+  mozilliansorg_id
+  bugzilla_mozilla_org_id
+  bugzilla_mozilla_org_primary_email
+  mozilla_ldap_id
+  mozilla_ldap_primary_email
+  mozilla_posix_id
+  google_oauth2_id
+  google_primary_email
+  firefox_accounts_id
+  firefox_accounts_primary_email
+ssh_public_keys
+pgp_public_keys
+access_information
+  ldap
+  hris
+  mozilliansorg
+  access_provider
+fun_title
+description
+location
+timezone
+languages
+tags
+pronouns
+picture
+uris
+phone_numbers
+alternative_name
+staff_information
+  manager
+  director
+  staff
+  title
+  team
+  cost_center
+  worker_type
+  wpr_desk_number
+  office_location
+```
