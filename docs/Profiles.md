@@ -132,8 +132,6 @@ Attributes are updated by CIS Publishers by sending a specifically formatted [Ev
 a validation mechanism that enforces which CIS Publisher is allowed to modify which attributes, and which values inside
 the said attributes.
 
-This logic is written in code at [validation plugins](cis/plugins/validation).
-
 # Appendix
 
 ## Auth0 specific notes
@@ -160,5 +158,3 @@ A YAML-equivalent profile may be generated and verified, for example at <https:/
 
 Note that profiles may be written in YAML instead of JSON, albeit **all** processing will be performed in JSON. This
 means all profiles must be converted to JSON before being submitted or used.
-
-See [cis_profile](../cis_profile/cis_profile/data/user_profile_null.json) for an example.
