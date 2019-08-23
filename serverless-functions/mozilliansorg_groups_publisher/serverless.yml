@@ -1,0 +1,72 @@
+service: mozilliansorg-groups-publisher
+plugins:
+  - serverless-plugin-tracing
+custom:
+  mozilliansorgGroupsPublisherStage: ${opt:stage, self:provider.stage}
+  mozilliansorgGroupsPublisherEnvironment:
+    CIS_ENVIRONMENT:
+      testing: testing
+    IDENTIFIER:
+      testing: api.test.sso.allizom.org
+    CIS_PERSON_API_URL:
+      testing: person.api.test.sso.allizom.org
+    CIS_CHANGE_API_URL:
+      testing: change.api.test.sso.allizom.org
+    CIS_AUTHZERO_DOMAIN:
+      testing: auth.mozilla.auth0.com
+    CIS_DISCOVERY_URL:
+      testing: https://auth.allizom.org/.well-known/mozilla-iam
+    CIS_SQS_V1_ARN:
+      testing: arn:aws:sqs:us-west-2:320464205386:prodinboundcisv1
+    CIS_SECRET_MANAGER_SSM_PATH:
+      testing: /iam/cis/testing/mozilliansorg_groups_publisher
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_ENVIRONMENT: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_ENVIRONMENT.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_API_IDENTIFIER: ${self:custom.mozilliansorgGroupsPublisherEnvironment.IDENTIFIER.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_PERSON_API_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_PERSON_API_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_CHANGE_API_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_DISCOVERY_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CIS_WELL_KNOWN_MODE: https
+    CIS_PUBLIC_KEY_NAME: publisher
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - arn:aws:ssm:*:*:parameter${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.mozilliansorgGroupsPublisherStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+functions:
+  handler:
+    handler: handler.handle
+    events:
+      - stream: 
+          arn: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SQS_V1_ARN.${self:custom.mozilliansorgGroupsPublisherStage}}
+          batchSize: 10
+          startingPosition: LATEST
+          enabled: true
+    description: mozilliansorg-groups-publisher for synchronizing mozilliansorg access groups to identity vault.
+    memorySize: 512
+    timeout: 120
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.mozilliansorgGroupsPublisherStage}/lambda_layer_arn}
+    reservedConcurrency: 1

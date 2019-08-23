@@ -4,7 +4,7 @@ import os
 import time
 import threading
 import queue
-from urllib.parse import urlencode, quote_plus
+from urllib.parse import quote_plus
 from cis_profile.common import WellKnown
 from cis_profile import User
 from cis_publisher import secret
@@ -151,16 +151,19 @@ class Publish:
         return ret
 
     def _really_post(self, user_id, qs, profile, failed_users):
-        response_ok = False
-        retries = 0
-        access_token = self._get_authzero_token()
-
         # Existing users (i.e. users to update) have to be passed as argument
         if user_id in self.known_cis_users_by_user_id:
             qs = "/v2/user?user_id={}".format(user_id)
         # New users do not
         else:
             qs = "/v2/user"
+        self._really_post_with_qs(user_id, qs, profile, failed_users)
+
+    def _really_post_with_qs(self, user_id, qs, profile, failed_users):
+        response_ok = False
+        retries = 0
+        access_token = self._get_authzero_token()
+
         # We don't always get a user_id set
         identifier = user_id
         if identifier is None:
@@ -324,7 +327,7 @@ class Publish:
         self.__deferred_init()
         logger.info("Requesting CIS Person API for a user profile {}".format(user_id))
         access_token = self._get_authzero_token()
-        qs = "/v2/user/user_id/{}".format(urlencode(user_id, quote_via=quote_plus))
+        qs = "/v2/user/user_id/{}".format(quote_plus(user_id))
         response = self._request_get(
             self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
         )
