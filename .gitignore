@@ -93,3 +93,6 @@ node_modules
 # Docs/.DSStore
 
 docs/.DS_Store
+
+# VSCode
+.vscode
