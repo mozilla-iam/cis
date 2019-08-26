@@ -1,5 +1,6 @@
 import cis_profile
 import cis_publisher
+from cis_publisher.publisher import PublisherError
 import logging
 from queue import Queue
 from urllib.parse import quote_plus
@@ -65,7 +66,12 @@ class MozilliansorgGroupsPublisher:
             failed_updates.task_done()
 
     def _prepare_update(self, update):
-        current_profile = self.publisher.get_cis_user(update.user_id)
+        current_profile = None
+        try:
+            current_profile = self.publisher.get_cis_user(update.user_id)
+        except PublisherError:
+            logger.info("No profile for {}, skipping!".format(update.user_id))
+            return None
         update_profile = cis_profile.profile.User()
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
