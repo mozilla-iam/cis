@@ -78,6 +78,7 @@ class TestMozilliansorgGroups:
         mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
         update_profile = mozilliansorg_group_publisher._prepare_update(update)
         assert update_profile.user_id.value == update.user_id
+        assert update_profile.access_information.mozilliansorg.metadata.display == "private"
         assert len(update_profile.access_information.mozilliansorg["values"]) == 3
 
     @mock.patch("cis_publisher.Publish._request_post")

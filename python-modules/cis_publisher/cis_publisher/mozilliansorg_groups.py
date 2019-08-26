@@ -70,6 +70,8 @@ class MozilliansorgGroupsPublisher:
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
         update_profile.access_information.mozilliansorg.values = {group: None for group in update.groups}
+        if not update_profile.access_information.mozilliansorg.metadata.display:
+            update_profile.access_information.mozilliansorg.metadata.display = "private"
         update_profile.update_timestamp("access_information.mozilliansorg")
         try:
             update_profile.sign_attribute("access_information.mozilliansorg", "mozilliansorg")
