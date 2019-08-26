@@ -1,13 +1,8 @@
 import cis_profile
 import cis_publisher
-import boto3
-import botocore
 import logging
-import lzma
-import json
 from queue import Queue
 from urllib.parse import quote_plus
-from traceback import format_exc
 
 logger = logging.getLogger(__name__)
 MO_PREFIX = "mozilliansorg_"
@@ -24,11 +19,11 @@ def get_nested(d, *keys, default=None):
     return d
 
 
-def unpack_string_list(l=[]):
+def unpack_string_list(lst=[]):
     try:
-        return [el["S"][len(MO_PREFIX) :] for el in l if el["S"].startswith(MO_PREFIX)]
-    except:
-        logger.error("invalid string list {}".format(l))
+        return [el["S"][len(MO_PREFIX) :] for el in lst if el["S"].startswith(MO_PREFIX)]
+    except (KeyError, TypeError):
+        logger.error("invalid string list {}".format(lst))
         return None
 
 
@@ -47,7 +42,7 @@ class MozilliansorgGroupUpdate:
             logger.error("missmatching user_ids {} {}".format(user_id, payload_user_id))
             return None
         groups = unpack_string_list(get_nested(new_image, "groups", "L", default=[]))
-        if user_id and typ and not groups is None:
+        if user_id and typ and groups is not None:
             return MozilliansorgGroupUpdate(typ, user_id, groups)
         return None
 
