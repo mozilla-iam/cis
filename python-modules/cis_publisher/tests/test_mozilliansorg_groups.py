@@ -29,6 +29,7 @@ EVENT = {
     ]
 }
 
+
 class FakeGetResponse:
     def __init__(self, ret=User()):
         self.ret = ret
@@ -38,6 +39,7 @@ class FakeGetResponse:
 
     def ok(self):
         return True
+
 
 class FakePostResponse:
     def json(self):
@@ -56,7 +58,7 @@ class TestMozilliansorgGroups:
 
     def test_mozilliansorg_group_update_from(self):
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
-        assert not update is None
+        assert update is not None
         assert update.typ == "MODIFY"
         assert update.groups == ["nda", "slack-access", "open-innovation"]
         assert update.user_id == "email|123"
@@ -82,7 +84,7 @@ class TestMozilliansorgGroups:
     @mock.patch("cis_publisher.Publish._request_get")
     @mock.patch("cis_publisher.secret.Manager.secret")
     @mock.patch("cis_publisher.secret.AuthZero.exchange_for_access_token")
-    def test_prepare_update(self, mock_authzero, mock_secrets, mock_request_get, mock_request_post):
+    def test_publish(self, mock_authzero, mock_secrets, mock_request_get, mock_request_post):
         mock_authzero.return_value = "dinopark"
         mock_secrets.return_value = "is_pretty_cool"
 
