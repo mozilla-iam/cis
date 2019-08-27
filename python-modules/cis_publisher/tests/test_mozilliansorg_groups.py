@@ -7,7 +7,7 @@ import os
 EVENT = {
     "Records": [
         {
-            "body": {
+            "body": """{
                 "eventName": "MODIFY",
                 "dynamodb": {
                     "Keys": {"user_id": {"S": "email|123"}},
@@ -18,13 +18,13 @@ EVENT = {
                                 {"S": "mozilliansorg_slack-access"},
                                 {"S": "mozilliansorg_open-innovation"},
                                 {"S": "hris_costcenter_666"},
-                                {"S": "hris_is_staff"},
+                                {"S": "hris_is_staff"}
                             ]
                         },
-                        "user_id": {"S": "email|123"},
-                    },
-                },
-            }
+                        "user_id": {"S": "email|123"}
+                    }
+                }
+            }"""
         }
     ]
 }

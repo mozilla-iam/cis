@@ -33,6 +33,7 @@ provider:
     CIS_AUTHZERO_TENANT: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.mozilliansorgGroupsPublisherStage}}
     CIS_DISCOVERY_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_SQS_V1_ARN: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SQS_V1_ARN.${self:custom.mozilliansorgGroupsPublisherStage}}
     CIS_SIGNING_KEY_NAME: mozilliansorg_signing_key
     CIS_REQUESTS_CACHE_BACKEND: memory
     CIS_WELL_KNOWN_MODE: https
@@ -61,14 +62,12 @@ functions:
   handler:
     handler: handler.handle
     events:
-      - stream: 
+      - sqs:
           arn: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SQS_V1_ARN.${self:custom.mozilliansorgGroupsPublisherStage}}
           batchSize: 10
-          startingPosition: LATEST
-          enabled: true
     description: mozilliansorg-groups-publisher for synchronizing mozilliansorg access groups to identity vault.
     memorySize: 512
-    timeout: 120
+    timeout: 30
     layers:
       -  ${ssm:/iam/cis/${self:custom.mozilliansorgGroupsPublisherStage}/lambda_layer_arn}
     reservedConcurrency: 1

@@ -25,6 +25,6 @@ def setup_logging():
 def handle(event, context={}):
     """Handle the publishing of users."""
     logger = setup_logging()
-    mozilliansorg_groups = cis_publisher.mozilliansorg_groups.MozilliansorgGroupsHandler()
+    mozilliansorg_groups = cis_publisher.mozilliansorg_groups.MozilliansorgGroupsPublisher()
     mozilliansorg_groups.publish(event)
     return 200

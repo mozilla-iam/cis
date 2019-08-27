@@ -2,6 +2,7 @@ import cis_profile
 import cis_publisher
 from cis_publisher.publisher import PublisherError
 import logging
+import json
 from queue import Queue
 from urllib.parse import quote_plus
 
@@ -35,9 +36,18 @@ class MozilliansorgGroupUpdate:
         self.groups = groups
 
     def from_record(record):
-        user_id = get_nested(record, "body", "dynamodb", "Keys", "user_id", "S")
-        new_image = get_nested(record, "body", "dynamodb", "NewImage")
-        typ = get_nested(record, "body", "eventName")
+        body = get_nested(record, "body")
+        if not body:
+            logger.error("Event without body: {}".format(record))
+            return None
+        try:
+            body = json.loads(body)
+        except json.JSONDecodeError as e:
+            logger.error("Invalid JSON in body: {}".format(e))
+            return None
+        user_id = get_nested(body, "dynamodb", "Keys", "user_id", "S")
+        new_image = get_nested(body, "dynamodb", "NewImage")
+        typ = get_nested(body, "eventName")
         payload_user_id = get_nested(new_image, "user_id", "S")
         if user_id != payload_user_id:
             logger.error("missmatching user_ids {} {}".format(user_id, payload_user_id))
