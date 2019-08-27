@@ -32,6 +32,8 @@ provider:
     CIS_CHANGE_API_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
     CIS_AUTHZERO_TENANT: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.mozilliansorgGroupsPublisherStage}}
     CIS_DISCOVERY_URL: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.mozilliansorgGroupsPublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.mozilliansorgGroupsPublisherStage}}
+    CIS_SIGNING_KEY_NAME: mozilliansorg_signing_key
     CIS_REQUESTS_CACHE_BACKEND: memory
     CIS_WELL_KNOWN_MODE: https
     CIS_PUBLIC_KEY_NAME: publisher
