@@ -69,7 +69,7 @@ class MozilliansorgGroupsPublisher:
         failed_updates = Queue()
         for update_profile in update_profiles:
             user_id = update_profile.user_id.value
-            qs = "/v2/user/?user_id={}".format(quote_plus(user_id))
+            qs = "/v2/user?user_id={}".format(quote_plus(user_id))
             self.publisher._really_post_with_qs(user_id, qs, update_profile, failed_updates)
         while not failed_updates.empty():
             logger.warn("failed to update: {}".format(failed_updates.get()))
@@ -82,6 +82,11 @@ class MozilliansorgGroupsPublisher:
         except PublisherError:
             logger.info("No profile for {}, skipping!".format(update.user_id))
             return None
+        if not hasattr(current_profile, "user_id"):
+            logger.info("No profile for {}, skipping!".format(update.user_id))
+            return None
+
+        logger.info("received profile for {}".format(current_profile.user_id.value))
         update_profile = cis_profile.profile.User()
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active

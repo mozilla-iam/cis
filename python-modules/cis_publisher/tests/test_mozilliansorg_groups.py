@@ -94,6 +94,14 @@ class TestMozilliansorgGroups:
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
         mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
         update_profile = mozilliansorg_group_publisher._prepare_update(update)
+
+        mock_request_post.return_value = FakePostResponse()
+        mock_request_get.return_value = FakeGetResponse(ret="{}", ok=True)
+
+        update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
+        mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
+        update_profile = mozilliansorg_group_publisher._prepare_update(update)
+        assert update_profile is None
         assert update_profile is None
 
     @mock.patch("cis_publisher.Publish._request_post")

@@ -9,6 +9,7 @@ from aws_xray_sdk.core import patch_all
 
 
 patch_all()
+mozilliansorg_groups = cis_publisher.mozilliansorg_groups.MozilliansorgGroupsPublisher()
 
 
 def setup_logging():
@@ -25,6 +26,5 @@ def setup_logging():
 def handle(event, context={}):
     """Handle the publishing of users."""
     logger = setup_logging()
-    mozilliansorg_groups = cis_publisher.mozilliansorg_groups.MozilliansorgGroupsPublisher()
     mozilliansorg_groups.publish(event)
     return 200
