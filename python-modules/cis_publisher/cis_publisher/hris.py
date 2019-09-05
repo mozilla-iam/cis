@@ -76,7 +76,7 @@ class HRISPublisher:
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
         if cache is None:
-            publisher.get_known_cis_users()
+            publisher.get_known_cis_users(include_inactive=True)
             publisher.get_known_cis_users_paginated()
             self.fetch_report()
             self.save_s3_cache(
