@@ -36,6 +36,10 @@ class MozilliansorgGroupUpdate:
         self.groups = groups
 
     def from_record(record):
+        """
+        Constructs a MozilliansGroupUpdate from a raw sqs record.
+        Return a MozilliansGroupUpdate or None to error gracefully.
+        """
         body = get_nested(record, "body")
         if not body:
             logger.error("Event without body: {}".format(record))
@@ -64,7 +68,12 @@ class MozilliansorgGroupsPublisher:
         self.publisher = cis_publisher.Publish([], login_method=None, publisher_name="mozilliansorg")
 
     def publish(self, event):
+        """
+        Publish all resulting mozilliansorg group updates to CIS resulting from an event.
+        """
+        # Contruct MozillansGroupUpdates from all records of the event.
         updates = [update for update in map(MozilliansorgGroupUpdate.from_record, event.get("Records", [])) if update]
+        # Create partial profile updates for all MozillansGroupUpdates and filter out no-ops.
         update_profiles = [update_profile for update_profile in map(self._prepare_update, updates) if update_profile]
         failed_updates = Queue()
         for update_profile in update_profiles:
@@ -76,6 +85,11 @@ class MozilliansorgGroupsPublisher:
             failed_updates.task_done()
 
     def _prepare_update(self, update):
+        """
+        Construct a partial profile for a given update.
+        Returns a profile with user_id, active and the according updated and signed mozilliansorg access information or
+        None for a no-op.
+        """
         current_profile = None
         try:
             current_profile = self.publisher.get_cis_user(update.user_id)
@@ -90,9 +104,15 @@ class MozilliansorgGroupsPublisher:
         update_profile = cis_profile.profile.User()
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
-        update_profile.access_information.mozilliansorg.values = {group: None for group in update.groups}
+        update_profile.access_information.mozilliansorg["values"] = {group: None for group in update.groups}
+        if (
+            update_profile.access_information.mozilliansorg["values"]
+            == current_profile.access_information.mozilliansorg["values"]
+        ):
+            logger.info("No change in mozilliangsorg access information. Skipping.")
+            return None
         if not update_profile.access_information.mozilliansorg.metadata.display:
-            update_profile.access_information.mozilliansorg.metadata.display = "private"
+            update_profile.access_information.mozilliansorg.metadata.display = "ndaed"
         update_profile.update_timestamp("access_information.mozilliansorg")
         try:
             update_profile.sign_attribute("access_information.mozilliansorg", "mozilliansorg")
