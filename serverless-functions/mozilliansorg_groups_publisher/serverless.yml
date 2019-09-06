@@ -5,20 +5,28 @@ custom:
   mozilliansorgGroupsPublisherStage: ${opt:stage, self:provider.stage}
   mozilliansorgGroupsPublisherEnvironment:
     CIS_ENVIRONMENT:
+      production: production
       testing: testing
     IDENTIFIER:
+      production: api.sso.mozilla.com
       testing: api.test.sso.allizom.org
     CIS_PERSON_API_URL:
+      production: person.api.sso.mozilla.com
       testing: person.api.test.sso.allizom.org
     CIS_CHANGE_API_URL:
+      production: change.api.sso.mozilla.com
       testing: change.api.test.sso.allizom.org
     CIS_AUTHZERO_DOMAIN:
+      production: auth.mozilla.auth0.com
       testing: auth.mozilla.auth0.com
     CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
       testing: https://auth.allizom.org/.well-known/mozilla-iam
     CIS_SQS_V1_ARN:
-      testing: arn:aws:sqs:us-west-2:320464205386:prodinboundcisv1
+      production: arn:aws:sqs:us-west-2:320464205386:prodinboundcisv1
+      testing: arn:aws:sqs:us-west-2:320464205386:testinboundcisv1
     CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/mozilliansorg_groups_publisher
       testing: /iam/cis/testing/mozilliansorg_groups_publisher
 provider:
   name: aws
