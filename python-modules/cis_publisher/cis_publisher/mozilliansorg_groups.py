@@ -54,7 +54,7 @@ class MozilliansorgGroupUpdate:
         typ = get_nested(body, "eventName")
         payload_user_id = get_nested(new_image, "user_id", "S")
         if user_id != payload_user_id:
-            logger.error("missmatching user_ids {} {}".format(user_id, payload_user_id))
+            logger.error("mismatching user_ids {} {}".format(user_id, payload_user_id))
             return None
         groups = unpack_string_list(get_nested(new_image, "groups", "L", default=[]))
         if user_id and typ and groups is not None:
