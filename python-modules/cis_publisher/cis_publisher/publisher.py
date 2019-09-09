@@ -307,7 +307,7 @@ class Publish:
                 raise PublisherError("Failed to query CIS Person API", response.text)
             inactive_known_cis_users = response.json()
             logger.info("Got {} additional users known to CIS that are inactive".format(len(inactive_known_cis_users)))
-            self.known_cis_users.append(inactive_known_cis_users)
+            self.known_cis_users.extend(inactive_known_cis_users)
 
         # Also save copies that are easier to query directly
         for u in self.known_cis_users:
