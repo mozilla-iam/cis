@@ -38,7 +38,9 @@ class MozilliansorgGroupUpdate:
     def from_record(record):
         """
         Constructs a MozilliansGroupUpdate from a raw sqs record.
-        Return a MozilliansGroupUpdate or None to error gracefully.
+
+        @record: a raw record from an SQS event
+        @return: MozilliansGroupUpdate or None to error gracefully.
         """
         body = get_nested(record, "body")
         if not body:
@@ -70,6 +72,8 @@ class MozilliansorgGroupsPublisher:
     def publish(self, event):
         """
         Publish all resulting mozilliansorg group updates to CIS resulting from an event.
+
+        @event: raw event from SQS
         """
         # Contruct MozillansGroupUpdates from all records of the event.
         updates = [update for update in map(MozilliansorgGroupUpdate.from_record, event.get("Records", [])) if update]
@@ -87,8 +91,10 @@ class MozilliansorgGroupsPublisher:
     def _prepare_update(self, update):
         """
         Construct a partial profile for a given update.
-        Returns a profile with user_id, active and the according updated and signed mozilliansorg access information or
-        None for a no-op.
+
+        @update: instance of MozilliansGroupUpdates
+        @return: a profile with user_id, active and the according updated and signed mozilliansorg access information or
+                 None for a no-op.
         """
         current_profile = None
         try:
