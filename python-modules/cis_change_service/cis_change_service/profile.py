@@ -159,6 +159,23 @@ class Vault(object):
                     extra={"user_id": user_id},
                 )
                 return new_user_profile
+            # XXX Same for HRIS when re-activating users
+            elif "active" in difference and new_user_profile.active.signature.publisher.name == "hris":
+                logger.warning(
+                    "Partial HRIS update is changing user active status to {}".format(new_user_profile.active.value),
+                    extra={"user_id": user_id},
+                )
+                if self.config("verify_signatures", namespace="cis") == "true":
+                    logger.info("Verifying signature of attribute active", extra={"user_id": user_id})
+                    new_user_profile.verify_attribute_signature("active")
+                else:
+                    logger.warning(
+                        "Verifying CIS owned signatures bypassed due to setting `verify_signatures` being false",
+                        extra={"user_id": user_id},
+                    )
+                new_user_profile.sign_attribute("active", "cis")
+                if self.config("verify_signatures", namespace="cis") == "true":
+                    new_user_profile.verify_attribute_signature("active")
 
             if self.config("verify_publishers", namespace="cis") == "true":
                 logger.info("Verifying publishers", extra={"user_id": user_id})
