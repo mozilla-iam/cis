@@ -331,15 +331,19 @@ class Profile(object):
             expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
-        response = self.client.scan(
-            TableName=self.table.name,
-            TotalSegments=total_segments,
-            Segment=segment,
-            ProjectionExpression="id, primary_email, user_uuid, active",
-            FilterExpression=filter_expression,
-            ExpressionAttributeValues=expression_attr,
-        )
-        users = response.get("Items", [])
+        try:
+            response = self.client.scan(
+                TableName=self.table.name,
+                TotalSegments=total_segments,
+                Segment=segment,
+                ProjectionExpression="id, primary_email, user_uuid, active",
+                FilterExpression=filter_expression,
+                ExpressionAttributeValues=expression_attr,
+            )
+            users = response.get("Items", [])
+        except ClientError as e:
+            logger.warning("ClientError during client table scan: {}".format(e))
+
         while "LastEvaluatedKey" in response:
             response = self.client.scan(
                 TableName=self.table.name,
