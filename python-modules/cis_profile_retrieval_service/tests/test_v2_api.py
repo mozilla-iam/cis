@@ -376,8 +376,8 @@ class TestAPI(object):
             assert not query.json.get("staff_information").get("cost_center")
             assert query.json.get("uuid")
 
-            # data classification: STAFF, display scope: PUBLIC, display parameter: -
-            token = f.generate_bearer_with_scope("classification:public display:none")
+            # data classification: public, display scope: trustedonly, display parameter: -
+            token = f.generate_bearer_with_scope("classification:public display:all")
             query = self.app.get(
                 "/v2/user/{}/{}".format(field, profile[field]["value"]),
                 headers={"Authorization": "Bearer " + token},
