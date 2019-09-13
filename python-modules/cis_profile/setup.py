@@ -3,9 +3,6 @@
 
 from setuptools import setup, find_packages
 
-with open("README.md", "r") as fh:
-    long_description = fh.read()
-
 requirements = ["jsonschema", "requests", "graphene", "Faker", "everett", "everett[ini]", "configobj", "click"]
 test_requirements = [
     "mock",
@@ -23,11 +20,10 @@ extras = {"test": test_requirements}
 
 setup(
     name="cis_profile",
-    version="0.4.0",
+    version="0.4.1",
     author="Guillaume Destuynder",
     author_email="kang@mozilla.com",
     description="Mozilla IAM user profile ('v2') class utility.",
-    long_description=long_description,
     url="https://github.com/mozilla-iam/cis",
     classifiers=[
         "Programming Language :: Python :: 3",
