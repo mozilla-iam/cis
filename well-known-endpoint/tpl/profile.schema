@@ -216,8 +216,8 @@
             },
             "required": [
                 "schema",
-                "uuid",
                 "user_id",
+                "uuid",
                 "primary_username",
                 "login_method",
                 "active",
@@ -284,6 +284,19 @@
               }
             },
             "title": "DisplayPublicOnly"
+        },
+        "DisplayTrustedOnly": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ "vouched", "ndaed", "staff", "private", null ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayTrustedOnly"
         },
         "DisplayStaffOnly": {
             "type": "object",
@@ -413,7 +426,7 @@
             "properties": {
                 "ldap": {
                     "allOf": [
-                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/DisplayTrustedOnly" },
                       { "$ref": "#/definitions/AccessInformationProviderSubObject" },
                       { "$ref": "#/definitions/ClassificationPublic" }
                     ]
@@ -579,7 +592,7 @@
             "title": "PublisherLax"
         },
         "AccessInformationValues": {
-            "type": "object",
+            "type": [ "null", "object" ],
             "additionalProperties": true,
             "properties": {},
             "title": "AccessInformationValues"

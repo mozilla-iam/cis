@@ -285,6 +285,19 @@
             },
             "title": "DisplayPublicOnly"
         },
+        "DisplayTrustedOnly": {
+            "type": "object",
+            "properties": {
+              "metadata": {
+                "properties": {
+                  "display": {
+                    "enum": [ "vouched", "ndaed", "staff", "private", null ]
+                  }
+                }
+              }
+            },
+            "title": "DisplayTrustedOnly"
+        },
         "DisplayStaffOnly": {
             "type": "object",
             "properties": {
@@ -413,7 +426,7 @@
             "properties": {
                 "ldap": {
                     "allOf": [
-                      { "$ref": "#/definitions/DisplayNone" },
+                      { "$ref": "#/definitions/DisplayTrustedOnly" },
                       { "$ref": "#/definitions/AccessInformationProviderSubObject" },
                       { "$ref": "#/definitions/ClassificationPublic" }
                     ]
