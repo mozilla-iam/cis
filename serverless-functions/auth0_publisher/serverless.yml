@@ -42,13 +42,13 @@ provider:
   stage: ${opt:stage, 'dev'}
   tracing: true # enable tracing
   environment:
-    CIS_ENVIRONMENT: ${self:custom.auth0PublisherEnvironment.CIS_ENVIRONMENT.${self:custom.hrisPublisherStage}}
-    CIS_API_IDENTIFIER: ${self:custom.auth0PublisherEnvironment.IDENTIFIER.${self:custom.hrisPublisherStage}}
-    CIS_PERSON_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_PERSON_API_URL.${self:custom.hrisPublisherStage}}
-    CIS_CHANGE_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.hrisPublisherStage}}
-    CIS_AUTHZERO_TENANT: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.hrisPublisherStage}}
-    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.hrisPublisherStage}}
-    CIS_DISCOVERY_URL: ${self:custom.auth0PublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.hrisPublisherStage}}
+    CIS_ENVIRONMENT: ${self:custom.auth0PublisherEnvironment.CIS_ENVIRONMENT.${self:custom.auth0PublisherStage}}
+    CIS_API_IDENTIFIER: ${self:custom.auth0PublisherEnvironment.IDENTIFIER.${self:custom.auth0PublisherStage}}
+    CIS_PERSON_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_PERSON_API_URL.${self:custom.auth0PublisherStage}}
+    CIS_CHANGE_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.auth0PublisherStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.auth0PublisherStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}
+    CIS_DISCOVERY_URL: ${self:custom.auth0PublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.auth0PublisherStage}}
     CIS_SIGNING_KEY_NAME: auth0_signing_key
     CIS_REQUESTS_CACHE_BACKEND: memory
     CIS_WELL_KNOWN_MODE: https

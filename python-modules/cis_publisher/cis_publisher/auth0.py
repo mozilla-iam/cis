@@ -49,12 +49,15 @@ class Auth0Publisher:
         else:
             le = len(user_ids)
         logger.info("Starting Auth0 Publisher [{} users]".format(le))
+        publisher = cis_publisher.Publish([], login_method="social", publisher_name="auth0")
+        self.process(publisher, [])
 
         # Should we fan-out processing to multiple function calls?
-        if user_ids is None:
-            self.fan_out(publisher, chunk_size)
-        else:
-            self.process(publisher, user_ids)
+        # XXX turned off
+        # if user_ids is None:
+        #    self.fan_out(publisher, chunk_size)
+        # else:
+        #    self.process(publisher, user_ids)
 
     def fetch_az_users(self, user_ids=[]):
         """
