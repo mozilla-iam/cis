@@ -73,21 +73,25 @@ class AWSParameterstoreProvider(object):
         while result is None:
             try:
                 ssm_namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+                logger.debug("Secret manager SSM provider loading key: {}/{}".format(ssm_namespace, key_name))
                 ssm_response = self.ssm_client.get_parameter(
                     Name="{}/{}".format(ssm_namespace, key_name), WithDecryption=True
                 )
-                logger.debug("Secret manager SSM provider loading key: {}:{}".format(ssm_namespace, key_name))
                 result = ssm_response.get("Parameter")
             except ClientError as e:
                 retries = retries - 1
                 backoff = backoff + 1
                 time.sleep(backoff)
-                logger.debug("Backing-off: fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+                logger.debug(
+                    "Backing-off: fetch secret ({}) due to: {} retries {} backoff {}".format(
+                        key_name, e, retries, backoff
+                    )
+                )
             if retries <= 0:
                 break
 
         if result is None:
-            logger.error("Failed to fetch secret due to: retries {} backoff {}".format(retries, backoff))
+            logger.error("Failed to fetch secret ({}) due to: retries {} backoff {}".format(key_name, retries, backoff))
 
         try:
             key_dict = json.loads(result.get("Value"))
@@ -109,9 +113,9 @@ class AWSParameterstoreProvider(object):
         while result is None:
             try:
                 ssm_path = self.config("secret_manager_ssm_uuid_salt", namespace="cis", default="/iam")
+                logger.debug("Secret manager SSM provider loading uuid_salt: {}".format(ssm_path))
                 ssm_response = self.ssm_client.get_parameter(Name=ssm_path, WithDecryption=True)
                 result = ssm_response.get("Parameter").get("Value")
-                logger.debug("Secret manager SSM provider loading uuid_salt: {}".format(ssm_path))
             except ClientError as e:
                 retries = retries - 1
                 backoff = backoff + 1
