@@ -40,6 +40,19 @@ custom:
       production: https://auth.mozilla.com/.well-known/mozilla-iam
       development: https://auth.allizom.org/.well-known/mozilla-iam
       testing: https://auth.allizom.org/.well-known/mozilla-iam
+    BUCKET_ARN:
+      production: arn:aws:s3:::cache.auth0.sso.mozilla.com
+      testing: arn:aws:s3:::cache.hris.auth0.sso.allizom.org
+      development: arn:aws:s3:::cache.auth0.dev.sso.allizom.org
+    CIS_BUCKET_URL:
+      production: cache.auth0.sso.mozilla.com
+      testing: cache.auth0.test.sso.allizom.org
+      development: cache.auth0.dev.sso.allizom.org
+    CIS_AUTHZERO_CACHE_TIME_SECONDS:
+      production: 120
+      testing: 120
+      development: 120
+
 provider:
   name: aws
   runtime: python3.6
@@ -59,6 +72,8 @@ provider:
     CIS_WELL_KNOWN_MODE: https
     CIS_PUBLIC_KEY_NAME: publisher
     CIS_SECRET_MANAGER: aws-ssm
+    CIS_BUCKET_URL: ${self:custom.auth0PublisherEnvironment.CIS_BUCKET_URL.${self:custom.auth0PublisherStage}}
+    CIS_AUTHZERO_CACHE_TIME_SECONDS: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_CACHE_TIME_SECONDS.${self:custom.auth0PublisherStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:
@@ -85,6 +100,15 @@ provider:
         - "kms:Decrypt"
       Resource:
         - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+    - Effect: Allow
+      Action:
+        - "s3:ListBucket"
+        - "s3:GetObject"
+        - "s3:PutObject"
+        - "s3:PutObjectAcl"
+      Resource:
+        - ${self:custom.auth0PublisherEnvironment.BUCKET_ARN.${self:custom.auth0PublisherStage}}
+        - ${self:custom.auth0PublisherEnvironment.BUCKET_ARN.${self:custom.auth0PublisherStage}}/*
 functions:
   handler:
     handler: handler.handle
