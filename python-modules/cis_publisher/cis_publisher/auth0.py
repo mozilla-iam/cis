@@ -6,13 +6,16 @@ import os
 import logging
 import json
 import time
-import requests
 from auth0.v3.authentication import GetToken
 from auth0.v3.management import Auth0
+from auth0.v3.exceptions import Auth0Error
 from datetime import datetime, timezone, timedelta
 from traceback import format_exc
 
+# from http.client import HTTPConnection
+
 logger = logging.getLogger(__name__)
+# HTTPConnection.debuglevel = 1
 
 
 class Auth0Publisher:
@@ -25,15 +28,57 @@ class Auth0Publisher:
         # auth0 field->cis field map
         self.az_cis_fields = {
             "created_at": "created",
-            "updated_at": "last_modified",
             "given_name": "first_name",
             "family_name": "last_name",
             "name": None,
             "nickname": None,
-            "picture": "picture",
             "user_id": "user_id",
             "email": "primary_email",
+            "identities": "identities",
+            "blocked": "active",
         }
+        # Not allowed atm
+        #            "picture": "picture",
+        self.az_blacklisted_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
+        self.az_whitelisted_connections = ["email", "github", "google-oauth2", "firefoxaccounts"]
+        self.az_users = None
+
+    def get_s3_cache(self):
+        """
+        If cache exists and is not older than timedelta() then return it, else don't
+        return: dict JSON
+        """
+        s3 = boto3.client("s3")
+        bucket = os.environ.get("CIS_BUCKET_URL")
+        cache_time = int(os.environ.get("CIS_AUTHZERO_CACHE_TIME_SECONDS", 120))
+        recent = datetime.now(timezone.utc) - timedelta(seconds=cache_time)
+        try:
+            objects = s3.list_objects_v2(Bucket=bucket)
+            # bucket has zero contents?
+            if "Contents" not in objects:
+                logger.info("No S3 cache present")
+                return None
+            # Recent file?
+            for o in objects["Contents"]:
+                if o["Key"] == "cache.json" and o["LastModified"] < recent:
+                    logger.info("S3 cache too old, not using")
+                    return None
+            response = s3.get_object(Bucket=bucket, Key="cache.json")
+            data = response["Body"].read()
+        except botocore.exceptions.ClientError as e:
+            logger.error("Could not find S3 cache file: {}".format(e))
+            return None
+        logger.info("Using S3 cache")
+        return json.loads(data)
+
+    def save_s3_cache(self, data):
+        """
+        @data dict JSON
+        """
+        s3 = boto3.client("s3")
+        bucket = os.environ.get("CIS_BUCKET_URL")
+        s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
+        logger.info("Wrote S3 cache file")
 
     def publish(self, user_ids=None, chunk_size=30):
         """
@@ -49,42 +94,103 @@ class Auth0Publisher:
         else:
             le = len(user_ids)
         logger.info("Starting Auth0 Publisher [{} users]".format(le))
-        publisher = cis_publisher.Publish([], login_method="social", publisher_name="auth0")
-        self.process(publisher, [])
+        # XXX login_method is overridden when posting the user or listing users, i.e. the one here does not matter
+        publisher = cis_publisher.Publish([], login_method="github", publisher_name="auth0")
+
+        # These are the users auth0 knows about
+        self.az_users = self.fetch_az_users(user_ids)
 
         # Should we fan-out processing to multiple function calls?
-        # XXX turned off
-        # if user_ids is None:
-        #    self.fan_out(publisher, chunk_size)
-        # else:
-        #    self.process(publisher, user_ids)
+        if user_ids is None:
+            # These are the users CIS knows about
+            all_cis_users = []
+            for c in self.az_whitelisted_connections:
+                publisher.login_method = c
+                publisher.get_known_cis_users(include_inactive=False)
+                all_cis_users += publisher.known_cis_users_by_user_id.keys()
+            logger.info("Got {} known CIS users for all whitelisted login methods".format(len(all_cis_users)))
 
-    def fetch_az_users(self, user_ids=[]):
+            # Because we do not care about most attributes update, we only process new users, or users that will be
+            # deactivated in order to save time. Note that there is (currently) no auth0 hook to notify of new user
+            # event, so this (the auth0 publisher that is) function needs to be reasonably fast to avoid delays when
+            # provisioning users
+            # So first, remove all known users from the requested list
+            user_ids_to_process = list(set(self.get_az_user_ids()) - set(all_cis_users))
+            # Add blocked users so that they get deactivated
+            for u in self.az_users:
+                if u["user_id"] in self.get_az_user_ids():
+                    if "blocked" in u.keys() and u["blocked"] is True:
+                        user_ids_to_process.append(u["user_id"])
+
+            logger.info(
+                "After filtering out known CIS users/in auth0 blocked users, we will process {} users".format(
+                    len(user_ids_to_process)
+                )
+            )
+            self.fan_out(publisher, chunk_size, user_ids_to_process)
+        else:
+            # Don't cache auth0 list if we're just getting a single user, so that we get the most up to date data
+            # and because it's pretty fast for a single user
+            if len(user_ids) == 1:
+                os.environ["CIS_AUTHZERO_CACHE_TIME_SECONDS"] = 0
+                logger.info("CIS_AUTHZERO_CACHE_TIME_SECONDS was set to 0 (caching disabled) for this run")
+            self.process(publisher, user_ids)
+
+    def get_az_user_ids(self):
+        """
+        Extract a list of user_ids from a dict of auth0 users
+        return: list of user_ids
+        """
+        user_ids_only = []
+        for u in self.fetch_az_users():
+            user_ids_only.append(u["user_id"])
+        return user_ids_only
+
+    def fetch_az_users(self, user_ids=None):
         """
         Fetches ALL valid users from auth0'z database
         Returns list of user attributes
         """
-        az_api_url = self.config("auth0_api_url", namespace="cis", default="auth-dev.mozilla.auth0.com")
-        az_client_id = (self.secret_manager.secret("client_id"),)
-        az_client_secret = (self.secret_manager.secret("client_secret"),)
+        # Memory cached?
+        if self.az_users is not None:
+            return self.az_users
+
+        # S3 cached?
+        self.az_users = self.get_s3_cache()
+        if self.az_users is not None:
+            return self.az_users
+
+        # Not cached, fetch it
+        az_api_url = self.config("AUTHZERO_API", namespace="cis", default="auth-dev.mozilla.auth0.com")
+        az_client_id = self.secret_manager.secret("az_client_id")
+        az_client_secret = self.secret_manager.secret("az_client_secret")
         az_fields = self.az_cis_fields.keys()
 
         # Build the connection query (excludes LDAP)
-        az_blacklist_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
+        # Excluded: "Mozilla-LDAP", "Mozilla-LDAP-Dev"
+        # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-        az_query = "email_verified:true AND NOT ("
+        az_query = "email_verified:true AND ("
         t = ""
-        for azc in az_connections:
-            az_query = azquery + t + 'identities.connection:"{}"'.format(az_connections)
+        for azc in self.az_whitelisted_connections:
+            az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
         az_query = az_query + ")"
 
         # Build query for user_ids if some are specified (else it gets all of them)
-        if user_ids:
-            logger.info("Restriction auth0 user query to user_ids: {}".format(user_ids))
+        # NOTE: We can't query all that many users because auth0 uses a GET query which is limited in size by httpd
+        # (nginx - 8kb by default)
+        if user_ids and len(user_ids) > 6:
+            logger.warning(
+                "Cannot query the requested number of user_ids from auth0, query would be too large."
+                "Querying all user_ids instead."
+            )
+            user_ids = None
+        elif user_ids:
+            logger.info("Restricting auth0 user query to user_ids: {}".format(user_ids))
             t = ""
-            az_query = az_query + "AND ("
+            az_query = az_query + " AND ("
             for u in user_ids:
                 az_query = az_query + t + 'user_id:"{}"'.format(u)
                 t = " OR "
@@ -92,24 +198,48 @@ class Auth0Publisher:
 
         logger.debug("About to get Auth0 user list")
         az_getter = GetToken(az_api_url)
-        az_token = az_getter.client_credentials(as_client_id, az_client_secret, "https://{}/api/v2/".format(az_api_url))
+        az_token = az_getter.client_credentials(az_client_id, az_client_secret, "https://{}/api/v2/".format(az_api_url))
         auth0 = Auth0(az_api_url, az_token["access_token"])
 
         # Query the entire thing
+        logger.info("Querying auth0 user database, query is: {}".format(az_query))
         p = 0
         user_list = []
-        # This is an artificial upper limit of 100*99999 (per_page*page) i.e. 9 999 900 users max - just in case things
+        # This is an artificial upper limit of 100*9999 (per_page*page) i.e. 999 900 users max - just in case things
         # go wrong
-        for p in range(0, 99999):
-            tmp = auth0.users.list(page=p, per_page=100, fields=az_fields, q=az_query)
-            if tmp == []:
+        retries = 15
+        backoff = 20
+        for p in range(0, 9999):
+            try:
+                tmp = auth0.users.list(page=p, per_page=100, fields=az_fields, q=az_query)["users"]
+                logger.debug("Requesting auth0 user list, at page {}".format(p))
+            except Auth0Error as e:
+                # 429 is Rate limit exceeded and we can still retry
+                if (e.error_code == 429 or e.status_code == 429) and retries > 0:
+                    backoff = backoff + 1
+                    logger.debug(
+                        "Rate limit exceeded, backing off for {} seconds, retries left {} error: {}".format(
+                            backoff, retries, e
+                        )
+                    )
+                    retries = retries - 1
+                    time.sleep(backoff)
+                else:
+                    logger.warning("Error: {}".format(e))
+                    raise
+
+            if tmp == [] or tmp is None:
                 # stop when our page is empty
                 logger.debug("Crawled {} pages from auth0 users API".format(p))
                 break
             else:
                 user_list.extend(tmp)
         logger.info("Received {} users from auth0".format(len(user_list)))
-        return user_list
+
+        self.az_users = user_list
+        self.save_s3_cache(user_list)
+
+        return self.az_users
 
     def convert_az_users(self, az_users):
         """
@@ -118,24 +248,135 @@ class Auth0Publisher:
         Returns [cis_profile.Users]
         """
         profiles = []
+        logger.info("Converting auth0 users into CIS Profiles ({} user(s))".format(len(az_users)))
+
         for u in az_users:
             p = cis_profile.User()
-            for k, v in self.az_cis_fields.items():
-                if k not in u.keys():
-                    continue
-                p.__dict__[v]["value"] = u[k]
+            # Must have fields
+            p.user_id.value = u["user_id"]
+            p.user_id.signature.publisher.name = "access_provider"
+            p.update_timestamp("user_id")
+            if "blocked" in u.keys():
+                if u["blocked"]:
+                    p.active.value = False
+            else:
+                p.active.value = True
+            p.active.signature.publisher.name = "access_provider"
+            p.update_timestamp("active")
 
-            # Hack:
-            # In case no names were passed, try to fix things up with what we have
-            if p.__dict__["first_name"]["value"] is None:
-                logger.debug("User {} has no name, asserting a name from other values".format(u["user_id"]))
-                if "name" in u.keys():
-                    p.__dict__["first_name"]["value"] = u["name"]
-                elif "nickname" in u.keys():
-                    p.__dict__["first_name"]["value"] = u["nickname"]
-                else:
-                    p.__dict__["first_name"]["value"] = u["email"].split("@")[0]
+            p.primary_email.value = u["email"]
+            p.primary_email.metadata.display = "private"
+            p.primary_email.signature.publisher.name = "access_provider"
+            p.update_timestamp("primary_email")
+            try:
+                p.login_method.value = u["identities"][0]["connection"]
+                p.update_timestamp("login_method")
+            except IndexError:
+                logger.critical("Could not find login method for user {}, skipping integration".format(p.user_id.value))
+                continue
+
+            # Should have fields (cannot be "None" or "")
+            tmp = u.get("given_name", u.get("name", u.get("family_name", u["email"])))
+            p.first_name.value = tmp
+            p.first_name.metadata.display = "private"
+            p.first_name.signature.publisher.name = "access_provider"
+            p.update_timestamp("first_name")
+
+            tmp = u.get("family_name", None)
+            # We need a value no matter what for last name as well
+            if tmp is None:
+                tmp = p.first_name.value.split(" ")[-1]
+            p.last_name.value = tmp
+            p.last_name.metadata.display = "private"
+            p.last_name.signature.publisher.name = "access_provider"
+            p.update_timestamp("last_name")
+
+            # Not allowed atm
+            #            p.picture.value = u.get("picture", None)
+            #            p.picture.metadata.display = "private"
+
+            # May have fields (its ok if these are not set)
+            tmp = u.get("node_id", None)
+            if tmp is not None:
+                p.identities.github_id_v4.value = tmp
+                p.identities.github_id_v4.display = "private"
+                p.identities.github_id_v4.signature.publisher.name = "access_provider"
+                p.update_timestamp("identities.github_id_v4")
+            if "identities" in u.keys():
+                for ident in u["identities"]:
+                    if ident.get("provider") in self.az_blacklisted_connections:
+                        logger.warning(
+                            "ad/LDAP account returned from search - this should not happen. User will be skipped."
+                            " User_id: {}".format(p.user_id.value)
+                        )
+                        continue
+                    elif ident.get("provider") == "google-oauth2":
+                        p.identities.google_oauth2_id.value = ident.get("user_id")
+                        p.identities.google_oauth2_id.metadata.display = "private"
+                        p.identities.google_oauth2_id.signature.publisher.name = "access_provider"
+                        p.update_timestamp("identities.google_oauth2_id")
+                        p.identities.google_primary_email.value = p.primary_email.value
+                        p.identities.google_primary_email.metadata.display = "private"
+                        p.identities.google_primary_email.signature.publisher.name = "access_provider"
+                        p.update_timestamp("identities.google_primary_email")
+                    elif ident.get("provider") == "oauth2" and ident.get("connection") == "firefoxaccounts":
+                        p.identities.firefox_accounts_id.value = ident.get("user_id")
+                        p.identities.firefox_accounts_id.metadata.display = "private"
+                        p.identities.firefox_accounts_id.signature.publisher.name = "access_provider"
+                        p.update_timestamp("identities.firefox_accounts_id")
+                        p.identities.firefox_accounts_primary_email.value = p.primary_email.value
+                        p.identities.firefox_accounts_primary_email.metadata.display = "private"
+                        p.identities.firefox_accounts_primary_email.signature.publisher.name = "access_provider"
+                        p.update_timestamp("identities.firefox_accounts_primary_email")
+                    elif ident.get("provider") == "github":
+                        p.identities.github_id_v3.value = ident.get("user_id")
+                        p.identities.github_id_v3.metadata.display = "private"
+                        p.identities.github_id_v3.signature.publisher.name = "access_provider"
+                        p.update_timestamp("identities.github_id_v3")
+                        if "profileData" in ident.keys():
+                            p.identities.github_primary_email.value = ident["profileData"].get("email")
+                            p.identities.github_primary_email.metadata.verified = ident["profileData"].get(
+                                "email_verified", False
+                            )
+                            p.identities.github_primary_email.metadata.display = "private"
+                            p.identities.github_primary_email.signature.publisher.name = "access_provider"
+                            p.update_timestamp("identities.github_primary_email")
+                            p.identities.github_id_v4.value = ident["profileData"].get("node_id")
+                            p.identities.github_id_v4.metadata.display = "private"
+                            p.identities.github_id_v4.signature.publisher.name = "access_provider"
+                            p.update_timestamp("identities.github_id_v4")
+
+            # Sign and verify everything
+            try:
+                p.sign_all(publisher_name="access_provider")
+            except Exception as e:
+                logger.critical(
+                    "Profile data signing failed for user {} - skipped signing, verification "
+                    "WILL FAIL ({})".format(p.primary_email.value, e)
+                )
+                logger.debug("Profile data {}".format(p.as_dict()))
+
+            try:
+                p.validate()
+            except Exception as e:
+                logger.critical(
+                    "Profile schema validation failed for user {} - skipped validation, verification "
+                    "WILL FAIL({})".format(p.primary_email.value, e)
+                )
+                logger.debug("Profile data {}".format(p.as_dict()))
+
+            try:
+                p.verify_all_publishers(cis_profile.User())
+            except Exception as e:
+                logger.critical(
+                    "Profile publisher verification failed for user {} - skipped signing, verification "
+                    "WILL FAIL ({})".format(p.primary_email.value, e)
+                )
+                logger.debug("Profile data {}".format(p.as_dict()))
+
+            logger.debug("Profile signed and ready to publish for user_id {}".format(p.user_id.value))
             profiles.append(p)
+        logger.info("All profiles in this request were converted to CIS Profiles")
         return profiles
 
     def process(self, publisher, user_ids):
@@ -145,7 +386,15 @@ class Auth0Publisher:
         @user_ids list of user ids to process in this batch
         """
 
-        profiles = self.convert_az_users(self.fetch_az_users(user_ids))
+        # Only process the requested user_ids from the list of all az users
+        # as the list is often containing all users, not just the ones we requested
+        todo_user_ids = list(set(self.get_az_user_ids()) & set(user_ids))
+        todo_users = []
+        for u in self.az_users:
+            if u["user_id"] in todo_user_ids:
+                todo_users.append(u)
+
+        profiles = self.convert_az_users(todo_users)
         logger.info("Processing {} profiles".format(len(profiles)))
         publisher.profiles = profiles
 
@@ -159,7 +408,7 @@ class Auth0Publisher:
         if len(failures) > 0:
             logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
 
-    def fan_out(self, publisher, chunk_size):
+    def fan_out(self, publisher, chunk_size, user_ids_to_process):
         """
         Splices all users to process into chunks
         and self-invoke as many times as needed to complete all work in parallel lambda functions
@@ -171,11 +420,10 @@ class Auth0Publisher:
         @publisher object the cis_publisher object to operate on
         @chunk_size int size of the chunk to process
         """
-        all_user_ids = []
-        sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
+        sliced = [user_ids_to_process[i : i + chunk_size] for i in range(0, len(user_ids_to_process), chunk_size)]
         logger.info(
-            "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
-            "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
+            "No user_id selected. Creating slices of work, chunk size: {}, slices: {}, total users: {} and "
+            "faning-out work to self".format(chunk_size, len(sliced), len(user_ids_to_process))
         )
         lambda_client = boto3.client("lambda")
         for s in sliced:
