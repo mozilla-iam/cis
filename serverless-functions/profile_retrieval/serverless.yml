@@ -46,7 +46,7 @@ custom:
     certificateName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   tracing: true # enable tracing
   environment:
     CIS_DYNAMODB_ARN: ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
