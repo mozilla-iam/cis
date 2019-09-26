@@ -1,7 +1,16 @@
-from sqlalchemy import Column, Integer, Text
-from sqlalchemy.dialects.postgresql import JSON, JSONB
-from sqlalchemy.orm import sessionmaker
-from sqlalchemy.ext.declarative import declarative_base
+import logging
+
+
+logger = logging.getLogger(__name__)
+
+
+try:
+    from sqlalchemy import Column, Integer, Text
+    from sqlalchemy.dialects.postgresql import JSON, JSONB
+    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.ext.declarative import declarative_base
+except ImportError:
+    logger.error('Postgresql support not available.  Try installing psycopg2.')
 
 
 Base = declarative_base()
