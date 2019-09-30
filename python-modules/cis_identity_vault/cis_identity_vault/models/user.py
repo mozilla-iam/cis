@@ -529,3 +529,10 @@ class ProfileRDS(object):
         except NoResultFound:
             user = None
         return user
+    
+    def find_or_create(self, user_profile):
+        if self.find(user_profile) is not None:
+            result = self.update(user_profile).user_id
+        else:
+            result = self.create(user_profile).user_id
+        return result

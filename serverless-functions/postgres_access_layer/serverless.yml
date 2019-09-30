@@ -1,0 +1,139 @@
+service: postgresql-access-layer
+plugins:
+  - serverless-plugin-tracing
+custom:
+  postgresqlAccessLayerStage: ${opt:stage, self:provider.stage}
+  postgresqlAccessLayerEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+    DYNAMODB_TABLE:
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
+    CIS_DYNAMODB_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
+    IDENTIFIER:
+      production: api.sso.mozilla.com
+      development: api.dev.sso.allizom.org
+      testing: api.test.sso.allizom.org
+    CIS_PERSON_API_URL:
+      production: person.api.sso.mozilla.com
+      development: person.api.dev.sso.allizom.org
+      testing: person.api.test.sso.allizom.org
+    CIS_CHANGE_API_URL:
+      production: change.api.sso.mozilla.com
+      development: change.api.dev.sso.allizom.org
+      testing: change.api.test.sso.allizom.org
+    CIS_AUTHZERO_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/postgresql_replicator
+      development: /iam/cis/development/postgresql_replicator
+      testing: /iam/cis/testing/postgresql_replicator
+    CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
+      development: https://auth.allizom.org/.well-known/mozilla-iam
+      testing: https://auth.allizom.org/.well-known/mozilla-iam
+    CIS_DYNAMODB_STREAM_ARN:
+      production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault/stream/2019-03-12T15:52:29.265
+      development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2019-03-15T15:35:47.739
+      testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2019-03-12T15:00:24.551
+    CIS_POSTGRES_HOST:
+      production: cis-vault-identity-prod.ct1yzfxfuap7.us-west-2.rds.amazonaws.com
+      development: cis-vault-identity-dev.ct1yzfxfuap7.us-west-2.rds.amazonaws.com
+      testing: cis-vault-identity-stage.ct1yzfxfuap7.us-west-2.rds.amazonaws.com
+    CIS_DB_PASSWORD_PATH:
+      production: /iam/cis/production/postgresql_replicator/db_password
+      development: /iam/cis/development/postgresql_replicator/db_password
+      testing: /iam/cis/testing/postgresql_replicator/db_password
+    CIS_DB_USER:
+      production: cis
+      development: cis
+      testing: cis
+provider:
+  name: aws
+  runtime: python3.7
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_ENVIRONMENT: ${self:custom.postgresqlAccessLayerEnvironment.CIS_ENVIRONMENT.${self:custom.postgresqlAccessLayerStage}}
+    CIS_API_IDENTIFIER: ${self:custom.postgresqlAccessLayerEnvironment.IDENTIFIER.${self:custom.postgresqlAccessLayerStage}}
+    CIS_PERSON_API_URL: ${self:custom.postgresqlAccessLayerEnvironment.CIS_PERSON_API_URL.${self:custom.postgresqlAccessLayerStage}}
+    CIS_CHANGE_API_URL: ${self:custom.postgresqlAccessLayerEnvironment.CIS_CHANGE_API_URL.${self:custom.postgresqlAccessLayerStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.postgresqlAccessLayerEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.postgresqlAccessLayerStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.postgresqlAccessLayerEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.postgresqlAccessLayerStage}}
+    CIS_DISCOVERY_URL: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DISCOVERY_URL.${self:custom.postgresqlAccessLayerStage}}
+    CIS_POSTGRES_HOST: ${self:custom.postgresqlAccessLayerEnvironment.CIS_POSTGRES_HOST.${self:custom.postgresqlAccessLayerStage}}
+    CIS_DYNAMODB_ARN: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_ARN.${self:custom.postgresqlAccessLayerStage}}
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CIS_WELL_KNOWN_MODE: https
+    CIS_PUBLIC_KEY_NAME: publisher
+    CIS_DB_USER: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DB_USER.${self:custom.postgresqlAccessLayerStage}}
+    CIS_DB_PASSWORD_PATH: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DB_PASSWORD_PATH.${self:custom.postgresqlAccessLayerStage}}
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - arn:aws:ssm:*:*:parameter${self:custom.postgresqlAccessLayerEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.postgresqlAccessLayerStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+    - Effect: Allow
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:DescribeStream"
+        - "dynamodb:GetRecords"
+        - "dynamodb:GetShardIterator"
+        - "dynamodb:ListStreams"
+      Resource:
+        - ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_ARN.${self:custom.postgresqlAccessLayerStage}}
+        - ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_ARN.${self:custom.postgresqlAccessLayerStage}}/*
+    - Effect: Allow
+      Action:
+        - "dynamodb:DescribeTable"
+        - "dynamodb:Query"
+        - "dynamodb:Scan"
+        - "dynamodb:GetItem"
+      Resource:
+        - ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_ARN.${self:custom.postgresqlAccessLayerStage}}/*
+        - ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_ARN.${self:custom.postgresqlAccessLayerStage}}
+functions:
+  handler:
+    vpc:
+      subnetIds:
+        - subnet-09236354683170841
+        - subnet-07a19bc94a555ab41
+        - subnet-0b2d6cdf1aaaab67a
+      securityGroupIds:
+          - sg-015971fe39add456e
+    handler: handler.handle
+    events:
+      - stream: 
+          arn: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.postgresqlAccessLayerStage}}
+          batchSize: 1000
+          startingPosition: LATEST
+          enabled: true
+    description: postgresql sync from the identity vault to read only data store.
+    memorySize: 3008 # This is HUGE because we load the entirety of users in Memory live.
+    timeout: 900
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.postgresqlAccessLayerStage}/lambda_layer_arn}
+    reservedConcurrency: 1

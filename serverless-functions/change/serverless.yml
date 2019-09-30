@@ -74,7 +74,7 @@ custom:
     certificateName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   stage: ${opt:stage, 'dev'}
   tracing: true # enable tracing
   environment:

@@ -25,6 +25,13 @@ class TestRDS(object):
         assert v.table() is not None
         # v.delete()
 
+    def test_db_create(self):
+        os.environ['CIS_IDENTITY_VAULT'] = 'purple-unicorn'
+        from cis_identity_vault import vault
+
+        v = vault.RelationalIdentityVault()
+        v.find_or_create()
+
     def test_user_create(self):
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
@@ -102,7 +109,7 @@ class TestRDS(object):
         search_result = s.find_by_uuid(self.user_profile["uuid"]["value"])
         assert search_result.profile["uuid"]["value"] == self.user_profile["uuid"]["value"]
 
-    def test_find_by_primayr_username(self):
+    def test_find_by_primary_username(self):
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 

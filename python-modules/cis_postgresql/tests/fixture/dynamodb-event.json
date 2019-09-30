@@ -1,0 +1,23 @@
+{
+  "Records": [
+    {
+      "eventID": "aa98b41d6d72d9f6b109439e94f79c1c", 
+      "eventName": "MODIFY", 
+      "eventVersion": "1.1", 
+      "eventSource": "aws:dynamodb", 
+      "awsRegion": "us-west-2", 
+      "dynamodb": {
+        "ApproximateCreationDateTime": 1564680362.0, 
+        "Keys": {
+          "id": {
+            "S": "ad|Mozilla-LDAP|akrug"
+            }
+          }, 
+          "SequenceNumber": "699893000000000005254407369", 
+          "SizeBytes": 23, 
+          "StreamViewType": "KEYS_ONLY"
+        }, 
+        "eventSourceARN": "arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2019-03-12T15:00:24.551"
+        }
+    ]
+  }
