@@ -1,0 +1,28 @@
+[
+    {
+        "picture": "https://avatars.githubusercontent.com/u/202377728?v=3",
+        "updated_at": "2016-11-17T20:39:02.681Z",
+        "email": "test.here@mozilla.com",
+        "created_at": "2016-11-02T17:38:26.669Z",
+        "user_id": "github|202377728",
+        "identities": [
+          {
+            "connection": "github"
+          }
+        ]
+    },
+    {
+        "picture": "https://s.gravatar.com/avatar/0e90c2e3d4af1f040c54e6006464e887?s=480&r=pg&d=https%3A%2F%2Fcdn.auth0.com%2Favatars%2Fjd.png",
+        "updated_at": "2019-08-06T20:32:57.684Z",
+        "email": "email@pwless.com",
+        "created_at": "2016-11-17T17:52:32.873Z",
+        "family_name": "Noble",
+        "user_id": "email|dnoble",
+        "given_name": "Donna",
+        "identities": [
+          {
+            "connection": "email"
+          }
+        ]
+    }
+]

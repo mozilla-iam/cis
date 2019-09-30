@@ -120,6 +120,13 @@ deploy-mozilliansorg-groups-publisher:
 	npm install serverless-domain-manager --save-dev && \
 	sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
+.PHONY:deploy-auth0-publisher
+deploy-auth0-publisher:
+	cd $(ROOT_DIR)/auth0_publisher && \
+	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
+	npm install serverless-domain-manager --save-dev && \
+	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
 	cd $(ROOT_DIR)/stream-processor && sls deploy --region $(AWS_REGION) --stage $(STAGE)

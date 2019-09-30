@@ -91,7 +91,11 @@ class Manager(object):
             except ClientError as e:
                 retries = retries - 1
                 backoff = backoff + 1
-                logger.error("Failed to fetch secret due to: {} retries {} backoff {}".format(e, retries, backoff))
+                logger.error(
+                    "Failed to fetch secret '{}/{}' due to: {} retries {} backoff {}".format(
+                        ssm_namespace, secret_name, e, retries, backoff
+                    )
+                )
                 time.sleep(backoff)
 
         self._cache[secret_name] = result["Value"]

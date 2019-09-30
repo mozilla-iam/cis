@@ -43,6 +43,7 @@ release:
 	$(MAKE) -C serverless-functions deploy-notifications STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-curator STAGE=$(STAGE)
 	$(MAKE) -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
+	$(MAKE) -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
 
 .PHONY: build-ci-container
 build-ci-container:

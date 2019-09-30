@@ -1,0 +1,123 @@
+service: auth0-publisher
+plugins:
+  - serverless-plugin-tracing
+custom:
+  auth0PublisherStage: ${opt:stage, self:provider.stage}
+  auth0PublisherEnvironment:
+    CIS_ENVIRONMENT:
+      production: production
+      development: development
+      testing: testing
+    DYNAMODB_TABLE:
+      production: production-identity-vault
+      development: development-identity-vault
+      testing: testing-identity-vault
+    IDENTIFIER:
+      production: api.sso.mozilla.com
+      development: api.dev.sso.allizom.org
+      testing: api.test.sso.allizom.org
+    CIS_PERSON_API_URL:
+      production: person.api.sso.mozilla.com
+      development: person.api.dev.sso.allizom.org
+      testing: person.api.test.sso.allizom.org
+    CIS_CHANGE_API_URL:
+      production: change.api.sso.mozilla.com
+      development: change.api.dev.sso.allizom.org
+      testing: change.api.test.sso.allizom.org
+    CIS_AUTHZERO_API_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth-dev.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+    CIS_AUTHZERO_DOMAIN:
+      production: auth.mozilla.auth0.com
+      development: auth.mozilla.auth0.com
+      testing: auth.mozilla.auth0.com
+    CIS_SECRET_MANAGER_SSM_PATH:
+      production: /iam/cis/production/auth0_publisher
+      development: /iam/cis/development/auth0_publisher
+      testing: /iam/cis/testing/auth0_publisher
+    CIS_DISCOVERY_URL:
+      production: https://auth.mozilla.com/.well-known/mozilla-iam
+      development: https://auth.allizom.org/.well-known/mozilla-iam
+      testing: https://auth.allizom.org/.well-known/mozilla-iam
+    BUCKET_ARN:
+      production: arn:aws:s3:::cache.auth0.sso.mozilla.com
+      testing: arn:aws:s3:::cache.hris.auth0.sso.allizom.org
+      development: arn:aws:s3:::cache.auth0.dev.sso.allizom.org
+    CIS_BUCKET_URL:
+      production: cache.auth0.sso.mozilla.com
+      testing: cache.auth0.test.sso.allizom.org
+      development: cache.auth0.dev.sso.allizom.org
+    CIS_AUTHZERO_CACHE_TIME_SECONDS:
+      production: 120
+      testing: 120
+      development: 120
+
+provider:
+  name: aws
+  runtime: python3.6
+  stage: ${opt:stage, 'dev'}
+  tracing: true # enable tracing
+  environment:
+    CIS_ENVIRONMENT: ${self:custom.auth0PublisherEnvironment.CIS_ENVIRONMENT.${self:custom.auth0PublisherStage}}
+    CIS_API_IDENTIFIER: ${self:custom.auth0PublisherEnvironment.IDENTIFIER.${self:custom.auth0PublisherStage}}
+    CIS_PERSON_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_PERSON_API_URL.${self:custom.auth0PublisherStage}}
+    CIS_CHANGE_API_URL: ${self:custom.auth0PublisherEnvironment.CIS_CHANGE_API_URL.${self:custom.auth0PublisherStage}}
+    CIS_AUTHZERO_TENANT: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_DOMAIN.${self:custom.auth0PublisherStage}}
+    CIS_AUTHZERO_API: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_API_DOMAIN.${self:custom.auth0PublisherStage}}
+    CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}
+    CIS_DISCOVERY_URL: ${self:custom.auth0PublisherEnvironment.CIS_DISCOVERY_URL.${self:custom.auth0PublisherStage}}
+    CIS_SIGNING_KEY_NAME: auth0_signing_key
+    CIS_REQUESTS_CACHE_BACKEND: memory
+    CIS_WELL_KNOWN_MODE: https
+    CIS_PUBLIC_KEY_NAME: publisher
+    CIS_SECRET_MANAGER: aws-ssm
+    CIS_BUCKET_URL: ${self:custom.auth0PublisherEnvironment.CIS_BUCKET_URL.${self:custom.auth0PublisherStage}}
+    CIS_AUTHZERO_CACHE_TIME_SECONDS: ${self:custom.auth0PublisherEnvironment.CIS_AUTHZERO_CACHE_TIME_SECONDS.${self:custom.auth0PublisherStage}}
+  iamRoleStatements:
+    - Effect: "Allow" # xray permissions (required)
+      Action:
+        - "xray:PutTraceSegments"
+        - "xray:PutTelemetryRecords"
+      Resource:
+        - "*"
+    - Effect: Allow
+      Action:
+        - "lambda:InvokeFunction"
+        - "lambda:InvokeAsync"
+      Resource:
+        - arn:aws:lambda:us-west-2:320464205386:function:auth0-publisher-${self:custom.auth0PublisherStage}-handler
+    - Effect: Allow
+      Action:
+        - "ssm:GetParameterHistory"
+        - "ssm:GetParametersByPath"
+        - "ssm:GetParameters"
+        - "ssm:GetParameter"
+      Resource:
+        - arn:aws:ssm:*:*:parameter${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}/*
+    - Effect: Allow
+      Action:
+        - "kms:Decrypt"
+      Resource:
+        - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+    - Effect: Allow
+      Action:
+        - "s3:ListBucket"
+        - "s3:GetObject"
+        - "s3:PutObject"
+        - "s3:PutObjectAcl"
+      Resource:
+        - ${self:custom.auth0PublisherEnvironment.BUCKET_ARN.${self:custom.auth0PublisherStage}}
+        - ${self:custom.auth0PublisherEnvironment.BUCKET_ARN.${self:custom.auth0PublisherStage}}/*
+functions:
+  handler:
+    handler: handler.handle
+    events:
+      - schedule:
+          rate: rate(15 minutes)
+          enabled: false
+    description: auth0-publisher for synchronizing auth0 user data to identity vault.
+    memorySize: 3008 # This is HUGE because cpu allocation is tied to memorySize.
+    timeout: 900
+    layers:
+      -  ${ssm:/iam/cis/${self:custom.auth0PublisherStage}/lambda_layer_arn}

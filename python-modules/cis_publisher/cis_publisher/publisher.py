@@ -269,7 +269,7 @@ class Publish:
 
     def get_known_cis_users(self, include_inactive=False):
         """
-        Call CIS Person API and return a list of existing user ids and/or remails
+        Call CIS Person API and return a list of existing user ids and/or emails
         @include_inactive: bool include inactive users (active=False) in the results
         return: list of str: cis user ids
         """
