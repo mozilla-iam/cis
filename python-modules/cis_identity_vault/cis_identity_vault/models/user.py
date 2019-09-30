@@ -21,6 +21,18 @@ from traceback import format_exc
 
 from cis_profile import User
 
+# Import depends for interaction with the postgres database
+from cis_identity_vault.models import rds
+from cis_identity_vault import vault
+from sqlalchemy import create_engine
+from sqlalchemy import Integer as SAInteger
+from sqlalchemy import String as SAString
+from sqlalchemy import Text as SAText
+from sqlalchemy.orm import scoped_session
+from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm.exc import NoResultFound
+from sqlalchemy.dialects.postgresql import JSON
+
 
 logger = logging.getLogger(__name__)
 
@@ -422,3 +434,98 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
+
+
+class ProfileRDS(object):
+    """Manage user profiles writing to the postgres database."""
+
+    def __init__(self):
+        self.engine = vault.RelationalIdentityVault().engine()
+        Session = sessionmaker()
+        self.session = Session(bind=self.engine)
+        self.scoped_session = scoped_session(sessionmaker(autocommit=False, autoflush=False, bind=self.engine))
+        rds.Base.query = self.scoped_session.query_property()
+
+    def create(self, user_profile):
+        if isinstance(user_profile, str):
+            user_profile = json.loads(user_profile)
+
+        user = rds.People()
+        user.user_id = user_profile["user_id"].get("value")
+        user.primary_email = user_profile["primary_email"].get("value")
+        user.profile = user_profile
+        user.user_uuid = user_profile["uuid"].get("value")
+        user.primary_username = user_profile["primary_username"].get("value")
+        user.sequence_number = str(uuid.uuid4().int)
+        self.scoped_session.add(user)
+        self.scoped_session.commit()
+        return self.find(user_profile)
+
+    def delete(self, user_profile):
+        if isinstance(user_profile, str):
+            user_profile = json.loads(user_profile)
+
+        user = self.find(user_profile)
+        self.scoped_session.delete(user)
+        self.scoped_session.commit()
+        return None
+
+    def update(self, user_profile):
+        if isinstance(user_profile, str):
+            user_profile = json.loads(user_profile)
+
+        user = self.find(user_profile)
+        user.user_id = user_profile["user_id"].get("value")
+        user.primary_email = user_profile["primary_email"].get("value")
+        user.profile = user_profile
+        user.user_uuid = user_profile["uuid"].get("value")
+        user.primary_username = user_profile["primary_username"].get("value")
+        user.sequence_number = str(uuid.uuid4().int)
+        self.scoped_session.add(user)
+        self.scoped_session.commit()
+        return rds.People().query.filter_by(user_id=user.user_id).one()
+
+    def find(self, user_profile):
+        if isinstance(user_profile, str):
+            user_profile = json.loads(user_profile)
+        try:
+            user = rds.People().query.filter_by(user_id=user_profile["user_id"].get("value")).one()
+        except NoResultFound:
+            user = None
+        return user
+
+    def find_by_id(self, user_id):
+        try:
+            user = rds.People().query.filter_by(user_id=user_id).one()
+        except NoResultFound:
+            user = None
+        return user
+
+    def find_by_email(self, primary_email):
+        try:
+            users = (
+                self.session.query(rds.People)
+                .filter(rds.People.profile[("primary_email", "value")].astext == primary_email)
+                .all()
+            )
+        except NoResultFound:
+            users = []
+        return users
+
+    def find_by_uuid(self, uuid):
+        try:
+            user = self.session.query(rds.People).filter(rds.People.profile[("uuid", "value")].astext == uuid).one()
+        except NoResultFound:
+            user = None
+        return user
+
+    def find_by_username(self, primary_username):
+        try:
+            user = (
+                self.session.query(rds.People)
+                .filter(rds.People.profile[("primary_username", "value")].astext == primary_username)
+                .one()
+            )
+        except NoResultFound:
+            user = None
+        return user
