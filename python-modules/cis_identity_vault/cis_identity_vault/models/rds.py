@@ -9,8 +9,8 @@ try:
     from sqlalchemy.dialects.postgresql import JSON, JSONB
     from sqlalchemy.orm import sessionmaker
     from sqlalchemy.ext.declarative import declarative_base
-except ImportError:
-    logger.error('Postgresql support not available.  Try installing psycopg2.')
+except ImportError as e:
+    logger.error(f'Postgresql support not available.  Try installing psycopg2. Error: {e}')
 
 
 Base = declarative_base()

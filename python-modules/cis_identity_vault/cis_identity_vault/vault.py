@@ -335,4 +335,5 @@ class RelationalIdentityVault(object):
         except OperationalError:
             create_database(create_engine(self._db_string()).url)
             self.create()
-            return self.table()
+            self.table()
+        return self.table()

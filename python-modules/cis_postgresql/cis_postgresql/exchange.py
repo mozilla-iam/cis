@@ -112,8 +112,8 @@ class BasePostgresqlMapper(ProfileBase):
     def to_postgres(self, profiles):
         rds_vault = user.ProfileRDS()
         results = []
-        for _ in profiles:
-            results.append(rds_vault.find_or_create(_))
+        for profile in profiles:
+            results.append(rds_vault.find_or_create(profile))
         logger.info(f'{len(results)} profiles have been written to the postgresql identity vault.')
         return results
 

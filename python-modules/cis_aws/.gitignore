@@ -1,2 +1,4 @@
 .pytest_cache
 .DS_Store
+.install-test
+package-lock.json

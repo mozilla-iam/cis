@@ -27,6 +27,10 @@ clean-layer:
 	rm -rf /tmp/build/build/*
 	rm -f /tmp/build/cis.zip
 
+.PHONY:layer
+layer:
+	@echo 'Looking for the layer MakeTarget?  It's no longer supported.  Only run inside of Docker.'
+
 .PHONY: layer-codebuild
 layer-codebuild:
 	mkdir -p /tmp/build/$(PYDIR)

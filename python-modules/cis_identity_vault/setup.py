@@ -8,6 +8,9 @@ with open("README.md", "r") as fh:
 
 requirements = ["everett", "everett[ini]", "configobj", "boto", "boto3", "botocore", "sqlalchemy", "sqlalchemy_utils"]
 
+# psycopg2 is also required.  Need to figure out how to ensure this always works.
+# note: psycopg2 is always built from source presently.
+
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
 test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "moto>=1.3.7", "flake8"]

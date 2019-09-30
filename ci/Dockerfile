@@ -28,6 +28,7 @@ RUN mkdir /root/utils
 COPY fake-creds.sh /root/utils/
 RUN chmod 700 /root/utils/fake-creds.sh
 RUN wget https://ftp.postgresql.org/pub/source/v11.1/postgresql-11.1.tar.gz
+# XXX TBD run signature check here.  Currently unsupport by postgres project.
 RUN tar xzvf postgresql-11.1.tar.gz
 RUN cd postgresql-11.1 && \
 ./configure --prefix `pwd` --without-readline --without-zlib && \
