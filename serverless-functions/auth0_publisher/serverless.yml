@@ -115,9 +115,49 @@ functions:
     events:
       - schedule:
           rate: rate(15 minutes)
-          enabled: false
+          enabled: true
     description: auth0-publisher for synchronizing auth0 user data to identity vault.
     memorySize: 3008 # This is HUGE because cpu allocation is tied to memorySize.
     timeout: 900
     layers:
       -  ${ssm:/iam/cis/${self:custom.auth0PublisherStage}/lambda_layer_arn}
+resources:
+  Resources:
+    AZRunnerRole:
+      Type: AWS::IAM::Role
+      Properties:
+        AssumeRolePolicyDocument:
+          Version: '2012-10-17'
+          Statement:
+            - Effect: Allow
+              Principal:
+                Service:
+                  - lambda.amazonaws.com
+              Action:
+                - "sts:AssumeRole"
+    AZRunnerUser:
+      Type: AWS::IAM::User
+      Properties:
+        Policies:
+          - PolicyName: AllowInvokeLambda
+            PolicyDocument:
+              Version: '2012-10-17'
+              Statement:
+                - Effect: Allow
+                  Action:
+                    - "lambda:InvokeFunction"
+                    - "lambda:InvokeAsync"
+                  Resource:
+                    - arn:aws:lambda:us-west-2:320464205386:function:auth0-publisher-${self:custom.auth0PublisherStage}-handler
+    AZRunnerAccessKey:
+      Type: AWS::IAM::AccessKey
+      Properties:
+        Serial: 20190930
+        Status: Active
+        UserName: !Ref AZRunnerUser
+    BasicParameter:
+      Type: "AWS::SSM::Parameter"
+      Properties:
+        Name: "AZRunnerSecretAccessKey"
+        Type: "String"
+        Value: !GetAtt AZRunnerAccessKey.SecretAccessKey
