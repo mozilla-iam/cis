@@ -37,8 +37,6 @@ class Auth0Publisher:
             "identities": "identities",
             "blocked": "active",
         }
-        # Not allowed atm
-        #            "picture": "picture",
         self.az_blacklisted_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
         self.az_whitelisted_connections = ["email", "github", "google-oauth2", "firefoxaccounts"]
         self.az_users = None
@@ -290,10 +288,6 @@ class Auth0Publisher:
             p.last_name.metadata.display = "private"
             p.last_name.signature.publisher.name = "access_provider"
             p.update_timestamp("last_name")
-
-            # Not allowed atm
-            #            p.picture.value = u.get("picture", None)
-            #            p.picture.metadata.display = "private"
 
             # May have fields (its ok if these are not set)
             tmp = u.get("node_id", None)
