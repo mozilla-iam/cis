@@ -78,7 +78,6 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
 
-
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_profiles_returns_a_list(self, fake_jwks):
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"

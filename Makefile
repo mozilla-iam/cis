@@ -56,3 +56,8 @@ push-ci-container:
 test:
 	docker-compose build
 	docker-compose run tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -j4 test-tox'
+
+.PHONY: developer-shell
+developer-shell:
+	@echo 'launching docker compose environment with all the bells and whistles'
+	docker-compose run tester
