@@ -1,2 +1,4 @@
 build/
 .pytest_cache
+.install-test
+package-lock.json

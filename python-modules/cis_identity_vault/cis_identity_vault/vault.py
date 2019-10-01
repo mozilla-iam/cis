@@ -8,6 +8,8 @@ from cis_identity_vault.common import get_config
 from cis_identity_vault.models import rds
 from logging import getLogger
 from sqlalchemy import create_engine
+from sqlalchemy.exc import OperationalError
+from sqlalchemy_utils import create_database
 
 
 logger = getLogger(__name__)
@@ -99,7 +101,9 @@ class IdentityVault(object):
         if self._get_cis_environment() not in ["production", "development", "testing"]:
             result = self.dynamodb_client.create_table(
                 TableName=self._generate_table_name(),
-                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+                KeySchema=[
+                    {"AttributeName": "id", "KeyType": "HASH"},
+                ],
                 AttributeDefinitions=[
                     # auth0 user_id
                     {"AttributeName": "id", "AttributeType": "S"},
@@ -153,7 +157,9 @@ class IdentityVault(object):
         else:
             result = self.dynamodb_client.create_table(
                 TableName=self._generate_table_name(),
-                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
+                KeySchema=[
+                    {"AttributeName": "id", "KeyType": "HASH"},
+                ],
                 AttributeDefinitions=[
                     # auth0 user_id
                     {"AttributeName": "id", "AttributeType": "S"},
@@ -309,9 +315,11 @@ class RelationalIdentityVault(object):
         connection_information = f"@{self.postgres_host}:{self.postgres_port}/{self.db_name}"
         return proto + access_information + connection_information
 
+    def session(self):
+        return create_engine(self._db_string())
+
     def engine(self):
-        db = create_engine(self._db_string())
-        engine = db.connect()
+        engine = self.session().connect()
         return engine
 
     def create(self):
@@ -324,3 +332,12 @@ class RelationalIdentityVault(object):
         metadata = rds.Base.metadata
         metadata.bind = self.engine()
         return metadata.tables.get("people")
+
+    def find_or_create(self):
+        try:
+            self.table()
+        except OperationalError:
+            create_database(create_engine(self._db_string()).url)
+            self.create()
+            self.table()
+        return self.table()

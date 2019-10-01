@@ -434,6 +434,7 @@ class Vault(object):
                 "An error occured removing this profile from dynamodb",
                 extra={"profile": profile_json, "error": e, "trace": format_exc()},
             )
+            logger.error(e)
             raise IntegrationError({"code": "integration_exception", "description": "{}".format(e)}, 500)
         return {
             "status": 200,

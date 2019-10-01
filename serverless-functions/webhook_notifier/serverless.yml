@@ -42,7 +42,7 @@ custom:
       testing: https://dinopark.k8s.test.sso.allizom.org/events/update
 provider:
   name: aws
-  runtime: python3.6
+  runtime: python3.7
   stage: ${opt:stage, 'dev'}
   tracing: true # enable tracing
   environment:

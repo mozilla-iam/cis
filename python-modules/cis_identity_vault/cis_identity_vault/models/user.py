@@ -176,7 +176,9 @@ class Profile(object):
         return res
 
     def _delete_without_transaction(self, user_profile):
-        return self.table.delete_item(Key={"id": user_profile["id"]})
+        return self.table.delete_item(Key={
+            "id": user_profile["id"],
+        })
 
     def create_batch(self, list_of_profiles):
         sequence_numbers = []
@@ -529,3 +531,10 @@ class ProfileRDS(object):
         except NoResultFound:
             user = None
         return user
+    
+    def find_or_create(self, user_profile):
+        if self.find(user_profile) is not None:
+            result = self.update(user_profile).user_id
+        else:
+            result = self.create(user_profile).user_id
+        return result

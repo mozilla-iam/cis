@@ -1,6 +1,6 @@
 MODULES	:= cis_aws cis_change_service cis_crypto cis_identity_vault \
 cis_processor cis_profile cis_profile_retrieval_service cis_publisher cis_logger \
-cis_notifications
+cis_notifications cis_postgresql
 
 all:
 	@echo 'Available make targets:'

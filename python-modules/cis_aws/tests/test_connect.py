@@ -24,7 +24,18 @@ class TestConnect(object):
         os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         self.dynalite_host = "localhost"
         self.kinesalite_host = "localhost"
-        self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
+        self.dynaliteprocess = subprocess.Popen(
+            [
+                "/usr/sbin/java",
+                "-Djava.library.path=/opt/dynamodb_local/DynamoDBLocal_lib",
+                "-jar",
+                "/opt/dynamodb_local/DynamoDBLocal.jar",
+                "-inMemory",
+                "-port",
+                self.dynalite_port
+            ],
+            preexec_fn=os.setsid
+        )
         self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
 
     def test_connect_object_init(self):
