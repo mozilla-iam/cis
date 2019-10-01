@@ -23,7 +23,7 @@ venv:
 
 .install-test:
 		pip install .[test]
-		npm install dynalite
+		
 		npm install kinesalite
 		touch $@
 

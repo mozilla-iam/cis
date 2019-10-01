@@ -30,9 +30,22 @@ class TestAPI(object):
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["AWS_ACCESS_KEY_ID"] = "foo"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "foo"
         self.dynalite_host = "localhost"
         self.kinesalite_host = "localhost"
-        self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
+        self.dynaliteprocess = subprocess.Popen(
+            [
+                "/usr/sbin/java",
+                "-Djava.library.path=/opt/dynamodb_local/DynamoDBLocal_lib",
+                "-jar",
+                "/opt/dynamodb_local/DynamoDBLocal.jar",
+                "-inMemory",
+                "-port",
+                self.dynalite_port
+            ],
+            preexec_fn=os.setsid
+        )
         self.kinesaliteprocess = subprocess.Popen(["kinesalite", "--port", self.kinesalite_port], preexec_fn=os.setsid)
 
         from cis_profile_retrieval_service.common import seed
@@ -65,14 +78,6 @@ class TestAPI(object):
         api.app.testing = True
         self.app = api.app.test_client()
 
-    def test_that_we_seeded_the_table(self):
-        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
-        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
-        from cis_identity_vault.models import user
-
-        profile = user.Profile(self.table)
-        profiles = profile.all
-        assert len(profiles) >= 54
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_profiles_returns_a_list(self, fake_jwks):
@@ -97,7 +102,7 @@ class TestAPI(object):
             follow_redirects=True,
         )
 
-        assert len(paged_query.json["Items"]) == 24
+        assert len(paged_query.json["Items"]) == 25
         assert paged_query.json["nextPage"] is not None
         assert paged_query.json["nextPage"] != ""
         assert paged_query.json["Items"] != result.json["Items"]

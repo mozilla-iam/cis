@@ -41,6 +41,14 @@ class TestUsersDynalite(object):
         result = profile.create(self.vault_json_datastructure)
         assert result is not None
 
+    def test_delete_method(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        profile.create(self.vault_json_datastructure)
+        result = profile.delete(self.vault_json_datastructure)
+        assert result is not None
+
     def test_update_method(self):
         from cis_identity_vault.models import user
 

@@ -24,7 +24,18 @@ class TestVaultDynalite(object):
     def setup_class(self):
         self.dynalite_port = str(random.randint(32000, 34000))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
-        self.dynaliteprocess = subprocess.Popen(["dynalite", "--port", self.dynalite_port], preexec_fn=os.setsid)
+        self.dynaliteprocess = subprocess.Popen(
+            [
+                "/usr/sbin/java",
+                "-Djava.library.path=/opt/dynamodb_local/DynamoDBLocal_lib",
+                "-jar",
+                "/opt/dynamodb_local/DynamoDBLocal.jar",
+                "-inMemory",
+                "-port",
+                self.dynalite_port
+            ],
+            preexec_fn=os.setsid
+        )
 
     def test_create_using_dynalite(self):
         os.environ["CIS_ENVIRONMENT"] = "local"

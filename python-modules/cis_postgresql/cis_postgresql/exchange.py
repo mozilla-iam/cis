@@ -22,7 +22,9 @@ class ProfileBase(object):
 
     def _load_cis_profile(self):
         if self.cis_profile is None:
-            self.cis_profile = profile.User(user_structure_json=self.user_structure_json)
+            self.cis_profile = profile.User(
+                user_structure_json=self.user_structure_json
+            )
 
     @property
     def valid(self):
@@ -112,9 +114,11 @@ class BasePostgresqlMapper(ProfileBase):
     def to_postgres(self, profiles):
         rds_vault = user.ProfileRDS()
         results = []
-        for profile in profiles:
-            results.append(rds_vault.find_or_create(profile))
-        logger.info(f'{len(results)} profiles have been written to the postgresql identity vault.')
+        for this_profile in profiles:
+            results.append(rds_vault.find_or_create(this_profile))
+        logger.info(
+            f"{len(results)} profiles have been written to the postgresql identity vault."
+        )
         return results
 
 
