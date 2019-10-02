@@ -52,10 +52,6 @@ custom:
       production: 120
       testing: 120
       development: 120
-    AZ_RUNNER_SECRET_SSM_PATH:
-      production: /iam/cis/production/AZRunnerSecretAccessKey
-      testing: /iam/cis/testing/AZRunnerSecretAccessKey
-      development: /iam/cis/development/AZRunnerSecretAccessKey
 
 provider:
   name: aws
@@ -162,6 +158,6 @@ resources:
     BasicParameter:
       Type: "AWS::SSM::Parameter"
       Properties:
-        Name: ${self:custom.AZ_RUNNER_SECRET_SSM_PATH}
+        Name: ${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}/AZRunnerSecretAccessKey
         Type: "String"
         Value: !GetAtt AZRunnerAccessKey.SecretAccessKey
