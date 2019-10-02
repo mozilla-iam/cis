@@ -79,4 +79,3 @@ functions:
     timeout: 30
     layers:
       -  ${ssm:/iam/cis/${self:custom.mozilliansorgGroupsPublisherStage}/lambda_layer_arn}
-    reservedConcurrency: 1
