@@ -42,7 +42,7 @@ custom:
       testing: https://auth.allizom.org/.well-known/mozilla-iam
     BUCKET_ARN:
       production: arn:aws:s3:::cache.auth0.sso.mozilla.com
-      testing: arn:aws:s3:::cache.hris.auth0.sso.allizom.org
+      testing: arn:aws:s3:::cache.auth0.test.sso.allizom.org
       development: arn:aws:s3:::cache.auth0.dev.sso.allizom.org
     CIS_BUCKET_URL:
       production: cache.auth0.sso.mozilla.com
