@@ -273,17 +273,14 @@ class Auth0Publisher:
                 logger.critical("Could not find login method for user {}, skipping integration".format(p.user_id.value))
                 continue
 
-            # Should have fields (cannot be "None" or "")
-            tmp = u.get("given_name", u.get("name", u.get("family_name", u["email"])))
+            # Should have fields (cannot be "None" or "" but can be " ")
+            tmp = u.get("given_name", u.get("name", u.get("family_name", u.get("nickname", " "))))
             p.first_name.value = tmp
             p.first_name.metadata.display = "private"
             p.first_name.signature.publisher.name = "access_provider"
             p.update_timestamp("first_name")
 
-            tmp = u.get("family_name", None)
-            # We need a value no matter what for last name as well
-            if tmp is None:
-                tmp = p.first_name.value.split(" ")[-1]
+            tmp = u.get("family_name", " ")
             p.last_name.value = tmp
             p.last_name.metadata.display = "private"
             p.last_name.signature.publisher.name = "access_provider"

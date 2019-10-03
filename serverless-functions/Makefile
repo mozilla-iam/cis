@@ -29,7 +29,7 @@ clean-layer:
 
 .PHONY:layer
 layer:
-	@echo 'Looking for the layer MakeTarget?  It's no longer supported.  Only run inside of Docker.'
+	@echo "Looking for the layer MakeTarget?  It's no longer supported.  Only run inside of Docker."
 
 .PHONY: layer-codebuild
 layer-codebuild:
