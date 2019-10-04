@@ -446,7 +446,12 @@ class Profile(object):
 
     def _namespace_generator(self, attr, comparator):
         """Where should the comparison in the filter expression search the flat profile."""
-        if attr.split["."][1] in ["ldap", "mozilliansorg", "access_provider"]:
+        try:
+            full_attr = attr.split["."][1]
+        except TypeError:
+            full_attr = attr
+
+        if full_attr in ["ldap", "mozilliansorg", "access_provider"]:
             namespace = f"flat_profile.{attr}.{comparator}"
         else:
             namespace = f"flat_profile.{attr}"
