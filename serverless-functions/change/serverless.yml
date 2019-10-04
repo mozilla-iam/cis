@@ -145,7 +145,7 @@ functions:
     handler: handler.handle
     description: serverless-wsgi based endpoint to recieve profile changes.
     memorySize: 512
-    timeout: 15
+    timeout: 30
     events:
       - http: ANY /
       - http: ANY {proxy+}
