@@ -229,11 +229,11 @@ class TestUsersDynalite(object):
             assert record["active"]["BOOL"] is False
 
     def test_namespace_generator(self):
-        from cis_identity_vault.models import user
+        pass
+        # from cis_identity_vault.models import user
+        # profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
 
-        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
-
-        result = profile.
+        # result = profile.
         
     def test_find_by_any(self):
         from cis_identity_vault.models import user
