@@ -25,6 +25,7 @@ RUN pip install black
 RUN pip install tox
 RUN npm install serverless
 RUN npm install kinesalite
+RUN pip3 install docker-compose
 RUN mkdir -p /opt/dynamodb_local
 WORKDIR /opt/dynamodb_local
 RUN wget https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz
