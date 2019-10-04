@@ -240,7 +240,9 @@ class TestUsersDynalite(object):
             user_idx = user_idx + 1
             sample_user = json.loads(profile.all[user_idx].get("profile"))
 
-            while len(json.loads(profile.all[user_idx].get("profile")["access_information"]["ldap"]["values"].keys())) == 0:
+            while len(
+                json.loads(profile.all[user_idx].get("profile")["access_information"]["ldap"]["values"].keys())
+            ) == 0:
                 user_idx = user_idx + 1
 
             sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]

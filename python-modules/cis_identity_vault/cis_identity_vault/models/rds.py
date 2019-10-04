@@ -6,8 +6,7 @@ logger = logging.getLogger(__name__)
 
 try:
     from sqlalchemy import Column, Integer, Text
-    from sqlalchemy.dialects.postgresql import JSON, JSONB
-    from sqlalchemy.orm import sessionmaker
+    from sqlalchemy.dialects.postgresql import JSON
     from sqlalchemy.ext.declarative import declarative_base
 except ImportError as e:
     logger.error(f"Postgresql support not available.  Try installing psycopg2. Error: {e}")

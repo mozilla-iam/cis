@@ -24,14 +24,9 @@ from cis_profile import User
 # Import depends for interaction with the postgres database
 from cis_identity_vault.models import rds
 from cis_identity_vault import vault
-from sqlalchemy import create_engine
-from sqlalchemy import Integer as SAInteger
-from sqlalchemy import String as SAString
-from sqlalchemy import Text as SAText
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.dialects.postgresql import JSON
 
 
 logger = logging.getLogger(__name__)
@@ -362,7 +357,6 @@ class Profile(object):
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        pool = []
         # We're choosing to divide the table in 3, then...
         pool_size = 5
         users = []
