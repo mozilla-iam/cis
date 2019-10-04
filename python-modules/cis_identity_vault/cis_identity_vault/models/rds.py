@@ -10,7 +10,7 @@ try:
     from sqlalchemy.orm import sessionmaker
     from sqlalchemy.ext.declarative import declarative_base
 except ImportError as e:
-    logger.error(f'Postgresql support not available.  Try installing psycopg2. Error: {e}')
+    logger.error(f"Postgresql support not available.  Try installing psycopg2. Error: {e}")
 
 
 Base = declarative_base()

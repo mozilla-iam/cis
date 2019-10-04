@@ -19,6 +19,7 @@ from cis_identity_vault.models import user
 from cis_profile.common import MozillaDataClassification
 from cis_profile.common import DisplayLevel
 from cis_profile.profile import User
+from cis_profile_retrieval_service.advanced import v2UsersByAttrContains
 from cis_profile_retrieval_service.common import get_config
 from cis_profile_retrieval_service.common import initialize_vault
 from cis_profile_retrieval_service.common import get_dynamodb_client
@@ -411,6 +412,10 @@ api.add_resource(v2UserByPrimaryUsername, "/v2/user/primary_username/<string:pri
 
 # Support batch retrieval of all user ids that are in the system. Make publishing "Smart".
 api.add_resource(v2UsersByAny, "/v2/users/id/all")
+
+# Support per attribute query
+if config("advanced_search", namespace="person_api", default="false") == "true":
+    api.add_resource(v2UsersByAttrContains, "/v2/users/id/all/by_attribute_contains")
 
 
 @app.route("/v2")

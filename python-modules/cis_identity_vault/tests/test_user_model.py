@@ -16,6 +16,28 @@ class TestUsersDynalite(object):
         self.vault_client = vault.IdentityVault()
         self.vault_client.connect()
         self.vault_client.find_or_create()
+        self.boto_session = boto3.session.Session(region_name="us-east-1")
+        self.dynamodb_resource = self.boto_session.resource("dynamodb")
+        self.dynamodb_client = self.boto_session.client("dynamodb")
+        self.table = self.dynamodb_resource.Table("purple-identity-vault")
+
+        for x in range(0, 50):  # Must generate 50 users to test paginator
+            user_profile = FakeUser().as_dict()
+            user_profile["active"]["value"] = True
+            uuid = user_profile["uuid"]["value"]
+            vault_json_datastructure = {
+                "id": user_profile.get("user_id").get("value"),
+                "user_uuid": uuid,
+                "primary_email": user_profile.get("primary_email").get("value"),
+                "primary_username": user_profile.get("primary_username").get("value"),
+                "sequence_number": "12345678",
+                "profile": json.dumps(user_profile),
+                "active": True,
+            }
+            from cis_identity_vault.models import user
+
+            profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+            profile.create(vault_json_datastructure)
 
         self.user_profile = FakeUser().as_dict()
         self.user_profile["active"]["value"] = True
@@ -29,10 +51,6 @@ class TestUsersDynalite(object):
             "profile": json.dumps(self.user_profile),
             "active": True,
         }
-        self.boto_session = boto3.session.Session(region_name="us-east-1")
-        self.dynamodb_resource = self.boto_session.resource("dynamodb")
-        self.dynamodb_client = self.boto_session.client("dynamodb")
-        self.table = self.dynamodb_resource.Table("purple-identity-vault")
 
     def test_create_method(self):
         from cis_identity_vault.models import user
@@ -209,3 +227,56 @@ class TestUsersDynalite(object):
         result = profile.all_filtered(connection_method="email", active=False)
         for record in result:
             assert record["active"]["BOOL"] is False
+
+    def test_find_by_any(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        user_idx = 0
+        try:
+            sample_user = json.loads(profile.all[user_idx].get("profile"))
+            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
+        except IndexError:  # Cause sometimes the faker doesn't give an LDAP user.
+            user_idx = user_idx + 1
+            sample_user = json.loads(profile.all[user_idx].get("profile"))
+            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
+        sample_hris_attr = sample_user["access_information"]["hris"]["values"]["employee_id"]
+
+        # Search by ldap group and return only user IDs
+        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group)
+        assert len(result) > 0
+        for this_profile in result["users"]:
+            assert this_profile.get("id") is not None
+
+        # Search by ldap group and return user_ids with profiles
+        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group, full_profiles=True)
+
+        assert len(result) > 0
+        # Ensure that our data retrieved contains full profiles
+        for this_profile in result["users"]:
+            assert this_profile["id"] is not None
+            assert this_profile["profile"]["last_name"]["value"] is not None
+
+        # Search by ldap group inverse match and return user_ids with profiles
+        result = profile.find_by_any(
+            attr="not_access_information.ldap", comparator=sample_ldap_group, full_profiles=True
+        )
+
+        assert result.get("nextPage") is not None
+
+        # Follow the nextPage token and ask for the second page.
+        paged_result = profile.find_by_any(
+            attr="not_access_information.ldap",
+            comparator=sample_ldap_group,
+            full_profiles=True,
+            next_page=result.get("nextPage"),
+        )
+
+        assert paged_result.get("users") is not None
+
+        # Test a search against an hris group
+        result = profile.find_by_any(
+            attr="access_information.hris.employee_id", comparator=sample_hris_attr, full_profiles=False
+        )
+
+        assert result is not None

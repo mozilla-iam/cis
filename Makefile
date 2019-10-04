@@ -33,17 +33,17 @@ deploy-shell: login-to-ecr
 
 .PHONY: build
 build:
-	$(MAKE) -C serverless-functions layer-codebuild STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions layer-codebuild STAGE=$(STAGE)
 
 .PHONY: release
 release:
-	$(MAKE) -C serverless-functions deploy-change-service STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-ldap-publisher STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-person-api STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-notifications STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-curator STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
-	$(MAKE) -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-change-service STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-ldap-publisher STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-person-api STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-notifications STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-curator STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
+	docker-compose run tester make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
 
 .PHONY: build-ci-container
 build-ci-container:
@@ -56,7 +56,7 @@ push-ci-container:
 .PHONY: test
 test:
 	docker-compose build
-	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -j4 test-tox'
+	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -C python-modules -j4 test-tox'
 
 .PHONY: developer-shell
 developer-shell:

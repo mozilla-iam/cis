@@ -101,9 +101,7 @@ class IdentityVault(object):
         if self._get_cis_environment() not in ["production", "development", "testing"]:
             result = self.dynamodb_client.create_table(
                 TableName=self._generate_table_name(),
-                KeySchema=[
-                    {"AttributeName": "id", "KeyType": "HASH"},
-                ],
+                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
                 AttributeDefinitions=[
                     # auth0 user_id
                     {"AttributeName": "id", "AttributeType": "S"},
@@ -157,9 +155,7 @@ class IdentityVault(object):
         else:
             result = self.dynamodb_client.create_table(
                 TableName=self._generate_table_name(),
-                KeySchema=[
-                    {"AttributeName": "id", "KeyType": "HASH"},
-                ],
+                KeySchema=[{"AttributeName": "id", "KeyType": "HASH"}],
                 AttributeDefinitions=[
                     # auth0 user_id
                     {"AttributeName": "id", "AttributeType": "S"},

@@ -16,7 +16,8 @@ services:
       context: ci/
       dockerfile: Dockerfile
     volumes:
-      - ./python-modules:/var/task
+      - ./:/var/task
+      - ~/.aws:/root/.aws
     networks:
       - default
     depends_on:
