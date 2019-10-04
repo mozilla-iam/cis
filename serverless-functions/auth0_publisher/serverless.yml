@@ -42,7 +42,7 @@ custom:
       testing: https://auth.allizom.org/.well-known/mozilla-iam
     BUCKET_ARN:
       production: arn:aws:s3:::cache.auth0.sso.mozilla.com
-      testing: arn:aws:s3:::cache.hris.auth0.sso.allizom.org
+      testing: arn:aws:s3:::cache.auth0.test.sso.allizom.org
       development: arn:aws:s3:::cache.auth0.dev.sso.allizom.org
     CIS_BUCKET_URL:
       production: cache.auth0.sso.mozilla.com
@@ -158,6 +158,6 @@ resources:
     BasicParameter:
       Type: "AWS::SSM::Parameter"
       Properties:
-        Name: "AZRunnerSecretAccessKey"
+        Name: ${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}/AZRunnerSecretAccessKey
         Type: "String"
         Value: !GetAtt AZRunnerAccessKey.SecretAccessKey

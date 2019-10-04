@@ -30,7 +30,7 @@ clean-layer:
 
 .PHONY:layer
 layer:
-	@echo 'Looking for the layer MakeTarget?  It's no longer supported.  Only run inside of Docker.'
+	@echo "Looking for the layer MakeTarget?  It's no longer supported.  Only run inside of Docker."
 
 .PHONY: layer-codebuild
 layer-codebuild:
@@ -141,3 +141,4 @@ deploy-postgresql-replicator:
 	cd $(ROOT_DIR)/postgresql_replicator && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
+

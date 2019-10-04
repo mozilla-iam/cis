@@ -76,7 +76,6 @@ functions:
           batchSize: 10
     description: mozilliansorg-groups-publisher for synchronizing mozilliansorg access groups to identity vault.
     memorySize: 512
-    timeout: 30
+    timeout: 900
     layers:
       -  ${ssm:/iam/cis/${self:custom.mozilliansorgGroupsPublisherStage}/lambda_layer_arn}
-    reservedConcurrency: 1
