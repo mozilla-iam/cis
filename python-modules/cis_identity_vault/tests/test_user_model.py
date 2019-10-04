@@ -234,7 +234,7 @@ class TestUsersDynalite(object):
         # profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
 
         # result = profile.
-        
+
     def test_find_by_any(self):
         from cis_identity_vault.models import user
 
