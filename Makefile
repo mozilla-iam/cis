@@ -56,7 +56,7 @@ push-ci-container:
 .PHONY: test
 test:
 	docker-compose build
-	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -C python-modules -j4 test-tox'
+	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -C python-modules -j$(nproc) test-tox'
 
 .PHONY: developer-shell
 developer-shell:
