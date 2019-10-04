@@ -14,7 +14,7 @@ extras = {"test": test_requirements}
 
 setup(
     name="cis_logger",
-    version="0.0.01",
+    version="0.0.1",
     author="Andrew Krug",
     author_email="akrug@mozilla.com",
     description="Mozilla IAM logger wrapper.",

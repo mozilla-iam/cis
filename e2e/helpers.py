@@ -121,11 +121,7 @@ class Configuration(object):
             else:
                 if attr != "schema" and attr in complex_structures:
                     for k in temp_profile[attr]:
-                        if attr == "access_information":
-                            successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
-
-                        if attr == "staff_information" or attr == "identities":
-                            successful_random_publisher = random.choice(publisher_rules[condition][attr])
+                        successful_random_publisher = random.choice(publisher_rules[condition][attr][k])
 
                         temp_profile[attr][k]["signature"]["publisher"]["name"] = successful_random_publisher
                         self.u = profile.User(user_structure_json=temp_profile)
