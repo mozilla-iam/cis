@@ -92,7 +92,7 @@ functions:
     events:
       - stream: 
           arn: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
-          batchSize: 1000
+          batchSize: 100
           startingPosition: LATEST
           enabled: true
     layers:

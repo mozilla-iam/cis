@@ -77,7 +77,7 @@ functions:
     handler: handler.handle
     description: serverless-wsgi based endpoint to retrieve profiles aka person-api.
     memorySize: 3000
-    timeout: 900
+    timeout: 30
     events:
       - http: ANY /
       - http: ANY {proxy+}
