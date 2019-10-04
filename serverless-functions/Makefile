@@ -14,6 +14,7 @@ LAYER_NAME		:= cis
 STAGE			:= ${STAGE}
 STAGE			:= $(if $(STAGE),$(STAGE),testing)
 AWS_REGION		:= us-west-2
+SLS_PATH		:= /node_modules/.bin
 
 .PHONY:all
 all:
@@ -78,7 +79,7 @@ deploy-change-service:
 	cd $(ROOT_DIR)/change && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:test-change-service
 test-change-service:
@@ -89,28 +90,28 @@ deploy-ldap-publisher:
 	cd $(ROOT_DIR)/ldap_publisher && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-hris-publisher
 deploy-hris-publisher:
 	cd $(ROOT_DIR)/hris_publisher && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-mozilliansorg-groups-publisher
 deploy-mozilliansorg-groups-publisher:
 	cd $(ROOT_DIR)/mozilliansorg_groups_publisher && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-auth0-publisher
 deploy-auth0-publisher:
 	cd $(ROOT_DIR)/auth0_publisher && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-stream-processor
 deploy-stream-processor:
@@ -121,22 +122,23 @@ deploy-person-api:
 	cd $(ROOT_DIR)/profile_retrieval && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-notifications
 deploy-notifications:
 	cd $(ROOT_DIR)/webhook_notifier && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-curator
 deploy-curator:
 	cd $(ROOT_DIR)/identity_vault_curator && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY:deploy-postgresql-replicator
 deploy-postgresql-replicator:
 	cd $(ROOT_DIR)/postgresql_replicator && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
-	sls deploy --region $(AWS_REGION) --stage $(STAGE)
+	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
+

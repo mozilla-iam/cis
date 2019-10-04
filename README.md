@@ -6,13 +6,23 @@ CIS is the Mozilla IAM Change Integration Service.
 
 See [PersonAPI](docs/PersonAPI.md) docs for querying the API.
 
+## Pre-Requisites 
+
+* Docker
+* Docker-Compose
+* Make
+
 ## Build & Deploy (manual)
+
+_Note: All development is now driven via docker-compose._
 
 Available environment/stages are: `development`, `testing`, `production` (see below for more information)
 ```
 $ make build STAGE=development
 $ make release STAGE=development
 ```
+
+For all the following commands first run `make developer-shell`.  This starts a docker-container with all the dependencies as well as shared volumes with the source.
 
 Or you can deploy a single function as such, instead of running `make release` (note that you may still want to run
 `make build` which both builds and upload the Lambda layers:

@@ -24,14 +24,9 @@ from cis_profile import User
 # Import depends for interaction with the postgres database
 from cis_identity_vault.models import rds
 from cis_identity_vault import vault
-from sqlalchemy import create_engine
-from sqlalchemy import Integer as SAInteger
-from sqlalchemy import String as SAString
-from sqlalchemy import Text as SAText
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
-from sqlalchemy.dialects.postgresql import JSON
 
 
 logger = logging.getLogger(__name__)
@@ -176,9 +171,7 @@ class Profile(object):
         return res
 
     def _delete_without_transaction(self, user_profile):
-        return self.table.delete_item(Key={
-            "id": user_profile["id"],
-        })
+        return self.table.delete_item(Key={"id": user_profile["id"]})
 
     def create_batch(self, list_of_profiles):
         sequence_numbers = []
@@ -364,7 +357,6 @@ class Profile(object):
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        pool = []
         # We're choosing to divide the table in 3, then...
         pool_size = 5
         users = []
@@ -436,6 +428,113 @@ class Profile(object):
         else:
             response = self.table.scan(Limit=limit)
         return response
+
+    def _projection_expression_generator(self, full_profiles):
+        """Determines what attributes are returned from a scan."""
+        if full_profiles:
+            projection_expression = "id, profile"
+        else:
+            projection_expression = "id"
+
+        return projection_expression
+
+    def _namespace_generator(self, attr, comparator):
+        """Where should the comparison in the filter expression search the flat profile."""
+        try:
+            full_attr = attr.split["."][1]
+        except TypeError:
+            full_attr = attr
+
+        if full_attr in ["ldap", "mozilliansorg", "access_provider"]:
+            namespace = f"flat_profile.{attr}.{comparator}"
+        else:
+            namespace = f"flat_profile.{attr}"
+        return namespace
+
+    def _filter_expression_generator(self, attr, namespace, comparator, operator):
+        """Return a filter expression based on the attr to compare to."""
+        structures_using_nulls = ["access_information.ldap", "access_information.mozilliansorg"]
+        structures_using_key_values = ["identities", "languages", "staff_information"]
+
+        if attr in structures_using_nulls:
+            if operator == "eq":
+                filter_expression = Attr(namespace).eq(None)
+            elif operator == "not":
+                filter_expression = Attr(namespace).not_exists()
+            else:
+                pass
+        elif attr in structures_using_key_values or attr.startswith(
+            "access_information.hris"
+        ):  # hris is a weird edge case here.
+            if operator == "eq":
+                filter_expression = Attr(namespace).eq(comparator)
+            elif operator == "not":
+                filter_expression = Attr(namespace).ne(comparator)
+            else:
+                pass
+        else:
+            if operator == "eq":
+                filter_expression = Attr(namespace).eq(attr)
+            elif operator == "not":
+                filter_expression = Attr(namespace).ne(attr)
+            else:
+                pass
+
+        return filter_expression
+
+    def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key):
+        page_size_limit = 25
+
+        if last_evaluated_key:
+            results = self.table.scan(
+                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
+                ProjectionExpression=self._projection_expression_generator(full_profiles),
+                ExclusiveStartKey=last_evaluated_key,
+                Limit=page_size_limit,
+            )
+        else:
+            results = self.table.scan(
+                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
+                ProjectionExpression=self._projection_expression_generator(full_profiles),
+                Limit=page_size_limit,
+            )
+        return results
+
+    def _attr_to_operator(self, attr):
+        """Parse the attribute to determine if this is a not operation."""
+        if attr.startswith("not"):
+            return "not"
+        else:
+            return "eq"
+        # In future support and operations through better parsing.
+
+    def _remove_op_from_attr(self, attr):
+        """Removes condition from attribute."""
+        if attr.startswith("not"):
+            return attr.split("not_")[1]
+        else:
+            return attr
+
+    def find_by_any(self, attr, comparator, next_page=None, full_profiles=False):
+        """Allow query on any attribute serialized to the flat profile."""
+        users = []
+        operator = self._attr_to_operator(attr)
+        attr = self._remove_op_from_attr(attr)
+        namespace = self._namespace_generator(attr, comparator)
+        results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page)
+
+        for user in results.get("Items"):
+            if full_profiles:
+                users.append(
+                    dict(
+                        id=user["id"],
+                        profile=json.loads(user["profile"]),  # JSONify dumped profile struct.
+                        nextPage=results.get("LastEvaluatedKey"),
+                    )
+                )
+            else:
+                users.append(dict(id=user["id"]))
+        return dict(users=users, nextPage=results.get("LastEvaluatedKey"))
 
 
 class ProfileRDS(object):
@@ -531,7 +630,7 @@ class ProfileRDS(object):
         except NoResultFound:
             user = None
         return user
-    
+
     def find_or_create(self, user_profile):
         if self.find(user_profile) is not None:
             result = self.update(user_profile).user_id

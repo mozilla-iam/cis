@@ -54,4 +54,3 @@ RUN tar xzvf psycopg2-2.8.3.tar.gz
 RUN cp -ar /postgresql-11.1/lib/* /usr/lib64/
 WORKDIR /var/task
 RUN echo "export PATH=$PATH:/node_modules/.bin:/postgresql-11.1/bin" >> ~/.bashrc
-

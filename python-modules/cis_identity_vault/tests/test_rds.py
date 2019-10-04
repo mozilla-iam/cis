@@ -26,7 +26,7 @@ class TestRDS(object):
         # v.delete()
 
     def test_db_create(self):
-        os.environ['CIS_IDENTITY_VAULT'] = 'purple-unicorn'
+        os.environ["CIS_IDENTITY_VAULT"] = "purple-unicorn"
         from cis_identity_vault import vault
 
         v = vault.RelationalIdentityVault()
