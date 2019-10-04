@@ -4,6 +4,16 @@ echo "Begin deploy of the Mozilla Change Integration Service version 2."
 echo "$CODEBUILD_WEBHOOK_TRIGGER"
 make login-to-ecr
 
+mkdir -p ~/.aws/
+echo '[default]' >> ~/.aws/credentials
+echo aws_access_key_id = $AWS_ACCESS_KEY_ID >> ~/.aws/credentials
+echo aws_secret_access_key = $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
+echo aws_session_token = $AWS_SECRET_ACCESS_KEY >> ~/.aws/credentials
+
+echo '[default]' >> ~/.aws/config
+echo 'region = us-west-2' >> ~/.aws/config
+echo 'output = json' >> ~/.aws/config
+
 if [[ "branch/master" == "$CODEBUILD_WEBHOOK_TRIGGER" ]]
 	then
 		echo "Deploying the development environment."
