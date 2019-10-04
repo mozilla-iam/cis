@@ -437,7 +437,6 @@ class Profile(object):
 
     def _projection_expression_generator(self, full_profiles):
         """Determines what attributes are returned from a scan."""
-
         if full_profiles:
             projection_expression = "id, profile"
         else:
@@ -455,9 +454,7 @@ class Profile(object):
 
     def _filter_expression_generator(self, attr, namespace, comparator, operator):
         """Return a filter expression based on the attr to compare to."""
-
         structures_using_nulls = ["access_information.ldap", "access_information.mozilliansorg"]
-
         structures_using_key_values = ["identities", "languages", "staff_information"]
 
         if attr in structures_using_nulls:
@@ -522,11 +519,9 @@ class Profile(object):
     def find_by_any(self, attr, comparator, next_page=None, full_profiles=False):
         """Allow query on any attribute serialized to the flat profile."""
         users = []
-        print(f"{attr}, {comparator}")
         operator = self._attr_to_operator(attr)
         attr = self._remove_op_from_attr(attr)
         namespace = self._namespace_generator(attr, comparator)
-        print(namespace)
         results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page)
 
         for user in results.get("Items"):
