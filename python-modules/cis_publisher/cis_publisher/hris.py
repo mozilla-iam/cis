@@ -440,7 +440,7 @@ class HRISPublisher:
             else:
                 p.staff_information.staff.value = False
             p.staff_information.staff.signature.publisher.name = "hris"
-            p.staff_information.staff.metadata.display = "staff"
+            p.staff_information.staff.metadata.display = "public"
             p.staff_information.staff.metadata.last_modified = ts_now
 
             p.staff_information.title.value = hruser.get("businessTitle")
