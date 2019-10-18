@@ -1,4 +1,6 @@
 import logging
+import time
+import json
 import requests
 from cis_notifications import common
 from cis_notifications import secret
@@ -71,8 +73,19 @@ class Event(object):
         [return] Dictionary of status codes by publisher.
         """
         if not self.access_token:
-            authzero = self._get_authzero_client()
-            self.access_token = authzero.exchange_for_access_token()
+            self.access_token_dict = json.loads(self.secret_manager.secretmgr("az_access_token"))
+            # Auth0 will return in how long the token expires. We want "when", so do that
+            # Note that if we have no expiration, we'll make sure we're expired in the past already
+            self.access_token_dict["exp"] = int(self.access_token_dict.get("expires_in", -99999999999)) + time.time()
+            # 10s leeway
+            if int(self.access_token_dict["exp"]) < time.time() - 10:
+                logger.info("Access token has expired, refreshing")
+                authzero = self._get_authzero_client()
+                self.access_token_dict = authzero.exchange_for_access_token()
+                self.secret_manager.secretmgr_store("az_access_token", self.access_token_dict)
+            else:
+                logger.info("Re-using cached access token")
+            self.access_token = self.access_token_dict["access_token"]
 
         if notification != {}:
             rp_urls = self.config(
