@@ -82,6 +82,7 @@ class Event(object):
                 logger.info("Access token has expired, refreshing")
                 authzero = self._get_authzero_client()
                 self.access_token_dict = authzero.exchange_for_access_token()
+                self.access_token_dict["exp"] = time.time() + int(self.access_token_dict("expires_in"), 60)
                 self.secret_manager.secretmgr_store("az_access_token", self.access_token_dict)
             else:
                 logger.info("Re-using cached access token")
