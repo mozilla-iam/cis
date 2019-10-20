@@ -118,12 +118,12 @@ functions:
     handler: handler.handle
     events:
       - schedule:
-          rate: rate(24 hours)
+          rate: rate(6 hours)
           enabled: true
     description: auth0-publisher for synchronizing auth0 user data to identity vault.
     memorySize: 3008 # This is HUGE because cpu allocation is tied to memorySize.
     timeout: 900
-    reservedConcurrency: 10 # Limit to something sane in case of function storms
+    reservedConcurrency: 50 # Limit to something sane in case of function storms
     layers:
       -  ${ssm:/iam/cis/${self:custom.auth0PublisherStage}/lambda_layer_arn}
 resources:
