@@ -1,4 +1,5 @@
 import boto3
+import base64
 import http.client
 import json
 import time
@@ -105,7 +106,8 @@ class Manager(object):
                 secret_str = get_secret_value_response["SecretString"]
                 try:
                     secret = json.load(secret_str)
-                except:
+                except Exception as e:
+                    logger.debug("json.load of secret failed, passing trying directly ({})".format(e))
                     secret = secret_str
             else:
                 secret = base64.b64decode(get_secret_value_response["SecretBinary"])
