@@ -49,8 +49,12 @@ custom:
       testing: cache.auth0.test.sso.allizom.org
       development: cache.auth0.dev.sso.allizom.org
     CIS_AUTHZERO_CACHE_TIME_SECONDS:
-      production: 120
-      testing: 120
+      # We cache testing and production for a long time so that we do not storm auth0 with calls
+      # 3700s is slightly over an hour
+      # Note that single user updates are not cached, so that auth0 user updates can be quick. Only complete database
+      # refreshes are cached for a long time
+      production: 3700
+      testing: 3700
       development: 120
 
 provider:
@@ -114,11 +118,12 @@ functions:
     handler: handler.handle
     events:
       - schedule:
-          rate: rate(15 minutes)
+          rate: rate(6 hours)
           enabled: true
     description: auth0-publisher for synchronizing auth0 user data to identity vault.
     memorySize: 3008 # This is HUGE because cpu allocation is tied to memorySize.
     timeout: 900
+    reservedConcurrency: 50 # Limit to something sane in case of function storms
     layers:
       -  ${ssm:/iam/cis/${self:custom.auth0PublisherStage}/lambda_layer_arn}
 resources:

@@ -1,4 +1,5 @@
 import boto3
+import base64
 import http.client
 import json
 import time
@@ -34,7 +35,7 @@ class AuthZero(object):
         for a large batch of users.
 
         Returns:
-            [type] -- [an access token base64 encoded JWT.]
+            [type] -- [a dict with an access token base64 encoded JWT.]
         """
         logger.info(
             "Attempting to exchange for access token with: {}".format(self.authzero_tenant),
@@ -53,7 +54,7 @@ class AuthZero(object):
         conn.request("POST", "/oauth/token", payload, headers)
         res = conn.getresponse()
         data = json.loads(res.read())
-        return data["access_token"]
+        return data
 
 
 class Manager(object):
@@ -62,6 +63,55 @@ class Manager(object):
         self.region_name = self.config("secret_manager_ssm_region", namespace="cis", default="us-west-2")
         self.boto_session = boto3.session.Session(region_name=self.region_name)
         self.ssm_client = self.boto_session.client("ssm")
+        self.secretsmanager_client = self.boto_session.client("secretsmanager")
+
+    def secretmgr_store(self, secret_name, data):
+        """[summary]
+        Stores a secret to the secretsmanager store
+        Returns:
+            [type] -- [A dict if successful, None otherwise]
+        """
+        result = None
+        try:
+            namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+            logger.debug("Secretsmanager storing secret: {}/{}".format(namespace, secret_name))
+            result = self.secretsmanager_client.update_secret(
+                SecretId="{}/{}".format(namespace, secret_name), SecretString=json.dumps(data)
+            )
+        except ClientError as e:
+            logger.error("Failed to store secret in secretsmanager due to: {}".format(e))
+        return result
+
+    def secretmgr(self, secret_name):
+        """[summary]
+        Fetch a secret from the secretmanager store (not SSM).
+        Returns:
+            [type] -- [The result of the query (binary, str or dict) or None in the case the secret does not exist.]
+        """
+        secret = None
+
+        try:
+            namespace = self.config("secret_manager_ssm_path", namespace="cis", default="/iam")
+            logger.debug("Secretsmanager loading secret: {}/{}".format(namespace, secret_name))
+            get_secret_value_response = self.secretsmanager_client.get_secret_value(
+                SecretId="{}/{}".format(namespace, secret_name)
+            )
+        except ClientError as e:
+            logger.error("Failed to fetch secret from secretsmanager due to: {}".format(e))
+        else:
+            logger.debug("Secrets were returned from the secretsmanager")
+            # Decrypts secret using the associated KMS CMK.
+            # Depending on whether the secret is a string or binary, one of these fields will be populated.
+            if "SecretString" in get_secret_value_response:
+                secret_str = get_secret_value_response["SecretString"]
+                try:
+                    secret = json.load(secret_str)
+                except Exception as e:
+                    logger.debug("json.load of secret failed, passing trying directly ({})".format(e))
+                    secret = secret_str
+            else:
+                secret = base64.b64decode(get_secret_value_response["SecretBinary"])
+        return secret
 
     def secret(self, secret_name):
         """[summary]

@@ -40,6 +40,7 @@ class Auth0Publisher:
         self.az_blacklisted_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
         self.az_whitelisted_connections = ["email", "github", "google-oauth2", "firefoxaccounts"]
         self.az_users = None
+        self.user_ids_only = None
 
     def get_s3_cache(self):
         """
@@ -59,7 +60,11 @@ class Auth0Publisher:
             # Recent file?
             for o in objects["Contents"]:
                 if o["Key"] == "cache.json" and o["LastModified"] < recent:
-                    logger.info("S3 cache too old, not using")
+                    logger.info(
+                        "S3 cache too old, not using (file is {} vs max accepted date {} ie data is cached for {}s)".format(
+                            o["LastModified"], recent, cache_time
+                        )
+                    )
                     return None
             response = s3.get_object(Bucket=bucket, Key="cache.json")
             data = response["Body"].read()
@@ -113,24 +118,28 @@ class Auth0Publisher:
             # event, so this (the auth0 publisher that is) function needs to be reasonably fast to avoid delays when
             # provisioning users
             # So first, remove all known users from the requested list
-            user_ids_to_process = list(set(self.get_az_user_ids()) - set(all_cis_users))
+            user_ids_to_process_set = set(self.get_az_user_ids()) - set(all_cis_users)
+            az_user_ids_set = set(self.get_az_user_ids())
             # Add blocked users so that they get deactivated
+            logger.info(
+                "Converting filtering list, size of user_ids_to_process {}".format(len(user_ids_to_process_set))
+            )
             for u in self.az_users:
-                if u["user_id"] in self.get_az_user_ids():
-                    if "blocked" in u.keys() and u["blocked"] is True:
-                        user_ids_to_process.append(u["user_id"])
+                if u["user_id"] in az_user_ids_set:
+                    if ("blocked" in u.keys()) and (u["blocked"] is True):
+                        user_ids_to_process_set.add(u["user_id"])
 
             logger.info(
                 "After filtering out known CIS users/in auth0 blocked users, we will process {} users".format(
-                    len(user_ids_to_process)
+                    len(user_ids_to_process_set)
                 )
             )
-            self.fan_out(publisher, chunk_size, user_ids_to_process)
+            self.fan_out(publisher, chunk_size, list(user_ids_to_process_set))
         else:
             # Don't cache auth0 list if we're just getting a single user, so that we get the most up to date data
             # and because it's pretty fast for a single user
             if len(user_ids) == 1:
-                os.environ["CIS_AUTHZERO_CACHE_TIME_SECONDS"] = 0
+                os.environ["CIS_AUTHZERO_CACHE_TIME_SECONDS"] = "0"
                 logger.info("CIS_AUTHZERO_CACHE_TIME_SECONDS was set to 0 (caching disabled) for this run")
             self.process(publisher, user_ids)
 
@@ -139,10 +148,13 @@ class Auth0Publisher:
         Extract a list of user_ids from a dict of auth0 users
         return: list of user_ids
         """
-        user_ids_only = []
+        if self.user_ids_only is not None:
+            return self.user_ids_only
+
+        self.user_ids_only = []
         for u in self.fetch_az_users():
-            user_ids_only.append(u["user_id"])
-        return user_ids_only
+            self.user_ids_only.append(u["user_id"])
+        return self.user_ids_only
 
     def fetch_az_users(self, user_ids=None):
         """
@@ -181,7 +193,7 @@ class Auth0Publisher:
         # (nginx - 8kb by default)
         if user_ids and len(user_ids) > 6:
             logger.warning(
-                "Cannot query the requested number of user_ids from auth0, query would be too large."
+                "Cannot query the requested number of user_ids from auth0, query would be too large. "
                 "Querying all user_ids instead."
             )
             user_ids = None
@@ -208,6 +220,7 @@ class Auth0Publisher:
         retries = 15
         backoff = 20
         for p in range(0, 9999):
+            tmp = None
             try:
                 tmp = auth0.users.list(page=p, per_page=100, fields=az_fields, q=az_query)["users"]
                 logger.debug("Requesting auth0 user list, at page {}".format(p))
