@@ -81,5 +81,6 @@ functions:
     events:
       - http: ANY /
       - http: ANY {proxy+}
+          cacheControl: 'max-age=600, s-maxage=600, proxy-revalidate'
     layers:
       -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/lambda_layer_arn}
