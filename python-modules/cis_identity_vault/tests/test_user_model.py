@@ -229,67 +229,8 @@ class TestUsersDynalite(object):
             assert record["active"]["BOOL"] is False
 
     def test_namespace_generator(self):
-        pass
-        # from cis_identity_vault.models import user
-        # profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
-
-        # result = profile.
-
-    def test_find_by_any(self):
         from cis_identity_vault.models import user
-
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
-        user_idx = 0
-        try:
-            sample_user = json.loads(profile.all[user_idx].get("profile"))
-            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
-        except IndexError:  # Cause sometimes the faker doesn't give an LDAP user.
-            user_idx = user_idx + 1
-            sample_user = json.loads(profile.all[user_idx].get("profile"))
 
-            while len(
-                json.loads(profile.all[user_idx].get("profile")["access_information"]["ldap"]["values"].keys())
-            ) == 0:
-                user_idx = user_idx + 1
-
-            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
-        sample_hris_attr = sample_user["access_information"]["hris"]["values"]["employee_id"]
-
-        # Search by ldap group and return only user IDs
-        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group)
-        assert len(result) > 0
-        for this_profile in result["users"]:
-            assert this_profile.get("id") is not None
-
-        # Search by ldap group and return user_ids with profiles
-        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group, full_profiles=True)
-
-        assert len(result) > 0
-        # Ensure that our data retrieved contains full profiles
-        for this_profile in result["users"]:
-            assert this_profile["id"] is not None
-            assert this_profile["profile"]["last_name"]["value"] is not None
-
-        # Search by ldap group inverse match and return user_ids with profiles
-        result = profile.find_by_any(
-            attr="not_access_information.ldap", comparator=sample_ldap_group, full_profiles=True
-        )
-
-        # assert result.get("nextPage") is not None
-
-        # Follow the nextPage token and ask for the second page.
-        paged_result = profile.find_by_any(
-            attr="not_access_information.ldap",
-            comparator=sample_ldap_group,
-            full_profiles=True,
-            next_page=result.get("nextPage"),
-        )
-
-        assert paged_result.get("users") is not None
-
-        # Test a search against an hris group
-        result = profile.find_by_any(
-            attr="access_information.hris.employee_id", comparator=sample_hris_attr, full_profiles=False
-        )
-
-        assert result is not None
+        result = profile._namespace_generator('access_information.ldap', 'foo')
+        assert result == 'flat_profile.access_information.ldap.foo'
