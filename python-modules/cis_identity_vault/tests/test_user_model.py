@@ -230,7 +230,8 @@ class TestUsersDynalite(object):
 
     def test_namespace_generator(self):
         from cis_identity_vault.models import user
+
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
 
-        result = profile._namespace_generator('access_information.ldap', 'foo')
-        assert result == 'flat_profile.access_information.ldap.foo'
+        result = profile._namespace_generator("access_information.ldap", "foo")
+        assert result == "flat_profile.access_information.ldap.foo"
