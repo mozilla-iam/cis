@@ -1,6 +1,5 @@
 import logging
 import time
-import json
 import requests
 from cis_notifications import common
 from cis_notifications import secret
@@ -75,7 +74,7 @@ class Event(object):
         # Not in-memory access token?
         if not self.access_token:
             # Load whatever is in our secrets
-            self.access_token_dict = json.loads(self.secret_manager.secretmgr("az_access_token"))
+            self.access_token_dict = self.secret_manager.secretmgr("az_access_token")
 
             # Check if what we had in secrets is still valid!
             # This includes 10s leeway for clock sync issues

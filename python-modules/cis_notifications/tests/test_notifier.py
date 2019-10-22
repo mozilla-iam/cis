@@ -16,7 +16,7 @@ class TestNotifier(object):
             object {[object]} -- [Takes an instance of the testNotifier object and asserts about the behavior.]
         """
 
-        mock_authzero.return_value = '{"access_token": "dinopark", "expires_in": 86400}'
+        mock_authzero.return_value = {"access_token": "dinopark", "expires_in": 86400}
         mock_secrets.return_value = "is_pretty_cool"
         mock_secretsmgr.return_value = mock_authzero.return_value
         mock_secretsmgr_store.return_value = None
