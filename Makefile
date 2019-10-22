@@ -61,6 +61,13 @@ test:
 	docker-compose build
 	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -C python-modules -j$(nproc) test-tox'
 
+
+.PHONE: test-module
+test-module:
+	docker-compose build
+	@echo "Testing single module: $(MODULE)"
+	docker-compose run --rm tester bash -c '/root/utils/fake-creds.sh && source /root/.bashrc && make -C python-modules/$(MODULE) -j$(nproc) test-tox'
+
 .PHONY: developer-shell
 developer-shell:
 	@echo 'launching docker compose environment with all the bells and whistles'
