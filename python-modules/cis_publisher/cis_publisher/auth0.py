@@ -61,9 +61,8 @@ class Auth0Publisher:
             for o in objects["Contents"]:
                 if o["Key"] == "cache.json" and o["LastModified"] < recent:
                     logger.info(
-                        "S3 cache too old, not using (file is {} vs max accepted date {} ie data is cached for {}s)".format(
-                            o["LastModified"], recent, cache_time
-                        )
+                        "S3 cache too old, not using (file is {} vs max accepted date {}"
+                        "ie data is cached for {}s)".format(o["LastModified"], recent, cache_time)
                     )
                     return None
             response = s3.get_object(Bucket=bucket, Key="cache.json")
