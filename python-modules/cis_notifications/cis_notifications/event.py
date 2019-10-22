@@ -82,7 +82,7 @@ class Event(object):
             logger.info("Access token has expired, refreshing")
             authzero = self._get_authzero_client()
             self.access_token_dict = authzero.exchange_for_access_token()
-            self.access_token_dict["exp"] = time.time() + int(self.access_token_dict("expires_in"), 60)
+            self.access_token_dict["exp"] = time.time() + int(self.access_token_dict.get("expires_in", 60))
             self.secret_manager.secretmgr_store("az_access_token", self.access_token_dict)
             self.access_token = self.access_token_dict["access_token"]
         else:
