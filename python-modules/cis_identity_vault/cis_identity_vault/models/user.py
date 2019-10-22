@@ -370,7 +370,7 @@ class Profile(object):
         Returns a dict of all users filtered by query_filter
         """
         # We're choosing to divide the table in 3, then...
-        pool_size = 5
+        pool_size = 20
         return trio.run(self._resultifier, pool_size, connection_method, active)
 
     def find_or_create(self, user_profile):

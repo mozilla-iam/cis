@@ -83,7 +83,7 @@ class Auth0Publisher:
         s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
         logger.info("Wrote S3 cache file")
 
-    def publish(self, user_ids=None, chunk_size=30):
+    def publish(self, user_ids=None, chunk_size=100):
         """
         Glue to create or fetch cis_profile.User profiles for this publisher
         Then pass everything over to the Publisher class
