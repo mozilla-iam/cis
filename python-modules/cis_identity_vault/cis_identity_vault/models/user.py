@@ -11,8 +11,10 @@ user_profile must be passed to this in the form required by dynamodb
 """
 import json
 import logging
-import trio
 import uuid
+import time
+import threading
+import queue
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.types import TypeDeserializer
@@ -315,7 +317,7 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    async def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
+    def _get_segment(self, results, segment=0, total_segments=10, connection_method=None, active=None):
         logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
@@ -352,26 +354,40 @@ class Profile(object):
             )
             users.extend(response["Items"])
 
-        return users
-
-    async def _resultifier(self, pool_size, connection_method, active):
-        users = []
-        segment_result = None
-        for x in range(0, pool_size):
-            segment_result = await self._get_segment(
-                segment=x, total_segments=pool_size, connection_method=connection_method, active=active
-            )
-            users.extend(segment_result)
-        return users
+        results.put(users)
 
     def all_filtered(self, connection_method=None, active=None):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
+        results = queue.Queue()
+        threads = []
+        max_threads = 10
+        users = []
+        segment_result = None
         # We're choosing to divide the table in 3, then...
         pool_size = 20
-        return trio.run(self._resultifier, pool_size, connection_method, active)
+
+        for x in range(0, pool_size):
+            thread_args = (results, x, pool_size, connection_method, active)
+            threads.append(threading.Thread(target=self._get_segment, args=thread_args))
+            threads[-1].start()
+
+            num_threads = len(threading.enumerate())
+            while num_threads >= max_threads:
+                time.sleep(1)
+                num_threads = len(threading.enumerate())
+                logger.debug("Too many concurrent threads, waiting a bit...")
+
+        logger.debug("Waiting for threads to terminate...")
+        for t in threads:
+            t.join()
+        logger.debug("Retrieving results from the queue...")
+        while not results.empty():
+            users.extend(results.get())
+            results.task_done()
+        return users
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
