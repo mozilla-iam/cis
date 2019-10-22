@@ -2,7 +2,21 @@ service: profile-retrieval
 plugins:
   - serverless-domain-manager
   - serverless-plugin-tracing
+  - serverless-api-stage
 custom:
+  stageSettings:
+    CacheClusterEnabled: true
+    CacheClusterSize: '0.5'
+    MethodSettings:
+      - CachingEnabled: true
+      - HttpMethod: GET
+        ResourcePath: "/"
+        CachingEnabled: true
+        CacheTtlInSeconds: 15
+      - HttpMethod: GET
+        ResourcePath: "/{proxy+}"
+        CachingEnabled: true
+        CacheTtlInSeconds: 15
   profileRetrievalStage: ${opt:stage, self:provider.stage}
   profileRetrievalEnvironment:
     CIS_ENVIRONMENT:

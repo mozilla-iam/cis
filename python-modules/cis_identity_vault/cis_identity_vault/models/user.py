@@ -11,6 +11,7 @@ user_profile must be passed to this in the form required by dynamodb
 """
 import json
 import logging
+import trio
 import uuid
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
@@ -314,7 +315,7 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
+    async def _get_segment(self, segment=0, total_segments=10, connection_method=None, active=None):
         logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
@@ -350,6 +351,17 @@ class Profile(object):
                 ExclusiveStartKey=response["LastEvaluatedKey"],
             )
             users.extend(response["Items"])
+
+        return users
+
+    async def _resultifier(self, pool_size, connection_method, active):
+        users = []
+        segment_result = None
+        for x in range(0, pool_size):
+            segment_result = await self._get_segment(
+                segment=x, total_segments=pool_size, connection_method=connection_method, active=active
+            )
+            users.extend(segment_result)
         return users
 
     def all_filtered(self, connection_method=None, active=None):
@@ -358,16 +370,8 @@ class Profile(object):
         Returns a dict of all users filtered by query_filter
         """
         # We're choosing to divide the table in 3, then...
-        pool_size = 5
-        users = []
-        for x in range(pool_size):
-            # XXX TBD async this with asyncio
-            users.extend(
-                self._get_segment(
-                    segment=x, total_segments=pool_size, connection_method=connection_method, active=active
-                )
-            )
-        return users
+        pool_size = 20
+        return trio.run(self._resultifier, pool_size, connection_method, active)
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
@@ -441,8 +445,9 @@ class Profile(object):
     def _namespace_generator(self, attr, comparator):
         """Where should the comparison in the filter expression search the flat profile."""
         try:
-            full_attr = attr.split["."][1]
-        except TypeError:
+            full_attr = attr.split(".")[1]
+        except TypeError as e:
+            logger.error(f"Problem splitting path due to: {e}", extra={"error": e})
             full_attr = attr
 
         if full_attr in ["ldap", "mozilliansorg", "access_provider"]:

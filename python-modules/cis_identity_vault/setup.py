@@ -6,7 +6,17 @@ from setuptools import setup, find_packages
 with open("README.md", "r") as fh:
     long_description = fh.read()
 
-requirements = ["everett", "everett[ini]", "configobj", "boto", "boto3", "botocore", "sqlalchemy", "sqlalchemy_utils"]
+requirements = [
+    "everett",
+    "everett[ini]",
+    "configobj",
+    "boto",
+    "boto3",
+    "botocore",
+    "sqlalchemy",
+    "sqlalchemy_utils",
+    "trio",
+]
 
 # psycopg2 is also required.  Need to figure out how to ensure this always works.
 # note: psycopg2 is always built from source presently.
