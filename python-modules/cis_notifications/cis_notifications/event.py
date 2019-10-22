@@ -72,17 +72,20 @@ class Event(object):
 
         [return] Dictionary of status codes by publisher.
         """
+        # Not in-memory access token?
         if not self.access_token:
+            # Load whatever is in our secrets
             self.access_token_dict = json.loads(self.secret_manager.secretmgr("az_access_token"))
-            # Auth0 will return in how long the token expires. We want "when", so do that
-            # Note that if we have no expiration, we'll make sure we're expired in the past already
-            self.access_token_dict["exp"] = int(self.access_token_dict.get("expires_in", -99999999999)) + time.time()
-            # 10s leeway
+
+            # Check if what we had in secrets is still valid!
+            # This includes 10s leeway for clock sync issues
             if int(self.access_token_dict["exp"]) < time.time() - 10:
                 logger.info("Access token has expired, refreshing")
                 authzero = self._get_authzero_client()
                 self.access_token_dict = authzero.exchange_for_access_token()
-                self.access_token_dict["exp"] = time.time() + int(self.access_token_dict("expires_in"), 60)
+                # Auth0 gives us the difference (expires_in) not a time stamp, so we need to calculate when the token
+                # expires. On failure to read expires_in, just make it expire in 60s as fallback
+                self.access_token_dict["exp"] = time.time() + int(self.access_token_dict.get("expires_in"), 60)
                 self.secret_manager.secretmgr_store("az_access_token", self.access_token_dict)
             else:
                 logger.info("Re-using cached access token")
