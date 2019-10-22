@@ -363,7 +363,7 @@ class Profile(object):
         """
         results = queue.Queue()
         threads = []
-        max_threads = 10
+        max_threads = 50
         users = []
         segment_result = None
         # We're choosing to divide the table in 3, then...
