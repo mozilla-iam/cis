@@ -78,7 +78,7 @@ class Event(object):
             # Note that if we have no expiration, we'll make sure we're expired in the past already
             self.access_token_dict["exp"] = int(self.access_token_dict.get("exp", -99999999999))
         # 10s leeway
-        if not self.access_token or int(self.access_token_dict["exp"]) < time.time() - 10:
+        if int(self.access_token_dict["exp"]) < time.time() - 10:
             logger.info("Access token has expired, refreshing")
             authzero = self._get_authzero_client()
             self.access_token_dict = authzero.exchange_for_access_token()
@@ -86,6 +86,8 @@ class Event(object):
             self.secret_manager.secretmgr_store("az_access_token", self.access_token_dict)
             self.access_token = self.access_token_dict["access_token"]
         else:
+            if not self.access_token:
+                self.access_token = self.access_token_dict["access_token"]
             logger.info("Re-using cached access token")
 
         if notification != {}:
