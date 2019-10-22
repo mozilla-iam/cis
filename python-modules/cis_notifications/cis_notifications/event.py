@@ -77,8 +77,10 @@ class Event(object):
             self.access_token_dict = self.secret_manager.secretmgr("az_access_token")
 
             # Check if what we had in secrets is still valid!
-            # This includes 10s leeway for clock sync issues
-            if float(self.access_token_dict.get("exp", 60.0)) < time.time() - 10:
+            # This includes 10s leeway for clock sync issues and 15min (900s) for max-lambda function time.
+            # Since tokens are normally valid for 86400s (1 day) that should accomodate for all cases. If these were to
+            # be less than 15min for any reason, it would simply bypass the cache
+            if float(self.access_token_dict.get("exp", 60.0)) < time.time() - 910:
                 logger.info("Access token has expired, refreshing")
                 authzero = self._get_authzero_client()
                 self.access_token_dict = authzero.exchange_for_access_token()
