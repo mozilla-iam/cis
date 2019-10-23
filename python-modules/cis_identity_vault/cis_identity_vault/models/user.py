@@ -318,6 +318,7 @@ class Profile(object):
         return users
 
     def _get_segment(self, results, segment=0, total_segments=10, connection_method=None, active=None):
+        users = []
         logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
 
         if connection_method:
@@ -363,7 +364,7 @@ class Profile(object):
         """
         results = queue.Queue()
         threads = []
-        max_threads = 10
+        max_threads = 50
         users = []
         segment_result = None
         # We're choosing to divide the table in 3, then...

@@ -107,10 +107,15 @@ class Manager(object):
                 try:
                     secret = json.load(secret_str)
                 except Exception as e:
-                    logger.debug("json.load of secret failed, passing trying directly ({})".format(e))
-                    secret = secret_str
+                    logger.debug(
+                        "json.load of secret failed, wrapping secret string into a dict to look like JSON ({})".format(
+                            e
+                        )
+                    )
+                    secret = {"secret": secret_str}
             else:
-                secret = base64.b64decode(get_secret_value_response["SecretBinary"])
+                logger.debug("Secret is stored in binary, decoding and wrappign it into a dict to look like JSON")
+                secret = {"secret": base64.b64decode(get_secret_value_response["SecretBinary"])}
         return secret
 
     def secret(self, secret_name):
