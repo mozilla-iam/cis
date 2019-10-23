@@ -48,6 +48,17 @@ release:
 	docker-compose run tester make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
 	docker-compose run tester make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
 
+.PHONY: release-no-docker
+release-no-docker:
+	@echo "releasing the functions using codebuild serverless"
+	make -C serverless-functions deploy-change-service STAGE=$(STAGE)
+	make -C serverless-functions deploy-ldap-publisher STAGE=$(STAGE)
+	make -C serverless-functions deploy-person-api STAGE=$(STAGE)
+	make -C serverless-functions deploy-notifications STAGE=$(STAGE)
+	make -C serverless-functions deploy-curator STAGE=$(STAGE)
+	make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
+	make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
+
 .PHONY: build-ci-container
 build-ci-container:
 	cd ci && docker build . -t 320464205386.dkr.ecr.us-west-2.amazonaws.com/custom-codebuild-cis-ci
@@ -65,3 +76,7 @@ test:
 developer-shell:
 	@echo 'launching docker compose environment with all the bells and whistles'
 	docker-compose run tester
+
+.PHONY: install-serverless
+install-serverless:
+	npm install --global serverless
