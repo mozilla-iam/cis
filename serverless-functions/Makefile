@@ -132,7 +132,6 @@ deploy-person-api:
 	cd $(ROOT_DIR)/profile_retrieval && \
 	npm install serverless-domain-manager --save-dev serverless-plugin-tracing && \
 	npm install serverless-domain-manager --save-dev && \
-	npm install serverless-api-stage --save-dev && \
 	$(SLS_PATH)/sls deploy --region $(AWS_REGION) --stage $(STAGE)
 
 .PHONY: deploy-notifications
