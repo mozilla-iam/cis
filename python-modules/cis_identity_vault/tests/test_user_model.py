@@ -234,6 +234,22 @@ class TestUsersDynalite(object):
         for record in result['users']:
             assert record["active"]["BOOL"] is False
 
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        result = profile.all_filtered(connection_method="email", active=None, limit=5000)
+        assert len(result['users']) > 0
+        logger.debug(f"The result of the filtered query is: {result}")
+
+        result = profile.all_filtered(connection_method="email", active=True, limit=5000)
+        assert len(result['users']) > 0
+        for record in result['users']:
+            assert record["active"]["BOOL"] is True
+
+        result = profile.all_filtered(connection_method="email", active=False, limit=5000)
+        for record in result['users']:
+            assert record["active"]["BOOL"] is False
+
     def test_namespace_generator(self):
         from cis_identity_vault.models import user
 

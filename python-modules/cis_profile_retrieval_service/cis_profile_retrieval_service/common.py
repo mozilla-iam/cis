@@ -1,5 +1,6 @@
 import boto3
 import botocore
+import logging
 import os
 from botocore.stub import Stubber
 from everett.ext.inifile import ConfigIniEnv
@@ -9,6 +10,9 @@ from json import dumps
 from cis_profile.fake_profile import batch_create_fake_profiles
 from cis_identity_vault.models import user
 from cis_identity_vault.vault import IdentityVault
+
+
+logger = logging.getLogger(__name__)
 
 
 def get_config():
@@ -73,6 +77,7 @@ def seed(number_of_fake_users=100):
         user_profile = user.Profile(table, None, False)
 
         if len(user_profile.all) > 0:
+            logger.info("Identity vault is already seeded.  Passing on the additiona of users.")
             pass
         else:
             identities = batch_create_fake_profiles(1337, number_of_fake_users)
@@ -103,5 +108,4 @@ def seed(number_of_fake_users=100):
                     "sequence_number": "1234567890",
                     "profile": dumps(identity),
                 }
-
                 user_profile.create(identity_vault_data_structure)

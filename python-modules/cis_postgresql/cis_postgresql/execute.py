@@ -15,15 +15,7 @@ def raw_query(conn, sql_statement):
     return result.fetchall()
 
 
-def sql_alchemy_select(
-    engine,
-    attr,
-    comparator,
-    stringified_operator,
-    start=None,
-    end=None,
-    full_profiles=False,
-):
+def sql_alchemy_select(engine, attr, comparator, stringified_operator, start=None, end=None, full_profiles=False):
     """[Execute a sqlalchemy style filter by against the database.]
 
     Arguments:
@@ -49,17 +41,11 @@ def sql_alchemy_select(
     if attr == "active":
         if stringified_operator == "contains":
             result = session.query(rds.People).filter(
-                rds.People.profile[("active", "value")].astext.cast(
-                    sqlalchemy.types.BOOLEAN
-                )
-                == bool(comparator)
+                rds.People.profile[("active", "value")].astext.cast(sqlalchemy.types.BOOLEAN) == bool(comparator)
             )
         elif stringified_operator == "not":
             result = session.query(rds.People).filter(
-                rds.People.profile[("active", "value")].astext.cast(
-                    sqlalchemy.types.BOOLEAN
-                )
-                != bool(comparator)
+                rds.People.profile[("active", "value")].astext.cast(sqlalchemy.types.BOOLEAN) != bool(comparator)
             )
         elif stringified_operator == "empty":
             result = session.query(rds.People).filter(
@@ -73,9 +59,7 @@ def sql_alchemy_select(
         if access_provider == "ldap":
             if stringified_operator == "contains":
                 result = session.query(rds.People).filter(
-                    rds.People.profile[
-                        ("access_information", "ldap", "values")
-                    ].astext.contains(comparator)
+                    rds.People.profile[("access_information", "ldap", "values")].astext.contains(comparator)
                 )
             elif stringified_operator == "not":
                 # Future feature
@@ -88,9 +72,7 @@ def sql_alchemy_select(
         elif access_provider == "mozilliansorg":
             if stringified_operator == "contains":
                 result = session.query(rds.People).filter(
-                    rds.People.profile[
-                        ("access_information", "mozilliansorg", "values")
-                    ].astext.contains(comparator)
+                    rds.People.profile[("access_information", "mozilliansorg", "values")].astext.contains(comparator)
                 )
             elif stringified_operator == "not":
                 # Future feature
@@ -111,9 +93,7 @@ def sql_alchemy_select(
     elif attr.startswith == "staff_information.":
         if stringified_operator == "contains":
             result = session.query(rds.People).filter(
-                rds.People.profile[("staff_information", "values")].astext.contains(
-                    comparator
-                )
+                rds.People.profile[("staff_information", "values")].astext.contains(comparator)
             )
         elif stringified_operator == "not":
             # Future feature

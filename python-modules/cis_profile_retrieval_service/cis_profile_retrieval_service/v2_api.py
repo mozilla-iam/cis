@@ -244,13 +244,14 @@ class v2UsersByAny(Resource):
             active = False
 
         all_users = identity_vault.all_filtered(
-            connection_method=args.get("connectionMethod"), active=active, limit=5000, next_page=args.get("nextPage", None)
+            connection_method=args.get("connectionMethod"),
+            active=active,
+            limit=5000,
+            next_page=args.get("nextPage", None),
         )
-
-        logger.info(all_users)
         # Convert vault data to cis-profile-like data format
         all_users_cis = []
-        for cuser in all_users['users']:
+        for cuser in all_users["users"]:
             all_users_cis.append(
                 {
                     "uuid": cuser["user_uuid"]["S"],
@@ -261,7 +262,7 @@ class v2UsersByAny(Resource):
             )
 
         logger.info("Returning {} users".format(len(all_users_cis)))
-        return jsonify(dict(users=all_users_cis, nextPage=all_users.get("nextPage")))
+        return dict(users=all_users_cis, nextPage=all_users.get("nextPage"))
 
 
 def getUser(id, find_by):
@@ -421,6 +422,7 @@ api.add_resource(v2UsersByAny, "/v2/users/id/all")
 # Support per attribute query
 if config("advanced_search", namespace="person_api", default="false") == "true":
     api.add_resource(v2UsersByAttrContains, "/v2/users/id/all/by_attribute_contains")
+
 
 @app.route("/v2")
 def index():

@@ -342,7 +342,7 @@ class Profile(object):
                 FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
                 ExclusiveStartKey=response["LastEvaluatedKey"],
-                Limit=limit
+                Limit=limit,
             )
             users = response.get("Items", [])
         else:
@@ -351,9 +351,10 @@ class Profile(object):
                 ProjectionExpression=projection_expression,
                 FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
-                Limit=limit
+                Limit=limit,
             )
             users = response.get("Items", [])
+
         return dict(users=users, nextPage=response.get("LastEvaluatedKey"))
 
     def find_or_create(self, user_profile):

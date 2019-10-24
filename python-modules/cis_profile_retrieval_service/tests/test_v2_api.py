@@ -71,7 +71,7 @@ class TestAPI(object):
             aws_secret_access_key="sk",
             endpoint_url="http://{}:{}".format(self.dynalite_host, self.dynalite_port),
         )
-        seed(number_of_fake_users=100)
+        seed(number_of_fake_users=50)
         self.table = self.dynamodb_resource.Table("local-identity-vault")
         from cis_profile_retrieval_service import v2_api as api
 
@@ -89,7 +89,7 @@ class TestAPI(object):
         result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
 
         assert result.json is not None
-        assert len(result.json["Items"]) == 25
+        assert len(result.json["Items"]) > 20
         assert result.json["nextPage"] is not None
         assert result.json["nextPage"] != ""
 
@@ -101,7 +101,7 @@ class TestAPI(object):
             follow_redirects=True,
         )
 
-        assert len(paged_query.json["Items"]) == 25
+        assert len(paged_query.json["Items"]) > 20
         assert paged_query.json["nextPage"] is not None
         assert paged_query.json["nextPage"] != ""
         assert paged_query.json["Items"] != result.json["Items"]
@@ -482,9 +482,8 @@ class TestAPI(object):
             follow_redirects=True,
         )
         assert isinstance(result.json["users"], list)
-        assert isinstance(result.json["users"][0], dict)
         assert len(result.json["users"]) > 0
-        assert len(result.json) == 1  # One disabled user is always created in the seed.
+        assert len(result.json["users"]) == 1  # One disabled user is always created in the seed.
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_returning_all_filter_on_active_true(self, fake_jwks):
