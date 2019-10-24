@@ -224,6 +224,7 @@ class v2UsersByAny(Resource):
         parser = reqparse.RequestParser()
         parser.add_argument("connectionMethod", type=str)
         parser.add_argument("active", type=str)
+        parser.add_argument("nextPage", type=str)
 
         args = parser.parse_args()
 
@@ -242,8 +243,10 @@ class v2UsersByAny(Resource):
         if args.get("active") is not None and args.get("active").lower() == "false":
             active = False
 
-        all_users = identity_vault.all_filtered(connection_method=args.get("connectionMethod"), active=active, limit=5000)
-        print(all_users)
+        all_users = identity_vault.all_filtered(
+            connection_method=args.get("connectionMethod"), active=active, limit=5000, next_page=args.get("nextPage", None)
+        )
+
         logger.info(all_users)
         # Convert vault data to cis-profile-like data format
         all_users_cis = []
