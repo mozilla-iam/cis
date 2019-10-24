@@ -23,7 +23,7 @@ class TestRDS(object):
         v = vault.RelationalIdentityVault()
         v.create()
         assert v.table() is not None
-        # v.delete()
+        v.delete()
 
     def test_db_create(self):
         os.environ["CIS_IDENTITY_VAULT"] = "purple-unicorn"
@@ -31,6 +31,7 @@ class TestRDS(object):
 
         v = vault.RelationalIdentityVault()
         v.find_or_create()
+        v.delete()
 
     def test_user_create(self):
         from cis_identity_vault import vault
@@ -42,6 +43,7 @@ class TestRDS(object):
         res = u.create(user_profile=self.user_profile)
         u.delete(user_profile=self.user_profile)
         assert res is not None
+        v.delete()
 
     def test_user_find(self):
         from cis_identity_vault import vault
@@ -58,6 +60,7 @@ class TestRDS(object):
         assert negative_search_result is None
         u.delete(user_profile=self.user_profile)
         assert res is not None
+        v.delete()
 
     def test_user_delete(self):
         from cis_identity_vault import vault

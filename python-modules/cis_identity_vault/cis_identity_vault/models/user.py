@@ -317,78 +317,44 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    def _get_segment(self, results, segment=0, total_segments=10, connection_method=None, active=None):
-        users = []
-        logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
-
-        if connection_method:
-            expression_attr = {":id": {"S": connection_method}}
-            filter_expression = "begins_with(id, :id)"
-
-        if connection_method and active is not None:
-            logger.info("Asking for only the users with active state: {}".format(active))
-            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
-            filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
-
-        try:
-            response = self.client.scan(
-                TableName=self.table.name,
-                TotalSegments=total_segments,
-                Segment=segment,
-                ProjectionExpression="id, primary_email, user_uuid, active",
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-            )
-            users = response.get("Items", [])
-        except ClientError as e:
-            logger.warning("ClientError during client table scan: {}".format(e))
-
-        while "LastEvaluatedKey" in response:
-            response = self.client.scan(
-                TableName=self.table.name,
-                TotalSegments=total_segments,
-                Segment=segment,
-                ProjectionExpression="id, primary_email, user_uuid, active",
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-                ExclusiveStartKey=response["LastEvaluatedKey"],
-            )
-            users.extend(response["Items"])
-
-        results.put(users)
-
-    def all_filtered(self, connection_method=None, active=None):
+    def all_filtered(self, connection_method=None, active=None, next_page=None, limit=5000):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        results = queue.Queue()
-        threads = []
-        max_threads = 50
         users = []
-        segment_result = None
-        # We're choosing to divide the table in 3, then...
-        pool_size = 20
+        projection_expression = "id, primary_email, user_uuid, active"
 
-        for x in range(0, pool_size):
-            thread_args = (results, x, pool_size, connection_method, active)
-            threads.append(threading.Thread(target=self._get_segment, args=thread_args))
-            threads[-1].start()
+        if connection_method:
+            logger.debug("No active filter passed.  Assuming we need all users.")
+            expression_attr = {":id": {"S": connection_method}}
+            filter_expression = "begins_with(id, :id)"
 
-            num_threads = len(threading.enumerate())
-            while num_threads >= max_threads:
-                time.sleep(1)
-                num_threads = len(threading.enumerate())
-                logger.debug("Too many concurrent threads, waiting a bit...")
+        if connection_method and active is not None:
+            logger.debug("Asking for only the users with active state: {}".format(active))
+            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
+            filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
-        logger.debug("Waiting for threads to terminate...")
-        for t in threads:
-            t.join()
-        logger.debug("Retrieving results from the queue...")
-        while not results.empty():
-            users.extend(results.get())
-            results.task_done()
-        return users
+        if next_page is not None:
+            response = self.client.scan(
+                TableName=self.table.name,
+                ProjectionExpression=projection_expression,
+                FilterExpression=filter_expression,
+                ExpressionAttributeValues=expression_attr,
+                ExclusiveStartKey=response["LastEvaluatedKey"],
+                Limit=limit
+            )
+            users = response.get("Items", [])
+        else:
+            response = self.client.scan(
+                TableName=self.table.name,
+                ProjectionExpression=projection_expression,
+                FilterExpression=filter_expression,
+                ExpressionAttributeValues=expression_attr,
+                Limit=limit
+            )
+            users = response.get("Items", [])
+        return dict(users=users, nextPage=response.get("LastEvaluatedKey"))
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])

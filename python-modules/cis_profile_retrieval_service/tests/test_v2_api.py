@@ -464,9 +464,9 @@ class TestAPI(object):
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
-        assert isinstance(result.json, list)
-        assert isinstance(result.json[0], dict)
-        assert len(result.json) > 0
+        assert isinstance(result.json["users"], list)
+        assert isinstance(result.json["users"][0], dict)
+        assert len(result.json["users"]) > 0
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_returning_all_filter_on_active_false(self, fake_jwks):
@@ -481,8 +481,9 @@ class TestAPI(object):
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
-        assert isinstance(result.json, list)
-        assert isinstance(result.json[0], dict)
+        assert isinstance(result.json["users"], list)
+        assert isinstance(result.json["users"][0], dict)
+        assert len(result.json["users"]) > 0
         assert len(result.json) == 1  # One disabled user is always created in the seed.
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
@@ -498,6 +499,6 @@ class TestAPI(object):
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
-        assert isinstance(result.json, list)
-        assert isinstance(result.json[0], dict)
-        assert len(result.json) > 0
+        assert isinstance(result.json["users"], list)
+        assert isinstance(result.json["users"][0], dict)
+        assert len(result.json["users"]) > 0
