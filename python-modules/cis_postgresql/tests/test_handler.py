@@ -86,6 +86,15 @@ class TestEventHandler(object):
         self.event_gen = EventGenerator()
         self.events_and_users = self.event_gen.events_and_users()
 
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
+
+        q = vault.RelationalIdentityVault()
+        q.session()
+        q.create()
+
     def seed_fake_users(self):
         from cis_identity_vault.models import user
 
@@ -211,6 +220,7 @@ class TestEventHandler(object):
         self.v.find_or_create()
         self.v.tag_vault()
         self.seed_fake_users()
+
         exch = exchange.DynamoStream()
         user_ids = None
         profiles = exch.profiles(user_ids)
