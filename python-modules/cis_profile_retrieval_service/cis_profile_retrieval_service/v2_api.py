@@ -231,17 +231,18 @@ class v2UsersByAny(Resource):
         logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
         if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
-
-        if transactions == "true":
+        elif transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
-
         if args.get("active") is None or args.get("active").lower() == "true":
             active = True  # Support returning only active users by default.
 
-        if args.get("active") is not None and args.get("active").lower() == "false":
+        elif args.get("active") is not None and args.get("active").lower() == "false":
             active = False
+        else:
+            # Default
+            active = True
 
         all_users = identity_vault.all_filtered(
             connection_method=args.get("connectionMethod"),
