@@ -341,7 +341,7 @@ class Profile(object):
                 ProjectionExpression=projection_expression,
                 FilterExpression=filter_expression,
                 ExpressionAttributeValues=expression_attr,
-                ExclusiveStartKey=response["LastEvaluatedKey"],
+                ExclusiveStartKey=next_page,
                 Limit=limit,
             )
             users = response.get("Items", [])
