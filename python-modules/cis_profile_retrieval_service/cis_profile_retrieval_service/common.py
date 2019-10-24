@@ -1,4 +1,5 @@
 import boto3
+import botocore
 import os
 from botocore.stub import Stubber
 from everett.ext.inifile import ConfigIniEnv
@@ -40,15 +41,18 @@ def get_table_resource():
 def get_dynamodb_client():
     region = config("dynamodb_region", namespace="cis", default="us-west-2")
     environment = config("environment", namespace="cis", default="local")
+    client_config = botocore.config.Config(max_pool_connections=50)
 
     if environment == "local":
         dynalite_host = config("dynalite_host", namespace="cis", default="localhost")
         dynalite_port = config("dynalite_port", namespace="cis", default="4567")
         session = Stubber(boto3.session.Session(region_name=region)).client
-        client = session.client("dynamodb", endpoint_url="http://{}:{}".format(dynalite_host, dynalite_port))
+        client = session.client(
+            "dynamodb", endpoint_url="http://{}:{}".format(dynalite_host, dynalite_port), config=client_config
+        )
     else:
         session = boto3.session.Session(region_name=region)
-        client = session.client("dynamodb")
+        client = session.client("dynamodb", config=client_config)
 
     return client
 
