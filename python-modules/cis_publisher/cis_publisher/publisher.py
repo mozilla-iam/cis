@@ -268,6 +268,9 @@ class Publish:
         return self.all_known_profiles
 
     def get_known_cis_users(self, include_inactive=False):
+        return self.get_known_cis_userids_paginated(include_inactive)
+
+    def get_known_cis_userids_paginated(self, include_inactive=False):
         """
         Call CIS Person API and return a list of existing user ids and/or emails
         @include_inactive: bool include inactive users (active=False) in the results
@@ -280,16 +283,27 @@ class Publish:
         logger.info("Requesting CIS Person API for a list of existing users for method {}".format(self.login_method))
         qs = "/v2/users/id/all?connectionMethod={}&active=True".format(self.login_method)
         access_token = self._get_authzero_token()
-        response = self._request_get(
-            self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
-        )
-        if not response.ok:
-            logger.error(
-                "Failed to query CIS Person API: {}{} response: {}".format(self.api_url_person, qs, response.text)
+        nextPage = ""
+
+        while nextPage is not None:
+            if nextPage != "":
+                real_qs = "{}?nextPage={}".format(qs, nextPage)
+            else:
+                real_qs = qs
+            response = self._request_get(
+                self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
             )
-            raise PublisherError("Failed to query CIS Person API", response.text)
-        self.known_cis_users = response.json()
-        logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
+            if not response.ok:
+                logger.error(
+                    "Failed to query CIS Person API: {}{} response: {}".format(
+                        self.api_url_person, real_qs, response.text
+                    )
+                )
+                raise PublisherError("Failed to query CIS Person API", response.text)
+            response_json = response.json()
+            for p in response_json["users"]:
+                self.known_cis_users = p
+            nextPage = response_json.get("nextPage")
 
         if include_inactive:
             logger.info(
@@ -298,19 +312,27 @@ class Publish:
                 )
             )
             qs = "/v2/users/id/all?connectionMethod={}&active=False".format(self.login_method)
-            response = self._request_get(
-                self.api_url_person, qs, headers={"authorization": "Bearer {}".format(access_token)}
-            )
-            if not response.ok:
-                logger.error(
-                    "Failed to query CIS Person API for inactive users: {}{} response: {}".format(
-                        self.api_url_person, qs, response.text
-                    )
+            while nextPage is not None:
+                if nextPage != "":
+                    real_qs = "{}?nextPage={}".format(qs, nextPage)
+                else:
+                    real_qs = qs
+                response = self._request_get(
+                    self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
                 )
-                raise PublisherError("Failed to query CIS Person API", response.text)
-            inactive_known_cis_users = response.json()
-            logger.info("Got {} additional users known to CIS that are inactive".format(len(inactive_known_cis_users)))
-            self.known_cis_users.extend(inactive_known_cis_users)
+                if not response.ok:
+                    logger.error(
+                        "Failed to query CIS Person API: {}{} response: {}".format(
+                            self.api_url_person, real_qs, response.text
+                        )
+                    )
+                    raise PublisherError("Failed to query CIS Person API", response.text)
+                response_json = response.json()
+                for p in response_json["users"]:
+                    self.known_cis_users = p
+                nextPage = response_json.get("nextPage")
+
+        logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
 
         # Also save copies that are easier to query directly
         for u in self.known_cis_users:
