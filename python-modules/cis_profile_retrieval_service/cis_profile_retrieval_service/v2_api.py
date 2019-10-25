@@ -229,26 +229,23 @@ class v2UsersByAny(Resource):
         args = parser.parse_args()
 
         logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
+        next_page = args.get("nextPage")
+        if next_page is not None:
+            next_page = load_dirty_json(next_page)
+
         if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
         elif transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
         logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
-        if args.get("active") is None or args.get("active").lower() == "true":
-            active = True  # Support returning only active users by default.
-
-        elif args.get("active") is not None and args.get("active").lower() == "false":
+        if args.get("active") is not None and args.get("active").lower() == "false":
             active = False
         else:
-            # Default
-            active = True
+            active = True  # Support returning only active users by default.
 
         all_users = identity_vault.all_filtered(
-            connection_method=args.get("connectionMethod"),
-            active=active,
-            limit=5000,
-            next_page=args.get("nextPage", None),
+            connection_method=args.get("connectionMethod"), active=active, limit=25, next_page=next_page
         )
         # Convert vault data to cis-profile-like data format
         all_users_cis = []
