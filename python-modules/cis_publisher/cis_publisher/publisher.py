@@ -302,7 +302,7 @@ class Publish:
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
             for p in response_json["users"]:
-                self.known_cis_users = p
+                self.known_cis_users.extend(p)
             nextPage = response_json.get("nextPage")
 
         if include_inactive:
@@ -330,7 +330,7 @@ class Publish:
                 response_json = response.json()
                 print(response_json)
                 for p in response_json["users"]:
-                    self.known_cis_users = p
+                    self.known_cis_users.extend(p)
                 nextPage = response_json.get("nextPage")
 
         logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
