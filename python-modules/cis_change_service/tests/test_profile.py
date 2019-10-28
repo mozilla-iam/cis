@@ -38,11 +38,12 @@ class TestProfile(object):
                 "/opt/dynamodb_local/DynamoDBLocal.jar",
                 "-inMemory",
                 "-port",
-                self.dynalite_port
+                self.dynalite_port,
             ],
-            preexec_fn=os.setsid
+            preexec_fn=os.setsid,
         )
         from cis_identity_vault import vault
+
         v = vault.IdentityVault()
         v.connect()
         v.create()

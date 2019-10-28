@@ -2,6 +2,7 @@ import boto3
 import json
 import logging
 import os
+import pytest
 import uuid
 from cis_identity_vault import vault
 from cis_profile import FakeUser
@@ -9,6 +10,10 @@ from moto import mock_dynamodb2
 
 
 logger = logging.getLogger(__name__)
+
+
+FORMAT = "%(asctime)-15s %(clientip)s %(user)-8s %(message)s"
+logging.basicConfig(format=FORMAT)
 
 
 @mock_dynamodb2
@@ -221,34 +226,80 @@ class TestUsersDynalite(object):
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
         result = profile.all_filtered(connection_method="email", active=None, limit=3)
-        assert len(result['users']) > 0
-        assert result.get('nextPage') is not None
+        assert len(result["users"]) > 0
+        assert result.get("nextPage") is not None
         logger.debug(f"The result of the filtered query is: {result}")
 
         result = profile.all_filtered(connection_method="email", active=True, limit=5)
-        assert len(result['users']) > 0
-        for record in result['users']:
+        assert len(result["users"]) > 0
+        for record in result["users"]:
             assert record["active"]["BOOL"] is True
 
         result = profile.all_filtered(connection_method="email", active=False, limit=5)
-        for record in result['users']:
+        for record in result["users"]:
             assert record["active"]["BOOL"] is False
 
         from cis_identity_vault.models import user
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
         result = profile.all_filtered(connection_method="email", active=None, limit=5000)
-        assert len(result['users']) > 0
+        assert len(result["users"]) > 0
         logger.debug(f"The result of the filtered query is: {result}")
 
         result = profile.all_filtered(connection_method="email", active=True, limit=5000)
-        assert len(result['users']) > 0
-        for record in result['users']:
+        assert len(result["users"]) > 0
+        for record in result["users"]:
             assert record["active"]["BOOL"] is True
 
         result = profile.all_filtered(connection_method="email", active=False, limit=5000)
-        for record in result['users']:
+        for record in result["users"]:
             assert record["active"]["BOOL"] is False
+
+    @pytest.mark.skipif(
+        bool(os.getenv("PERFORMANCE_TESTS", False)) is True,
+        reason="Performance tests not running in this block.  Set PERFORMANCE_TESTS in order to run.",
+    )
+    def test_all_filtered_performance(self):
+        logger.info("Performance testing requested.  Long running test in progress.")
+        logger.info("Generating 1000 users in order to test pagination.")
+
+        for x in range(0, 1000):
+            user_profile = FakeUser().as_dict()
+            user_profile["active"]["value"] = True
+            uuid = user_profile["uuid"]["value"]
+            user_id = user_profile.get("user_id").get("value")
+            vault_json_datastructure = {
+                "id": user_id,
+                "user_uuid": uuid,
+                "primary_email": user_profile.get("primary_email").get("value"),
+                "primary_username": user_profile.get("primary_username").get("value"),
+                "sequence_number": "12345678",
+                "profile": json.dumps(user_profile),
+                "active": True,
+            }
+            from cis_identity_vault.models import user
+
+            logger.info(f"Generating user: {user_id}")
+            profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+            profile.create(vault_json_datastructure)
+
+        result = profile.all_filtered(connection_method="email", active=True, limit=150)
+        assert len(result["users"]) > 0
+        for record in result["users"]:
+            assert record["active"]["BOOL"] is True
+
+        assert result["nextPage"] is not None
+        assert isinstance(result["nextPage"], str)
+
+        # Follow the paginator
+        users = []
+        while result["nextPage"] is not None:
+            result = profile.all_filtered(
+                connection_method="email", active=True, limit=150, next_page=result["nextPage"]
+            )
+            users.extend(result["users"])
+
+        assert len(users) > 500
 
     def test_namespace_generator(self):
         from cis_identity_vault.models import user
@@ -269,30 +320,19 @@ class TestUsersDynalite(object):
             sample_user = json.loads(profile.all[user_idx].get("profile"))
             sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
             logger.info("Fixure user generated successfully the first try.")
-        except IndexError:  # Cause sometimes the faker doesn't give an LDAP user.
-            logger.error("The first fixture user was not an ldap user.  Mixing the salad.")
+        except Exception as e:  # Cause sometimes the faker doesn't give an LDAP user.
+            logger.error(f"The first fixture user was not an ldap user.  Mixing the salad.  Error: {e}")
             user_idx = user_idx + 1
             sample_user = json.loads(profile.all[user_idx].get("profile"))
 
-            while len(
-                json.loads(profile.all[user_idx].get("profile")["access_information"]["ldap"]["values"].keys())
-            ) == 0:
-                user_idx = user_idx + 1
-
+            valid = False
+            while valid is False:
+                if sample_user["access_information"]["ldap"]["values"] != {}:
+                    valid = True
+                else:
+                    user_idx = user_idx + 1
+                    json.loads(profile.all[user_idx].get("profile"))
             sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
-        except TypeError:
-            logger.error("The first fixture user was not an ldap user.  Mixing the salad.")
-            user_idx = user_idx + 1
-            sample_user = json.loads(profile.all[user_idx].get("profile"))
-
-            while len(
-                json.loads(profile.all[user_idx].get("profile")["access_information"]["ldap"]["values"].keys())
-            ) == 0:
-                user_idx = user_idx + 1
-
-            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
-            logger.error("The user did not have any group keys.")
-
         sample_hris_attr = sample_user["access_information"]["hris"]["values"]["employee_id"]
 
         # Search by ldap group and return only user IDs

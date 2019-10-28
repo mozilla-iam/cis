@@ -36,8 +36,7 @@ class EventGenerator(object):
                     "sequence_number": str(uuid.uuid4().int),
                     "active": user_profile["active"]["value"],
                     "flat_profile": {
-                        k: self.deserializer.deserialize(v)
-                        for k, v in cis_profile_object.as_dynamo_flat_dict().items()
+                        k: self.deserializer.deserialize(v) for k, v in cis_profile_object.as_dynamo_flat_dict().items()
                     },
                 }
             )
@@ -99,9 +98,7 @@ class TestEventHandler(object):
         from cis_identity_vault.models import user
 
         u = user.Profile(
-            dynamodb_table_resource=boto3.resource(
-                "dynamodb", region_name="us-east-1"
-            ).Table("testing-identity-vault"),
+            dynamodb_table_resource=boto3.resource("dynamodb", region_name="us-east-1").Table("testing-identity-vault"),
             dynamodb_client=boto3.client("dynamodb", region_name="us-east-1"),
             transactions=False,
         )
@@ -123,9 +120,9 @@ class TestEventHandler(object):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
-        os.environ["CIS_DYNAMODB_ARN"] = boto3.client(
-            "dynamodb", region_name="us-east-1"
-        ).describe_table(TableName="testing-identity-vault")["Table"]["TableArn"]
+        os.environ["CIS_DYNAMODB_ARN"] = boto3.client("dynamodb", region_name="us-east-1").describe_table(
+            TableName="testing-identity-vault"
+        )["Table"]["TableArn"]
         from cis_identity_vault import vault
 
         self.v = vault.IdentityVault()
@@ -147,9 +144,9 @@ class TestEventHandler(object):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
-        os.environ["CIS_DYNAMODB_ARN"] = boto3.client(
-            "dynamodb", region_name="us-east-1"
-        ).describe_table(TableName="testing-identity-vault")["Table"]["TableArn"]
+        os.environ["CIS_DYNAMODB_ARN"] = boto3.client("dynamodb", region_name="us-east-1").describe_table(
+            TableName="testing-identity-vault"
+        )["Table"]["TableArn"]
         from cis_identity_vault import vault
 
         self.v = vault.IdentityVault()
@@ -177,9 +174,9 @@ class TestEventHandler(object):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
-        os.environ["CIS_DYNAMODB_ARN"] = boto3.client(
-            "dynamodb", region_name="us-east-1"
-        ).describe_table(TableName="testing-identity-vault")["Table"]["TableArn"]
+        os.environ["CIS_DYNAMODB_ARN"] = boto3.client("dynamodb", region_name="us-east-1").describe_table(
+            TableName="testing-identity-vault"
+        )["Table"]["TableArn"]
         from cis_identity_vault import vault
 
         self.v = vault.IdentityVault()
@@ -206,9 +203,9 @@ class TestEventHandler(object):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
-        os.environ["CIS_DYNAMODB_ARN"] = boto3.client(
-            "dynamodb", region_name="us-east-1"
-        ).describe_table(TableName="testing-identity-vault")["Table"]["TableArn"]
+        os.environ["CIS_DYNAMODB_ARN"] = boto3.client("dynamodb", region_name="us-east-1").describe_table(
+            TableName="testing-identity-vault"
+        )["Table"]["TableArn"]
         from cis_identity_vault import vault
 
         self.v = vault.IdentityVault()
@@ -245,13 +242,8 @@ class TestEventHandler(object):
         session = Session()
         q = session.query(rds.People)
         valid_sample_user = q.filter().all()[0]
-        valid_sample_groups_from_user = list(
-            valid_sample_user.profile["access_information"]["ldap"]["values"]
-        )
+        valid_sample_groups_from_user = list(valid_sample_user.profile["access_information"]["ldap"]["values"])
 
         query = execute.sql_alchemy_select(
-            r.engine(),
-            "access_information.ldap",
-            valid_sample_groups_from_user[0],
-            "contains",
+            r.engine(), "access_information.ldap", valid_sample_groups_from_user[0], "contains"
         )

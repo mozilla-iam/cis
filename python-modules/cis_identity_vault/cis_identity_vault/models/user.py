@@ -317,6 +317,16 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
+    def _last_evaluated_to_friendly(self, last_evaluated_key):
+        if last_evaluated_key is None:
+            return None
+        else:
+            return last_evaluated_key["id"]["S"]
+
+    def _next_page_to_dynamodb(self, next_page):
+        if next_page is not None:
+            return {"id": {"S": next_page}}
+
     def all_filtered(self, connection_method=None, active=None, next_page=None, limit=5000):
         """
         @query_filter str login_method
@@ -324,6 +334,7 @@ class Profile(object):
         """
         users = []
         projection_expression = "id, primary_email, user_uuid, active"
+        next_page = self._next_page_to_dynamodb(next_page)
 
         if connection_method:
             logger.debug("No active filter passed.  Assuming we need all users.")
@@ -336,6 +347,7 @@ class Profile(object):
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
         if next_page is not None:
+            logger.debug(f"Next page token present. Getting the page with exclusive start {next_page} of users.")
             response = self.client.scan(
                 TableName=self.table.name,
                 ProjectionExpression=projection_expression,
@@ -346,6 +358,7 @@ class Profile(object):
             )
             users = response.get("Items", [])
         else:
+            logger.debug("No next page token present. Getting the first page of users.")
             response = self.client.scan(
                 TableName=self.table.name,
                 ProjectionExpression=projection_expression,
@@ -355,7 +368,7 @@ class Profile(object):
             )
             users = response.get("Items", [])
 
-        return dict(users=users, nextPage=response.get("LastEvaluatedKey"))
+        return dict(users=users, nextPage=self._last_evaluated_to_friendly(response.get("LastEvaluatedKey")))
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])

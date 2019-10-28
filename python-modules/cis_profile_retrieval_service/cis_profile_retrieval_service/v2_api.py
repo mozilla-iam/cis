@@ -231,7 +231,7 @@ class v2UsersByAny(Resource):
         logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
         next_page = args.get("nextPage")
         if next_page is not None:
-            next_page = load_dirty_json(next_page)
+            next_page = urllib.parse.unquote(next_page)
 
         if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
@@ -247,6 +247,13 @@ class v2UsersByAny(Resource):
         all_users = identity_vault.all_filtered(
             connection_method=args.get("connectionMethod"), active=active, limit=25, next_page=next_page
         )
+
+        while len(all_users["users"]) == 0 and all_users["nextPage"] is not None:
+            # If our result set is zero go get the next page.
+            all_users = identity_vault.all_filtered(
+                connection_method=args.get("connectionMethod"), active=active, limit=25, next_page=all_users["nextPage"]
+            )
+
         # Convert vault data to cis-profile-like data format
         all_users_cis = []
         for cuser in all_users["users"]:

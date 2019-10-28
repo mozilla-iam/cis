@@ -12,6 +12,7 @@ from cis_profile_retrieval_service.idp import requires_auth
 from cis_profile_retrieval_service.idp import get_scopes
 
 
+config = get_config()
 dynamodb_table = get_table_resource()
 dynamodb_client = get_dynamodb_client()
 transactions = config("transactions", namespace="cis", default="false")
@@ -46,8 +47,8 @@ class v2UsersByAttrContains(Resource):
         if transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
-        next_page = args.get('nextPage', None)
-        full_profiles = args.get('fullProfiles', None)
+        next_page = args.get("nextPage", None)
+        full_profiles = args.get("fullProfiles", None)
 
         if full_profiles is not None:
             full_profiles = bool(full_profiles)
@@ -56,7 +57,7 @@ class v2UsersByAttrContains(Resource):
             # Ensure that only our allowed attributes are parsed.
             parser.add_argument(attr, type=str)
 
-        if args.get('active', True):
+        if args.get("active", True):
             # Default to filtering on only active users
             active = True
         else:
@@ -64,13 +65,11 @@ class v2UsersByAttrContains(Resource):
 
         # determine which arg was passed in from the whitelist and then set it up
         for k, v in args:
-            if k != 'active' or k != 'nextPage' or k != 'fullProfiles':
+            if k != "active" or k != "nextPage" or k != "fullProfiles":
                 if k is not None:
                     attr = k
             comparator = args.get(k)
 
-        result = identity_vault.find_by_any(
-            attr, comparator, next_page, full_profiles
-        )
+        result = identity_vault.find_by_any(attr, comparator, next_page, full_profiles)
 
         return result
