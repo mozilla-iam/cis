@@ -228,6 +228,8 @@ class v2UsersByAny(Resource):
 
         args = parser.parse_args()
 
+        logger.debug("Arguments received: {}".format(args))
+
         logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
         next_page = args.get("nextPage")
         if next_page is not None:
@@ -245,13 +247,13 @@ class v2UsersByAny(Resource):
             active = True  # Support returning only active users by default.
 
         all_users = identity_vault.all_filtered(
-            connection_method=args.get("connectionMethod"), active=active, limit=25, next_page=next_page
+            connection_method=args.get("connectionMethod"), active=active, next_page=next_page, limit=40000
         )
 
         while len(all_users["users"]) == 0 and all_users["nextPage"] is not None:
             # If our result set is zero go get the next page.
             all_users = identity_vault.all_filtered(
-                connection_method=args.get("connectionMethod"), active=active, limit=25, next_page=all_users["nextPage"]
+                connection_method=args.get("connectionMethod"), active=active, next_page=all_users["nextPage"], limit=40000
             )
 
         # Convert vault data to cis-profile-like data format

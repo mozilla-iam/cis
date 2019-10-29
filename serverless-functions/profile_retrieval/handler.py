@@ -22,7 +22,7 @@ def setup_logging():
     h = logging.StreamHandler(sys.stdout)
     h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
-    logger.setLevel(logging.INFO)
+    logger.setLevel(logging.DEBUG)
     return logger
 
 

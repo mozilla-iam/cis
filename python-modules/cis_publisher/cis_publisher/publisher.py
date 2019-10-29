@@ -246,6 +246,8 @@ class Publish:
 
         while nextPage is not None:
             if nextPage != "":
+                # This is an all users query and nextPage is the only arg.
+                # ? is appropriate here.
                 real_qs = "{}?nextPage={}".format(qs, nextPage)
             else:
                 real_qs = qs
@@ -288,7 +290,7 @@ class Publish:
 
         while nextPage is not None:
             if nextPage != "":
-                real_qs = "{}?nextPage={}".format(qs, nextPage)
+                real_qs = "{}&nextPage={}".format(qs, nextPage)
             else:
                 real_qs = qs
             response = self._request_get(
@@ -319,7 +321,7 @@ class Publish:
             qs = "/v2/users/id/all?connectionMethod={}&active=False".format(self.login_method)
             while nextPage is not None:
                 if nextPage != "":
-                    real_qs = "{}?nextPage={}".format(qs, nextPage)
+                    real_qs = "{}&nextPage={}".format(qs, nextPage)
                 else:
                     real_qs = qs
                 response = self._request_get(
