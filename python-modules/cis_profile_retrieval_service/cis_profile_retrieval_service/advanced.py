@@ -8,8 +8,6 @@ from cis_identity_vault.models import user
 from cis_profile_retrieval_service.common import get_config
 from cis_profile_retrieval_service.common import get_dynamodb_client
 from cis_profile_retrieval_service.common import get_table_resource
-from cis_profile_retrieval_service.idp import requires_auth
-from cis_profile_retrieval_service.idp import get_scopes
 
 
 config = get_config()
@@ -40,6 +38,10 @@ class v2UsersByAttrContains(Resource):
 
     def get(self):
         parser = reqparse.RequestParser()
+        args = parser.parse_args()
+        for attr in allowed_advanced_queries:
+            # Ensure that only our allowed attributes are parsed.
+            parser.add_argument(attr, type=str)
 
         if transactions == "false":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
@@ -52,10 +54,6 @@ class v2UsersByAttrContains(Resource):
 
         if full_profiles is not None:
             full_profiles = bool(full_profiles)
-
-        for attr in allowed_advanced_queries:
-            # Ensure that only our allowed attributes are parsed.
-            parser.add_argument(attr, type=str)
 
         if args.get("active", True):
             # Default to filtering on only active users
@@ -70,6 +68,6 @@ class v2UsersByAttrContains(Resource):
                     attr = k
             comparator = args.get(k)
 
-        result = identity_vault.find_by_any(attr, comparator, next_page, full_profiles)
+        result = identity_vault.find_by_any(attr, comparator, next_page, full_profiles, active)
 
         return result
