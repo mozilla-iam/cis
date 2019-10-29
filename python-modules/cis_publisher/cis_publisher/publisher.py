@@ -284,6 +284,7 @@ class Publish:
         qs = "/v2/users/id/all?connectionMethod={}&active=True".format(self.login_method)
         access_token = self._get_authzero_token()
         nextPage = ""
+        self.known_cis_users = []
 
         while nextPage is not None:
             if nextPage != "":
@@ -301,8 +302,12 @@ class Publish:
                 )
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
+            # Rebuild response in a way that's backward compat with older code
             for p in response_json["users"]:
-                self.known_cis_users.extend(p)
+                self.known_cis_users.append(p)
+                self.known_cis_users_by_user_id[p["user_id"]] = p["primary_email"]
+                self.known_cis_users_by_email[p["primary_email"]] = p["user_id"]
+
             nextPage = response_json.get("nextPage")
 
         if include_inactive:
@@ -328,17 +333,14 @@ class Publish:
                     )
                     raise PublisherError("Failed to query CIS Person API", response.text)
                 response_json = response.json()
-                print(response_json)
+                # Rebuild response in a way that's backward compat with older code
                 for p in response_json["users"]:
-                    self.known_cis_users.extend(p)
+                    self.known_cis_users.append(p)
+                    self.known_cis_users_by_user_id[p["user_id"]] = p["primary_email"]
+                    self.known_cis_users_by_email[p["primary_email"]] = p["user_id"]
                 nextPage = response_json.get("nextPage")
 
         logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
-
-        # Also save copies that are easier to query directly
-        for u in self.known_cis_users:
-            self.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
-            self.known_cis_users_by_email[u["primary_email"]] = u["user_id"]
 
         return self.known_cis_users
 
