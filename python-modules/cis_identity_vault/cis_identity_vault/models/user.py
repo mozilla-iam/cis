@@ -12,9 +12,6 @@ user_profile must be passed to this in the form required by dynamodb
 import json
 import logging
 import uuid
-import time
-import threading
-import queue
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.types import TypeDeserializer
@@ -30,6 +27,8 @@ from cis_identity_vault import vault
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
+
+from cis_identity_vault.parallel_dynamo import scan
 
 
 logger = logging.getLogger(__name__)
@@ -327,12 +326,12 @@ class Profile(object):
         if next_page is not None:
             return {"id": {"S": next_page}}
 
-    def all_filtered(self, connection_method=None, active=None, next_page=None, limit=5000):
+    def all_filtered(self, connection_method=None, active=None, next_page=None):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        users = []
+
         projection_expression = "id, primary_email, user_uuid, active"
         next_page = self._next_page_to_dynamodb(next_page)
 
@@ -346,29 +345,15 @@ class Profile(object):
             expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
             filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
 
-        if next_page is not None:
-            logger.debug(f"Next page token present. Getting the page with exclusive start {next_page} of users.")
-            response = self.client.scan(
-                TableName=self.table.name,
-                ProjectionExpression=projection_expression,
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-                ExclusiveStartKey=next_page,
-                Limit=limit,
-            )
-            users = response.get("Items", [])
-        else:
-            logger.debug("No next page token present. Getting the first page of users.")
-            response = self.client.scan(
-                TableName=self.table.name,
-                ProjectionExpression=projection_expression,
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-                Limit=limit,
-            )
-            users = response.get("Items", [])
-
-        return dict(users=users, nextPage=self._last_evaluated_to_friendly(response.get("LastEvaluatedKey")))
+        response = scan(
+            self.client,
+            table_name=self.table.name,
+            filter_expression=filter_expression,
+            expression_attr=expression_attr,
+            projection_expression=projection_expression,
+            exclusive_start_key=next_page,
+        )
+        return dict(users=response["users"], nextPage=self._last_evaluated_to_friendly(response.get("nextPage")))
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])

@@ -2,7 +2,6 @@ import boto3
 import json
 import logging
 import os
-import pytest
 import random
 import subprocess
 from cis_identity_vault import vault
@@ -510,40 +509,4 @@ class TestAPI(object):
                 headers={"Authorization": "Bearer " + token},
                 follow_redirects=True,
             )
-            assert result.json["users"] is not None
-
-    @pytest.mark.skipif(
-        bool(os.getenv("PERFORMANCE_TESTS", False)) is True,
-        reason="Performance tests not running in this block.  Set PERFORMANCE_TESTS in order to run.",
-    )
-    @patch("cis_profile_retrieval_service.idp.get_jwks")
-    def test_returning_all_filter_on_active_true_with_1000(self, fake_jwks):
-        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
-        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
-        from cis_profile_retrieval_service.common import seed
-
-        seed(number_of_fake_users=5000)
-        f = FakeBearer()
-        fake_jwks.return_value = json_form_of_pk
-
-        token = f.generate_bearer_with_scope("read:fullprofile display:all")
-        result = self.app.get(
-            "/v2/users/id/all?connectionMethod=email&active=True",
-            headers={"Authorization": "Bearer " + token},
-            follow_redirects=True,
-        )
-        assert isinstance(result.json["users"], list)
-        assert isinstance(result.json["users"][0], dict)
-        assert len(result.json["users"]) > 0
-
-        assert result.json["nextPage"] is not None
-
-        while result.json["nextPage"] is not None:
-            result = self.app.get(
-                "/v2/users/id/all?connectionMethod=email&active=True&nextPage={}".format(result.json.get("nextPage")),
-                headers={"Authorization": "Bearer " + token},
-                follow_redirects=True,
-            )
-
-            print(result)
             assert result.json["users"] is not None

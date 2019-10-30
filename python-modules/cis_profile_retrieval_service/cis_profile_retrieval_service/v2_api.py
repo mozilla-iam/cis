@@ -247,13 +247,13 @@ class v2UsersByAny(Resource):
             active = True  # Support returning only active users by default.
 
         all_users = identity_vault.all_filtered(
-            connection_method=args.get("connectionMethod"), active=active, next_page=next_page, limit=40000
+            connection_method=args.get("connectionMethod"), active=active, next_page=next_page
         )
 
         while len(all_users["users"]) == 0 and all_users["nextPage"] is not None:
             # If our result set is zero go get the next page.
             all_users = identity_vault.all_filtered(
-                connection_method=args.get("connectionMethod"), active=active, next_page=all_users["nextPage"], limit=40000
+                connection_method=args.get("connectionMethod"), active=active, next_page=all_users["nextPage"]
             )
 
         # Convert vault data to cis-profile-like data format
