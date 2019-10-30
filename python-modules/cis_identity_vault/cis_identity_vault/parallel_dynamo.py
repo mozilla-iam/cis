@@ -59,7 +59,7 @@ def scan(
 
     max_threads = 50
     pool_size = 10
-    max_segments = 10 
+    max_segments = 10
 
     users = []
     last_evaluated_key = None

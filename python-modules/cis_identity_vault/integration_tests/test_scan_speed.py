@@ -39,8 +39,8 @@ def filtered_scan_wrapper():
             logger.info("Trying to follow the page.")
             logger.info("Next page currently is: {}".format(result.get("nextPage")))
             result = u.all_filtered(connection_method=conn_method, active=True, next_page=result.get("nextPage"))
-        #    results.extend(result["users"])
-        #    logger.debug("Total records retrieved: {}".format(len(results)))
+            results.extend(result["users"])
+            logger.debug("Total records retrieved: {}".format(len(results)))
 
     logger.debug("Total records retrieved: {}".format(len(results)))
 
