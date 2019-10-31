@@ -408,19 +408,19 @@ class Profile(object):
 
         return [res_create, res_update]
 
-    def all_by_page(self, next_page=None, limit=25):
+    def all_by_page(self, next_page=None):
         if next_page is not None:
-            response = self.table.scan(Limit=limit, ExclusiveStartKey=next_page)
+            response = self.table.scan(ExclusiveStartKey=next_page)
         else:
-            response = self.table.scan(Limit=limit)
+            response = self.table.scan()
         return response
 
     def _projection_expression_generator(self, full_profiles):
         """Determines what attributes are returned from a scan."""
         if full_profiles:
-            projection_expression = "id, profile"
+            projection_expression = "id, profile, active"
         else:
-            projection_expression = "id"
+            projection_expression = "id, active"
 
         return projection_expression
 
@@ -436,9 +436,10 @@ class Profile(object):
             namespace = f"flat_profile.{attr}.{comparator}"
         else:
             namespace = f"flat_profile.{attr}"
+        logger.debug("Namespace generated: {}".format(namespace))
         return namespace
 
-    def _filter_expression_generator(self, attr, namespace, comparator, operator):
+    def _filter_expression_generator(self, attr, namespace, comparator, operator, active):
         """Return a filter expression based on the attr to compare to."""
         structures_using_nulls = ["access_information.ldap", "access_information.mozilliansorg"]
         structures_using_key_values = ["identities", "languages", "staff_information"]
@@ -450,10 +451,8 @@ class Profile(object):
                 filter_expression = Attr(namespace).not_exists()
             else:
                 pass
-        elif attr in structures_using_key_values or attr.startswith(
-            "access_information.hris"
-        ):  # hris is a weird edge case here.
-            if operator == "eq":
+        elif attr in structures_using_key_values or attr.startswith("access_information.hris") or attr.startswith("staff_information"):  # hris is a weird edge case here.
+            if operator == "eq" and comparator:
                 filter_expression = Attr(namespace).eq(comparator)
             elif operator == "not":
                 filter_expression = Attr(namespace).ne(comparator)
@@ -466,26 +465,20 @@ class Profile(object):
                 filter_expression = Attr(namespace).ne(attr)
             else:
                 pass
-
         return filter_expression
 
-    def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key):
-        page_size_limit = 25
+    def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key, active):
+            scan_kwargs = dict(
+                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator, active),
+                ProjectionExpression=self._projection_expression_generator(full_profiles),
+            )
+            if last_evaluated_key is not None:
+                scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
 
-        if last_evaluated_key:
             results = self.table.scan(
-                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
-                ProjectionExpression=self._projection_expression_generator(full_profiles),
-                ExclusiveStartKey=last_evaluated_key,
-                Limit=page_size_limit,
+                **scan_kwargs
             )
-        else:
-            results = self.table.scan(
-                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
-                ProjectionExpression=self._projection_expression_generator(full_profiles),
-                Limit=page_size_limit,
-            )
-        return results
+            return results
 
     def _attr_to_operator(self, attr):
         """Parse the attribute to determine if this is a not operation."""
@@ -502,27 +495,57 @@ class Profile(object):
         else:
             return attr
 
-    def find_by_any(self, attr, comparator, next_page=None, full_profiles=False):
+    def _results_to_response(self, results, full_profiles, active):
+        users = []
+        for user in results.get("Items"):
+            if user["active"] == active:
+                if full_profiles:
+                    users.append(
+                        dict(
+                            id=user["id"],
+                            profile=json.loads(user["profile"]),  # JSONify dumped profile struct.
+                        )
+                    )
+                else:
+                    users.append(dict(id=user["id"]))
+            else:
+                logger.debug("This user has been filtered by the active query.")
+        return users
+
+    def find_by_any(self, attr, comparator, next_page=None, full_profiles=False, active=True):
         """Allow query on any attribute serialized to the flat profile."""
         users = []
+        if next_page is not None:
+            next_page = {"id": next_page}
+
         operator = self._attr_to_operator(attr)
         attr = self._remove_op_from_attr(attr)
         namespace = self._namespace_generator(attr, comparator)
-        results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page)
 
-        for user in results.get("Items"):
-            if full_profiles:
-                users.append(
-                    dict(
-                        id=user["id"],
-                        profile=json.loads(user["profile"]),  # JSONify dumped profile struct.
-                        nextPage=results.get("LastEvaluatedKey"),
-                    )
-                )
+        results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page, active)
+
+        if results.get("LastEvaluatedKey") is not None:
+            next_page = results.get("LastEvaluatedKey")["id"]
+        else:
+            next_page = None
+
+        next_pages = []
+
+        users.extend(self._results_to_response(results, full_profiles, active))
+        while len(users) < 10 and next_page is not None:
+            next_page = {"id": next_page}
+            moar_users = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page, active)
+            logger.debug(moar_users)
+            if moar_users.get("LastEvaluatedKey") is not None:
+                next_page = moar_users.get("LastEvaluatedKey")["id"]
             else:
-                users.append(dict(id=user["id"]))
-        return dict(users=users, nextPage=results.get("LastEvaluatedKey"))
+                next_page = None
 
+            users.extend(self._results_to_response(moar_users, full_profiles, active))
+            logger.debug(users)
+
+        logger.debug("At least 10 or all users present in page.  Sending it.")
+        return dict(users=users, nextPage=next_page)
 
 class ProfileRDS(object):
     """Manage user profiles writing to the postgres database."""

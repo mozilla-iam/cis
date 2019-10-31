@@ -50,6 +50,7 @@ class TestUsersDynalite(object):
         self.user_profile = FakeUser().as_dict()
         self.user_profile["active"]["value"] = True
         self.uuid = self.user_profile["uuid"]["value"]
+        self.user_profile["staff_information"]["director"] = True
         self.vault_json_datastructure = {
             "id": self.user_profile.get("user_id").get("value"),
             "user_uuid": self.uuid,
@@ -59,6 +60,8 @@ class TestUsersDynalite(object):
             "profile": json.dumps(self.user_profile),
             "active": True,
         }
+
+        profile.create(self.vault_json_datastructure)
 
     def test_create_method(self):
         from cis_identity_vault.models import user
@@ -289,21 +292,20 @@ class TestUsersDynalite(object):
             attr="not_access_information.ldap", comparator=sample_ldap_group, full_profiles=True
         )
 
-        assert result.get("nextPage") is not None
-
-        # Follow the nextPage token and ask for the second page.
-        paged_result = profile.find_by_any(
-            attr="not_access_information.ldap",
-            comparator=sample_ldap_group,
-            full_profiles=True,
-            next_page=result.get("nextPage"),
-        )
-
-        assert paged_result.get("users") is not None
-
         # Test a search against an hris group
         result = profile.find_by_any(
             attr="access_information.hris.employee_id", comparator=sample_hris_attr, full_profiles=False
         )
 
-        assert result is not None
+        assert len(result["users"]) > 0
+
+        # Test search against staff
+
+        result = profile.find_by_any(attr="staff_information.director", comparator="true", full_profiles=False)
+
+        while result.get("nextPage"):
+            result = profile.find_by_any(
+                attr="staff_information.staff", comparator=True, full_profiles=False, next_page=result.get("nextPage")
+            )
+
+            assert result is not None
