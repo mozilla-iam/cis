@@ -47,6 +47,15 @@ test-tox: .flake
 	PATH=$(PATH):$(shell npm bin) \
 	tox -p all --parallel-live
 
+.install-perf-test:
+	pip3 install pytest-benchmark
+	pip3 install pygal pygaljs 
+	pip3 install pytest-benchmark[histogram]
+
+.PHONY 	perf-test:
+perf-test:
+	py.test $(ROOT_DIR)/integration_tests --capture=no --benchmark-autosave --benchmark-histogram
+
 clean:
 	rm -rf venv
 	rm -rf __pycache__

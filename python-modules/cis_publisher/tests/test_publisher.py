@@ -7,6 +7,10 @@ import os
 class TestPublisher:
     def setup(self):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
+        self.mu = {
+            "users": [{"user_id": "auser", "uuid": "0932493241", "primary_email": "auser@u.net"}],
+            "nextPage": None,
+        }
 
     def test_obj(self):
         profiles = [cis_profile.User()]
@@ -31,13 +35,12 @@ class TestPublisher:
             def ok(self):
                 return True
 
-        mu = [{"user_id": "auser", "uuid": "093249324", "primary_email": "auser@u.net"}]
-        mock_request_get.return_value = FakeResponse(fake=mu)
+        mock_request_get.return_value = FakeResponse(fake=self.mu)
 
         profiles = [cis_profile.User()]
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         u = publisher.get_known_cis_users()
-        assert u == mu
+        assert u == self.mu["users"]
 
     def test_profile_validate(self):
         profiles = [cis_profile.User()]
@@ -81,7 +84,7 @@ class TestPublisher:
                 return True
 
         mock_request_post.return_value = FakeResponse()
-        mock_request_get.return_value = FakeResponse()
+        mock_request_get.return_value = FakeResponse(fake=self.mu)
         profiles = [cis_profile.User(user_id="test")]
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         publisher.post_all(user_ids=["test"])
@@ -107,8 +110,7 @@ class TestPublisher:
                 return True
 
         mock_request_post.return_value = FakeResponse()
-        mu = [{"user_id": "auser", "uuid": "0932493241", "primary_email": "auser@u.net"}]
-        mock_request_get.return_value = FakeResponse(fake=mu)
+        mock_request_get.return_value = FakeResponse(fake=self.mu)
 
         profiles = [cis_profile.User()]
         profiles[0].user_id.value = "auser"

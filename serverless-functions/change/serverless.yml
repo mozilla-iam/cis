@@ -140,6 +140,12 @@ provider:
         - "kms:Decrypt"
       Resource:
         - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
 functions:
   api:
     handler: handler.handle

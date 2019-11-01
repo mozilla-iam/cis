@@ -95,9 +95,9 @@ class TestAPI(object):
                 "/opt/dynamodb_local/DynamoDBLocal.jar",
                 "-inMemory",
                 "-port",
-                self.dynalite_port
+                self.dynalite_port,
             ],
-            preexec_fn=os.setsid
+            preexec_fn=os.setsid,
         )
         v = vault.IdentityVault()
         v.connect()

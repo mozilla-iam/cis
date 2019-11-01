@@ -117,5 +117,5 @@ class TestPersonApi(object):
         conn.request("GET", "/v2/users/id/all?connectionMethod=email", headers=headers)
         res = conn.getresponse()
         data = json.loads(res.read())
-        assert isinstance(data, list)
+        assert isinstance(data['users'], list)
         assert len(data) > 0

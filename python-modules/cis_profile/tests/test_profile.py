@@ -12,21 +12,18 @@ import jsonschema
 
 
 def _is_or_contains_empty_str(value):
-    '''Private.
+    """Private.
     Determine whether a value is or contains an empty string.
-    '''
+    """
 
-    if value == '':
+    if value == "":
         return True
 
     if isinstance(value, list):
         return any([_is_or_contains_empty_str(v) for v in value])
 
     if isinstance(value, dict):
-        return any([
-            _is_or_contains_empty_str(k) or _is_or_contains_empty_str(v)
-            for k, v in value.items()
-        ])
+        return any([_is_or_contains_empty_str(k) or _is_or_contains_empty_str(v) for k, v in value.items()])
 
     return False
 
@@ -263,6 +260,6 @@ class TestProfile(object):
 
     def test_dynamo_flat_dict_with_failing_phone(self):
         a = profile.User(user_id="usera")
-        a.phone_numbers['values'] = {"foo": ""}
+        a.phone_numbers["values"] = {"foo": ""}
         ddb = a.as_dynamo_flat_dict()
         assert ddb["user_id"] is not None

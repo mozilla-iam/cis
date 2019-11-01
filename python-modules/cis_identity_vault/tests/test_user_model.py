@@ -1,10 +1,18 @@
 import boto3
 import json
+import logging
 import os
 import uuid
 from cis_identity_vault import vault
 from cis_profile import FakeUser
 from moto import mock_dynamodb2
+
+
+logger = logging.getLogger(__name__)
+
+
+FORMAT = "%(asctime)-15s %(clientip)s %(user)-8s %(message)s"
+logging.basicConfig(format=FORMAT)
 
 
 @mock_dynamodb2
@@ -42,6 +50,7 @@ class TestUsersDynalite(object):
         self.user_profile = FakeUser().as_dict()
         self.user_profile["active"]["value"] = True
         self.uuid = self.user_profile["uuid"]["value"]
+        self.user_profile["staff_information"]["director"] = True
         self.vault_json_datastructure = {
             "id": self.user_profile.get("user_id").get("value"),
             "user_uuid": self.uuid,
@@ -51,6 +60,8 @@ class TestUsersDynalite(object):
             "profile": json.dumps(self.user_profile),
             "active": True,
         }
+
+        profile.create(self.vault_json_datastructure)
 
     def test_create_method(self):
         from cis_identity_vault.models import user
@@ -216,17 +227,15 @@ class TestUsersDynalite(object):
         from cis_identity_vault.models import user
 
         profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
-        result = profile.all_filtered(connection_method="email")
-        assert len(result) > 0
+        result = profile.all_filtered(connection_method="email", active=None)
+        assert len(result["users"]) > 0
+        assert result.get("nextPage") is None
+        logger.debug(f"The result of the filtered query is: {result}")
 
         result = profile.all_filtered(connection_method="email", active=True)
-        assert len(result) > 0
-        for record in result:
+        assert len(result["users"]) > 0
+        for record in result["users"]:
             assert record["active"]["BOOL"] is True
-
-        result = profile.all_filtered(connection_method="email", active=False)
-        for record in result:
-            assert record["active"]["BOOL"] is False
 
     def test_namespace_generator(self):
         from cis_identity_vault.models import user
@@ -235,3 +244,83 @@ class TestUsersDynalite(object):
 
         result = profile._namespace_generator("access_information.ldap", "foo")
         assert result == "flat_profile.access_information.ldap.foo"
+
+    def test_find_by_any(self):
+        from cis_identity_vault.models import user
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        user_idx = 0
+
+        logger.info("Attempting the generation of a fixture user.")
+        try:
+            sample_user = json.loads(profile.all[user_idx].get("profile"))
+            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
+            logger.info("Fixure user generated successfully the first try.")
+        except Exception as e:  # Cause sometimes the faker doesn't give an LDAP user.
+            logger.error(f"The first fixture user was not an ldap user.  Mixing the salad.  Error: {e}")
+            user_idx = user_idx + 1
+            sample_user = json.loads(profile.all[user_idx].get("profile"))
+
+            valid = False
+            while valid is False:
+                if sample_user["access_information"]["ldap"]["values"] != {}:
+                    valid = True
+                else:
+                    user_idx = user_idx + 1
+                    json.loads(profile.all[user_idx].get("profile"))
+            sample_ldap_group = list(sample_user["access_information"]["ldap"]["values"].keys())[0]
+        sample_hris_attr = sample_user["access_information"]["hris"]["values"]["employee_id"]
+
+        # Search by ldap group and return only user IDs
+        logger.info(f"Attempting a search for users in {sample_ldap_group}")
+        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group)
+        assert len(result) > 0
+        for this_profile in result["users"]:
+            assert this_profile.get("id") is not None
+
+        # Search by ldap group and return user_ids with profiles
+        result = profile.find_by_any(attr="access_information.ldap", comparator=sample_ldap_group, full_profiles=True)
+
+        assert len(result) > 0
+        # Ensure that our data retrieved contains full profiles
+        for this_profile in result["users"]:
+            assert this_profile["id"] is not None
+            assert this_profile["profile"]["last_name"]["value"] is not None
+
+        # Search by ldap group inverse match and return user_ids with profiles
+        result = profile.find_by_any(
+            attr="not_access_information.ldap", comparator=sample_ldap_group, full_profiles=True
+        )
+
+        # Test a search against an hris group
+        result = profile.find_by_any(
+            attr="access_information.hris.employee_id", comparator=sample_hris_attr, full_profiles=False
+        )
+
+        assert len(result["users"]) > 0
+
+        # Test search against staff
+
+        result = profile.find_by_any(attr="staff_information.director", comparator="true", full_profiles=False)
+
+        while result.get("nextPage"):
+            result = profile.find_by_any(
+                attr="staff_information.staff", comparator=True, full_profiles=False, next_page=result.get("nextPage")
+            )
+
+            assert result is not None
+
+    def test_filter_expression_generator(self):
+        from cis_identity_vault.models import user
+
+        use_case = dict(
+            attr="staff_information.worker_type",
+            namespace="flat_profile.staff_information.worker_type",
+            comparator=None,
+            operator="eq",
+            active=True,
+        )
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        result = profile._filter_expression_generator(**use_case)
+        assert result is not None

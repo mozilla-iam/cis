@@ -72,6 +72,12 @@ provider:
       Resource:
         - ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}/*
         - ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
+    - Effect: Allow
+      Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+      Resource: "*"
 functions:
   api:
     handler: handler.handle

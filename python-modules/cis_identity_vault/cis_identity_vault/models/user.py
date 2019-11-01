@@ -12,9 +12,6 @@ user_profile must be passed to this in the form required by dynamodb
 import json
 import logging
 import uuid
-import time
-import threading
-import queue
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.types import TypeDeserializer
@@ -30,6 +27,8 @@ from cis_identity_vault import vault
 from sqlalchemy.orm import scoped_session
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.exc import NoResultFound
+
+from cis_identity_vault.parallel_dynamo import scan
 
 
 logger = logging.getLogger(__name__)
@@ -260,7 +259,9 @@ class Profile(object):
         transact_items = []
         for user_profile in list_of_profiles:
             cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
-            logger.info(cis_profile_user_object.as_dynamo_flat_dict())
+            update_expression = "SET profile = :p, primary_email = :pe, \
+                sequence_number = :sn, user_uuid = :u, primary_username = :pn, \
+                active = :a, flat_profile = :fp"
             transact_item = {
                 "Update": {
                     "Key": {"id": {"S": user_profile["id"]}},
@@ -274,8 +275,7 @@ class Profile(object):
                         ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn,"
-                    "active = :a, flat_profile = :fp",
+                    "UpdateExpression": update_expression,
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -317,78 +317,44 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    def _get_segment(self, results, segment=0, total_segments=10, connection_method=None, active=None):
-        users = []
-        logger.info("Getting segment: {} of total: {}".format(segment, total_segments))
+    def _last_evaluated_to_friendly(self, last_evaluated_key):
+        if last_evaluated_key is None:
+            return None
+        else:
+            return last_evaluated_key["id"]["S"]
 
-        if connection_method:
-            expression_attr = {":id": {"S": connection_method}}
-            filter_expression = "begins_with(id, :id)"
+    def _next_page_to_dynamodb(self, next_page):
+        if next_page is not None:
+            return {"id": {"S": next_page}}
 
-        if connection_method and active is not None:
-            logger.info("Asking for only the users with active state: {}".format(active))
-            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
-            filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
-
-        try:
-            response = self.client.scan(
-                TableName=self.table.name,
-                TotalSegments=total_segments,
-                Segment=segment,
-                ProjectionExpression="id, primary_email, user_uuid, active",
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-            )
-            users = response.get("Items", [])
-        except ClientError as e:
-            logger.warning("ClientError during client table scan: {}".format(e))
-
-        while "LastEvaluatedKey" in response:
-            response = self.client.scan(
-                TableName=self.table.name,
-                TotalSegments=total_segments,
-                Segment=segment,
-                ProjectionExpression="id, primary_email, user_uuid, active",
-                FilterExpression=filter_expression,
-                ExpressionAttributeValues=expression_attr,
-                ExclusiveStartKey=response["LastEvaluatedKey"],
-            )
-            users.extend(response["Items"])
-
-        results.put(users)
-
-    def all_filtered(self, connection_method=None, active=None):
+    def all_filtered(self, connection_method=None, active=None, next_page=None):
         """
         @query_filter str login_method
         Returns a dict of all users filtered by query_filter
         """
-        results = queue.Queue()
-        threads = []
-        max_threads = 50
-        users = []
-        segment_result = None
-        # We're choosing to divide the table in 3, then...
-        pool_size = 20
 
-        for x in range(0, pool_size):
-            thread_args = (results, x, pool_size, connection_method, active)
-            threads.append(threading.Thread(target=self._get_segment, args=thread_args))
-            threads[-1].start()
+        projection_expression = "id, primary_email, user_uuid, active"
+        next_page = self._next_page_to_dynamodb(next_page)
 
-            num_threads = len(threading.enumerate())
-            while num_threads >= max_threads:
-                time.sleep(1)
-                num_threads = len(threading.enumerate())
-                logger.debug("Too many concurrent threads, waiting a bit...")
+        if connection_method:
+            logger.debug("No active filter passed.  Assuming we need all users.")
+            expression_attr = {":id": {"S": connection_method}}
+            filter_expression = "begins_with(id, :id)"
 
-        logger.debug("Waiting for threads to terminate...")
-        for t in threads:
-            t.join()
-        logger.debug("Retrieving results from the queue...")
-        while not results.empty():
-            users.extend(results.get())
-            results.task_done()
-        return users
+        if connection_method and active is not None:
+            logger.debug("Asking for only the users with active state: {}".format(active))
+            expression_attr = {":id": {"S": connection_method}, ":a": {"BOOL": active}}
+            filter_expression = ":a = active AND begins_with(id, :id) AND attribute_exists(active)"
+
+        response = scan(
+            self.client,
+            table_name=self.table.name,
+            filter_expression=filter_expression,
+            expression_attr=expression_attr,
+            projection_expression=projection_expression,
+            exclusive_start_key=next_page,
+        )
+        return dict(users=response["users"], nextPage=self._last_evaluated_to_friendly(response.get("nextPage")))
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
@@ -415,7 +381,7 @@ class Profile(object):
         try:
             if len(creations) > 0:
                 res_create = self.create_batch(creations)
-                logger.info("There are {} creations to perform in this batch.".format(res_create))
+                logger.debug("There are {} creations to perform in this batch.".format(res_create))
             else:
                 res_create = None
         except ClientError as e:
@@ -443,19 +409,19 @@ class Profile(object):
 
         return [res_create, res_update]
 
-    def all_by_page(self, next_page=None, limit=25):
+    def all_by_page(self, next_page=None):
         if next_page is not None:
-            response = self.table.scan(Limit=limit, ExclusiveStartKey=next_page)
+            response = self.table.scan(ExclusiveStartKey=next_page)
         else:
-            response = self.table.scan(Limit=limit)
+            response = self.table.scan()
         return response
 
     def _projection_expression_generator(self, full_profiles):
         """Determines what attributes are returned from a scan."""
         if full_profiles:
-            projection_expression = "id, profile"
+            projection_expression = "id, profile, active"
         else:
-            projection_expression = "id"
+            projection_expression = "id, active"
 
         return projection_expression
 
@@ -471,55 +437,35 @@ class Profile(object):
             namespace = f"flat_profile.{attr}.{comparator}"
         else:
             namespace = f"flat_profile.{attr}"
+        logger.debug("Namespace generated: {}".format(namespace))
         return namespace
 
-    def _filter_expression_generator(self, attr, namespace, comparator, operator):
+    def _filter_expression_generator(self, attr, namespace, comparator, operator, active):
         """Return a filter expression based on the attr to compare to."""
         structures_using_nulls = ["access_information.ldap", "access_information.mozilliansorg"]
-        structures_using_key_values = ["identities", "languages", "staff_information"]
 
         if attr in structures_using_nulls:
             if operator == "eq":
                 filter_expression = Attr(namespace).eq(None)
-            elif operator == "not":
+            if operator == "not":
                 filter_expression = Attr(namespace).not_exists()
-            else:
-                pass
-        elif attr in structures_using_key_values or attr.startswith(
-            "access_information.hris"
-        ):  # hris is a weird edge case here.
-            if operator == "eq":
-                filter_expression = Attr(namespace).eq(comparator)
-            elif operator == "not":
-                filter_expression = Attr(namespace).ne(comparator)
-            else:
-                pass
         else:
             if operator == "eq":
-                filter_expression = Attr(namespace).eq(attr)
-            elif operator == "not":
-                filter_expression = Attr(namespace).ne(attr)
-            else:
-                pass
+                filter_expression = Attr(namespace).eq(comparator)
+            if operator == "not":
+                filter_expression = Attr(namespace).ne(comparator)
 
         return filter_expression
 
-    def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key):
-        page_size_limit = 25
+    def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key, active):
+        scan_kwargs = dict(
+            FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator, active),
+            ProjectionExpression=self._projection_expression_generator(full_profiles),
+        )
+        if last_evaluated_key is not None:
+            scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
 
-        if last_evaluated_key:
-            results = self.table.scan(
-                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
-                ProjectionExpression=self._projection_expression_generator(full_profiles),
-                ExclusiveStartKey=last_evaluated_key,
-                Limit=page_size_limit,
-            )
-        else:
-            results = self.table.scan(
-                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator),
-                ProjectionExpression=self._projection_expression_generator(full_profiles),
-                Limit=page_size_limit,
-            )
+        results = self.table.scan(**scan_kwargs)
         return results
 
     def _attr_to_operator(self, attr):
@@ -537,26 +483,52 @@ class Profile(object):
         else:
             return attr
 
-    def find_by_any(self, attr, comparator, next_page=None, full_profiles=False):
+    def _results_to_response(self, results, full_profiles, active):
+        users = []
+        for user in results.get("Items"):
+            if user["active"] == active:
+                if full_profiles:
+                    users.append(
+                        dict(id=user["id"], profile=json.loads(user["profile"]))  # JSONify dumped profile struct.
+                    )
+                else:
+                    users.append(dict(id=user["id"]))
+            else:
+                logger.debug("This user has been filtered by the active query.")
+        return users
+
+    def find_by_any(self, attr, comparator, next_page=None, full_profiles=False, active=True):
         """Allow query on any attribute serialized to the flat profile."""
         users = []
+        if next_page is not None:
+            next_page = {"id": next_page}
+
         operator = self._attr_to_operator(attr)
         attr = self._remove_op_from_attr(attr)
         namespace = self._namespace_generator(attr, comparator)
-        results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page)
 
-        for user in results.get("Items"):
-            if full_profiles:
-                users.append(
-                    dict(
-                        id=user["id"],
-                        profile=json.loads(user["profile"]),  # JSONify dumped profile struct.
-                        nextPage=results.get("LastEvaluatedKey"),
-                    )
-                )
+        results = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page, active)
+
+        if results.get("LastEvaluatedKey") is not None:
+            next_page = results.get("LastEvaluatedKey")["id"]
+        else:
+            next_page = None
+
+        users.extend(self._results_to_response(results, full_profiles, active))
+        while len(users) < 10 and next_page is not None:
+            next_page = {"id": next_page}
+            moar_users = self._result_generator(attr, namespace, operator, comparator, full_profiles, next_page, active)
+            logger.debug(moar_users)
+            if moar_users.get("LastEvaluatedKey") is not None:
+                next_page = moar_users.get("LastEvaluatedKey")["id"]
             else:
-                users.append(dict(id=user["id"]))
-        return dict(users=users, nextPage=results.get("LastEvaluatedKey"))
+                next_page = None
+
+            users.extend(self._results_to_response(moar_users, full_profiles, active))
+            logger.debug(users)
+
+        logger.debug("At least 10 or all users present in page.  Sending it.")
+        return dict(users=users, nextPage=next_page)
 
 
 class ProfileRDS(object):
