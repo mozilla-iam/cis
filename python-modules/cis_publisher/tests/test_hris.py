@@ -103,7 +103,8 @@ class TestHRIS(object):
                 p.staff_information.staff.value = False
             else:
                 p.staff_information.staff.value = True
-            publisher.all_known_profiles[uid] = p
+            # 0 is the default hkey
+            publisher.known_profiles = {0: {uid: p}}
 
         profiles = hris.convert_hris_to_cis_profiles(
             hris_data,
@@ -115,12 +116,11 @@ class TestHRIS(object):
         # nolongerexist is returned by fake cis reply, but is not in hris workday fixture, so it should be active.value
         # = false
         # Community doesnt exist in HRIS but should not be touched so we should have 2 profiles back (ie community is
-        # excluded)
-        assert len(profiles) == 2
-        assert profiles[1].active.value is False
-        assert profiles[1].primary_email.value == "nolongerexists@mozilla.com"
+        # excluded, and only active profiles with staff: True are returned)
+        assert len(profiles) == 1
         assert profiles[0].active.value is True
         assert profiles[0].primary_email.value == "ndonna@mozilla.com"
+        assert profiles[0].staff_information.staff.value is True
 
 
 # Not yet supported by moto
