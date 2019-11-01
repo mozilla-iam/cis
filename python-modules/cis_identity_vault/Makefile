@@ -52,7 +52,7 @@ test-tox: .flake
 	pip3 install pygal pygaljs 
 	pip3 install pytest-benchmark[histogram]
 
-.PHONY perf-test:
+.PHONY 	perf-test:
 perf-test:
 	py.test $(ROOT_DIR)/integration_tests --capture=no --benchmark-autosave --benchmark-histogram
 
