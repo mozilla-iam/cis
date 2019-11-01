@@ -251,7 +251,6 @@ class Publish:
         )
         args = "&".join("{}={}".format(key, value) for key, value in attributes.items())
         qs = f"/v2/users/id/all/by_attribute_contains?{args}"
-        args = []
         access_token = self._get_authzero_token()
         nextPage = ""
 
@@ -264,7 +263,7 @@ class Publish:
                 self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
             )
             if not response.ok:
-                logger.error(f"Failed to query CIS Person API: {self.api_url_person}, {qs}/{args}, {response.text}")
+                logger.error(f"Failed to query CIS Person API: {self.api_url_person}, {real_qs}, {response.text}")
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
             for p in response_json["users"]:
