@@ -13,11 +13,7 @@ class TestPublisher:
         }
         self.mu2 = {
             "users": [
-                {
-                    "user_id": {"value": "auser"},
-                    "uuid": {"value": "0932493241"},
-                    "primary_email": {"value": "auser@u.net"},
-                }
+                {"id": {"value": "auser"}, "uuid": {"value": "0932493241"}, "primary_email": {"value": "auser@u.net"}}
             ],
             "nextPage": None,
         }

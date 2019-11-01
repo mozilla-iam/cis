@@ -250,7 +250,7 @@ class Publish:
             "Requesting CIS Person API for a list of user profiles matching these attributes: {}".format(attributes)
         )
         args = "&".join("{}={}".format(key, value) for key, value in attributes.items())
-        qs = f"/v2/users/id/all/by_attribute_contains?{args}"
+        qs = f"/v2/users/id/all/by_attribute_contains?fullProfiles=True&{args}"
         access_token = self._get_authzero_token()
         nextPage = ""
 
@@ -267,7 +267,7 @@ class Publish:
                 raise PublisherError("Failed to query CIS Person API", response.text)
             response_json = response.json()
             for p in response_json["users"]:
-                self.known_profiles[hkey][p["user_id"]["value"]] = p
+                self.known_profiles[hkey][p["id"]["value"]] = p
             nextPage = response_json.get("nextPage")
 
         logger.info("Got {} users known to CIS for these attributes".format(len(self.known_profiles[hkey])))
