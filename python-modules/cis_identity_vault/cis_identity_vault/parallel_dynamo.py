@@ -21,10 +21,7 @@ def get_segment(
     total_segments,
 ):
     scan_kwargs = dict(
-        TableName=table_name,
-        TotalSegments=total_segments,
-        Segment=thread_id,
-        FilterExpression=filter_expression,
+        TableName=table_name, TotalSegments=total_segments, Segment=thread_id, FilterExpression=filter_expression
     )
 
     if projection_expression:
@@ -36,7 +33,7 @@ def get_segment(
     if expression_attr:
         scan_kwargs["ExpressionAttributeValues"] = expression_attr
 
-    logger.info("Running parallel scan with kwargs: {}".format(scan_kwargs))
+    logger.debug("Running parallel scan with kwargs: {}".format(scan_kwargs))
     response = dynamodb_client.scan(**scan_kwargs)
     users = response.get("Items")
     last_evaluated_key = response.get("LastEvaluatedKey")
@@ -52,9 +49,9 @@ def get_segment(
 
 
 def scan(
-    dynamodb_client, table_name, filter_expression, expression_attr, projection_expression, exclusive_start_key=None,
+    dynamodb_client, table_name, filter_expression, expression_attr, projection_expression, exclusive_start_key=None
 ):
-    logger.info("Creating new threads and queue.")
+    logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
     max_threads = 50
@@ -103,10 +100,10 @@ def scan(
         if result is not None:
             users.extend(result.get("users"))
 
-        if result.get('segment') == max_segments - 1:
+        if result.get("segment") == max_segments - 1:
             logger.debug("This is the last segment.")
             last_evaluated_key = result.get("nextPage")
-            logger.info("Last evaluated key in page was: {}".format(last_evaluated_key))
+            logger.debug("Last evaluated key in page was: {}".format(last_evaluated_key))
         result_queue.task_done()
 
     logger.debug("Results queue is empty.")

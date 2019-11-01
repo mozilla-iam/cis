@@ -1,5 +1,4 @@
 import json
-import re
 
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from aws_xray_sdk.core import xray_recorder
@@ -16,14 +15,16 @@ from logging import getLogger
 import urllib.parse
 
 from cis_identity_vault.models import user
-from cis_profile.common import MozillaDataClassification
-from cis_profile.common import DisplayLevel
 from cis_profile.profile import User
 from cis_profile_retrieval_service.advanced import v2UsersByAttrContains
 from cis_profile_retrieval_service.common import get_config
 from cis_profile_retrieval_service.common import initialize_vault
 from cis_profile_retrieval_service.common import get_dynamodb_client
 from cis_profile_retrieval_service.common import get_table_resource
+from cis_profile_retrieval_service.common import load_dirty_json
+from cis_profile_retrieval_service.common import DisplayLevelParms
+from cis_profile_retrieval_service.common import scope_to_display_level
+from cis_profile_retrieval_service.common import scope_to_mozilla_data_classification
 from cis_profile_retrieval_service.common import seed
 from cis_profile_retrieval_service.schema import Query
 from cis_profile_retrieval_service.schema import AuthorizationMiddleware
@@ -72,97 +73,6 @@ authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()
 dynamodb_client = get_dynamodb_client()
 transactions = config("transactions", namespace="cis", default="false")
-
-
-def load_dirty_json(dirty_json):
-    regex_replace = [
-        (r"([ \{,:\[])(u)?'([^']+)'", r'\1"\3"'),
-        (r" False([, \}\]])", r" false\1"),
-        (r" True([, \}\]])", r" true\1"),
-    ]
-    for r, s in regex_replace:
-        dirty_json = re.sub(r, s, dirty_json)
-    clean_json = json.loads(dirty_json)
-    return clean_json
-
-
-def scope_to_mozilla_data_classification(scopes):
-    classifications = []
-    if "classification:mozilla_confidential" in scopes:
-        logger.debug("Mozilla confidential data classification in scope.")
-        classifications.extend(MozillaDataClassification.MOZILLA_CONFIDENTIAL)
-
-    if "classification:workgroup:staff_only" in scopes:
-        logger.debug("Workgroup: staff only data classification in scope.")
-        classifications.extend(MozillaDataClassification.STAFF_ONLY)
-
-    if "classification:workgroup" in scopes:
-        logger.debug("Workgroup data classification in scope.")
-        classifications.extend(MozillaDataClassification.WORKGROUP_CONFIDENTIAL)
-
-    if "classification:individual" in scopes:
-        logger.debug("Individual data classification in scope.")
-        classifications.extend(MozillaDataClassification.INDIVIDUAL_CONFIDENTIAL)
-
-    classifications.extend(MozillaDataClassification.PUBLIC)
-    return classifications
-
-
-class DisplayLevelParms(object):
-    public = [DisplayLevel.PUBLIC, DisplayLevel.NULL]
-    authenticated = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED]
-    vouched = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED]
-    ndaed = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED, DisplayLevel.NDAED]
-    staff = [
-        DisplayLevel.PUBLIC,
-        DisplayLevel.AUTHENTICATED,
-        DisplayLevel.VOUCHED,
-        DisplayLevel.NDAED,
-        DisplayLevel.STAFF,
-    ]
-    private = [
-        DisplayLevel.PUBLIC,
-        DisplayLevel.AUTHENTICATED,
-        DisplayLevel.VOUCHED,
-        DisplayLevel.NDAED,
-        DisplayLevel.STAFF,
-        DisplayLevel.PRIVATE,
-    ]
-
-    @classmethod
-    def map(cls, display_level):
-        return getattr(cls, display_level, cls.public)
-
-
-def scope_to_display_level(scopes):
-    display_levels = []
-    if "display:all" in scopes:
-        logger.debug("all display level in scope.")
-        display_levels.append(DisplayLevel.NONE)
-        display_levels.append(DisplayLevel.NULL)
-
-    if "display:staff" in scopes:
-        logger.debug("staff display level in scope.")
-        display_levels.append(DisplayLevel.STAFF)
-
-    if "display:ndaed" in scopes:
-        logger.debug("ndaed display level in scope.")
-        display_levels.append(DisplayLevel.NDAED)
-
-    if "display:vouched" in scopes:
-        logger.debug("vouched display level in scope.")
-        display_levels.append(DisplayLevel.VOUCHED)
-
-    if "display:authenticated" in scopes:
-        logger.debug("authenticated display level in scope.")
-        display_levels.append(DisplayLevel.AUTHENTICATED)
-
-    if "display:none" in scopes:
-        logger.debug("None/NULL display level in scope.")
-        display_levels.append(DisplayLevel.NULL)
-
-    display_levels.append(DisplayLevel.PUBLIC)
-    return display_levels
 
 
 def graphql_view():
@@ -301,7 +211,7 @@ def getUser(id, find_by):
 
         if v2_profile.active.value == active:
             if "read:fullprofile" in scopes:
-                logger.info(
+                logger.debug(
                     "read:fullprofile in token not filtering based on scopes.",
                     extra={"query_args": args, "scopes": scopes},
                 )
@@ -309,7 +219,7 @@ def getUser(id, find_by):
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
             if "display:all" in scopes:
-                logger.info(
+                logger.debug(
                     "display:all in token not filtering profile based on display.",
                     extra={"query_args": args, "scopes": scopes},
                 )
@@ -317,14 +227,14 @@ def getUser(id, find_by):
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
             if filter_display is not None:
-                logger.info(
+                logger.debug(
                     "filter_display argument is passed, applying display level filter.", extra={"query_args": args}
                 )
                 v2_profile.filter_display(DisplayLevelParms.map(filter_display))
 
             return jsonify(v2_profile.as_dict())
 
-    logger.info("No user was found for the query", extra={"query_args": args, "scopes": scopes})
+    logger.debug("No user was found for the query", extra={"query_args": args, "scopes": scopes})
     return jsonify({})
 
 
@@ -362,7 +272,7 @@ class v2Users(Resource):
 
         next_page_token = None
         if primary_email is None:
-            result = identity_vault.all_by_page(next_page=nextPage, limit=25)
+            result = identity_vault.all_by_page(next_page=nextPage)
             next_page_token = result.get("LastEvaluatedKey")
         else:
             result = identity_vault.find_by_email(primary_email)
@@ -385,19 +295,21 @@ class v2Users(Resource):
 
             if "read:fullprofile" in scopes:
                 # Assume someone has asked for all the data.
-                logger.info(
+                logger.debug(
                     "The provided token has access to all of the data.", extra={"query_args": args, "scopes": scopes}
                 )
                 pass
             else:
                 # Assume the we are filtering falls back to public with no scopes
-                logger.info("This is a limited scoped query.", extra={"query_args": args, "scopes": scopes})
+                logger.debug("This is a limited scoped query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_scopes(scope_to_mozilla_data_classification(scopes))
 
             if "display:all" in scopes:
-                logger.info("display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes})
+                logger.debug(
+                    "display:all in token not filtering profile.", extra={"query_args": args, "scopes": scopes}
+                )
             else:
-                logger.info("display filtering engaged for query.", extra={"query_args": args, "scopes": scopes})
+                logger.debug("display filtering engaged for query.", extra={"query_args": args, "scopes": scopes})
                 v2_profile.filter_display(scope_to_display_level(scopes))
 
             if filter_display is not None:

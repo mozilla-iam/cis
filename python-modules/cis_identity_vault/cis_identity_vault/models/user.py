@@ -259,7 +259,9 @@ class Profile(object):
         transact_items = []
         for user_profile in list_of_profiles:
             cis_profile_user_object = User(user_structure_json=json.loads(user_profile["profile"]))
-            logger.info(cis_profile_user_object.as_dynamo_flat_dict())
+            update_expression = "SET profile = :p, primary_email = :pe, \
+                sequence_number = :sn, user_uuid = :u, primary_username = :pn, \
+                active = :a, flat_profile = :fp"
             transact_item = {
                 "Update": {
                     "Key": {"id": {"S": user_profile["id"]}},
@@ -273,8 +275,7 @@ class Profile(object):
                         ":fp": {"M": cis_profile_user_object.as_dynamo_flat_dict()},
                     },
                     "ConditionExpression": "attribute_exists(id)",
-                    "UpdateExpression": "SET profile = :p, primary_email = :pe, sequence_number = :sn, user_uuid = :u, primary_username = :pn,"
-                    "active = :a, flat_profile = :fp",
+                    "UpdateExpression": update_expression,
                     "TableName": self.table.name,
                     "ReturnValuesOnConditionCheckFailure": "NONE",
                 }
@@ -380,7 +381,7 @@ class Profile(object):
         try:
             if len(creations) > 0:
                 res_create = self.create_batch(creations)
-                logger.info("There are {} creations to perform in this batch.".format(res_create))
+                logger.debug("There are {} creations to perform in this batch.".format(res_create))
             else:
                 res_create = None
         except ClientError as e:
@@ -442,43 +443,30 @@ class Profile(object):
     def _filter_expression_generator(self, attr, namespace, comparator, operator, active):
         """Return a filter expression based on the attr to compare to."""
         structures_using_nulls = ["access_information.ldap", "access_information.mozilliansorg"]
-        structures_using_key_values = ["identities", "languages", "staff_information"]
 
         if attr in structures_using_nulls:
             if operator == "eq":
                 filter_expression = Attr(namespace).eq(None)
-            elif operator == "not":
+            if operator == "not":
                 filter_expression = Attr(namespace).not_exists()
-            else:
-                pass
-        elif attr in structures_using_key_values or attr.startswith("access_information.hris") or attr.startswith("staff_information"):  # hris is a weird edge case here.
-            if operator == "eq" and comparator:
-                filter_expression = Attr(namespace).eq(comparator)
-            elif operator == "not":
-                filter_expression = Attr(namespace).ne(comparator)
-            else:
-                pass
         else:
             if operator == "eq":
-                filter_expression = Attr(namespace).eq(attr)
-            elif operator == "not":
-                filter_expression = Attr(namespace).ne(attr)
-            else:
-                pass
+                filter_expression = Attr(namespace).eq(comparator)
+            if operator == "not":
+                filter_expression = Attr(namespace).ne(comparator)
+
         return filter_expression
 
     def _result_generator(self, attr, namespace, operator, comparator, full_profiles, last_evaluated_key, active):
-            scan_kwargs = dict(
-                FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator, active),
-                ProjectionExpression=self._projection_expression_generator(full_profiles),
-            )
-            if last_evaluated_key is not None:
-                scan_kwargs['ExclusiveStartKey'] = last_evaluated_key
+        scan_kwargs = dict(
+            FilterExpression=self._filter_expression_generator(attr, namespace, comparator, operator, active),
+            ProjectionExpression=self._projection_expression_generator(full_profiles),
+        )
+        if last_evaluated_key is not None:
+            scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
 
-            results = self.table.scan(
-                **scan_kwargs
-            )
-            return results
+        results = self.table.scan(**scan_kwargs)
+        return results
 
     def _attr_to_operator(self, attr):
         """Parse the attribute to determine if this is a not operation."""
@@ -501,10 +489,7 @@ class Profile(object):
             if user["active"] == active:
                 if full_profiles:
                     users.append(
-                        dict(
-                            id=user["id"],
-                            profile=json.loads(user["profile"]),  # JSONify dumped profile struct.
-                        )
+                        dict(id=user["id"], profile=json.loads(user["profile"]))  # JSONify dumped profile struct.
                     )
                 else:
                     users.append(dict(id=user["id"]))
@@ -529,8 +514,6 @@ class Profile(object):
         else:
             next_page = None
 
-        next_pages = []
-
         users.extend(self._results_to_response(results, full_profiles, active))
         while len(users) < 10 and next_page is not None:
             next_page = {"id": next_page}
@@ -546,6 +529,7 @@ class Profile(object):
 
         logger.debug("At least 10 or all users present in page.  Sending it.")
         return dict(users=users, nextPage=next_page)
+
 
 class ProfileRDS(object):
     """Manage user profiles writing to the postgres database."""

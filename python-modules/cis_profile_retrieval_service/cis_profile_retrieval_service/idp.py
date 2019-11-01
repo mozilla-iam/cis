@@ -59,7 +59,7 @@ def requires_auth(f):
         jwt_validation = CONFIG("jwt_validation", namespace="person_api", default="true")
 
         if environment == "local" and jwt_validation == "false":
-            logger.info(
+            logger.debug(
                 "Local environment detected with auth bypass settings enabled.  Skipping JWT validation.",
                 extra={"jwt_validation": False},
             )
@@ -82,7 +82,7 @@ def requires_auth(f):
                         audience=API_IDENTIFIER,
                         issuer="https://" + AUTH0_DOMAIN + "/",
                     )
-                    logger.info("An auth token has been recieved and verified.", extra={"code": 200})
+                    logger.debug("An auth token has been recieved and verified.", extra={"code": 200})
                 except jwt.ExpiredSignatureError as e:
                     logger.error("The jwt received has an expired timestamp.", extra={"code": 401, "error": e})
                     raise AuthError({"code": "token_expired", "description": "token is expired"}, 401)

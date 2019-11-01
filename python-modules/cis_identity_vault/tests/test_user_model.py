@@ -309,3 +309,18 @@ class TestUsersDynalite(object):
             )
 
             assert result is not None
+
+    def test_filter_expression_generator(self):
+        from cis_identity_vault.models import user
+
+        use_case = dict(
+            attr="staff_information.worker_type",
+            namespace="flat_profile.staff_information.worker_type",
+            comparator=None,
+            operator="eq",
+            active=True,
+        )
+
+        profile = user.Profile(self.table, self.dynamodb_client, transactions=False)
+        result = profile._filter_expression_generator(**use_case)
+        assert result is not None
