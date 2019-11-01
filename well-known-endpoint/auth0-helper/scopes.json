@@ -63,5 +63,6 @@
           {
                 "value": "search:all",
                 "description": "Allow search over any attribute"
-	]
+          }
+        ]
 }
