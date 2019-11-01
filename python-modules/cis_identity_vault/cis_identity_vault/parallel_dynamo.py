@@ -1,4 +1,4 @@
-"""Centralize logic for parllelism of scanning ops."""
+"""Centralize logic for parallelism of scanning ops."""
 import queue
 import threading
 import time
