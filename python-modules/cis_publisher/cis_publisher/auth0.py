@@ -24,6 +24,8 @@ class Auth0Publisher:
         self.context = context
         self.report = None
         self.config = cis_publisher.common.get_config()
+        self.s3_cache = None
+        self.s3_cache_require_update = False
         # Only fields we care about for the user entries
         # auth0 field->cis field map
         self.az_cis_fields = {
@@ -40,6 +42,7 @@ class Auth0Publisher:
         self.az_blacklisted_connections = ["Mozilla-LDAP", "Mozilla-LDAP-Dev"]
         self.az_whitelisted_connections = ["email", "github", "google-oauth2", "firefoxaccounts"]
         self.az_users = None
+        self.all_cis_user_ids = None
         self.user_ids_only = None
 
     def get_s3_cache(self):
@@ -47,6 +50,9 @@ class Auth0Publisher:
         If cache exists and is not older than timedelta() then return it, else don't
         return: dict JSON
         """
+        if self.s3_cache is not None:
+            return self.s3_cache
+
         s3 = boto3.client("s3")
         bucket = os.environ.get("CIS_BUCKET_URL")
         cache_time = int(os.environ.get("CIS_AUTHZERO_CACHE_TIME_SECONDS", 120))
@@ -59,10 +65,10 @@ class Auth0Publisher:
                 return None
             # Recent file?
             for o in objects["Contents"]:
-                if o["Key"] == "cache.json" and o["LastModified"] < recent:
+                if o["Key"] == "cache.json" and recent > o["LastModified"]:
                     logger.info(
-                        "S3 cache too old, not using (file is {} vs max accepted date {}"
-                        "ie data is cached for {}s)".format(o["LastModified"], recent, cache_time)
+                        f"S3 cache too old, not using ({recent} gt {o['LastModified']}"
+                        f", was cached for: {cache_time}s)"
                     )
                     return None
             response = s3.get_object(Bucket=bucket, Key="cache.json")
@@ -71,12 +77,16 @@ class Auth0Publisher:
             logger.error("Could not find S3 cache file: {}".format(e))
             return None
         logger.info("Using S3 cache")
-        return json.loads(data)
+        self.s3_cache = json.loads(data)
+        return self.s3_cache
 
     def save_s3_cache(self, data):
         """
         @data dict JSON
         """
+        if self.s3_cache_require_update is False:
+            return
+
         s3 = boto3.client("s3")
         bucket = os.environ.get("CIS_BUCKET_URL")
         s3.put_object(Bucket=bucket, Key="cache.json", Body=json.dumps(data))
@@ -101,23 +111,16 @@ class Auth0Publisher:
 
         # These are the users auth0 knows about
         self.az_users = self.fetch_az_users(user_ids)
+        self.all_cis_user_ids = self.fetch_all_cis_user_ids(publisher)
 
         # Should we fan-out processing to multiple function calls?
         if user_ids is None:
-            # These are the users CIS knows about
-            all_cis_users = []
-            for c in self.az_whitelisted_connections:
-                publisher.login_method = c
-                publisher.get_known_cis_users(include_inactive=False)
-                all_cis_users += publisher.known_cis_users_by_user_id.keys()
-            logger.info("Got {} known CIS users for all whitelisted login methods".format(len(all_cis_users)))
-
             # Because we do not care about most attributes update, we only process new users, or users that will be
             # deactivated in order to save time. Note that there is (currently) no auth0 hook to notify of new user
             # event, so this (the auth0 publisher that is) function needs to be reasonably fast to avoid delays when
             # provisioning users
             # So first, remove all known users from the requested list
-            user_ids_to_process_set = set(self.get_az_user_ids()) - set(all_cis_users)
+            user_ids_to_process_set = set(self.get_az_user_ids()) - set(self.all_cis_user_ids)
             az_user_ids_set = set(self.get_az_user_ids())
             # Add blocked users so that they get deactivated
             logger.info(
@@ -133,6 +136,7 @@ class Auth0Publisher:
                     len(user_ids_to_process_set)
                 )
             )
+            self.save_s3_cache({"az_users": self.az_users, "all_cis_user_ids": self.all_cis_user_ids})
             self.fan_out(publisher, chunk_size, list(user_ids_to_process_set))
         else:
             # Don't cache auth0 list if we're just getting a single user, so that we get the most up to date data
@@ -141,6 +145,32 @@ class Auth0Publisher:
                 os.environ["CIS_AUTHZERO_CACHE_TIME_SECONDS"] = "0"
                 logger.info("CIS_AUTHZERO_CACHE_TIME_SECONDS was set to 0 (caching disabled) for this run")
             self.process(publisher, user_ids)
+
+    def fetch_all_cis_user_ids(self, publisher):
+        """
+        Get all known CIS user ids for the whitelisted login methods
+        This is here because CIS only returns user ids per specific login methods
+        We also cache this
+        """
+
+        self.s3_cache = self.get_s3_cache()
+        if self.s3_cache is not None:
+            self.all_cis_user_ids = self.s3_cache["all_cis_user_ids"]
+        if self.all_cis_user_ids is not None:
+            return self.all_cis_user_ids
+
+        # Not cached, fetch it
+        self.s3_cache_require_update = True
+        # These are the users CIS knows about
+        self.all_cis_user_ids = []
+        for c in self.az_whitelisted_connections:
+            publisher.login_method = c
+            publisher.get_known_cis_users(include_inactive=False)
+            self.all_cis_user_ids += publisher.known_cis_users_by_user_id.keys()
+            # Invalidate publisher memory cache
+            publisher.known_cis_users = None
+        logger.info("Got {} known CIS users for all whitelisted login methods".format(len(self.all_cis_user_ids)))
+        return self.all_cis_user_ids
 
     def get_az_user_ids(self):
         """
@@ -165,11 +195,16 @@ class Auth0Publisher:
             return self.az_users
 
         # S3 cached?
-        self.az_users = self.get_s3_cache()
-        if self.az_users is not None:
+        self.get_s3_cache()
+        if self.s3_cache is not None:
+            self.az_users = self.s3_cache["az_users"]
+        # Don't use cache for just one user
+        if self.az_users is not None and (user_ids is not None and len(user_ids) != 1):
             return self.az_users
 
         # Not cached, fetch it
+        if user_ids is not None and len(user_ids) != 1:
+            self.s3_cache_require_update = True
         az_api_url = self.config("AUTHZERO_API", namespace="cis", default="auth-dev.mozilla.auth0.com")
         az_client_id = self.secret_manager.secret("az_client_id")
         az_client_secret = self.secret_manager.secret("az_client_secret")
@@ -247,7 +282,6 @@ class Auth0Publisher:
         logger.info("Received {} users from auth0".format(len(user_list)))
 
         self.az_users = user_list
-        self.save_s3_cache(user_list)
 
         return self.az_users
 

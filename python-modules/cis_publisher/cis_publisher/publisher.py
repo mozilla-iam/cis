@@ -342,7 +342,7 @@ class Publish:
                     self.known_cis_users_by_email[p["primary_email"]] = p["user_id"]
                 nextPage = response_json.get("nextPage")
 
-        logger.info("Got {} users known to CIS".format(len(self.known_cis_users)))
+        logger.info(f"Got {len(self.known_cis_users)} users known to CIS with login_method {self.login_method}")
 
         return self.known_cis_users
 
