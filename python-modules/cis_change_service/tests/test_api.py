@@ -175,6 +175,60 @@ class TestAPI(object):
         assert result.status_code == 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
+    def test_wrong_publisher(self, fake_jwks):
+        """
+        This verifies a wrong-publisher can't update
+        it creates a valid user, then wrongly modify an attribute its not allowed to
+        """
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_REGION_NAME"] = "us-east-1"
+        os.environ["AWS_ACCESS_KEY_ID"] = "foo"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "bar"
+        os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
+        os.environ["CIS_VERIFY_SIGNATURES"] = "true"
+        os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
+        from cis_change_service import api
+
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal())
+        # Create a brand new user
+        patched_user_profile = ensure_appropriate_publishers_and_sign(
+            fake_new_user.as_dict(), self.publisher_rules, "create"
+        )
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(patched_user_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        response = json.loads(result.get_data())
+        assert result.status_code == 200
+        assert response["condition"] == "create"
+
+        patched_user_profile.first_name.value = "test"
+        # sign with wrong publisher
+        patched_user_profile.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(patched_user_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert result.status_code != 200
+
+    @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_fail(self, fake_jwks):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
