@@ -42,13 +42,16 @@ class TestFakeProfile(object):
 
     def test_null_create_profile(self):
         empty_profile = profile.User()
-        create_profile = fake_profile.FakeUser(seed=1337, config=fake_profile.FakeProfileConfig().default().create())
+        create_profile = fake_profile.FakeUser(
+            seed=1337, config=fake_profile.FakeProfileConfig().default().minimal().create()
+        )
+        update_profile_min = fake_profile.FakeUser(seed=1337, config=fake_profile.FakeProfileConfig().minimal())
         update_profile = fake_profile.FakeUser(seed=1337, config=fake_profile.FakeProfileConfig().default())
 
         with pytest.raises(exceptions.PublisherVerificationFailure):
             update_profile.verify_all_publishers(empty_profile)
         assert create_profile.verify_all_publishers(empty_profile) is True
-        assert update_profile.verify_all_publishers(create_profile) is True
+        assert update_profile_min.verify_all_publishers(create_profile) is True
 
     def test_fake_dynamo_flat_dict_output(self):
         # This profile must have ldap groups and staff data

@@ -300,7 +300,9 @@ class FakeUser(cis_profile.profile.User):
         self.generate_hris(fake, config, hierarchy)
         self.generate_mozillians(fake, config)
 
-        if not config._minimal:
+        # Create profiles can't be randomizing all display values, that'd break publisher verification
+        # minimal profiles also try not to do this
+        if config._create or not config._minimal:
             display_faker = DisplayFaker()
             display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
@@ -411,14 +413,14 @@ class FakeUser(cis_profile.profile.User):
         self._d("first_name.value", fake.first_name())
         self._d("primary_email.value", email)
 
-        for k, v in identities.items():
-            self.__dict__["identities"][k]["value"] = v
-
         if not config._create:
             self._d("primary_username.value", fake.primary_username())
 
         if config._minimal:
             return
+
+        for k, v in identities.items():
+            self.__dict__["identities"][k]["value"] = v
 
         self._d("usernames.values", fake.usernames())
         self._d("last_name.value", fake.last_name())

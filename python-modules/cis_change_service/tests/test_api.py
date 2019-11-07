@@ -5,6 +5,7 @@ import os
 import random
 import subprocess
 import string
+import cis_profile
 from cis_profile import common
 from cis_profile import FakeUser
 from cis_profile.fake_profile import FakeProfileConfig
@@ -19,6 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name
 logging.getLogger("boto").setLevel(logging.CRITICAL)
 logging.getLogger("boto3").setLevel(logging.CRITICAL)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
+logging.getLogger("cis_profile.profile").setLevel(logging.DEBUG)
 
 
 logger = logging.getLogger(__name__)
@@ -197,6 +199,11 @@ class TestAPI(object):
         patched_user_profile = ensure_appropriate_publishers_and_sign(
             fake_new_user.as_dict(), self.publisher_rules, "create"
         )
+        # Ensure a first_name is set as we'll use that for testing
+        patched_user_profile.first_name.value = "test"
+        patched_user_profile.first_name.signature.publisher.name = "ldap"
+        patched_user_profile.first_name.metadata.display = "public"
+        patched_user_profile.sign_attribute("first_name", "ldap")
 
         f = FakeBearer()
         fake_jwks.return_value = json_form_of_pk
@@ -215,13 +222,42 @@ class TestAPI(object):
         assert result.status_code == 200
         assert response["condition"] == "create"
 
-        patched_user_profile.first_name.value = "test"
-        # sign with wrong publisher
-        patched_user_profile.sign_attribute("first_name", "access_provider")
+        # sign first_name again but with wrong publisher (but same value as before)
+        new_user = cis_profile.User(user_id=patched_user_profile.user_id.value)
+        new_user.first_name = patched_user_profile.first_name
+        new_user.sign_attribute("first_name", "access_provider")
         result = self.app.post(
             "/v2/user",
             headers={"Authorization": "Bearer " + token},
-            data=json.dumps(patched_user_profile.as_json()),
+            data=json.dumps(new_user.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert response["status_code"] == 202
+
+        # sign first_name again but with wrong publisher and different display (but same value as before)
+        new_user = cis_profile.User(user_id=patched_user_profile.user_id.value)
+        new_user.first_name = patched_user_profile.first_name
+        new_user.first_name.metadata.display = "staff"
+        new_user.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(new_user.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert response["code"] == "invalid_publisher"
+
+        # sign first_name again but with wrong publisher and wrong value (it should fail)
+        new_user.first_name.value = "new-test"
+        new_user.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(new_user.as_json()),
             content_type="application/json",
             follow_redirects=True,
         )
