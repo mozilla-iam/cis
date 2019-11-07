@@ -194,7 +194,7 @@ class TestAPI(object):
         os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
         from cis_change_service import api
 
-        fake_new_user = FakeUser(config=FakeProfileConfig().minimal())
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal().no_display())
         # Create a brand new user
         patched_user_profile = ensure_appropriate_publishers_and_sign(
             fake_new_user.as_dict(), self.publisher_rules, "create"
