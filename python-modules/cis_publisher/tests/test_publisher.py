@@ -11,6 +11,12 @@ class TestPublisher:
             "users": [{"user_id": "auser", "uuid": "0932493241", "primary_email": "auser@u.net"}],
             "nextPage": None,
         }
+        self.mu2 = {
+            "users": [
+                {"id": {"value": "auser"}, "uuid": {"value": "0932493241"}, "primary_email": {"value": "auser@u.net"}}
+            ],
+            "nextPage": None,
+        }
 
     def test_obj(self):
         profiles = [cis_profile.User()]
@@ -41,6 +47,33 @@ class TestPublisher:
         publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
         u = publisher.get_known_cis_users()
         assert u == self.mu["users"]
+
+    @mock.patch("cis_publisher.secret.Manager.secret")
+    @mock.patch("cis_publisher.secret.AuthZero.exchange_for_access_token")
+    @mock.patch("cis_publisher.Publish._request_get")
+    def test_known_users_by_attribute(self, mock_request_get, mock_authzero, mock_secrets):
+        mock_secrets.return_value = "hi"
+        mock_authzero.return_value = "hi"
+
+        class FakeResponse:
+            def __init__(self, fake={}):
+                self.fake = fake
+                self.text = str(fake)
+
+            def json(self):
+                return self.fake
+
+            def ok(self):
+                return True
+
+        mock_request_get.return_value = FakeResponse(fake=self.mu2)
+
+        profiles = [cis_profile.User()]
+        publisher = cis_publisher.Publish(profiles, login_method="ad", publisher_name="ldap")
+        attributes = {"staff_information.staff": True, "active": True}
+        u = publisher.get_known_cis_user_by_attribute_paginated(attributes)
+        print(u)
+        assert u["auser"] == self.mu2["users"][0]
 
     def test_profile_validate(self):
         profiles = [cis_profile.User()]

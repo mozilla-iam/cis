@@ -18,6 +18,7 @@ class HRISPublisher:
         self.secret_manager = cis_publisher.secret.Manager()
         self.context = context
         self.report = None
+        self.hkey = 0
 
     def get_s3_cache(self):
         """
@@ -75,19 +76,21 @@ class HRISPublisher:
         # Get access to the known_users function first
         # We override profiles from `publisher` object later on
         publisher = cis_publisher.Publish([], login_method="ad", publisher_name="hris")
+        attributes = {"staff_information.staff": True, "active": True}
+        self.hkey = hash(json.dumps(attributes))
         if cache is None:
             publisher.get_known_cis_users(include_inactive=True)
-            publisher.get_known_cis_users_paginated()
+            publisher.get_known_cis_user_by_attribute_paginated(attributes)
             self.fetch_report()
             self.save_s3_cache(
                 {
-                    "all_known_profiles": publisher.all_known_profiles,
+                    "known_profiles": publisher.known_profiles[self.hkey],
                     "known_cis_users": publisher.known_cis_users,
                     "report": self.report,
                 }
             )
         else:
-            publisher.all_known_profiles = cache["all_known_profiles"]
+            publisher.known_profiles[self.hkey] = cache["known_profiles"]
             publisher.known_cis_users = cache["known_cis_users"]
             for u in publisher.known_cis_users:
                 publisher.known_cis_users_by_user_id[u["user_id"]] = u["primary_email"]
@@ -126,8 +129,8 @@ class HRISPublisher:
         # exist)
         user_ids_to_deactivate = []
         for potential_user_id in delta:
-            if potential_user_id in publisher.all_known_profiles:
-                profile = publisher.all_known_profiles[potential_user_id]
+            if potential_user_id in publisher.known_profiles[self.hkey]:
+                profile = publisher.known_profiles[self.hkey][potential_user_id]
                 # Convert as needed to a dict
                 try:
                     profile = profile.as_dict()
@@ -158,9 +161,9 @@ class HRISPublisher:
                 logger.info("User selected for deactivation: {}".format(user))
                 # user from cis
                 try:
-                    p = cis_profile.User(publisher.all_known_profiles[user])
+                    p = cis_profile.User(publisher.known_profiles[self.hkey][user])
                 except TypeError:
-                    p = publisher.all_known_profiles[user]
+                    p = publisher.known_profiles[self.hkey][user]
 
                 # our partial update
                 newp = cis_profile.User()
@@ -291,7 +294,7 @@ class HRISPublisher:
             if user_id is None:
                 dedup.append(p)
                 continue
-            cis_p = cis_profile.User(publisher.all_known_profiles[user_id])
+            cis_p = cis_profile.User(publisher.known_profiles[self.hkey][user_id])
             if p.timezone.value is not None:
                 if (
                     (p.staff_information == cis_p.staff_information)

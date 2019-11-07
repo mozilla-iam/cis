@@ -56,6 +56,7 @@ provider:
     PERSON_API_AUTH0_DOMAIN: ${self:custom.profileRetrievalEnvironment.PERSON_API_AUTH0_DOMAIN.${self:custom.profileRetrievalStage}}
     PERSON_API_API_IDENTIFIER: ${self:custom.profileRetrievalEnvironment.IDENTIFIER.${self:custom.profileRetrievalStage}}
     CIS_DISCOVERY_URL: ${self:custom.profileRetrievalEnvironment.CIS_DISCOVERY_URL.${self:custom.profileRetrievalStage}}
+    PERSON_API_ADVANCED_SEARCH: true
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
       Action:

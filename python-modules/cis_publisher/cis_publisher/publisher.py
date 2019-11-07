@@ -4,6 +4,7 @@ import os
 import time
 import threading
 import queue
+import json
 from urllib.parse import quote_plus
 from cis_profile.common import WellKnown
 from cis_profile import User
@@ -52,6 +53,7 @@ class Publish:
         self.known_cis_users_by_email = {}
         self.known_cis_users_by_user_id = {}
         self.all_known_profiles = {}
+        self.known_profiles = {}
         self.__inited = False
 
     def __deferred_init(self):
@@ -229,6 +231,47 @@ class Publish:
             authzero = self._get_authzero_client()
             self.access_token = authzero.exchange_for_access_token()
             return self.access_token
+
+    def get_known_cis_user_by_attribute_paginated(self, attributes):
+        """
+        Call CIS Person API and return a list of known profiles matching the selected attribute
+        attributes: dict of attr: value keypairs (eg: {"staff_information.staff": True, "active": True} )
+        Endpoint: /v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True
+        return: list of dict JSON profiles
+        """
+        self.__deferred_init()
+        hkey = hash(json.dumps(attributes))
+        if hkey in self.known_profiles and len(self.known_profiles[hkey]) > 0:
+            return self.known_profiles([hkey])
+        else:
+            self.known_profiles[hkey] = {}
+
+        logger.info(
+            "Requesting CIS Person API for a list of user profiles matching these attributes: {}".format(attributes)
+        )
+        args = "&".join("{}={}".format(key, value) for key, value in attributes.items())
+        qs = f"/v2/users/id/all/by_attribute_contains?fullProfiles=True&{args}"
+        access_token = self._get_authzero_token()
+        nextPage = ""
+
+        while nextPage is not None:
+            if nextPage != "":
+                real_qs = f"{qs}&nextPage={nextPage}"
+            else:
+                real_qs = qs
+            response = self._request_get(
+                self.api_url_person, real_qs, headers={"authorization": "Bearer {}".format(access_token)}
+            )
+            if not response.ok:
+                logger.error(f"Failed to query CIS Person API: {self.api_url_person}, {real_qs}, {response.text}")
+                raise PublisherError("Failed to query CIS Person API", response.text)
+            response_json = response.json()
+            for p in response_json["users"]:
+                self.known_profiles[hkey][p["id"]["value"]] = p
+            nextPage = response_json.get("nextPage")
+
+        logger.info("Got {} users known to CIS for these attributes".format(len(self.known_profiles[hkey])))
+        return self.known_profiles[hkey]
 
     def get_known_cis_users_paginated(self):
         """

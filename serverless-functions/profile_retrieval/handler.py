@@ -11,7 +11,7 @@ from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 
 serverless_wsgi.TEXT_MIME_TYPES.append("application/custom+json")
 
-xray_recorder.configure(context_missing='LOG_ERROR')
+xray_recorder.configure(context_missing="LOG_ERROR")
 patch_all()
 
 
@@ -22,7 +22,7 @@ def setup_logging():
     h = logging.StreamHandler(sys.stdout)
     h.setFormatter(cis_logger.JsonFormatter(extra={"hostname": socket.gethostname()}))
     logger.addHandler(h)
-    logger.setLevel(logging.DEBUG)
+    logger.setLevel(logging.INFO)
     return logger
 
 
