@@ -300,8 +300,9 @@ class FakeUser(cis_profile.profile.User):
         self.generate_hris(fake, config, hierarchy)
         self.generate_mozillians(fake, config)
 
-        display_faker = DisplayFaker()
-        display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
+        if not config._minimal:
+            display_faker = DisplayFaker()
+            display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
         super().initialize_timestamps()
 
