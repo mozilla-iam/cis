@@ -41,6 +41,7 @@ class FakeProfileConfig(object):
         self._auth0 = False
         self._uuid_username = False
         self._minimal = False
+        self._no_display = False
         self._active_percent = 100
 
     def default(self):
@@ -56,6 +57,10 @@ class FakeProfileConfig(object):
 
     def minimal(self, b=True):
         self._minimal = b
+        return self
+
+    def no_display(self, b=True):
+        self._no_display = b
         return self
 
     def mozillians(self, b=True):
@@ -302,7 +307,7 @@ class FakeUser(cis_profile.profile.User):
 
         # Create profiles can't be randomizing all display values, that'd break publisher verification
         # minimal profiles also try not to do this
-        if config._create or not config._minimal:
+        if not config._no_display:
             display_faker = DisplayFaker()
             display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
