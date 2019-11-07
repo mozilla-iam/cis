@@ -403,6 +403,13 @@ class User(object):
         Return bool True on publisher allowed to publish, raise Exception otherwise.
         """
 
+        # SPECIAL publisher that can override `display` and `verified` in metadata IF AND ONLY IF value/values are
+        # matching the stored attribute. This "IF" is very important for security here.
+        # XXX Note that this is an exception and prone to race-conditions where a user might not get the expected
+        # result if unlucky with timing, e.g. they save a profile display value but instead of seeing the new value,
+        # they see the old value because the original publisher ran at the same time and "won" the timing battle.
+        publisher_that_can_override_metadata = ["mozilliansorg"]
+
         # If there was no change made always allow publishing - this also helps if for example:
         # - user contains a "created" attribute
         # - user has an update merged in
@@ -413,7 +420,11 @@ class User(object):
             return True
 
         publisher_name = attr.signature.publisher.name  # The publisher that attempts the change is here
-        logger.debug("Verifying that {} is allowed to publish field {}".format(publisher_name, attr_name))
+        logger.debug(
+            "Verifying that {} is allowed to publish field {} (previous publisher {})".format(
+                publisher_name, attr_name, previous_attribute.signature.publisher.name
+            )
+        )
         operation = "create"
 
         # Rules JSON structure:
@@ -455,10 +466,20 @@ class User(object):
                     value = "values"
 
                 if attr[value] == previous_attribute[value]:
-                    logger.debug(
-                        "[noop] {} skipped verification for  {} (no changes)".format(publisher_name, attr_name)
-                    )
-                    return True
+                    if (
+                        attr["metadata"]["display"] == previous_attribute["metadata"]["display"]
+                        and attr["metadata"]["verified"] == previous_attribute["metadata"]["verified"]
+                    ):
+                        logger.debug(
+                            "[noop] {} skipped verification for {} (no changes)".format(publisher_name, attr_name)
+                        )
+                        return True
+                    elif publisher_name in publisher_that_can_override_metadata:
+                        logger.debug(
+                            f"[{operation}] allowed {publisher_name} for {attr_name} because "
+                            "it's part of `publisher_that_can_override_metadata`"
+                        )
+                        return True
                 elif publisher_name == allowed_updators:
                     logger.debug("[update] {} is allowed to publish field {}".format(publisher_name, attr_name))
                     return True

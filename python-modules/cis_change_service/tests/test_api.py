@@ -5,6 +5,7 @@ import os
 import random
 import subprocess
 import string
+import cis_profile
 from cis_profile import common
 from cis_profile import FakeUser
 from cis_profile.fake_profile import FakeProfileConfig
@@ -19,6 +20,7 @@ logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name
 logging.getLogger("boto").setLevel(logging.CRITICAL)
 logging.getLogger("boto3").setLevel(logging.CRITICAL)
 logging.getLogger("botocore").setLevel(logging.CRITICAL)
+logging.getLogger("cis_profile.profile").setLevel(logging.DEBUG)
 
 
 logger = logging.getLogger(__name__)
@@ -173,6 +175,94 @@ class TestAPI(object):
             follow_redirects=True,
         )
         assert result.status_code == 200
+
+    @mock.patch("cis_change_service.idp.get_jwks")
+    def test_wrong_publisher(self, fake_jwks):
+        """
+        This verifies a wrong-publisher can't update
+        it creates a valid user, then wrongly modify an attribute its not allowed to
+        """
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis-verify.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_REGION_NAME"] = "us-east-1"
+        os.environ["AWS_ACCESS_KEY_ID"] = "foo"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "bar"
+        os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
+        os.environ["CIS_VERIFY_SIGNATURES"] = "true"
+        os.environ["CIS_VERIFY_PUBLISHERS"] = "true"
+        from cis_change_service import api
+
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal().no_display())
+        # Create a brand new user
+        patched_user_profile = ensure_appropriate_publishers_and_sign(
+            fake_new_user.as_dict(), self.publisher_rules, "create"
+        )
+        # Ensure a first_name is set as we'll use that for testing
+        patched_user_profile.first_name.value = "test"
+        patched_user_profile.first_name.signature.publisher.name = "ldap"
+        patched_user_profile.first_name.metadata.display = "public"
+        patched_user_profile.sign_attribute("first_name", "ldap")
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(patched_user_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        response = json.loads(result.get_data())
+        assert result.status_code == 200
+        assert response["condition"] == "create"
+
+        # sign first_name again but with wrong publisher (but same value as before)
+        new_user = cis_profile.User(user_id=patched_user_profile.user_id.value)
+        new_user.first_name = patched_user_profile.first_name
+        new_user.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(new_user.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert response["status_code"] == 202
+
+        # sign first_name again but with wrong publisher and different display (but same value as before)
+        new_user = cis_profile.User(user_id=patched_user_profile.user_id.value)
+        new_user.first_name = patched_user_profile.first_name
+        new_user.first_name.metadata.display = "staff"
+        new_user.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(new_user.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert response["code"] == "invalid_publisher"
+
+        # sign first_name again but with wrong publisher and wrong value (it should fail)
+        new_user.first_name.value = "new-test"
+        new_user.sign_attribute("first_name", "access_provider")
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(new_user.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+        response = json.loads(result.get_data())
+        assert result.status_code != 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_fail(self, fake_jwks):

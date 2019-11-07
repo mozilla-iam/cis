@@ -7,8 +7,15 @@ import copy
 import cis_profile.exceptions
 import pytest
 import os
+import logging
 import json
 import jsonschema
+
+
+logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
+logger = logging.getLogger(__name__)
+
+logging.getLogger("cis_profile.profile").setLevel(logging.DEBUG)
 
 
 def _is_or_contains_empty_str(value):
@@ -208,13 +215,36 @@ class TestProfile(object):
         assert u_orig.active.value is None
 
     def test_verify_all_publishers(self):
-        u = profile.User(user_id="test")
+        u = profile.User(user_id="test", first_name="tester")
         u.verify_all_publishers(u)
 
         old_user = profile.User()
         old_user.active.value = True
+        old_user.active.signature.publisher.name = "access_provider"
         with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
             u.verify_all_publishers(old_user)
+
+        old_user_2 = profile.User()
+        old_user_2.first_name.value = "nottest"
+        old_user_2.first_name.signature.publisher.name = "mozilliansorg"
+        u.first_name.value = "test"
+        u.first_name.signature.publisher.name = "access_provider"
+        with pytest.raises(cis_profile.exceptions.PublisherVerificationFailure):
+            u.verify_all_publishers(old_user_2)
+
+    def test_verify_all_publishers_mozillians_exception(self):
+        """
+        This tests the whitelisted exception for DinoPark/Mozilliansorg to be allowed to change display or verified
+        metadata values, when the actual value/values of the attribute is NOT modified
+        """
+        u = profile.User(user_id="test", first_name="tester")
+        u.first_name.metadata.display = "public"
+
+        old_user = profile.User()
+        old_user.first_name.value = "tester"  # same value
+        u.first_name.metadata.display = "private"  # different display
+        old_user.first_name.signature.publisher.name = "access_provider"
+        assert u.verify_all_publishers(old_user) is True
 
     def test_verify_can_publish_login_method(self):
         u = profile.User(login_method="Mozilla-LDAP-Dev")

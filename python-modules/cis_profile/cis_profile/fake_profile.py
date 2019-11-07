@@ -41,6 +41,7 @@ class FakeProfileConfig(object):
         self._auth0 = False
         self._uuid_username = False
         self._minimal = False
+        self._no_display = False
         self._active_percent = 100
 
     def default(self):
@@ -56,6 +57,10 @@ class FakeProfileConfig(object):
 
     def minimal(self, b=True):
         self._minimal = b
+        return self
+
+    def no_display(self, b=True):
+        self._no_display = b
         return self
 
     def mozillians(self, b=True):
@@ -300,8 +305,11 @@ class FakeUser(cis_profile.profile.User):
         self.generate_hris(fake, config, hierarchy)
         self.generate_mozillians(fake, config)
 
-        display_faker = DisplayFaker()
-        display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
+        # Create profiles can't be randomizing all display values, that'd break publisher verification
+        # minimal profiles also try not to do this
+        if not config._no_display:
+            display_faker = DisplayFaker()
+            display_faker.populate(self.__dict__, policy=DisplayFakerPolicy.rand_display(fake.random))
 
         super().initialize_timestamps()
 
@@ -410,14 +418,14 @@ class FakeUser(cis_profile.profile.User):
         self._d("first_name.value", fake.first_name())
         self._d("primary_email.value", email)
 
-        for k, v in identities.items():
-            self.__dict__["identities"][k]["value"] = v
-
         if not config._create:
             self._d("primary_username.value", fake.primary_username())
 
         if config._minimal:
             return
+
+        for k, v in identities.items():
+            self.__dict__["identities"][k]["value"] = v
 
         self._d("usernames.values", fake.usernames())
         self._d("last_name.value", fake.last_name())
