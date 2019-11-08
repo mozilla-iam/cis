@@ -220,10 +220,12 @@ class Auth0Publisher:
 
         # Build the connection query (excludes LDAP)
         # Excluded: "Mozilla-LDAP", "Mozilla-LDAP-Dev"
+        # Excluded: Old users without any group
         # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-        az_query = "email_verified:true AND ("
+        exclusion_query = 'NOT (last_login:[* TO 2018-01-01] AND (groups:(everyone) OR NOT _exists_:"groups"))'
+        az_query = exclusion_query + " AND email_verified:true AND ("
         t = ""
         for azc in self.az_whitelisted_connections:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
