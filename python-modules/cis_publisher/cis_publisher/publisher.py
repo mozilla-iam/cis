@@ -421,8 +421,10 @@ class Publish:
 
         # Never NULL/None these fields during filtering as they're used for knowing where to post
         whitelist = ["user_id", "active"]
+        null_user = User()
 
         allowed_updates = self.publisher_rules["update"]
+        allowed_creates = self.publisher_rules["create"]
         for n in range(0, len(profiles)):
             p = profiles[n]
             if p.user_id.value is None:
@@ -475,8 +477,26 @@ class Publish:
                                 p.__dict__[pfield]["value"] = None
                             elif "values" in p.__dict__[pfield].keys():
                                 p.__dict__[pfield]["values"] = None
-                logger.debug("Filtered fields for user {}".format(user_id))
-                profiles[n] = p
+            else:
+                # User is not yet in CIS, its a new user
+                logger.debug(f"Filtering out None/null fields from creation since these aren't needed for {user_id}")
+                for pfield in p.__dict__:
+                    if pfield in whitelist:
+                        continue
+
+                    if pfield not in allowed_creates:
+                        continue
+
+                    f = p.__dict__[pfield]
+                    if "value" in f.keys() and f["value"] is None:
+                        p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
+                    elif "values" in f.keys() and (f["values"] is None or len(f["values"]) == 0):
+                        p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
+                # XXX filter sub-fields too on create? ["identities", "staff_information", "access_information"]
+
+            logger.debug("Filtered fields for user {}".format(user_id))
+            profiles[n] = p
+
         if save:
             self.profiles = profiles
         return profiles
