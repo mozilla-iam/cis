@@ -221,6 +221,12 @@ class Auth0Publisher:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
         az_query = az_query + ")"
+        az_query = az_query + " AND NOT ("
+        t = ""
+        for azc in self.az_blacklisted_connections:
+            az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
+            t = " OR "
+        az_query = az_query + ")"
 
         # Build query for user_ids if some are specified (else it gets all of them)
         # NOTE: We can't query all that many users because auth0 uses a GET query which is limited in size by httpd
@@ -341,7 +347,7 @@ class Auth0Publisher:
                 p.update_timestamp("identities.github_id_v4")
             if "identities" in u.keys():
                 for ident in u["identities"]:
-                    if ident.get("provider") in self.az_blacklisted_connections:
+                    if ident.get("connection") in self.az_blacklisted_connections:
                         logger.warning(
                             "ad/LDAP account returned from search - this should not happen. User will be skipped."
                             " User_id: {}".format(p.user_id.value)
