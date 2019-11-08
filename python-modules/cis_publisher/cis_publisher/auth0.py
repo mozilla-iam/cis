@@ -156,6 +156,7 @@ class Auth0Publisher:
         self.s3_cache = self.get_s3_cache()
         if self.s3_cache is not None:
             self.all_cis_user_ids = self.s3_cache["all_cis_user_ids"]
+            return self.all_cis_user_ids
         if self.all_cis_user_ids is not None:
             return self.all_cis_user_ids
 
@@ -206,6 +207,7 @@ class Auth0Publisher:
         self.get_s3_cache()
         if self.s3_cache is not None:
             self.az_users = self.s3_cache["az_users"]
+            return self.az_users
         # Don't use cache for just one user
         if self.az_users is not None and (user_ids is not None and len(user_ids) != 1):
             return self.az_users
