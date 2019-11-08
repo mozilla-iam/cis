@@ -164,11 +164,19 @@ class Auth0Publisher:
         # These are the users CIS knows about
         self.all_cis_user_ids = []
         for c in self.az_whitelisted_connections:
+            # FIXME we're not using the real login method here because
+            # Code in the CIS Vault matches against the start of `user_id` instead of the actual login method
+            # This is fine for most methods, except this one... ideally the code should change in the CIS Vault when it
+            # uses something else than DynamoDB and is able to match efficiently on other attributes
+            if c == "firefoxaccounts":
+                c = "oauth2|firefoxaccounts"
             publisher.login_method = c
             publisher.get_known_cis_users(include_inactive=False)
             self.all_cis_user_ids += publisher.known_cis_users_by_user_id.keys()
             # Invalidate publisher memory cache
             publisher.known_cis_users = None
+        # XXX in case we got duplicates for some reason, we uniquify
+        self.all_cis_user_ids = list(set(self.all_cis_user_ids))
         logger.info("Got {} known CIS users for all whitelisted login methods".format(len(self.all_cis_user_ids)))
         return self.all_cis_user_ids
 
