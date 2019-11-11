@@ -50,6 +50,8 @@ class TestFakeProfile(object):
         )
         update_profile.uuid = create_profile.uuid
         update_profile.user_id = create_profile.user_id
+        update_profile.primary_username.value = "test"  # invalid because default publisher is cis
+        update_profile.primary_username.signature.publisher.name = "mozilliansorg"
 
         with pytest.raises(exceptions.PublisherVerificationFailure):
             update_profile.verify_all_publishers(empty_profile)

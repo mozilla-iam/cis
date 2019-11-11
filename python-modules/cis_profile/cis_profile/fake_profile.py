@@ -282,10 +282,7 @@ class FakeUser(cis_profile.profile.User):
     """
 
     def __init__(self, seed=None, fake=fake, hierarchy=non_hierarchy_iter(), config=FakeProfileConfig().default()):
-        user_structure_json_file = (
-            "data/user_profile_null_create.json" if config._create else "data/user_profile_null.json"
-        )
-        super().__init__(user_structure_json_file=user_structure_json_file)
+        super().__init__()
         if seed is not None:
             fake.seed_instance(seed)
 
