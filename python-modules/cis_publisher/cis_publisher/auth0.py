@@ -384,6 +384,13 @@ class Auth0Publisher:
                         p.identities.firefox_accounts_primary_email.signature.publisher.name = "access_provider"
                         p.update_timestamp("identities.firefox_accounts_primary_email")
                     elif ident.get("provider") == "github":
+                        if ident.get("nickname") is not None:
+                            # Match the hack in
+                            # https://github.com/mozilla-iam/dino-park-whoami/blob/master/src/update.rs#L42 (see
+                            # function definition at the top of the file as well)
+                            p.usernames.value = {"HACK#GITHUB": ident.get("nickname")}
+                            p.usernames.metadata.display = "private"
+                            p.usernames.signature.publisher.name = "access_provider"
                         p.identities.github_id_v3.value = ident.get("user_id")
                         p.identities.github_id_v3.metadata.display = "private"
                         p.identities.github_id_v3.signature.publisher.name = "access_provider"
