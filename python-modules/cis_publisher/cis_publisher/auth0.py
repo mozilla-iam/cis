@@ -156,6 +156,7 @@ class Auth0Publisher:
         self.s3_cache = self.get_s3_cache()
         if self.s3_cache is not None:
             self.all_cis_user_ids = self.s3_cache["all_cis_user_ids"]
+            return self.all_cis_user_ids
         if self.all_cis_user_ids is not None:
             return self.all_cis_user_ids
 
@@ -164,11 +165,19 @@ class Auth0Publisher:
         # These are the users CIS knows about
         self.all_cis_user_ids = []
         for c in self.az_whitelisted_connections:
+            # FIXME we're not using the real login method here because
+            # Code in the CIS Vault matches against the start of `user_id` instead of the actual login method
+            # This is fine for most methods, except this one... ideally the code should change in the CIS Vault when it
+            # uses something else than DynamoDB and is able to match efficiently on other attributes
+            if c == "firefoxaccounts":
+                c = "oauth2|firefoxaccounts"
             publisher.login_method = c
             publisher.get_known_cis_users(include_inactive=False)
             self.all_cis_user_ids += publisher.known_cis_users_by_user_id.keys()
             # Invalidate publisher memory cache
             publisher.known_cis_users = None
+        # XXX in case we got duplicates for some reason, we uniquify
+        self.all_cis_user_ids = list(set(self.all_cis_user_ids))
         logger.info("Got {} known CIS users for all whitelisted login methods".format(len(self.all_cis_user_ids)))
         return self.all_cis_user_ids
 
@@ -198,6 +207,7 @@ class Auth0Publisher:
         self.get_s3_cache()
         if self.s3_cache is not None:
             self.az_users = self.s3_cache["az_users"]
+            return self.az_users
         # Don't use cache for just one user
         if self.az_users is not None and (user_ids is not None and len(user_ids) != 1):
             return self.az_users
@@ -212,12 +222,20 @@ class Auth0Publisher:
 
         # Build the connection query (excludes LDAP)
         # Excluded: "Mozilla-LDAP", "Mozilla-LDAP-Dev"
+        # Excluded: Old users without any group
         # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-        az_query = "email_verified:true AND ("
+        exclusion_query = 'NOT (last_login:[* TO 2018-01-01] AND (groups:(everyone) OR NOT _exists_:"groups"))'
+        az_query = exclusion_query + " AND email_verified:true AND ("
         t = ""
         for azc in self.az_whitelisted_connections:
+            az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
+            t = " OR "
+        az_query = az_query + ")"
+        az_query = az_query + " AND NOT ("
+        t = ""
+        for azc in self.az_blacklisted_connections:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
         az_query = az_query + ")"
@@ -341,7 +359,7 @@ class Auth0Publisher:
                 p.update_timestamp("identities.github_id_v4")
             if "identities" in u.keys():
                 for ident in u["identities"]:
-                    if ident.get("provider") in self.az_blacklisted_connections:
+                    if ident.get("connection") in self.az_blacklisted_connections:
                         logger.warning(
                             "ad/LDAP account returned from search - this should not happen. User will be skipped."
                             " User_id: {}".format(p.user_id.value)
@@ -366,6 +384,13 @@ class Auth0Publisher:
                         p.identities.firefox_accounts_primary_email.signature.publisher.name = "access_provider"
                         p.update_timestamp("identities.firefox_accounts_primary_email")
                     elif ident.get("provider") == "github":
+                        if ident.get("nickname") is not None:
+                            # Match the hack in
+                            # https://github.com/mozilla-iam/dino-park-whoami/blob/master/src/update.rs#L42 (see
+                            # function definition at the top of the file as well)
+                            p.usernames.value = {"HACK#GITHUB": ident.get("nickname")}
+                            p.usernames.metadata.display = "private"
+                            p.usernames.signature.publisher.name = "access_provider"
                         p.identities.github_id_v3.value = ident.get("user_id")
                         p.identities.github_id_v3.metadata.display = "private"
                         p.identities.github_id_v3.signature.publisher.name = "access_provider"
