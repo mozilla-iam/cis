@@ -487,12 +487,21 @@ class Publish:
                     if pfield not in allowed_creates:
                         continue
 
-                    f = p.__dict__[pfield]
-                    if "value" in f.keys() and f["value"] is None:
-                        p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
-                    elif "values" in f.keys() and (f["values"] is None or len(f["values"]) == 0):
-                        p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
-                # XXX filter sub-fields too on create? ["identities", "staff_information", "access_information"]
+                    # XXX filter more sub-fields on create? ["staff_information", "access_information"]
+                    # Refactor me to be recursive (just like above code)
+                    if pfield == "identities":
+                        for subpfield in p.__dict__[pfield]:
+                            f = p.__dict__[pfield][subpfield]
+                            if "value" in f.keys() and f["value"] is None:
+                                p.__dict__[pfield][subpfield] = null_user.__dict__[pfield][subpfield]  # reset
+                            elif "values" in f.keys() and (f["values"] is None or len(f["values"]) == 0):
+                                p.__dict__[pfield][subpfield] = null_user.__dict__[pfield][subpfield]  # reset
+                    else:
+                        f = p.__dict__[pfield]
+                        if "value" in f.keys() and f["value"] is None:
+                            p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
+                        elif "values" in f.keys() and (f["values"] is None or len(f["values"]) == 0):
+                            p.__dict__[pfield] = null_user.__dict__[pfield]  # reset
 
             logger.debug("Filtered fields for user {}".format(user_id))
             profiles[n] = p
