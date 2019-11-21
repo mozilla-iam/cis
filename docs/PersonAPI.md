@@ -155,6 +155,17 @@ Retrieve lists of users (not full profiles):
 
 *Note true/false are case insensitive for ease.* 
 
+- `/v2/users/id/all/by_attribute_contains` (Supports filtered queries for access information and staff information.)
+
+query_arguments:
+- active=True|false
+- fullProfiles=True|False
+- nextPage=${nextPageToken}
+
+> This endpoint returns 25 users per page per query.
+
+Example: `/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True` returns all users with staff_information.staff set to True.
+
 
 ## I want to help add features to this API!
 
