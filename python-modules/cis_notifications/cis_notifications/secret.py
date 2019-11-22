@@ -105,10 +105,10 @@ class Manager(object):
             if "SecretString" in get_secret_value_response:
                 secret_str = get_secret_value_response["SecretString"]
                 try:
-                    secret = json.load(secret_str)
+                    secret = json.loads(secret_str)
                 except Exception as e:
                     logger.debug(
-                        "json.load of secret failed, wrapping secret string into a dict to look like JSON ({})".format(
+                        "json.loads of secret failed, wrapping secret string into a dict to look like JSON ({})".format(
                             e
                         )
                     )
