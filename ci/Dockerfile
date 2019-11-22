@@ -3,6 +3,8 @@ LABEL maintainer="akrug@mozilla.com"
 
 RUN pacman -Syyu --noconfirm
 RUN pacman --noconfirm -S --needed base-devel
+RUN pacman -S --noconfirm iputils
+RUN pacman -S --noconfirm net-tools
 RUN pacman -S --noconfirm grep
 RUN pacman -S --noconfirm nodejs
 RUN pacman -S --noconfirm npm

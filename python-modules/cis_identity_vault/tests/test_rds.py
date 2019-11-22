@@ -9,15 +9,15 @@ class TestRDS(object):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
-        os.environ["CIS_POSTGRES_HOST"] = "db"
-        os.environ["CIS_POSTGRES_PORT"] = "5432"
-        os.environ["CIS_DB_USER"] = "cis_user"
-        os.environ["CIS_DB_PASSWORD"] = "testing"
 
         # Mock a user profile using the faker to send to the database.
         self.user_profile = FakeUser().as_dict()
 
     def test_table_init(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
 
         v = vault.RelationalIdentityVault()
@@ -26,6 +26,10 @@ class TestRDS(object):
         v.delete()
 
     def test_db_create(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         os.environ["CIS_IDENTITY_VAULT"] = "purple-unicorn"
         from cis_identity_vault import vault
 
@@ -34,6 +38,10 @@ class TestRDS(object):
         v.delete()
 
     def test_user_create(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -46,6 +54,10 @@ class TestRDS(object):
         v.delete()
 
     def test_user_find(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -63,6 +75,10 @@ class TestRDS(object):
         v.delete()
 
     def test_user_delete(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -74,6 +90,10 @@ class TestRDS(object):
         assert u.find(self.user_profile) is None
 
     def test_user_update(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -87,6 +107,10 @@ class TestRDS(object):
         u.delete(user_profile=self.user_profile)
 
     def test_find_by_email(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -101,6 +125,10 @@ class TestRDS(object):
         assert len(search_result) > 0
 
     def test_find_by_uuid(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 
@@ -113,6 +141,10 @@ class TestRDS(object):
         assert search_result.profile["uuid"]["value"] == self.user_profile["uuid"]["value"]
 
     def test_find_by_primary_username(self):
+        os.environ["CIS_POSTGRES_HOST"] = "db"
+        os.environ["CIS_POSTGRES_PORT"] = "5432"
+        os.environ["CIS_DB_USER"] = "cis_user"
+        os.environ["CIS_DB_PASSWORD"] = "testing"
         from cis_identity_vault import vault
         from cis_identity_vault.models import user
 

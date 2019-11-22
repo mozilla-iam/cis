@@ -34,6 +34,7 @@ deploy-shell: login-to-ecr
 .PHONY: build
 build:
 	docker-compose run tester make -C serverless-functions build-without-publish STAGE=$(STAGE)
+
 .PHONY: publish
 publish:
 	make -C serverless-functions publish-layer STAGE=$(STAGE)
