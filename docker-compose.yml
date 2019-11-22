@@ -2,7 +2,7 @@
 version: '3.7'
 services:
   db:
-    image: postgres
+    image: postgres:11.1
     environment:
       POSTGRES_USER: cis_user
       POSTGRES_PASSWORD: testing
@@ -15,9 +15,13 @@ services:
     build:
       context: ci/
       dockerfile: Dockerfile
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
+      AWS_DEFAULT_PROFILE: default
+      AWS_ACCESS_KEY_ID: AKIAxxxxxxxxxxxx
+      AWS_SECRET_ACCESS_KEY: AKIAxxxxxxxxxxxxxxxxxxxxx
     volumes:
       - ./:/var/task
-      - ~/.aws:/root/.aws
     networks:
       - default
     depends_on:
