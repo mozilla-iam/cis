@@ -20,6 +20,10 @@ services:
       AWS_DEFAULT_PROFILE: default
       AWS_ACCESS_KEY_ID: AKIAxxxxxxxxxxxx
       AWS_SECRET_ACCESS_KEY: AKIAxxxxxxxxxxxxxxxxxxxxx
+      CIS_POSTGRES_HOST: db
+      CIS_POSTGRES_PORT: 5432
+      CIS_DB_USER: cis_user
+      CIS_DB_PASSWORD: testing
     volumes:
       - ./:/var/task
     networks:
