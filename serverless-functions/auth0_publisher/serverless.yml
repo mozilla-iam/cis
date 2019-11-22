@@ -101,6 +101,13 @@ provider:
         - arn:aws:ssm:*:*:parameter${self:custom.auth0PublisherEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.auth0PublisherStage}}/*
     - Effect: Allow
       Action:
+        - logs:CreateLogGroup
+        - logs:CreateLogStream
+        - logs:PutLogEvents
+        - logs:DescribeLogGroups
+      Resource: "*"
+    - Effect: Allow
+      Action:
         - "kms:Decrypt"
       Resource:
         - arn:aws:kms:us-west-2:320464205386:key/ef00015d-739b-456d-a92f-482712af4f32
