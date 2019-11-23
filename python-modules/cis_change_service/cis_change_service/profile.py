@@ -114,8 +114,8 @@ class Vault(object):
             logger.info("Search user in vault results: {}".format(len(res["Items"])))
 
         except Exception as e:
-            logger.error("Problem finding user profile in identity vault due to: {}".format(e))
-            res = {"Items": []}
+            logger.critical("Problem finding user profile in identity vault due to: {}".format(e))
+            raise (e)
 
         if len(res["Items"]) > 0:
             # This profile exists in the vault and will be merged and it's publishers verified

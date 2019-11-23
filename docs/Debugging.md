@@ -90,3 +90,15 @@ aws ssm get-parameters-by-path --path /iam/cis/
 3. Ensure the Lambda function is not using cache (if you want to be sure, re-deploy it).
 
 If needed, you can use the python script present in `cis/well-known-endpoint/pem_to_jwks.py` to convert PEM to JWKS
+
+## DynamoDb projection expression
+
+Say you want to query or scan a table and filter on a map - the syntax isn't straight-forward and examples are hard to
+come by. Here's an example on how to query all users that have:
+- `user_id` startswith "ad"
+- `primary_email` contains "@mozilla.com"
+- `flat_profile.staff_information.staff` is a map and the `staff` item is of type `NULL`
+
+```
+aws dynamodb scan --table-name testing-identity-vault --projection-expression "id, primary_email, flat_profile" --filter-expression ":a = flat_profile.staff_information.staff AND begins_with(id, :id) AND contains(primary_email, :p) AND attribute_exists(flat_profile)" --expression-attribute-values '{":id": {"S": "ad"}, ":p": {"S": "@mozilla.com"}, ":a": {"NULL": true}}'
+```

@@ -265,6 +265,69 @@ class TestAPI(object):
         assert result.status_code != 200
 
     @mock.patch("cis_change_service.idp.get_jwks")
+    def test_partial_update_with_dynamo_down_it_should_fail(self, fake_jwks):
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_ENVIRONMENT"] = "local"
+        os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
+        os.environ["CIS_REGION_NAME"] = "us-east-1"
+        os.environ["AWS_ACCESS_KEY_ID"] = "foo"
+        os.environ["AWS_SECRET_ACCESS_KEY"] = "bar"
+        os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
+        from cis_change_service import api
+
+        fake_new_user = FakeUser(config=FakeProfileConfig().minimal())
+        # Create a brand new user
+        patched_user_profile = ensure_appropriate_publishers_and_sign(
+            fake_new_user.as_dict(), self.publisher_rules, "create"
+        )
+
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+        token = f.generate_bearer_without_scope()
+        api.app.testing = True
+        self.app = api.app.test_client()
+        result = self.app.post(
+            "/v2/user",
+            headers={"Authorization": "Bearer " + token},
+            data=json.dumps(patched_user_profile.as_json()),
+            content_type="application/json",
+            follow_redirects=True,
+        )
+
+        response = json.loads(result.get_data())
+        assert result.status_code == 200
+        assert response["condition"] == "create"
+
+        logger.info("A stub user has been created and verified to exist.")
+
+        os.environ["CIS_DYNALITE_PORT"] = "31337"  # bad port
+
+        logger.info("Attempting failing partial update.")
+        null_profile = profile.User(user_structure_json=None)
+        null_profile.alternative_name.value = "iamanewpreferredlastname"
+        null_profile.sign_attribute("alternative_name", "mozilliansorg")
+        null_profile.user_id.value = "ad|wrong|LDAP"
+        null_profile.active.value = True
+        null_profile.sign_attribute("active", "access_provider")
+
+        try:
+            result = self.app.post(
+                "/v2/user?user_id={}".format("mismatching_user_id"),
+                headers={"Authorization": "Bearer " + token},
+                data=json.dumps(null_profile.as_json()),
+                content_type="application/json",
+                follow_redirects=True,
+            )
+            response = json.loads(result.get_data())
+            assert result.status_code == 500
+        except Exception as e:
+            logger.info(f"Exception was correctly raised because DynamoDB was unavailable: {e}")
+        else:
+            logger.warning("Exception was not raised, test has failed")
+            assert False
+
+    @mock.patch("cis_change_service.idp.get_jwks")
     def test_partial_update_it_should_fail(self, fake_jwks):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
