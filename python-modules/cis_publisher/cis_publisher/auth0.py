@@ -233,12 +233,10 @@ class Auth0Publisher:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
         az_query = az_query + ")"
-        az_query = az_query + " AND NOT ("
-        t = ""
-        for azc in self.az_blacklisted_connections:
-            az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
-            t = " OR "
-        az_query = az_query + ")"
+        # NOTE XXX: There is no way to tell auth0's ES "don't include matches where the first identity.connection is a
+        # blacklisted connection", so we do this instead. This 100% relies on auth0 user_ids NOT being opaque,
+        # unfortunately
+        az_query = az_query + ' AND NOT (user_id:"ad|*")'
 
         # Build query for user_ids if some are specified (else it gets all of them)
         # NOTE: We can't query all that many users because auth0 uses a GET query which is limited in size by httpd
