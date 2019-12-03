@@ -42,7 +42,7 @@ custom:
       testing: arn:aws:s3:::ldap.sso.mozilla.com
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.8
   stage: ${opt:stage, 'dev'}
   tracing: true # enable tracing
   environment:

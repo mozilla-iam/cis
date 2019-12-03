@@ -10,7 +10,7 @@ custom:
       testing: testing
 provider:
   name: aws
-  runtime: python3.7
+  runtime: python3.8
   stage: ${opt:stage, 'dev'}
   tracing: true # enable tracing
   environment:

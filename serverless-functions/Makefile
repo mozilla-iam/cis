@@ -8,7 +8,7 @@ LAMBDA_PACKAGE_CMD	:= docker run --rm \
 VENV_COMMAND		:= virtualenv venv -p python3
 VENV_ACTIVATE		:= source venv/bin/activate
 CIS_MODULE_PATH		:= python-modules
-PY_DIR			:= python/lib/python3.7/site-packages
+PY_DIR			:= python/lib/python3.8/site-packages
 PIP_CMD			:= pip install --upgrade
 LAYER_NAME		:= cis
 STAGE			:= ${STAGE}
@@ -58,7 +58,7 @@ layer-codebuild:
 publish-layer:
 	@echo "Attempting to publish the layer using the local non-docker aws cli"
 	aws lambda publish-layer-version \
-	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 python3.7 \
+	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.8 \
 	--zip-file fileb:///$(ROOT_DIR)/build/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \
@@ -78,7 +78,7 @@ package-single-layer:
 	$(PIP_CMD) -v $(CIS_MODULE_PATH)/${MODULE}/ -t serverless-functions/$(PY_DIR) --upgrade && \
 	zip -r /var/task/serverless-functions/ /var/task/serverless-functions/build/ && \
 	aws lambda publish-layer-version \
-	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.6 python3.7 \
+	--layer-name $(LAYER_NAME)_$(STAGE) --compatible-runtimes python3.8 \
 	--zip-file fileb:///var/task/serverless-functions/cis.zip | \
 	jq .LayerVersionArn | xargs -n 1 aws ssm put-parameter \
 	--name /iam/cis/$(STAGE)/lambda_layer_arn \

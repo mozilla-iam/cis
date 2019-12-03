@@ -21,11 +21,13 @@ RUN pacman -S --noconfirm unzip
 RUN pacman -S --noconfirm tar
 RUN pacman -S --noconfirm gawk
 RUN pacman -S --noconfirm jdk7-openjdk
-RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/python37-3.7.5-2-x86_64.pkg.tar.xz
-RUN pacman -U --noconfirm python37-3.7.5-2-x86_64.pkg.tar.xz
-RUN ln -fs /usr/bin/python3.7 /usr/bin/python && \
-  rm -rf /usr/lib/python3.7/site-packages && \
-  ln -fs /usr/lib/python3.8/site-packages/ /usr/lib/python3.7/site-packages
+## Use this if you need to force-downgrade system's python
+## You'll want to compile the version you want first and upload it to S3
+# RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/python37-3.7.5-2-x86_64.pkg.tar.xz
+#RUN pacman -U --noconfirm python37-3.7.5-2-x86_64.pkg.tar.xz
+#RUN ln -fs /usr/bin/python3.7 /usr/bin/python && \
+#  rm -rf /usr/lib/python3.7/site-packages && \
+#  ln -fs /usr/lib/python3.8/site-packages/ /usr/lib/python3.7/site-packages
 RUN pip install boto3 awscli
 RUN pip install flake8
 RUN pip install black
