@@ -356,14 +356,15 @@ class Auth0Publisher:
                 p.identities.github_id_v4.signature.publisher.name = "access_provider"
                 p.update_timestamp("identities.github_id_v4")
             if "identities" in u.keys():
+                # If blacklisted connection is in the first entry, skip (first entry = "main" user)
+                if u["identities"][0].get("connection") in self.az_blacklisted_connections:
+                    logger.warning(
+                        "ad/LDAP account returned from search - this should not happen. User will be skipped."
+                        " User_id: {}".format(p.user_id.value)
+                    )
+                    continue
                 for ident in u["identities"]:
-                    if ident.get("connection") in self.az_blacklisted_connections:
-                        logger.warning(
-                            "ad/LDAP account returned from search - this should not happen. User will be skipped."
-                            " User_id: {}".format(p.user_id.value)
-                        )
-                        continue
-                    elif ident.get("provider") == "google-oauth2":
+                    if ident.get("provider") == "google-oauth2":
                         p.identities.google_oauth2_id.value = ident.get("user_id")
                         p.identities.google_oauth2_id.metadata.display = "private"
                         p.identities.google_oauth2_id.signature.publisher.name = "access_provider"
