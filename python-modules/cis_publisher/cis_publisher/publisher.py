@@ -82,7 +82,7 @@ class Publish:
         self.publisher_rules = self.__well_known.get_publisher_rules()
         self.__inited = True
 
-    def post_all(self, user_ids=None):
+    def post_all(self, user_ids=None, create_users=False):
         """
         Post all profiles
         @user_ids list of str which are user ids like 'ad|test'
@@ -108,20 +108,18 @@ class Publish:
 
             # list what to delete, then delete instead of slower copy list operations or filters
             # This is because some data sets are huge / GBs of data
-            xlist = []
-            for idx, profile in enumerate(self.profiles):
-                if profile.user_id.value is None:
-                    if self.known_cis_users_by_email.get(profile.primary_email.value) not in user_ids:
+            if not create_users:
+                xlist = []
+                for idx, profile in enumerate(self.profiles):
+                    if profile.user_id.value is None:
+                        if self.known_cis_users_by_email.get(profile.primary_email.value) not in user_ids:
+                            xlist.append(idx)
+                    elif profile.user_id.value not in user_ids:
                         xlist.append(idx)
-                elif profile.user_id.value not in user_ids:
-                    xlist.append(idx)
-            for i in reversed(xlist):
-                if self.profiles[i].active.value:
-                    del self.profiles[i]
-            logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
-
-        # XXX - we already validate in the API, is this needed?
-        #        self.validate()
+                for i in reversed(xlist):
+                    if self.profiles[i].active.value:
+                        del self.profiles[i]
+                logger.info("After filtering, we have {} user profiles to post".format(len(self.profiles)))
 
         for profile in self.profiles:
             # If we have no user_id provided we need to find it here

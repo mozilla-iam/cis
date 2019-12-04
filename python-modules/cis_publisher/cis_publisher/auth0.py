@@ -316,11 +316,10 @@ class Auth0Publisher:
             p.user_id.value = u["user_id"]
             p.user_id.signature.publisher.name = "access_provider"
             p.update_timestamp("user_id")
+            p.active.value = True
             if "blocked" in u.keys():
                 if u["blocked"]:
                     p.active.value = False
-            else:
-                p.active.value = True
             p.active.signature.publisher.name = "access_provider"
             p.update_timestamp("active")
 
@@ -461,7 +460,7 @@ class Auth0Publisher:
 
         failures = []
         try:
-            failures = publisher.post_all(user_ids=user_ids)
+            failures = publisher.post_all(user_ids=user_ids, create_users=True)
         except Exception as e:
             logger.error("Failed to post_all() profiles. Trace: {}".format(format_exc()))
             raise e
