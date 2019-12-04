@@ -452,7 +452,7 @@ class FakeUser(cis_profile.profile.User):
 
 def batch_create_fake_profiles(seed, number):
     fake = faker.Faker()
-    fake.seed(seed)
+    faker.Faker.seed(seed)
     hierarchy = create_random_hierarchy_iter(fake.random)
     profiles = map(lambda x: x.as_dict(), [FakeUser(fake=fake, hierarchy=hierarchy) for _ in range(number)])
 
