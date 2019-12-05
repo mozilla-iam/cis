@@ -91,7 +91,7 @@ class v2UserByUserId(Resource):
     decorators = [requires_auth]
 
     def get(self, user_id):
-        logger.debug("Attempting to locate a user for user_id: {}".format(user_id))
+        logger.info("Attempting to locate a user for user_id: {}".format(user_id))
         return getUser(user_id, user.Profile.find_by_id)
 
 
@@ -101,7 +101,7 @@ class v2UserByUuid(Resource):
     decorators = [requires_auth]
 
     def get(self, uuid):
-        logger.debug("Attempting to locate a user for uuid: {}".format(uuid))
+        logger.info("Attempting to locate a user for uuid: {}".format(uuid))
         return getUser(uuid, user.Profile.find_by_uuid)
 
 
@@ -111,7 +111,7 @@ class v2UserByPrimaryEmail(Resource):
     decorators = [requires_auth]
 
     def get(self, primary_email):
-        logger.debug("Attempting to locate a user for primary_email: {}".format(primary_email))
+        logger.info("Attempting to locate a user for primary_email: {}".format(primary_email))
         return getUser(primary_email, user.Profile.find_by_email)
 
 
@@ -121,7 +121,7 @@ class v2UserByPrimaryUsername(Resource):
     decorators = [requires_auth]
 
     def get(self, primary_username):
-        logger.debug("Attempting to locate a user for primary_username: {}".format(primary_username))
+        logger.info("Attempting to locate a user for primary_username: {}".format(primary_username))
         return getUser(primary_username, user.Profile.find_by_username)
 
 
@@ -140,7 +140,7 @@ class v2UsersByAny(Resource):
 
         logger.debug("Arguments received: {}".format(args))
 
-        logger.debug("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
+        logger.info("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
         next_page = args.get("nextPage")
         if next_page is not None:
             next_page = urllib.parse.unquote(next_page)
@@ -150,7 +150,7 @@ class v2UsersByAny(Resource):
         elif transactions == "true":
             identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
 
-        logger.info("Getting all users for connection method: {}".format(args.get("connectionMethod")))
+        logger.debug("Getting all users for connection method: {}".format(args.get("connectionMethod")))
         if args.get("active") is not None and args.get("active").lower() == "false":
             active = False
         else:
@@ -178,7 +178,7 @@ class v2UsersByAny(Resource):
                 }
             )
 
-        logger.info("Returning {} users".format(len(all_users_cis)))
+        logger.debug("Returning {} users".format(len(all_users_cis)))
         return dict(users=all_users_cis, nextPage=all_users.get("nextPage"))
 
 
@@ -258,6 +258,11 @@ class v2Users(Resource):
         primary_email = args.get("primaryEmail", None)
         next_page = args.get("nextPage", None)
         scopes = get_scopes(args.get("Authorization"))
+
+        logger.info(
+            f"Attempting to get paginated users: primary_email:{primary_email}, next_page:{next_page}, "
+            "filter_display:{filter_display}, scopes:{scopes}"
+        )
 
         if next_page is not None:
             nextPage = load_dirty_json(next_page)

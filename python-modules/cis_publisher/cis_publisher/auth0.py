@@ -233,12 +233,10 @@ class Auth0Publisher:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
         az_query = az_query + ")"
-        az_query = az_query + " AND NOT ("
-        t = ""
-        for azc in self.az_blacklisted_connections:
-            az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
-            t = " OR "
-        az_query = az_query + ")"
+        # NOTE XXX: There is no way to tell auth0's ES "don't include matches where the first identity.connection is a
+        # blacklisted connection", so we do this instead. This 100% relies on auth0 user_ids NOT being opaque,
+        # unfortunately
+        az_query = az_query + ' AND NOT (user_id:"ad|*")'
 
         # Build query for user_ids if some are specified (else it gets all of them)
         # NOTE: We can't query all that many users because auth0 uses a GET query which is limited in size by httpd
@@ -318,11 +316,10 @@ class Auth0Publisher:
             p.user_id.value = u["user_id"]
             p.user_id.signature.publisher.name = "access_provider"
             p.update_timestamp("user_id")
+            p.active.value = True
             if "blocked" in u.keys():
                 if u["blocked"]:
                     p.active.value = False
-            else:
-                p.active.value = True
             p.active.signature.publisher.name = "access_provider"
             p.update_timestamp("active")
 
@@ -358,14 +355,15 @@ class Auth0Publisher:
                 p.identities.github_id_v4.signature.publisher.name = "access_provider"
                 p.update_timestamp("identities.github_id_v4")
             if "identities" in u.keys():
+                # If blacklisted connection is in the first entry, skip (first entry = "main" user)
+                if u["identities"][0].get("connection") in self.az_blacklisted_connections:
+                    logger.warning(
+                        "ad/LDAP account returned from search - this should not happen. User will be skipped."
+                        " User_id: {}".format(p.user_id.value)
+                    )
+                    continue
                 for ident in u["identities"]:
-                    if ident.get("connection") in self.az_blacklisted_connections:
-                        logger.warning(
-                            "ad/LDAP account returned from search - this should not happen. User will be skipped."
-                            " User_id: {}".format(p.user_id.value)
-                        )
-                        continue
-                    elif ident.get("provider") == "google-oauth2":
+                    if ident.get("provider") == "google-oauth2":
                         p.identities.google_oauth2_id.value = ident.get("user_id")
                         p.identities.google_oauth2_id.metadata.display = "private"
                         p.identities.google_oauth2_id.signature.publisher.name = "access_provider"
@@ -462,7 +460,7 @@ class Auth0Publisher:
 
         failures = []
         try:
-            failures = publisher.post_all(user_ids=user_ids)
+            failures = publisher.post_all(user_ids=user_ids, create_users=True)
         except Exception as e:
             logger.error("Failed to post_all() profiles. Trace: {}".format(format_exc()))
             raise e
