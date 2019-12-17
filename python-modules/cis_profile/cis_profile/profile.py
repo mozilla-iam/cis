@@ -240,9 +240,7 @@ class User(object):
         """
         returns str of current time that is valid for the CIS user profiles
         """
-        # instruct libc that we want UTC
-        os.environ["TZ"] = "UTC"
-        now = time.strftime("%Y-%m-%dT%H:%M:%S.000Z")
+        now = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
         return now
 
     def _clean_dict(self):
