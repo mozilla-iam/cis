@@ -21,7 +21,7 @@ class JsonFormatter(jsonlogger.JsonFormatter, object):
         if "asctime" in log_record:
             log_record["timestamp"] = log_record["asctime"]
         else:
-            log_record["timestamp"] = datetime.datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%S.%fZ%z")
+            log_record["timestamp"] = datetime.datetime.now(datetime.timezone.utc).strftime("%Y-%m-%dT%H:%M:%S.%fZ%z")
 
         if self._extra is not None:
             for key, value in self._extra.items():

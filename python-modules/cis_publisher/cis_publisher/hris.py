@@ -407,7 +407,7 @@ class HRISPublisher:
                 continue
 
             p = cis_profile.User()
-            ts_now = time.strftime("%Y-%m-%dT:%H:%M:%SZ")
+            ts_now = time.strftime("%Y-%m-%dT%H:%M:%S.000Z", time.gmtime())
             # Note: Never use non-preferred names here
             #            p.last_name.value = hruser.get("Preferred_Name_-_Last_Name")
             #            p.last_name.signature.publisher.name = "hris"
