@@ -226,15 +226,12 @@ class Auth0Publisher:
         # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-<<<<<<< HEAD
-        exclusion_query = 'NOT (last_login:[* TO 2019-01-01] AND logins_count:[2 TO *] AND '
-                '(groups:(everyone) OR NOT _exists_:"groups"))'
-=======
+
         exclusion_query = (
             "NOT (last_login:[* TO 2019-01-01] AND logins_count:[2 TO *] AND "
             '(groups:(everyone) OR NOT _exists_:"groups"))'
         )
->>>>>>> ae3a2bf... only add users who logged in more than once on the initial imports
+
         az_query = exclusion_query + " AND email_verified:true AND ("
         t = ""
         for azc in self.az_whitelisted_connections:
