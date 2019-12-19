@@ -37,11 +37,11 @@ def get_segment(
     users = response.get("Items")
     last_evaluated_key = response.get("LastEvaluatedKey")
 
-    while last_evaluated_key is not None:
-        scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
-        response = dynamodb_client.scan(**scan_kwargs)
-        users.extend(response.get("Items"))
-        last_evaluated_key = response.get("LastEvaluatedKey")
+    # while last_evaluated_key is not None:
+    #    scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
+    #    response = dynamodb_client.scan(**scan_kwargs)
+    #    users.extend(response.get("Items"))
+    #    last_evaluated_key = response.get("LastEvaluatedKey")
 
     logger.debug("Running thread_id: {}".format(thread_id))
     return result_queue.put(dict(users=users, nextPage=last_evaluated_key, segment=thread_id))
@@ -53,8 +53,8 @@ def scan(
     logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
-    pool_size = 5
-    max_segments = 5
+    pool_size = 1
+    max_segments = 1
 
     users = []
     last_evaluated_key = None

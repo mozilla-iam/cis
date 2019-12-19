@@ -1,0 +1,14 @@
+---
+version: '3.7'
+services:
+  tester:
+    build:
+      context: ci/
+      dockerfile: Dockerfile
+    environment:
+      AWS_DEFAULT_REGION: us-west-2
+    volumes:
+      - ./:/var/task
+      - ~/.aws:/root/.aws
+    networks:
+      - default

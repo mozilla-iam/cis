@@ -41,17 +41,17 @@ publish:
 
 .PHONY: release
 release:
-	docker-compose run tester make -C serverless-functions deploy-change-service STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-ldap-publisher STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-person-api STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-notifications STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-curator STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
-	docker-compose run tester make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-change-service STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-ldap-publisher STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-person-api STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-notifications STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-curator STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
 
 .PHONY: release-module
 release-module:
-	docker-compose run tester make -C serverless-functions deploy-$(MODULE) STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-$(MODULE) STAGE=$(STAGE)
 
 .PHONY: release-no-docker
 release-no-docker:
