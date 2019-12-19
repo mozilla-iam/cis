@@ -226,7 +226,8 @@ class Auth0Publisher:
         # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-        exclusion_query = 'NOT (last_login:[* TO 2018-01-01] AND (groups:(everyone) OR NOT _exists_:"groups"))'
+        exclusion_query = 'NOT (last_login:[* TO 2019-01-01] AND logins_count:[2 TO *] AND '
+                '(groups:(everyone) OR NOT _exists_:"groups"))'
         az_query = exclusion_query + " AND email_verified:true AND ("
         t = ""
         for azc in self.az_whitelisted_connections:
