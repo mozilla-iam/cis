@@ -1,7 +1,6 @@
 """Centralize logic for parallelism of scanning ops."""
 import queue
 import threading
-import time
 
 from logging import getLogger
 
