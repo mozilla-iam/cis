@@ -1,7 +1,6 @@
 """Centralize logic for parallelism of scanning ops."""
 import queue
 import threading
-import time
 
 from logging import getLogger
 
@@ -54,7 +53,6 @@ def scan(
     logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
-    max_threads = 50
     pool_size = 10
     max_segments = 10
 
@@ -80,12 +78,6 @@ def scan(
         logger.debug(*thread_args)
         threads.append(threading.Thread(target=get_segment, args=thread_args))
         threads[-1].start()
-
-        num_threads = len(threading.enumerate())
-        while num_threads >= max_threads:
-            time.sleep(1)
-            num_threads = len(threading.enumerate())
-            logger.debug("Too many concurrent threads, waiting a bit...")
 
     logger.debug("Waiting for threads to terminate...")
     for t in threads:
