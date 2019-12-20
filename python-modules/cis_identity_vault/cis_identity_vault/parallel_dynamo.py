@@ -37,7 +37,7 @@ def get_segment(
     users = response.get("Items")
     last_evaluated_key = response.get("LastEvaluatedKey")
 
-     while last_evaluated_key is not None:
+    while last_evaluated_key is not None:
         scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
         response = dynamodb_client.scan(**scan_kwargs)
         users.extend(response.get("Items"))
