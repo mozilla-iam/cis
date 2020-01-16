@@ -98,6 +98,37 @@ NOTE: **If no use case or user story with a rational is present, no access will 
 
 The credentials you will receive are OAuth2 credentials.
 
+## How are these credentials provisioned in Auth0?
+
+The steps for an IAM administrator to follow to fulfill a request for PersonAPI
+access are
+
+1. Browse to [applications](https://manage.mozilla.auth0.com/dashboard/pi/auth/applications) in Auth0
+1. Click '+ Create Application`
+1. Enter a `Name` value of `PersonAPI - John Doe` where `John Doe` is the name of the requester or the
+   name of the service or integration that will interact with the PersonAPI
+1. In `Choose an application type` select `Machine to Machine applications`
+1. In `Authorize Machine to Machine integrations` in the `Select an API...` dropdown select
+   `api.sso.mozilla.com`
+   * Note : Don't select `person-api.sso.mozilla.com`
+1. Check the scopes that should be granted based on what was requested and what is permitted
+1. Click `Authorize`
+1. Now that the Auth0 Application has been provisioned, go to the `Settings` tab for the new application
+1. In the `Description` field enter `Owner: John Doe` where `John Doe` is the requester or service owner
+1. At the bottom of the settings screen, click `Show Advanced Settings`
+1. Click the `Grant Types` tab
+1. Ensure that the `Client Credentials` grant is already checked
+
+You can later find or modify these scopes by going to the application in Auth0,
+then going to the `APIs` tab. Go to the `https://api.sso.mozilla.com/` API which
+should show as `Authoirze` and click the right arrow on the right side of the
+row to the right of the switch that authorizes or deauthorizes the API. This
+will expand the scopes so you can see what's set and modify it.
+
+Once this Auth0 Application has been created, provide the resulting client_id
+and client_secret securely to the requester and let them know how to create
+an authorization token as described below in "Do you have code examples?"
+
 ## Do you have code examples?
 
 Yes, please look at our [end to end (E2E) tests](../e2e).
