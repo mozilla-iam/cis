@@ -134,8 +134,14 @@ class HRISPublisher:
                 # Convert as needed to a dict
                 try:
                     profile = profile.as_dict()
-                except (TypeError, AttributeError):
-                    pass
+                except (TypeError, AttributeError) as e:
+                    logger.debug(
+                        "Failed dictionary conversion for user {} (ignoring, using raw profile) error: {}".format(
+                            potential_user_id, e
+                        )
+                    )
+                    # If this fail, be verbose here
+                    profile = profile["profile"]
                 # Check if it has the attributes
                 try:
                     ldap_groups = profile["access_information"]["ldap"]["values"]
@@ -161,14 +167,14 @@ class HRISPublisher:
                 logger.info("User selected for deactivation: {}".format(user))
                 # user from cis
                 try:
-                    p = cis_profile.User(publisher.known_profiles[self.hkey][user])
+                    p = cis_profile.User(publisher.known_profiles[self.hkey][user]["profile"]).as_dict()
                 except TypeError:
-                    p = publisher.known_profiles[self.hkey][user]
+                    p = publisher.known_profiles[self.hkey][user]["profile"]
 
                 # our partial update
                 newp = cis_profile.User()
-                newp.user_id = p.user_id
-                newp.primary_email = p.primary_email
+                newp.user_id = p["user_id"]
+                newp.primary_email = p["primary_email"]
                 newp.active.value = False
                 newp.active.signature.publisher.name = "hris"
                 try:
