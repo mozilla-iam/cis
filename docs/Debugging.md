@@ -2,6 +2,13 @@
 
 ## Common issues
 
+### How do I turn on DEBUG logging?
+
+The logging facility level is set in the serverless function handler files (`./serverless/<function-name>/handler.py`)
+At the moment you should edit that file and change `logging.INFO` into `logging.DEBUG` and reupload the function. This won't change the module code that is stored in a separate Lambda Layer. Do not forget to revert once done.
+
+NOTE: This should be made an environment variable in the future.
+
 ### I need to diagnose a missing user or wrong attributes for a user
 
 You'll want to look at the CIS Publisher logs for this.
