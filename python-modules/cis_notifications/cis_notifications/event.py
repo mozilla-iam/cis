@@ -43,7 +43,7 @@ class Event(object):
         if self.event.get("eventName") == "MODIFY":
             operation = "update"
 
-        if self.event.get("eventName") == "DELETE":
+        if self.event.get("eventName") == "REMOVE":
             operation = "delete"
 
         if updated_record is not None:
