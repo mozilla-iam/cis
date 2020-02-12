@@ -354,6 +354,7 @@ class Publish:
             nextPage = response_json.get("nextPage")
 
         if include_inactive:
+            nextPage = ""
             logger.info(
                 "Requesting CIS Person API for a list of existing inactive users for method {}".format(
                     self.login_method
