@@ -478,7 +478,7 @@ class User(object):
                             "it's part of `publisher_that_can_override_metadata`"
                         )
                         return True
-                elif publisher_name == allowed_updators:
+                if publisher_name == allowed_updators:
                     logger.debug("[update] {} is allowed to publish field {}".format(publisher_name, attr_name))
                     return True
 

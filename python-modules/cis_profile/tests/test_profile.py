@@ -242,8 +242,19 @@ class TestProfile(object):
 
         old_user = profile.User()
         old_user.first_name.value = "tester"  # same value
-        u.first_name.metadata.display = "private"  # different display
+        old_user.first_name.metadata.display = "private"  # different display
         old_user.first_name.signature.publisher.name = "access_provider"
+        assert u.verify_all_publishers(old_user) is True
+
+    def test_verify_all_publishers_modify_metadata(self):
+        u = profile.User(user_id="test", first_name="tester")
+        u.user_id.metadata.display = "public"
+        u.user_id.signature.publisher.name = "access_provider"
+
+        old_user = profile.User()
+        old_user.user_id.value = "test"  # same value
+        old_user.user_id.metadata.display = "private"  # different display
+        old_user.user_id.signature.publisher.name = u.user_id.signature.publisher.name
         assert u.verify_all_publishers(old_user) is True
 
     def test_verify_can_publish_login_method(self):
