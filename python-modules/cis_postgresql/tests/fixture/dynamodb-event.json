@@ -17,7 +17,7 @@
           "SizeBytes": 23, 
           "StreamViewType": "KEYS_ONLY"
         }, 
-        "eventSourceARN": "arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2019-03-12T15:00:24.551"
+        "eventSourceARN": "arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault/stream/2020-04-16T02:49:18.394"
         }
     ]
   }
