@@ -35,6 +35,7 @@ class MozilliansorgGroupUpdate:
         self.user_id = user_id
         self.groups = groups
 
+    @staticmethod
     def from_record(record):
         """
         Constructs a MozilliansGroupUpdate from a raw sqs record.
@@ -110,13 +111,11 @@ class MozilliansorgGroupsPublisher:
         update_profile = cis_profile.profile.User()
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
-        update_profile.access_information.mozilliansorg["values"] = {group: None for group in update.groups}
-        if (
-            update_profile.access_information.mozilliansorg["values"]
-            == current_profile.access_information.mozilliansorg["values"]
-        ):
+        updated_groups = self._update_groups(update_profile.access_information.mozilliansorg["values"], update.groups)
+        if updated_groups is None:
             logger.info("No change in mozilliangsorg access information. Skipping.")
             return None
+        update_profile.access_information.mozilliansorg["values"] = updated_groups
         if not update_profile.access_information.mozilliansorg.metadata.display:
             update_profile.access_information.mozilliansorg.metadata.display = "ndaed"
         update_profile.update_timestamp("access_information.mozilliansorg")
@@ -126,3 +125,25 @@ class MozilliansorgGroupsPublisher:
             logger.critical("Profile data signing failed for user {}: {}".format(update.user_id, e))
             return None
         return update_profile
+
+    @staticmethod
+    def _update_groups(current_groups, mozillians_groups_update):
+        """
+        Update current gropus based on a mozillians groups update. PMO groups (value == "") overwrite mozillians groups.
+
+        @current_groups: current groups dict from profile v2
+        @mozillians_gropus_update: list of mozillians groups
+        @return: new groups dict or None if nothing changed
+        """
+        if mozillians_groups_update is None:
+            return None
+        updated = {group: None for group in mozillians_groups_update}
+        if not current_groups:
+            return updated
+        pmo_groups = {name: meta for name, meta in current_groups.items() if meta is not None}
+
+        updated.update(pmo_groups)
+
+        if updated == current_groups:
+            return None
+        return updated

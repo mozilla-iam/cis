@@ -1,5 +1,6 @@
 from cis_profile import User
 import cis_publisher
+from cis_publisher import MozilliansorgGroupsPublisher
 import json
 import mock
 import os
@@ -53,6 +54,47 @@ class TestMozilliansorgGroups:
     def setup(self):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
 
+    def test_group_merge(self):
+        update = None
+        current = {"nda": None, "slack-access": None, "open-innovation": None}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result is None
+
+        update = ["nda", "slack-access", "open-innovation"]
+        current = None
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result == {"nda": None, "slack-access": None, "open-innovation": None}
+
+        update = []
+        current = {"nda": None, "slack-access": None, "open-innovation": None}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result == {}
+
+        update = ["nda", "slack-access", "open-innovation"]
+        current = {"nda": None, "slack-access": None, "open-innovation": None}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result is None
+
+        update = ["nda", "slack-access", "open-innovation"]
+        current = {"nda": "", "slack-access": None, "open-innovation": None}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result is None
+
+        update = ["nda", "slack-access"]
+        current = {"nda": None, "slack-access": None, "open-innovation": None}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result == {"nda": None, "slack-access": None}
+
+        update = ["nda", "slack-access"]
+        current = {"nda": None, "slack-access": None, "open-innovation": ""}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result is None
+
+        update = ["nda"]
+        current = {"nda": None, "slack-access": None, "open-innovation": ""}
+        result = MozilliansorgGroupsPublisher._update_groups(current, update)
+        assert result == {"nda": None, "open-innovation": ""}
+
     def test_mozilliansorg_group_update_from(self):
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
         assert update is not None
@@ -72,7 +114,7 @@ class TestMozilliansorgGroups:
         mock_request_get.return_value = FakeGetResponse(User(user_id="email|123").as_json())
 
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
-        mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
+        mozilliansorg_group_publisher = MozilliansorgGroupsPublisher()
         update_profile = mozilliansorg_group_publisher._prepare_update(update)
         assert update_profile.user_id.value == update.user_id
         assert update_profile.access_information.mozilliansorg.metadata.display == "ndaed"
@@ -92,14 +134,14 @@ class TestMozilliansorgGroups:
         mock_request_get.return_value = FakeGetResponse(ret="{}", ok=False)
 
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
-        mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
+        mozilliansorg_group_publisher = MozilliansorgGroupsPublisher()
         update_profile = mozilliansorg_group_publisher._prepare_update(update)
 
         mock_request_post.return_value = FakePostResponse()
         mock_request_get.return_value = FakeGetResponse(ret="{}", ok=True)
 
         update = cis_publisher.MozilliansorgGroupUpdate.from_record(EVENT["Records"][0])
-        mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
+        mozilliansorg_group_publisher = MozilliansorgGroupsPublisher()
         update_profile = mozilliansorg_group_publisher._prepare_update(update)
         assert update_profile is None
         assert update_profile is None
@@ -115,5 +157,5 @@ class TestMozilliansorgGroups:
         mock_request_post.return_value = FakePostResponse()
         mock_request_get.return_value = FakeGetResponse(User(user_id="email|123").as_json())
 
-        mozilliansorg_group_publisher = cis_publisher.MozilliansorgGroupsPublisher()
+        mozilliansorg_group_publisher = MozilliansorgGroupsPublisher()
         mozilliansorg_group_publisher.publish(EVENT)
