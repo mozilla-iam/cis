@@ -140,7 +140,7 @@ Here's a quick curl example as well:
 # Get a token
 $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.com/oauth/token -d \
 '{"audience":"api.sso.mozilla.com",
-  "scope":"classification:staff_confidential display:staff",
+  "scope":"classification:mozilla_confidential display:staff",
   "grant_type":"client_credentials",
   "client_id": "YOUR CLIENT ID",
   "client_secret": "YOUR CLIENT SECRET"}'
