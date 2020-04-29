@@ -108,9 +108,9 @@ access are
 1. Enter a `Name` value of `PersonAPI - John Doe` where `John Doe` is the name of the requester or the
    name of the service or integration that will interact with the PersonAPI
 1. In `Choose an application type` select `Machine to Machine applications`
-1. In `Authorize Machine to Machine integrations` in the `Select an API...` dropdown select
-   `api.sso.mozilla.com`
-   * Note : Don't select `person-api.sso.mozilla.com`
+1. In `Authorize Machine to Machine integrations` in the `Select an API...` dropdown 
+   * select `api.sso.mozilla.com`
+   * Note : *Don't select `person-api.sso.mozilla.com`*
 1. Check the scopes that should be granted based on what was requested and what is permitted
 1. Click `Authorize`
 1. Now that the Auth0 Application has been provisioned, go to the `Settings` tab for the new application
