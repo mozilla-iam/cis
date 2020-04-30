@@ -97,6 +97,9 @@ class MozilliansorgGroupsPublisher:
         @return: a profile with user_id, active and the according updated and signed mozilliansorg access information or
                  None for a no-op.
         """
+        if update.groups is None:
+            logger.info("No change in mozilliangsorg access information. Skipping.")
+            return None
         current_profile = None
         try:
             current_profile = self.publisher.get_cis_user(update.user_id)
@@ -112,7 +115,7 @@ class MozilliansorgGroupsPublisher:
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
         updated_groups = self._update_groups(update_profile.access_information.mozilliansorg["values"], update.groups)
-        if updated_groups is None:
+        if updated_groups == update_profile.access_information.mozilliansorg["values"]:
             logger.info("No change in mozilliangsorg access information. Skipping.")
             return None
         update_profile.access_information.mozilliansorg["values"] = updated_groups
@@ -133,10 +136,8 @@ class MozilliansorgGroupsPublisher:
 
         @current_groups: current groups dict from profile v2
         @mozillians_gropus_update: list of mozillians groups
-        @return: new groups dict or None if nothing changed
+        @return: new groups dict
         """
-        if mozillians_groups_update is None:
-            return None
         updated = {group: None for group in mozillians_groups_update}
         if not current_groups:
             return updated
@@ -144,6 +145,4 @@ class MozilliansorgGroupsPublisher:
 
         updated.update(pmo_groups)
 
-        if updated == current_groups:
-            return None
         return updated

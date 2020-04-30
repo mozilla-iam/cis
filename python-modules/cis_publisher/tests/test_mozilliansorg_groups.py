@@ -55,11 +55,6 @@ class TestMozilliansorgGroups:
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
 
     def test_group_merge(self):
-        update = None
-        current = {"nda": None, "slack-access": None, "open-innovation": None}
-        result = MozilliansorgGroupsPublisher._update_groups(current, update)
-        assert result is None
-
         update = ["nda", "slack-access", "open-innovation"]
         current = None
         result = MozilliansorgGroupsPublisher._update_groups(current, update)
@@ -73,12 +68,12 @@ class TestMozilliansorgGroups:
         update = ["nda", "slack-access", "open-innovation"]
         current = {"nda": None, "slack-access": None, "open-innovation": None}
         result = MozilliansorgGroupsPublisher._update_groups(current, update)
-        assert result is None
+        assert result == current
 
         update = ["nda", "slack-access", "open-innovation"]
         current = {"nda": "", "slack-access": None, "open-innovation": None}
         result = MozilliansorgGroupsPublisher._update_groups(current, update)
-        assert result is None
+        assert result == current
 
         update = ["nda", "slack-access"]
         current = {"nda": None, "slack-access": None, "open-innovation": None}
@@ -88,7 +83,7 @@ class TestMozilliansorgGroups:
         update = ["nda", "slack-access"]
         current = {"nda": None, "slack-access": None, "open-innovation": ""}
         result = MozilliansorgGroupsPublisher._update_groups(current, update)
-        assert result is None
+        assert result == current
 
         update = ["nda"]
         current = {"nda": None, "slack-access": None, "open-innovation": ""}
