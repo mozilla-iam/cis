@@ -8,6 +8,10 @@ from cis_notifications import secret
 logger = logging.getLogger(__name__)
 
 
+def expired(ts, leeway=0):
+    return ts < time.time() + leeway
+
+
 class Event(object):
     """Handle events from lambda and generate hooks out to publishers."""
 
@@ -80,7 +84,7 @@ class Event(object):
             # This includes 10s leeway for clock sync issues and 15min (900s) for max-lambda function time.
             # Since tokens are normally valid for 86400s (1 day) that should accomodate for all cases. If these were to
             # be less than 15min for any reason, it would simply bypass the cache
-            if float(self.access_token_dict.get("exp", 60.0)) < time.time() - 910:
+            if expired(float(self.access_token_dict.get("exp", 0.0)), leeway=910):
                 logger.info("Access token has expired, refreshing")
                 authzero = self._get_authzero_client()
                 self.access_token_dict = authzero.exchange_for_access_token()
