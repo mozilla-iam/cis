@@ -237,11 +237,11 @@ class Auth0Publisher:
         for azc in self.az_whitelisted_connections:
             az_query = az_query + t + 'identities.connection:"{}"'.format(azc)
             t = " OR "
-        az_query = az_query + ")"
+        az_query += ")"
         # NOTE XXX: There is no way to tell auth0's ES "don't include matches where the first identity.connection is a
         # blacklisted connection", so we do this instead. This 100% relies on auth0 user_ids NOT being opaque,
         # unfortunately
-        az_query = az_query + ' AND NOT (user_id:"ad|*")'
+        az_query += ' AND NOT (user_id:"ad|*")'
 
         # Build query for user_ids if some are specified (else it gets all of them)
         # NOTE: We can't query all that many users because auth0 uses a GET query which is limited in size by httpd
@@ -252,14 +252,17 @@ class Auth0Publisher:
                 "Querying all user_ids instead."
             )
             user_ids = None
+        # we had to add this because it gets called by the CIS-New-User hook, where the query wouldn't work
+        # because exclusion_query excludes users who have only a single login success
+        elif len(user_ids) == 1:
+            logger.info("Restricting auth0 user query to single user_id: {}".format(user_ids[0]))
+            az_query = f'user_id:"{user_ids[0]}"'
         elif user_ids:
             logger.info("Restricting auth0 user query to user_ids: {}".format(user_ids))
-            t = ""
-            az_query = az_query + " AND ("
-            for u in user_ids:
-                az_query = az_query + t + 'user_id:"{}"'.format(u)
-                t = " OR "
-            az_query = az_query + ")"
+
+            # e.g.: user_id:"email|foo" OR user_id:"email|bar" OR user_id:"ad|Mozilla-LDAP|baz"
+            or_joined_user_query = " OR ".join([f'user_id:"{u}"' for u in user_ids])
+            az_query += f" AND ({or_joined_user_query})"
 
         logger.debug("About to get Auth0 user list")
         az_getter = GetToken(az_api_url)
@@ -268,7 +271,6 @@ class Auth0Publisher:
 
         # Query the entire thing
         logger.info("Querying auth0 user database, query is: {}".format(az_query))
-        p = 0
         user_list = []
         # This is an artificial upper limit of 100*9999 (per_page*page) i.e. 999 900 users max - just in case things
         # go wrong
@@ -282,13 +284,13 @@ class Auth0Publisher:
             except Auth0Error as e:
                 # 429 is Rate limit exceeded and we can still retry
                 if (e.error_code == 429 or e.status_code == 429) and retries > 0:
-                    backoff = backoff + 1
+                    backoff += 1
                     logger.debug(
                         "Rate limit exceeded, backing off for {} seconds, retries left {} error: {}".format(
                             backoff, retries, e
                         )
                     )
-                    retries = retries - 1
+                    retries -= 1
                     time.sleep(backoff)
                 else:
                     logger.warning("Error: {}".format(e))
