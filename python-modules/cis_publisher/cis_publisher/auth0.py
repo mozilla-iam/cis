@@ -226,11 +226,11 @@ class Auth0Publisher:
         # This can also be retrieved from /api/v2/connections
         # Ignore non-verified `email` (such as unfinished passwordless flows) as we don't consider these to be valid
         # users
-        max_date = datetime.utcnow() - timedelta(days=300)
+        max_date = datetime.utcnow() - timedelta(days=31)  # maximum login length + 1 day
         max_date_str = max_date.strftime("%Y-%m-%d")
         exclusion_query = (
-            f"logins_count:[2 TO *] AND NOT (last_login:[* TO {max_date_str}] AND "
-            '(groups:(everyone) OR NOT _exists_:"groups"))'
+            f"logins_count:[2 TO *] AND NOT last_login:[* TO {max_date_str}] AND "
+            '(groups:(everyone) OR (NOT _exists_:"groups"))'
         )
         az_query = exclusion_query + " AND email_verified:true AND ("
         t = ""
