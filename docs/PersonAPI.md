@@ -79,7 +79,7 @@ display:all
 
 ## How do I get credentials for access?
 
-Please file a request at https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=1e9746c20f76aa0087591d2be1050ecb
+Please [file a request in Bugzilla](https://bugzilla.mozilla.org/enter_bug.cgi?product=Infrastructure%20%26%20Operations&component=SSO%3A%20Requests).
 
 Indicate your use case, and the fields you need to access and/or their data classification and display level.
 
