@@ -153,6 +153,8 @@ class v2UsersByAny(Resource):
         logger.debug("Getting all users for connection method: {}".format(args.get("connectionMethod")))
         if args.get("active") is not None and args.get("active").lower() == "false":
             active = False
+        elif args.get("active") is not None and args.get("active").lower() == "any":
+            active = None
         else:
             active = True  # Support returning only active users by default.
 
@@ -193,9 +195,12 @@ def getUser(id, find_by):
     scopes = get_scopes(args.get("Authorization"))
     filter_display = args.get("filterDisplay", None)
 
-    active = True
     if args.get("active") is not None and args.get("active").lower() == "false":
         active = False
+    elif args.get("active") is not None and args.get("active").lower() == "any":
+        active = None
+    else:
+        active = True
 
     if transactions == "false":
         identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
@@ -209,7 +214,7 @@ def getUser(id, find_by):
         vault_profile = result["Items"][0]["profile"]
         v2_profile = User(user_structure_json=json.loads(vault_profile))
 
-        if v2_profile.active.value == active:
+        if v2_profile.active.value == active or active is None:
             if "read:fullprofile" in scopes:
                 logger.debug(
                     "read:fullprofile in token not filtering based on scopes.",
