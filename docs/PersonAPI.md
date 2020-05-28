@@ -200,24 +200,24 @@ To fetch the next page simply call:
 Until `nextPage` is set to `None`. Note that the recommended way to do this is to take the `nextPage` value returned by the API reply and pass it for the next call, instead of creating the object yourself.
 
 Retrieve lists of users (not full profiles):
-- `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.
-
-- `/v2/users/id/all?[connectionMethod=ad&active=True]` (Returns all user ids for a specific login/connection method showing only active user IDs) **Highly Advised**
+- `/v2/users/id/all?[connectionMethod=ad]` (Returns all user ids for a specific login/connection method) By default this only includes active users.  **Highly Advised**
 
 - `/v2/users/id/all?[connectionMethod=ad&active=False]` (Returns all user ids for a specific login/connection method that are currently marked inactive)
+
+- `/v2/users/id/all?[connectionMethod=ad&active=Any]` (Returns all user ids for a specific login/connection method, regardless of whether they are active or not)
 
 *Note true/false are case insensitive for ease.* 
 
 - `/v2/users/id/all/by_attribute_contains` (Supports filtered queries for access information and staff information.)
 
 query_arguments:
-- active=True|false
+- active=True (default)|False|Any
 - fullProfiles=True|False
 - nextPage=${nextPageToken}
 
 > This endpoint returns 25 users per page per query.
 
-Example: `/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True` returns all users with staff_information.staff set to True.
+Example: `/v2/users/id/all/by_attribute_contains?staff_information.staff=True` returns all active users with staff_information.staff set to True.
 
 
 ## I want to help add features to this API!
