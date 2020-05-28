@@ -195,11 +195,12 @@ def getUser(id, find_by):
     scopes = get_scopes(args.get("Authorization"))
     filter_display = args.get("filterDisplay", None)
 
-    active = True
     if args.get("active") is not None and args.get("active").lower() == "false":
         active = False
     elif args.get("active") is not None and args.get("active").lower() == "any":
         active = None
+    else:
+        active = True
 
     if transactions == "false":
         identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
