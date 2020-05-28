@@ -20,7 +20,7 @@ RUN pacman -S --noconfirm wget
 RUN pacman -S --noconfirm unzip
 RUN pacman -S --noconfirm tar
 RUN pacman -S --noconfirm gawk
-RUN pacman -S --noconfirm jdk13-openjdk
+RUN pacman -S --noconfirm jdk-openjdk
 ## Use this if you need to force-downgrade system's python
 ## You'll want to compile the version you want first and upload it to S3
 # RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/python37-3.7.5-2-x86_64.pkg.tar.xz
