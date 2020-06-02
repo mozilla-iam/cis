@@ -142,9 +142,8 @@ class Vault(object):
                 )
             ):
                 logger.info(
-                    "Will not merge user as there were no difference found with the vault instance of the user".format(
-                        extra={"user_id": user_id}
-                    )
+                    "Will not merge user as there were no difference found with the vault instance of the user",
+                    extra={"user_id": user_id},
                 )
                 return None
             else:

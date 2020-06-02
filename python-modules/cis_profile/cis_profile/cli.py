@@ -18,11 +18,7 @@ def main():
 @click.command()
 @click.option("--seed", "-s", type=int, help="seed to create random profile", default=None)
 @click.option(
-    "--config",
-    "-c",
-    type=str,
-    multiple=True,
-    help="config options [{}]".format(", ".join(CONFIG_OPTIONS), default="default"),
+    "--config", "-c", type=str, multiple=True, help="config options [{}]".format(", ".join(CONFIG_OPTIONS)),
 )
 def create(seed, config):
     """Create single IAM profile v2 object."""
