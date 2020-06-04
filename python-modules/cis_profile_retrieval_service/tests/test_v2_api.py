@@ -83,7 +83,7 @@ class TestAPI(object):
         token = f.generate_bearer_with_scope("read:fullprofile display:all search:all")
         logger.info("Attempting to query all staff.")
         result = self.app.get(
-            f"/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True",
+            "/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True",
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -111,7 +111,7 @@ class TestAPI(object):
         token = f.generate_bearer_with_scope("read:fullprofile display:all search:all")
         logger.info("Attempting to query all staff.")
         result = self.app.get(
-            f"/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True&fullProfiles=True",
+            "/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True&fullProfiles=True",
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
@@ -143,7 +143,7 @@ class TestAPI(object):
         token = f.generate_bearer_with_scope("read:fullprofile display:all search:all")
         logger.info("Attempting to query all staff.")
         result = self.app.get(
-            f"/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True&fullProfiles=True",
+            "/v2/users/id/all/by_attribute_contains?staff_information.staff=True&active=True&fullProfiles=True",
             headers={"Authorization": "Bearer " + token},
             follow_redirects=True,
         )
