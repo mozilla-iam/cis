@@ -184,7 +184,7 @@ def scope_to_mozilla_data_classification(scopes):
 
 
 class DisplayLevelParms(object):
-    public = [DisplayLevel.PUBLIC, DisplayLevel.NULL]
+    public = [DisplayLevel.PUBLIC]
     authenticated = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED]
     vouched = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED]
     ndaed = [DisplayLevel.PUBLIC, DisplayLevel.AUTHENTICATED, DisplayLevel.VOUCHED, DisplayLevel.NDAED]
