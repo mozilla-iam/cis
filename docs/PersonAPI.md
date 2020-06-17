@@ -121,8 +121,8 @@ access are
 
 You can later find or modify these scopes by going to the application in Auth0,
 then going to the `APIs` tab. Go to the `https://api.sso.mozilla.com/` API which
-should show as `Authoirze` and click the right arrow on the right side of the
-row to the right of the switch that authorizes or deauthorizes the API. This
+should show as `Authoirze` and click the down arrow (`⌄`) on the right side of
+the row to the right of the switch that authorizes or deauthorizes the API. This
 will expand the scopes so you can see what's set and modify it.
 
 Once this Auth0 Application has been created, provide the resulting client_id
