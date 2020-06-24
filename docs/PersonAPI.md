@@ -79,7 +79,7 @@ display:all
 
 ## How do I get credentials for access?
 
-Please file a request at https://mozilla.service-now.com/sp?id=sc_cat_item&sys_id=1e9746c20f76aa0087591d2be1050ecb
+Please [file a request in Bugzilla](https://bugzilla.mozilla.org/enter_bug.cgi?product=Infrastructure%20%26%20Operations&component=SSO%3A%20Requests).
 
 Indicate your use case, and the fields you need to access and/or their data classification and display level.
 
@@ -121,8 +121,8 @@ access are
 
 You can later find or modify these scopes by going to the application in Auth0,
 then going to the `APIs` tab. Go to the `https://api.sso.mozilla.com/` API which
-should show as `Authoirze` and click the right arrow on the right side of the
-row to the right of the switch that authorizes or deauthorizes the API. This
+should show as `Authoirze` and click the down arrow (`⌄`) on the right side of
+the row to the right of the switch that authorizes or deauthorizes the API. This
 will expand the scopes so you can see what's set and modify it.
 
 Once this Auth0 Application has been created, provide the resulting client_id
