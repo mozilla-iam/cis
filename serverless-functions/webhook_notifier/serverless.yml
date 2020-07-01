@@ -39,7 +39,7 @@ custom:
     CIS_RP_URLS:
       production: https://people.mozilla.org/events/update,https://discourse-staging.itsre-apps.mozit.cloud/mozilla_iam/notification,https://discourse.mozilla.org/mozilla_iam/notification
       development: https://dinopark.k8s.dev.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.dev.sso.allizom.org/post
-      testing: https://dinopark.k8s.test.sso.allizom.org/events/update
+      testing: https://dinopark.k8s.test.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.test.sso.allizom.org/post
 provider:
   name: aws
   runtime: python3.8
