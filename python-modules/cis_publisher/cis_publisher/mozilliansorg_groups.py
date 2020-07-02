@@ -114,8 +114,8 @@ class MozilliansorgGroupsPublisher:
         update_profile = cis_profile.profile.User()
         update_profile.user_id = current_profile.user_id
         update_profile.active = current_profile.active
-        updated_groups = self._update_groups(update_profile.access_information.mozilliansorg["values"], update.groups)
-        if updated_groups == update_profile.access_information.mozilliansorg["values"]:
+        updated_groups = self._update_groups(current_profile.access_information.mozilliansorg["values"], update.groups)
+        if updated_groups == current_profile.access_information.mozilliansorg["values"]:
             logger.info("No change in mozilliangsorg access information. Skipping.")
             return None
         update_profile.access_information.mozilliansorg["values"] = updated_groups
@@ -127,6 +127,8 @@ class MozilliansorgGroupsPublisher:
         except Exception as e:
             logger.critical("Profile data signing failed for user {}: {}".format(update.user_id, e))
             return None
+
+        logger.info("Merged groups for user {}".format(update.user_id))
         return update_profile
 
     @staticmethod
