@@ -48,6 +48,7 @@ release:
 	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-curator STAGE=$(STAGE)
 	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
 	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
+	docker-compose -f docker-compose-local.yml run tester make -C serverless-functions deploy-mozilliansorg-groups-publisher STAGE=$(STAGE)
 
 .PHONY: release-module
 release-module:
@@ -63,6 +64,7 @@ release-no-docker:
 	make -C serverless-functions deploy-curator STAGE=$(STAGE)
 	make -C serverless-functions deploy-hris-publisher STAGE=$(STAGE)
 	make -C serverless-functions deploy-auth0-publisher STAGE=$(STAGE)
+	make -C serverless-functions deploy-mozilliansorg-groups-publisher STAGE=$(STAGE)
 
 .PHONY: build-ci-container
 build-ci-container:
