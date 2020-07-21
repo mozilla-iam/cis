@@ -149,7 +149,7 @@ $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.co
 $ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@email.com
 ```
 
-As well as a couple handy aliases you can add to your shell profile:
+As well as a couple handy aliases you can add to your shell profile if you have `jq` version [`1.6` or newer](https://github.com/stedolan/jq/releases/tag/jq-1.6):
 ```bash
 CLIENT_ID="YOUR CLIENT ID"
 CLIENT_SECRET="YOUR CLIENT SECRET"
