@@ -1,0 +1,45 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: IAM user needed to push files to the cache.ldap.sso.mozilla.com S3 bucket
+Metadata:
+  Source: https://github.com/mozilla-iam/cis/tree/master/cloudformation
+Resources:
+  CISLDAPPublisherUser:
+    Type: AWS::IAM::User
+    Properties:
+      Policies:
+        - PolicyName: AllowPutLDAPExportsInS3
+          PolicyDocument:
+            Version: 2012-10-17
+            Statement:
+              - Effect: Allow
+                Action:
+                  - s3:ListAllMyBuckets
+                Resource: '*'
+              - Effect: Allow
+                Action:
+                  - s3:ListBucket
+                Resource:
+                  - arn:aws:s3:::cache.ldap.sso.mozilla.com
+              - Effect: Allow
+                Action:
+                  - s3:ListObjects*
+                  - s3:PutObject
+                Resource:
+                  - arn:aws:s3:::cache.ldap.sso.mozilla.com
+                  - arn:aws:s3:::cache.ldap.sso.mozilla.com/*
+  CISLDAPPublisherUserAccessKey:
+    Type: AWS::IAM::AccessKey
+    Properties:
+      Serial: 20200730
+      Status: Active
+      UserName: !Ref CISLDAPPublisherUser
+Outputs:
+  CISLDAPPublisherUserName:
+    Description: The Username of the CISLDAPPublisherUser
+    Value: !Ref CISLDAPPublisherUser
+  CISLDAPPublisherUserAccessKeyId:
+    Description: The AWS API Access Key ID of the CISLDAPPublisherUser
+    Value: !Ref CISLDAPPublisherUserAccessKey
+  CISLDAPPublisherUserSecretAccessKey:
+    Description: The AWS API Access Key Secret Key of the CISLDAPPublisherUser
+    Value: !GetAtt CISLDAPPublisherUserAccessKey.SecretAccessKey
