@@ -340,6 +340,25 @@ class TestAPI(object):
             assert query.json.get("active").get("value") is True
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
+    def test_metadata_by_primary_email(self, fake_jwks):
+        os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
+        os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
+        f = FakeBearer()
+        fake_jwks.return_value = json_form_of_pk
+
+        token = f.generate_bearer_with_scope("read:fullprofile display:all")
+
+        result = self.app.get("/v2/users", headers={"Authorization": "Bearer " + token}, follow_redirects=True)
+
+        query = self.app.get(
+            "/v2/user/metadata/{}".format(result.json["Items"][0]["primary_email"]["value"]),
+            follow_redirects=True,
+        )
+
+        assert query.json.get("exists").get("cis")  == True
+        assert query.json.get("exists").get("ldap") == True
+
+    @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x_active_true(self, fake_jwks):
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"

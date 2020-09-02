@@ -85,6 +85,30 @@ def graphql_view():
     return requires_auth(view_func)
 
 
+class v2MetadataByPrimaryEmail(Resource):
+    """Return the connection method of a user by their primary_email."""
+
+    def get(self, primary_email):
+        logger.info("Attempting to get public metadata for primary email: {}".format(primary_email))
+        exists_in_cis = exists_in_ldap = False
+
+        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
+        result = user.Profile.find_by_email(identity_vault, primary_email)
+
+        if len(result["Items"]) > 0:
+            vault_profile = result["Items"][0]["profile"]
+            exists_in_cis = True
+            exists_in_ldap = User(user_structure_json=json.loads(vault_profile)) \
+                          .as_dict()["access_information"]["ldap"]["values"] is not None
+
+        return jsonify({
+            "exists": {
+                "cis": exists_in_cis,
+                "ldap": exists_in_ldap,
+            }
+        })
+
+
 class v2UserByUserId(Resource):
     """Return a single user by user_id."""
 
@@ -340,6 +364,7 @@ if config("graphql", namespace="person_api", default="false") == "true":
 
 
 api.add_resource(v2Users, "/v2/users")
+api.add_resource(v2MetadataByPrimaryEmail, "/v2/user/metadata/<string:primary_email>")
 api.add_resource(v2UserByUserId, "/v2/user/user_id/<string:user_id>")
 api.add_resource(v2UserByUuid, "/v2/user/uuid/<string:uuid>")
 api.add_resource(v2UserByPrimaryEmail, "/v2/user/primary_email/<string:primary_email>")
