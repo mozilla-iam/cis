@@ -225,6 +225,18 @@ query_arguments:
 
 Example: `/v2/users/id/all/by_attribute_contains?staff_information.staff=True` returns all active users with staff_information.staff set to True.
 
+Retrieve metadata about a user:
+- `/v2/users/metadata/<string:primary_email>`
+
+Which returns a JSON document about their existence in CIS and LDAP:
+```json
+{
+  "exists": {
+    "cis": true,
+    "ldap": false
+  }
+}
+```
 
 ## I want to help add features to this API!
 
