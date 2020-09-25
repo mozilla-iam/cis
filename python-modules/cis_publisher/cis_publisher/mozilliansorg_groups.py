@@ -11,4 +11,4 @@ class MozilliansorgGroupsPublisher:
 
         @event: raw event from SQS
         """
-        logger.info("noop")
+        logger.info("Skipping event from CISv1")
