@@ -31,8 +31,8 @@
       "custom_2_primary_email": [ "ldap", "hris", "access_provider", "mozilliansorg" ],
       "custom_3_primary_email": [ "ldap", "hris", "access_provider", "mozilliansorg" ]
     },
-    "ssh_public_keys": [ "ldap", "mozilliansorg" ],
-    "pgp_public_keys": [ "ldap", "mozilliansorg" ],
+    "ssh_public_keys": [ "ldap" ],
+    "pgp_public_keys": [ "ldap" ],
     "access_information": {
         "access_provider": [ "access_provider" ],
         "ldap": [ "ldap" ],
@@ -74,7 +74,24 @@
     "last_name": "mozilliansorg",
     "alternative_name": "mozilliansorg",
     "primary_email": "access_provider",
-    "identities": "mozilliansorg",
+    "identities": {
+      "github_id_v3": "mozilliansorg",
+      "github_id_v4": "mozilliansorg",
+      "github_primary_email": "mozilliansorg",
+      "mozilliansorg_id": "mozilliansorg",
+      "bugzilla_mozilla_org_id": "mozilliansorg",
+      "bugzilla_mozilla_org_primary_email": "mozilliansorg",
+      "mozilla_ldap_id": "ldap",
+      "mozilla_ldap_primary_email": "ldap",
+      "mozilla_posix_id": "ldap",
+      "google_oauth2_id": "mozilliansorg",
+      "google_primary_email": "mozilliansorg",
+      "firefox_accounts_id": "mozilliansorg",
+      "firefox_accounts_primary_email": "mozilliansorg",
+      "custom_1_primary_email": "mozilliansorg",
+      "custom_2_primary_email": "mozilliansorg",
+      "custom_3_primary_email": "mozilliansorg"
+    },
     "ssh_public_keys": "ldap",
     "pgp_public_keys": "ldap",
     "access_information": {
