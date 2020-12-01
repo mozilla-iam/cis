@@ -86,7 +86,6 @@ def version():
 @app.route("/v2/user", methods=["GET", "POST", "PUT", "DELETE"])
 @cross_origin(headers=["Content-Type", "Authorization"])
 @requires_auth
-@requires_scope("write")
 def change():
     connection = connect.AWS()
     connection.session()
@@ -121,7 +120,6 @@ def change():
 @app.route("/v2/users", methods=["GET", "POST", "PUT"])
 @cross_origin(headers=["Content-Type", "Authorization"])
 @requires_auth
-@requires_scope("write")
 def changes():
     connection = connect.AWS()
     connection.session()
@@ -137,7 +135,6 @@ def changes():
 
 @app.route("/v2/status", methods=["GET"])
 @cross_origin(headers=["Content-Type", "Authorization"])
-@requires_scope("write")
 def status():
     sequence_number = request.args.get("sequenceNumber")
     status = profile.Status(sequence_number)
