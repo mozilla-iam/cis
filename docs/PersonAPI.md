@@ -138,21 +138,26 @@ As well, here is a [simple golang client library](https://github.com/mozilla-ser
 Here's a quick curl example:
 ```
 # Get a token
+$ CLIENT_ID=abcdefghijklmnopqrstuvwxyz012345
+$ CLIENT_SECRET=abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ01
 $ curl -X POST -H "Content-Type: application/json" https://auth.mozilla.auth0.com/oauth/token -d \
-'{"audience":"api.sso.mozilla.com",
-  "scope":"classification:mozilla_confidential display:staff",
-  "grant_type":"client_credentials",
-  "client_id": "YOUR CLIENT ID",
-  "client_secret": "YOUR CLIENT SECRET"}'
+ "{\"audience\": \"api.sso.mozilla.com\",
+  \"scope\": \"classification:mozilla_confidential display:staff\",
+  \"grant_type\":\"client_credentials\",
+  \"client_id\": \"$CLIENT_ID\",
+  \"client_secret\": \"$CLIENT_SECRET\"}"
+
 
 # Use the token
-$ curl -H  "Authorization: Bearer YOUR_TOKEN_HERE" https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@email.com
+$ BEARER_TOKEN=abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_abcd
+$ curl -H  "Authorization: Bearer $BEARER_TOKEN" \
+    https://person.api.sso.mozilla.com/v2/user/primary_email/some_email@example.com
 ```
 
 As well as a couple handy aliases you can add to your shell profile if you have `jq` version [`1.6` or newer](https://github.com/stedolan/jq/releases/tag/jq-1.6):
 ```bash
-CLIENT_ID="YOUR CLIENT ID"
-CLIENT_SECRET="YOUR CLIENT SECRET"
+CLIENT_ID=abcdefghijklmnopqrstuvwxyz012345
+CLIENT_SECRET=abcdefghijklmnopqrstuvwxyz0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ01
 
 person-api-email() {
   BEARER=$(curl --silent --request POST --url https://auth.mozilla.auth0.com/oauth/token --header "Content-Type: application/json" --data "{\"client_id\":\"${CLIENT_ID}\",\"client_secret\":\"${CLIENT_SECRET}\",\"audience\":\"api.sso.mozilla.com\",\"grant_type\":\"client_credentials\"}"| jq -r '.access_token')
