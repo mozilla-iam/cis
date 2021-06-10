@@ -50,11 +50,11 @@ class Configuration(object):
 
     def get_secure_parameter(self, parameter_name):
         """Gets the desired secret for secureStrings only from AWS Parameter Store.
-        
+
         Arguments:
             parameter_name {string} -- The name of the parameter not including the path
             to retrieve from parameter store.
-        
+
         Returns:
             [type] -- string literal decrypted value.
         """
@@ -83,11 +83,11 @@ class Configuration(object):
     def ensure_appropriate_publishers_and_sign(self, fake_profile, condition):
         """Workaround the fact the FakerUser generator does not always generate valid profiles.
         Iterates over the attributes and ensures the profile will pass publisher rule validation.
-        
+
         Arguments:
             fake_profile {object} -- A fake user object of cis_profile.profile.User() type.
             condition {string} -- Takes update for create as a condition.
-        
+
         Returns:
             [type] -- A user object of type cis_profile.profile.User() with valid publishers and signatures.
         """

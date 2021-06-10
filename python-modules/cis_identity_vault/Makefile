@@ -22,7 +22,7 @@ venv:
 	echo "source venv/bin/activate"
 
 .install-test:
-		pip install .[test]	
+		pip install .[test]
 		npm install kinesalite
 		touch $@
 
