@@ -32,8 +32,8 @@ RUN pip install boto3 awscli
 RUN pip install flake8
 RUN pip install black
 RUN pip install tox
-RUN npm install serverless
-RUN npm install kinesalite
+RUN npm --unsafe-perm -g install serverless
+RUN npm --unsafe-perm -g install kinesalite
 RUN pip3 install docker-compose
 RUN mkdir -p /opt/dynamodb_local
 WORKDIR /opt/dynamodb_local
