@@ -1,4 +1,4 @@
-FROM archlinux/base:latest
+FROM archlinux:latest
 LABEL maintainer="akrug@mozilla.com"
 
 RUN pacman -Syyu --noconfirm
