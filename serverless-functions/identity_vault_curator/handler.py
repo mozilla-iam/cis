@@ -30,6 +30,6 @@ def handle(event=None, context={}):
     v.connect()
     v.find_or_create()
     # XXX TBD if found.  Call create backup.  Support a backup and restore across tables.
-    v.tag_vault() # Vault tagging is critical to the service discovery layer.  Probably should raise and alert if it fails.
+    v.tag_vault()  # Vault tagging is critical to the service discovery layer.  Probably should raise and alert if it fails.
     v.setup_stream()
     return 200

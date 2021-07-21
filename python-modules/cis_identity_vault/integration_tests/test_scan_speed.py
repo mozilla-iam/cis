@@ -44,6 +44,7 @@ def filtered_scan_wrapper():
 
     logger.debug("Total records retrieved: {}".format(len(results)))
 
+
 def filtered_scan_wrapper_inactive():
     setup_environment()
     u = user.Profile(
@@ -63,8 +64,10 @@ def filtered_scan_wrapper_inactive():
 
     logger.debug("Total records retrieved: {}".format(len(results)))
 
+
 def test_filtered_scan(benchmark):
     benchmark.pedantic(filtered_scan_wrapper, iterations=1, rounds=1)
+
 
 def test_filtered_scan_inactive(benchmark):
     benchmark.pedantic(filtered_scan_wrapper_inactive, iterations=1, rounds=1)

@@ -45,6 +45,7 @@ def get_all_by_page():
 
     logger.debug("Total records retrieved: {}".format(len(results)))
 
+
 def get_all_by_any():
     setup_environment()
     u = user.Profile(
@@ -72,6 +73,7 @@ def get_all_by_any():
         logger.info("Total records retrieved: {}".format(len(results)))
     logger.info("Total records retrieved: {}".format(len(results)))
 
+
 def test_filtered_scan(benchmark):
-    #get_all_by_any()
+    # get_all_by_any()
     benchmark.pedantic(get_all_by_any, iterations=1, rounds=1)

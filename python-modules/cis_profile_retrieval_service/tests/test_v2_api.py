@@ -355,8 +355,8 @@ class TestAPI(object):
             follow_redirects=True,
         )
 
-        assert query.json.get("exists").get("cis")  == True
-        assert query.json.get("exists").get("ldap") == True
+        assert query.json.get("exists").get("cis") is True
+        assert query.json.get("exists").get("ldap") is True
 
     @patch("cis_profile_retrieval_service.idp.get_jwks")
     def test_find_by_x_active_true(self, fake_jwks):

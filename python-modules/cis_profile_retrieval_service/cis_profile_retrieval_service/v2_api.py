@@ -99,7 +99,7 @@ class v2MetadataByPrimaryEmail(Resource):
             vault_profile = result["Items"][0]["profile"]
             exists_in_cis = True
             exists_in_ldap = User(user_structure_json=json.loads(vault_profile)) \
-                          .as_dict()["access_information"]["ldap"]["values"] is not None
+                .as_dict()["access_information"]["ldap"]["values"] is not None
 
         return jsonify({
             "exists": {
