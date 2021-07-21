@@ -37,7 +37,7 @@ RUN npm --unsafe-perm -g install kinesalite
 RUN pip3 install docker-compose
 RUN mkdir -p /opt/dynamodb_local
 WORKDIR /opt/dynamodb_local
-RUN wget https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz
+RUN wget --no-verbose https://s3-us-west-2.amazonaws.com/dynamodb-local/dynamodb_local_latest.tar.gz
 RUN tar xzf dynamodb_local_latest.tar.gz
 WORKDIR /
 RUN mkdir /root/utils
@@ -51,7 +51,7 @@ RUN chmod 700 /root/utils/fake-creds.sh
 # ./configure --prefix `pwd` --without-readline --without-zlib && \
 # make && \
 # make install
-RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/postgresql-11.1-compiled.tar.gz
+RUN wget --no-verbose https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/postgresql-11.1-compiled.tar.gz
 RUN tar xzf postgresql-11.1-compiled.tar.gz
 # We get this artifact from S3 now.
 # RUN wget https://files.pythonhosted.org/packages/5c/1c/6997288da181277a0c29bc39a5f9143ff20b8c99f2a7d059cfb55163e165/psycopg2-2.8.3.tar.gz
@@ -59,7 +59,7 @@ RUN tar xzf postgresql-11.1-compiled.tar.gz
 # RUN cd psycopg2-2.8.3 && \
 # sed -i s/pg_config\ =/pg_config\ =\\/postgresql-11.1\\/bin\\/pg_config/ setup.cfg && \
 # python3 setup.py build
-RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/psycopg2-2.8.3.tar.gz
+RUN wget --no-verbose https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/psycopg2-2.8.3.tar.gz
 RUN tar xzf psycopg2-2.8.3.tar.gz
 RUN cp -ar /postgresql-11.1/lib/* /usr/lib64/
 WORKDIR /var/task
