@@ -1,5 +1,5 @@
 # CIS - Change Integration Service
-[![Build Status](https://travis-ci.org/mozilla-iam/cis.svg?branch=master)](https://travis-ci.org/mozilla-iam/cis)
+[![Build Status](https://github.com/mozilla-iam/cis/actions/workflows/make-test.yml/badge.svg)](https://github.com/mozilla-iam/cis/actions/)
 CIS is the Mozilla IAM Change Integration Service.
 
 ## I'm an API user, where do I start?
@@ -11,6 +11,11 @@ See [PersonAPI](docs/PersonAPI.md) docs for querying the API.
 * Docker
 * Docker-Compose
 * Make
+
+### Continuous Integration
+
+* GitHub Actions (fork the repository on GitHub to begin)
+* Docker Hub API key (access level public-readonly)
 
 ## Build & Deploy (manual)
 
@@ -79,7 +84,7 @@ $ make test-tox
 - well-known-endpoint contains the Mozilla IAM Well Known endpoint data and it's deployment methods (this endpoint can
   only be manually deployed)
 - buildspec.yml contains the AWS Codebuild CD scripts.
-- .travis.yml contains the Travis CI scripts.
+- .github/workflows/make-test.yml contains the GitHub Actions CI script.
 
 Note that many directories contain their own README.md, which has more detailed information.
 
