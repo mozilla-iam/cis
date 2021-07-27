@@ -16,6 +16,7 @@ See [PersonAPI](docs/PersonAPI.md) docs for querying the API.
 
 * GitHub Actions (fork the repository on GitHub to begin)
 * Docker Hub API key (access level public-readonly)
+  * CI only runs on PRs from branches pushed to mozilla-cis/iam.
 
 ## Build & Deploy (manual)
 

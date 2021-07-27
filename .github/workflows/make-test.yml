@@ -1,6 +1,7 @@
 name: make-test
 
-on: [push, pull_request]
+# TODO: on: [push, pull_request]
+on: [push]
 
 jobs:
   build:
@@ -12,6 +13,7 @@ jobs:
           # GitHub.com > (this repo) > Settings > Secrets
           username: ${{ secrets.DOCKER_HUB_USERNAME }}
           password: ${{ secrets.DOCKER_HUB_ACCESS_TOKEN }}
+          # TODO: find a way to avoid this or make it compatible with on: [pull_request]
       - name: Run make test
         run: |
           make test
