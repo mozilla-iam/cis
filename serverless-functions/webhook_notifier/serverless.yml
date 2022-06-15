@@ -37,7 +37,7 @@ custom:
       development: https://dinopark.dev.k8s.sso.allizom.org/beta/
       testing: https://dinopark.test.k8s.sso.allizom.org/beta/
     CIS_RP_URLS:
-      production: https://people.mozilla.org/events/update,https://discourse-staging.itsre-apps.mozit.cloud/mozilla_iam/notification,https://discourse.mozilla.org/mozilla_iam/notification,https://auth0-cis-webhook-consumer.sso.mozilla.com/post
+      production: https://people.mozilla.org/events/update,https://discourse-staging.itsre-apps.mozit.cloud/mozilla_iam/notification,https://discourse.mozilla.org/mozilla_iam/notification,https://auth0-cis-webhook-consumer.sso.mozilla.com/post,https://bugzilla.mozilla.org/mozillaiam/user/update,https://bugzilla-dev.allizom.org/mozillaiam/user/update
       development: https://dinopark.k8s.dev.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.dev.sso.allizom.org/post
       testing: https://dinopark.k8s.test.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.test.sso.allizom.org/post
 provider:
@@ -51,7 +51,7 @@ provider:
     CIS_API_IDENTIFIER: ${self:custom.webhookEnvironment.IDENTIFIER.${self:custom.webhookStage}}
     CIS_AUTHZERO_TENANT: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}}
     CIS_RP_URLS: ${self:custom.webhookEnvironment.CIS_RP_URLS.${self:custom.webhookStage}}
-    WEBHOOK_NOTIFICATIONS_AUTH0_DOMAIN: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}} 
+    WEBHOOK_NOTIFICATIONS_AUTH0_DOMAIN: ${self:custom.webhookEnvironment.WEBHOOK_NOTIFICATION_AUTH0_DOMAIN.${self:custom.webhookStage}}
     CIS_SECRET_MANAGER_SSM_PATH: ${self:custom.webhookEnvironment.CIS_SECRET_MANAGER_SSM_PATH.${self:custom.webhookStage}}
   iamRoleStatements:
     - Effect: "Allow" # xray permissions (required)
@@ -99,7 +99,7 @@ functions:
     memorySize: 512
     timeout: 120
     events:
-      - stream: 
+      - stream:
           arn: ${self:custom.webhookEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.webhookStage}}
           batchSize: 100
           startingPosition: LATEST
