@@ -156,9 +156,9 @@ class v2UsersByAny(Resource):
 
     def get(self):
         parser = reqparse.RequestParser()
-        parser.add_argument("connectionMethod", type=str)
-        parser.add_argument("active", type=str)
-        parser.add_argument("nextPage", type=str)
+        parser.add_argument("connectionMethod", type=str, location="args")
+        parser.add_argument("active", type=str, location="args")
+        parser.add_argument("nextPage", type=str, location="args")
 
         args = parser.parse_args()
 
@@ -213,8 +213,8 @@ def getUser(id, find_by):
     id = urllib.parse.unquote(id)
     parser = reqparse.RequestParser()
     parser.add_argument("Authorization", location="headers")
-    parser.add_argument("filterDisplay", type=str)
-    parser.add_argument("active", type=str)
+    parser.add_argument("filterDisplay", type=str, location="args")
+    parser.add_argument("active", type=str, location="args")
     args = parser.parse_args()
     scopes = get_scopes(args.get("Authorization"))
     filter_display = args.get("filterDisplay", None)
@@ -276,10 +276,10 @@ class v2Users(Resource):
         """Return a single user with id `user_id`."""
         parser = reqparse.RequestParser()
         parser.add_argument("Authorization", location="headers")
-        parser.add_argument("nextPage", type=str)
-        parser.add_argument("primaryEmail", type=str)
-        parser.add_argument("filterDisplay", type=str)
-        parser.add_argument("active", type=str)
+        parser.add_argument("nextPage", type=str, location="args")
+        parser.add_argument("primaryEmail", type=str, location="args")
+        parser.add_argument("filterDisplay", type=str, location="args")
+        parser.add_argument("active", type=str, location="args")
 
         args = parser.parse_args()
 

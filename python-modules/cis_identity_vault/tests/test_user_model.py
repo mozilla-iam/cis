@@ -17,7 +17,7 @@ logging.basicConfig(format=FORMAT)
 
 @mock_dynamodb2
 class TestUsersDynalite(object):
-    def setup(self):
+    def setup(self, *args):
         os.environ["CIS_ENVIRONMENT"] = "purple"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"

@@ -72,7 +72,7 @@ def ensure_appropriate_publishers_and_sign(fake_profile, publisher_rules, condit
 
 class TestAPI(object):
     def setup(self):
-        self.dynalite_port = str(random.randint(32000, 34000))
+        self.dynalite_port = str(random.randint(32200, 32300))
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
@@ -87,7 +87,7 @@ class TestAPI(object):
         self.mock_salt = self.patcher_salt.start()
 
         config = get_config()
-        os.environ["CIS_DYNALITE_PORT"] = str(random.randint(32000, 34000))
+        os.environ["CIS_DYNALITE_PORT"] = str(random.randint(32300, 32400))
         self.dynalite_port = config("dynalite_port", namespace="cis")
         self.dynaliteprocess = subprocess.Popen(
             [

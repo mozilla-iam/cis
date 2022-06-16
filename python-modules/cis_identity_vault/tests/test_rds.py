@@ -5,7 +5,7 @@ from cis_profile import FakeUser
 
 @mock_ssm
 class TestRDS(object):
-    def setup(self):
+    def setup(self, *args):
         os.environ["CIS_ENVIRONMENT"] = "testing"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
         os.environ["DEFAULT_AWS_REGION"] = "us-east-1"

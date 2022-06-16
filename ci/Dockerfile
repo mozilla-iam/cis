@@ -4,7 +4,7 @@ LABEL maintainer="akrug@mozilla.com"
 # skip global package update - whatever archlinux/latest has is enough
 #RUN pacman -Syyu --noconfirm
 # install arch base-devel, dependencies, and refresh the package list from upstream
-RUN pacman --noconfirm -S -y --needed base-devel iputils net-tools grep nodejs npm docker make pacman-contrib jq python-pip zip gcc python2 wget unzip tar gawk jdk-openjdk
+RUN pacman --noconfirm -S -y --needed base-devel iputils net-tools grep nodejs npm docker make pacman-contrib jq python-pip zip gcc python2 wget unzip tar gawk jdk-openjdk postgresql-libs python-psycopg2
 ## Use this if you need to force-downgrade system's python
 ## You'll want to compile the version you want first and upload it to S3
 # RUN wget https://s3-us-west-2.amazonaws.com/public.iam.mozilla.com/python37-3.7.5-2-x86_64.pkg.tar.xz
