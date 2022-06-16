@@ -32,6 +32,8 @@ test_requirements = [
     "moto>=1.3.7",
     "flake8",
     "pytest-benchmark",
+    "psycopg2",
+    "psycopg2-binary",
 ]
 
 extras = {"test": test_requirements}

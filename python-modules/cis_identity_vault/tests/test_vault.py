@@ -22,7 +22,7 @@ class TestVault(object):
 
 class TestVaultDynalite(object):
     def setup_class(self):
-        self.dynalite_port = str(random.randint(32000, 34000))
+        self.dynalite_port = str(random.randint(32500, 32600))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         self.dynaliteprocess = subprocess.Popen(
             [

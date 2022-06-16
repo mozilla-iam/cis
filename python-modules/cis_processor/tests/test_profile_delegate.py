@@ -36,7 +36,7 @@ def kinesis_event_generate(user_profile):
 
 @mock_dynamodb2
 class TestProfileDelegate(object):
-    def setup(self):
+    def setup(self, *args):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
         self.dynamodb_client = boto3.client(
             "dynamodb", region_name="us-west-2", aws_access_key_id="ak", aws_secret_access_key="sk"

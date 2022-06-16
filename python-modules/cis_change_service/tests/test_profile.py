@@ -28,7 +28,7 @@ class TestProfile(object):
         os.environ["AWS_XRAY_SDK_ENABLED"] = "false"
         os.environ["CIS_ENVIRONMENT"] = "local"
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"
-        self.dynalite_port = str(random.randint(32000, 34000))
+        self.dynalite_port = str(random.randint(32400, 32500))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         self.dynaliteprocess = subprocess.Popen(
             [

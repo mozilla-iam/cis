@@ -57,7 +57,7 @@ def kinesis_event_generate(user_profile):
 
 @mock_dynamodb2
 class TestOperation(object):
-    def setup(self):
+    def setup(self, *args):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"
         self.config = get_config()
         from cis_profile import WellKnown

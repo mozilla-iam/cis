@@ -18,8 +18,8 @@ logger = logging.getLogger(__name__)
 
 class TestConnect(object):
     def setup(self):
-        self.dynalite_port = str(random.randint(32000, 34000))
-        self.kinesalite_port = str(random.randint(32000, 34000))
+        self.dynalite_port = str(random.randint(32000, 32100))
+        self.kinesalite_port = str(random.randint(32100, 32200))
         os.environ["CIS_DYNALITE_PORT"] = self.dynalite_port
         os.environ["CIS_KINESALITE_PORT"] = self.kinesalite_port
         self.dynalite_host = "localhost"
