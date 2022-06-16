@@ -65,7 +65,7 @@ class EventGenerator(object):
 
 @mock_dynamodb2
 class TestEventHandler(object):
-    def setup(self):
+    def setup(self, *args):
         fh = open("tests/fixture/dynamodb-event.json")
         # Event data structure to load in order to mock a profile update
         self.event_json = fh.read()

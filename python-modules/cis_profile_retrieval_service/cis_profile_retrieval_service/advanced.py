@@ -96,21 +96,21 @@ class v2UsersByAttrContains(Resource):
     decorators = [requires_auth]
 
     def get(self):
-        parser = reqparse.RequestParser()
+        parser = reqparse.RequestParser(bundle_errors=True)
         parser.add_argument("Authorization", location="headers")
-        parser.add_argument("filterDisplay", type=str)
+        parser.add_argument("filterDisplay", type=str, location="args")
 
         for attr in allowed_advanced_queries:
             # Ensure that only our allowed attributes are parsed.
-            parser.add_argument(attr, type=allowed_advanced_queries[attr])
+            parser.add_argument(attr, type=allowed_advanced_queries[attr], location="args")
 
         for attr in allowed_advanced_queries:
             # Ensure that only our allowed attributes as inverse ops are parsed.
-            parser.add_argument(f"not_{attr}", type=allowed_advanced_queries[attr])
+            parser.add_argument(f"not_{attr}", type=allowed_advanced_queries[attr], location="args")
 
-        parser.add_argument("active", type=bool)
-        parser.add_argument("fullProfiles", type=bool)
-        parser.add_argument("nextPage", type=str)
+        parser.add_argument("active", type=bool, location="args")
+        parser.add_argument("fullProfiles", type=bool, location="args")
+        parser.add_argument("nextPage", type=str, location="args")
 
         # determine which arg was passed in from the whitelist and then set it up
         reserved_keys = ["active", "nextPage", "fullProfiles", "Authorization", "filterDisplay"]
