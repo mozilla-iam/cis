@@ -301,6 +301,7 @@ class HRISPublisher:
                 dedup.append(p)
                 continue
             cis_p = cis_profile.User(publisher.known_profiles[self.hkey][user_id])
+            # XXX this check can never be true, because timezone.value has a default
             if p.timezone.value is not None:
                 if (
                     (p.staff_information == cis_p.staff_information)
