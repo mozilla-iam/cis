@@ -322,52 +322,6 @@ class HRISPublisher:
         returns: list of cis_profile.Profile
         """
 
-        def tz_convert(hris_tz):
-            tzmap = {
-                "GMT United Kingdom Time (London)": "UTC+0000 Europe/London",
-                "GMT Western European Time (Casablanca)": "UTC+0100 Africa/Casablanca",
-                "GMT+01:00 Central European Time (Amsterdam)": "UTC+0200 Europe/Amsterdam",
-                "GMT+01:00 Central European Time (Berlin)": "UTC+01:00 Europe/Berlin",
-                "GMT+01:00 Central European Time (Oslo)": "UTC+01:00 Europe/Oslo",
-                "GMT+01:00 Central European Time (Paris)": "UTC+01:00 Europe/Paris",
-                "GMT+01:00 Central European Time (Prague)": "UTC+01:00 Europe/Prague",
-                "GMT+01:00 Central European Time (Stockholm)": "UTC+01:00 Europe/Stockholm",
-                "GMT+02:00 Eastern European Time (Athens)": "UTC+02:00 Europe/Athens",
-                "GMT+02:00 Eastern European Time (Bucharest)": "UTC+02:00 Europe/Bucharest",
-                "GMT+02:00 Eastern European Time (Helsinki)": "UTC+02:00 Europe/Helsinki",
-                "GMT+02:00 South Africa Standard Time (Johannesburg)": "UTC+02:00 Africa/Johannesburg",
-                "GMT+03:00 East Africa Time (Nairobi)": "UTC+03:00 Africa/Nairobi",
-                "GMT+03:00 Moscow Standard Time (Moscow)": "UTC+03:00 Europe/Moscow",
-                "GMT+05:00 Pakistan Standard Time (Karachi)": "UTC+05:00 Pakistan/Karachi",
-                "GMT+05:30 India Standard Time (Kolkata)": "UTC+05:30 Asia/Kolkata",
-                "GMT+07:00 Western Indonesia Time (Jakarta)": "UTC+07:00 Asia/Jakarta",
-                "GMT+08:00 Australian Western Standard Time (Perth)": "UTC+08:00 Australia/Perth",
-                "GMT+08:00 China Standard Time (Shanghai)": "UTC+08:00 Asia/Shanghai",
-                "GMT+08:00 Taipei Standard Time (Taipei)": "UTC+08:00 Asia/Taipei",
-                "GMT+09:00 Japan Standard Time (Tokyo)": "UTC+09:00 Asia/Tokyo",
-                "GMT+10:00 Australian Eastern Standard Time (Brisbane)": "UTC+10:00 Australia/Brisbane",
-                "GMT+12:00 New Zealand Time (Auckland)": "UTC+12:00 Pacific/Auckland",
-                "GMT-03:00 Argentina Standard Time (Buenos Aires)": "UTC-0300 America/Buenos_Aires",
-                "GMT-03:00 Brasilia Standard Time (Recife)": "UTC-0300 America/Recife",
-                "GMT-04:00 Atlantic Time (Halifax)": "UTC-0400 America/Halifax",
-                "GMT-05:00 Eastern Time": "UTC-0500 US/Eastern",
-                "GMT-06:00 Central Standard Time (Regina)": "UTC-0600 America/Regina",
-                "GMT-06:00 Central Time (Chicago)": "UTC-0600 America/Chicago",
-                "GMT-06:00 Central Time": "UTC-0600 US/Central",
-                "GMT-07:00 Mountain Time": "UTC-0700 US/Mountain",
-                "GMT-08:00 Pacific Time (Los Angeles)": "UTC-0800 America/Los_Angeles",
-                "GMT-08:00 Pacific Time (Tijuana)": "UTC-0800 America/Tijuana",
-                "GMT-08:00 Pacific Time": "UTC-0800 US/Pacific",
-            }
-            try:
-                tzmap[hris_tz]
-            except KeyError:
-                logger.warning(
-                    "Unknown timezone in workday, defaulting to UTC. Timezone from HRIS was" " {}.".format(hris_tz)
-                )
-                return "UTC+0000 Europe/London"
-            return tzmap[hris_tz]
-
         def cost_center_convert(cc):
             """
             Cost centers can have decimal points
@@ -428,7 +382,8 @@ class HRISPublisher:
             p.primary_email.signature.publisher.name = "hris"
             p.primary_email.metadata.last_modified = ts_now
 
-            p.timezone.value = tz_convert(hruser.get("Time_Zone"))
+            # empty string, rather than London as previously assumed
+            p.timezone.value = hruser.get("Time_Zone", "")
             p.timezone.signature.publisher.name = "hris"
             p.timezone.metadata.display = "staff"
             p.timezone.metadata.last_modified = ts_now
