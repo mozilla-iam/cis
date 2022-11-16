@@ -10,7 +10,7 @@ requirements = ["boto", "boto3", "botocore", "everett", "everett[ini]", "configo
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = ["jsonschema", "mock", "moto[dynamodb2,kinesis,sts]", "pytest", "pytest-watch", "pytest-cov",
+test_requirements = ["jsonschema", "mock", "moto[dynamodb2,kinesis,sts]<2", "pytest", "pytest-watch", "pytest-cov",
                      "flake8"]
 
 extras = {"test": test_requirements}

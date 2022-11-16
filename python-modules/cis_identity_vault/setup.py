@@ -29,7 +29,7 @@ test_requirements = [
     "pytest-cov",
     "patch",
     "mock",
-    "moto>=1.3.7[dynamodb2,ssm]",
+    "moto[dynamodb2,ssm]>=1.3.7,<2",
     "flake8",
     "pytest-benchmark",
     "psycopg2",

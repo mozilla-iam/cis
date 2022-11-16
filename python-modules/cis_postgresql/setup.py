@@ -17,7 +17,7 @@ test_requirements = [
     "patch",
     "mock",
     "flake8",
-    "moto[dynamodb2]",
+    "moto[dynamodb2]<2",
     "docker",
     "psycopg2",
     "psycopg2-binary",
