@@ -21,6 +21,7 @@ test_requirements = [
     "docker",
     "psycopg2",
     "psycopg2-binary",
+    "botocore<1.23.24",
 ]
 
 extras = {"test": test_requirements}

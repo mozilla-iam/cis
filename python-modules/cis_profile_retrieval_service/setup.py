@@ -29,7 +29,8 @@ requirements = [
 
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
-test_requirements = ["pytest", "pytest-watch", "pytest-cov", "pytest-mock", "moto<2", "mock", "flake8"]
+test_requirements = ["pytest", "pytest-watch", "pytest-cov", "pytest-mock", "moto<2", "mock", "flake8",
+                     "botocore<1.23.24"]
 
 extras = {"test": test_requirements}
 
