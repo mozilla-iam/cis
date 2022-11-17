@@ -28,7 +28,7 @@ test_requirements = [
     "pytest-watch",
     "pytest-cov",
     "patch",
-    "mock",
+    "mock<=4.0.2",
     "moto[dynamodb2,ssm]>=1.3.7,<2",
     "flake8",
     "pytest-benchmark",

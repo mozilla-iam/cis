@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 requirements = ["jsonschema", "requests", "graphene", "Faker", "everett", "everett[ini]", "configobj", "click"]
 test_requirements = [
-    "mock",
+    "mock<=4.0.2",
     "pytest",
     "pytest-watch",
     "pytest-cov",
