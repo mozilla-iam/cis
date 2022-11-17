@@ -13,6 +13,7 @@ test_requirements = [
     "flask",
     "flask_graphql",
     "flask_restful",
+    "responses<0.12.1",
 ]
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 

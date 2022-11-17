@@ -35,6 +35,7 @@ test_requirements = [
     "psycopg2",
     "psycopg2-binary",
     "botocore<1.23.24",
+    "responses<0.12.1",
 ]
 
 extras = {"test": test_requirements}

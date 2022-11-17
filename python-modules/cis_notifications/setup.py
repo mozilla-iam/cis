@@ -11,7 +11,7 @@ requirements = ["everett", "boto3", "configobj"]
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 
 test_requirements = ["pytest", "pytest-watch", "pytest-cov", "patch", "mock", "flake8", "moto[secretsmanager,ssm]<2",
-                     "PyYAML", "botocore<1.23.24"]
+                     "PyYAML", "botocore<1.23.24", "responses<0.12.1"]
 
 extras = {"test": test_requirements}
 

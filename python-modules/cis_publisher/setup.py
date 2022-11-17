@@ -11,7 +11,7 @@ requirements = ["boto3", "botocore", "everett", "everett[ini]", "auth0-python"]
 setup_requirements = ["pytest-runner"]
 
 test_requirements = ["pytest", "pytest-watch", "pytest-cov", "moto[lambda,ssm]<2", "flake8", "mock",
-                     "botocore<1.23.24"]
+                     "botocore<1.23.24", "responses<0.12.1"]
 
 extras = {"test": test_requirements}
 
