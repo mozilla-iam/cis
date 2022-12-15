@@ -54,7 +54,7 @@ custom:
       development: change.api.dev.sso.allizom.org
       testing: change.api.test.sso.allizom.org
     CIS_ALLOW_DELETE:
-      production: false
+      production: true
       development: true
       testing: true
     CIS_DISCOVERY_URL:

@@ -15,6 +15,7 @@ from cis_change_service import profile
 from cis_change_service.exceptions import IntegrationError
 from cis_change_service.exceptions import VerificationError
 from cis_change_service.idp import requires_auth
+from cis_change_service.idp import requires_scope
 from cis_change_service.idp import AuthError
 from cis_change_service import __version__
 
