@@ -230,14 +230,29 @@ class HRISPublisher:
         report_profiles = self.fetch_report()
 
         for u in report_profiles.get("Report_Entry"):
+            email_from_hris_report = u.get("PrimaryWorkEmail")
             try:
-                all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
+                found_user = publisher.known_cis_users_by_email[email_from_hris_report]
             except KeyError:
-                logger.critical(
-                    "There is no user_id in CIS Person API for HRIS User %s."
-                    "This user may not be created in HRIS yet?", u.get("PrimaryWorkEmail")
-                )
-                continue
+                lowered_email_from_hris_report = email_from_hris_report.lower()
+                try:
+                    found_user = publisher.known_cis_users_by_email[lowered_email_from_hris_report]
+                except KeyError:
+                    # Couldn't find by 'regular' or 'lowercase', we're done.
+                    logger.critical(
+                        "There is no user_id in CIS Person API for HRIS User %s."
+                        "This user may not be created in HRIS yet?", email_from_hris_report
+                    )
+                    continue
+                else:
+                    # Found by 'lowercase'.
+                    logger.warning(
+                        "There is no user_id in CIS for HRIS User %s, but we "
+                        "found a match by match by lowercasing their email.  "
+                        "Take this up with HR Ops for cleanliness."
+                    )
+                    # Fallthrough since the 'except' saved us.
+            all_user_ids.append(found_user)
         sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
         logger.info(
             "No user_id selected. Creating slices of work, chunck size: %s, slices: %s, total users: %s and "
