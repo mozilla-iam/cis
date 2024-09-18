@@ -1,14 +1,14 @@
-import cis_profile
-import cis_publisher
-import boto3
-import botocore
 import os
 import logging
 import json
 import time
-import requests
 from datetime import datetime, timezone, timedelta
 from traceback import format_exc
+import cis_profile
+import cis_publisher
+import boto3
+import botocore
+import requests
 
 logger = logging.getLogger(__name__)
 
@@ -43,7 +43,7 @@ class HRISPublisher:
             response = s3.get_object(Bucket=bucket, Key="cache.json")
             data = response["Body"].read()
         except botocore.exceptions.ClientError as e:
-            logger.error("Could not find S3 cache file: {}".format(e))
+            logger.error("Could not find S3 cache file: %s", e)
             return None
         logger.info("Using S3 cache")
         return json.loads(data)
@@ -70,7 +70,7 @@ class HRISPublisher:
             le = "All"
         else:
             le = len(user_ids)
-        logger.info("Starting HRIS Publisher [{} users]".format(le))
+        logger.info("Starting HRIS Publisher [%s users]", le)
         cache = self.get_s3_cache()
 
         # Get access to the known_users function first
@@ -117,7 +117,7 @@ class HRISPublisher:
                 current_user_id = publisher.known_cis_users_by_email[hruser_work_email]
             except KeyError:
                 logger.critical(
-                    "Repeated: There is no user_id in CIS Person API for HRIS User:{}".format(hruser_work_email)
+                    "Repeated: There is no user_id in CIS Person API for HRIS User:%s", hruser_work_email
                 )
                 continue
             user_ids_in_hris.append(current_user_id)
@@ -136,9 +136,8 @@ class HRISPublisher:
                     profile = profile.as_dict()
                 except (TypeError, AttributeError) as e:
                     logger.debug(
-                        "Failed dictionary conversion for user {} (ignoring, using raw profile) error: {}".format(
+                        "Failed dictionary conversion for user %s (ignoring, using raw profile) error: %s",
                             potential_user_id, e
-                        )
                     )
                     # If this fail, be verbose here
                     profile = profile["profile"]
@@ -150,7 +149,7 @@ class HRISPublisher:
                 except KeyError:
                     logger.debug(
                         "staff_information.staff or access_information.ldap fields are null,"
-                        " won't deactivate {}".format(potential_user_id)
+                        " won't deactivate %s", potential_user_id
                     )
                     continue
 
@@ -161,10 +160,10 @@ class HRISPublisher:
 
         if len(user_ids_to_deactivate) > 0:
             logger.info(
-                "Will deactivate {} users because they're in CIS but not in HRIS".format(user_ids_to_deactivate)
+                "Will deactivate %s users because they're in CIS but not in HRIS", user_ids_to_deactivate
             )
             for user in user_ids_to_deactivate:
-                logger.info("User selected for deactivation: {}".format(user))
+                logger.info("User selected for deactivation: %s", user)
                 # user from cis
                 try:
                     p = cis_profile.User(publisher.known_profiles[self.hkey][user]["profile"]).as_dict()
@@ -181,10 +180,10 @@ class HRISPublisher:
                     newp.sign_attribute("active", publisher_name="hris")
                 except Exception as e:
                     logger.critical(
-                        "Profile data signing failed for user {} - skipped signing, verification "
-                        "WILL FAIL ({})".format(newp.primary_email.value, e)
+                        "Profile data signing failed for user %s - skipped signing, verification "
+                        "WILL FAIL (%s)", newp.primary_email.value, e
                     )
-                    logger.debug("Profile data {}".format(newp.as_dict()))
+                    logger.debug("Profile data %s", newp.as_dict())
 
                 profiles.append(newp)
         return profiles
@@ -202,18 +201,18 @@ class HRISPublisher:
         profiles = self.deactivate_users(publisher, profiles, report_profiles)
         del report_profiles
 
-        logger.info("Processing {} profiles".format(len(profiles)))
+        logger.info("Processing %s profiles", len(profiles))
         publisher.profiles = profiles
 
         failures = []
         try:
             failures = publisher.post_all(user_ids=user_ids)
         except Exception as e:
-            logger.error("Failed to post_all() HRIS profiles. Trace: {}".format(format_exc()))
+            logger.error("Failed to post_all() HRIS profiles. Trace: %s", format_exc())
             raise e
 
         if len(failures) > 0:
-            logger.error("Failed to post {} profiles: {}".format(len(failures), failures))
+            logger.error("Failed to post %s profiles: %s", len(failures), failures)
 
     def fan_out(self, publisher, chunk_size):
         """
@@ -235,14 +234,14 @@ class HRISPublisher:
                 all_user_ids.append(publisher.known_cis_users_by_email[u.get("PrimaryWorkEmail")])
             except KeyError:
                 logger.critical(
-                    "There is no user_id in CIS Person API for HRIS User {}."
-                    "This user may not be created in HRIS yet?".format(u.get("PrimaryWorkEmail"))
+                    "There is no user_id in CIS Person API for HRIS User %s."
+                    "This user may not be created in HRIS yet?", u.get("PrimaryWorkEmail")
                 )
                 continue
         sliced = [all_user_ids[i : i + chunk_size] for i in range(0, len(all_user_ids), chunk_size)]
         logger.info(
-            "No user_id selected. Creating slices of work, chunck size: {}, slices: {}, total users: {} and "
-            "faning-out work to self".format(chunk_size, len(sliced), len(all_user_ids))
+            "No user_id selected. Creating slices of work, chunck size: %s, slices: %s, total users: %s and "
+            "faning-out work to self", chunk_size, len(sliced), len(all_user_ids)
         )
         lambda_client = boto3.client("lambda")
         for s in sliced:
@@ -264,8 +263,8 @@ class HRISPublisher:
         hris_username = self.secret_manager.secret("hris_user")
         hris_password = self.secret_manager.secret("hris_password")
 
-        logger.info("Fetching HRIS report from {}".format(hris_url))
-        params = dict(format="json")
+        logger.info("Fetching HRIS report from %s", hris_url)
+        params = {"format": "json"}
 
         if os.environ.get("CIS_ENVIRONMENT") == "development":
             logger.debug("Dev environment, not using credentials")
@@ -278,9 +277,8 @@ class HRISPublisher:
 
         if not res.ok:
             logger.error(
-                "Error fetching the HRIS report, status_code: {}, reason: {}, text: {}".format(
+                "Error fetching the HRIS report, status_code: %s, reason: %s, text: %s",
                     res.status_code, res.reason, res.text
-                )
             )
             raise ValueError("Could not fetch HRIS report")
         self.report = res.json()
@@ -362,7 +360,7 @@ class HRISPublisher:
                 tzmap[hris_tz]
             except KeyError:
                 logger.warning(
-                    "Unknown timezone in workday, defaulting to UTC. Timezone from HRIS was" " {}.".format(hris_tz)
+                    "Unknown timezone in workday, defaulting to UTC. Timezone from HRIS was %s.", hris_tz
                 )
                 return "UTC+0000 Europe/London"
             return tzmap[hris_tz]
@@ -381,7 +379,7 @@ class HRISPublisher:
         user_array = []
         for hruser in hris_data.get("Report_Entry"):
             hruser_work_email = hruser.get("PrimaryWorkEmail").lower()
-            logger.debug("filtering fields for user email {}".format(hruser_work_email))
+            logger.debug("filtering fields for user email %s", hruser_work_email)
 
             # NOTE:
             # The HRIS setup will DELETE users when they need to be deactivated and removed. It will set INACTIVE when
@@ -390,9 +388,8 @@ class HRISPublisher:
             hruser_active_state = int(hruser.get("CurrentlyActive"))
             if hruser_active_state == 0:
                 logger.debug(
-                    "User {} is currently set to inactive in HRIS Report, skipping integration".format(
+                    "User %s is currently set to inactive in HRIS Report, skipping integration",
                         hruser_work_email
-                    )
                 )
                 continue
 
@@ -401,15 +398,15 @@ class HRISPublisher:
                 current_user_id = cis_users_by_email[hruser_work_email]
             except KeyError:
                 logger.critical(
-                    "There is no user_id in CIS Person API for HRIS User {}."
-                    " This user may not be created by HRIS yet?".format(hruser_work_email)
+                    "There is no user_id in CIS Person API for HRIS User %s."
+                    " This user may not be created by HRIS yet?", hruser_work_email
                 )
                 continue
             user_ids_lower_case = [x.lower() for x in user_ids]
 
             if current_user_id.lower() not in user_ids_lower_case:
                 # Skip this user, it's not in the list requested to convert
-                logger.debug("skipping user {}, not in requested conversion list".format(current_user_id))
+                logger.debug("skipping user %s, not in requested conversion list", current_user_id)
                 continue
 
             p = cis_profile.User()
@@ -496,28 +493,28 @@ class HRISPublisher:
                 p.sign_all(publisher_name="hris")
             except Exception as e:
                 logger.critical(
-                    "Profile data signing failed for user {} - skipped signing, verification "
-                    "WILL FAIL ({})".format(p.primary_email.value, e)
+                    "Profile data signing failed for user %s - skipped signing, verification "
+                    "WILL FAIL (%s)", p.primary_email.value, e
                 )
-                logger.debug("Profile data {}".format(p.as_dict()))
+                logger.debug("Profile data %s", p.as_dict())
             try:
                 p.validate()
             except Exception as e:
                 logger.critical(
-                    "Profile schema validation failed for user {} - skipped validation, verification "
-                    "WILL FAIL({})".format(p.primary_email.value, e)
+                    "Profile schema validation failed for user %s - skipped validation, verification "
+                    "WILL FAIL(%s)", p.primary_email.value, e
                 )
-                logger.debug("Profile data {}".format(p.as_dict()))
+                logger.debug("Profile data %s", p.as_dict())
 
             try:
                 p.verify_all_publishers(cis_profile.User())
             except Exception as e:
                 logger.critical(
-                    "Profile publisher verification failed for user {} - skipped signing, verification "
-                    "WILL FAIL ({})".format(p.primary_email.value, e)
+                    "Profile publisher verification failed for user %s - skipped signing, verification "
+                    "WILL FAIL (%s)", p.primary_email.value, e
                 )
-                logger.debug("Profile data {}".format(p.as_dict()))
+                logger.debug("Profile data %s", p.as_dict())
 
-            logger.info("Processed (signed and verified) HRIS report's user {}".format(p.primary_email.value))
+            logger.info("Processed (signed and verified) HRIS report's user %s", p.primary_email.value)
             user_array.append(p)
         return user_array
