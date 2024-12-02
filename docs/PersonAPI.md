@@ -37,10 +37,12 @@ display:none (fields that do not use the display levels such as `user_id` - this
 display:public
 display:authenticated (user indicate this is to be shown only to users that are authenticated with the system)
 display:vouched (user indicate this is to be shown to vouched profiles only)
+display:ndaed (user indicates this is to be shown to NDA'd profiles only)
 display:staff (user indicate this can only be shown to Mozilla staff)
 display:private (user indicate this should not be shown to any user, only machines/API should see it)
 display:all (overrides all display levels)
 read:fullprofile (overrides all classification levels)
+search:all (allow search over any attribute)
 write (scope for CIS Change API which allows profile writes. Note that your signatures still need to match a trusted publisher, and that this scope alone is not sufficient to write data to the API - on it's own it effectively does not grant write access)
 ```
 
