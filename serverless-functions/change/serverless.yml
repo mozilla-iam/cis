@@ -1,6 +1,5 @@
 service: change-service
 plugins:
-  - serverless-domain-manager
   - serverless-plugin-tracing
 custom:
   changeStage: ${opt:stage, self:provider.stage}
@@ -65,13 +64,6 @@ custom:
       production: publisher
       development: publisher
       testing: publisher
-  customDomain:
-    domainName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
-    basePath: ''
-    stage: ${self:custom.changeStage}
-    endpointType: edge
-    createRoute53Record: true
-    certificateName: ${self:custom.changeEnvironment.DOMAIN_NAME.${self:custom.changeStage}}
 provider:
   name: aws
   runtime: python3.8

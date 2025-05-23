@@ -12,7 +12,6 @@
   "dependencies": {},
   "devDependencies": {
     "serverless-api-stage": "^1.4.0",
-    "serverless-domain-manager": "^2.6.13",
     "serverless-plugin-tracing": "^2.0.0"
   }
 }

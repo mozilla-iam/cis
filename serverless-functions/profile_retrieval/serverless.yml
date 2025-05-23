@@ -1,6 +1,5 @@
 service: profile-retrieval
 plugins:
-  - serverless-domain-manager
   - serverless-plugin-tracing
 custom:
   profileRetrievalStage: ${opt:stage, self:provider.stage}
@@ -37,13 +36,6 @@ custom:
       production: https://auth.mozilla.com/.well-known/mozilla-iam
       development: https://auth.allizom.org/.well-known/mozilla-iam
       testing: https://auth.mozilla.com/.well-known/mozilla-iam
-  customDomain:
-    domainName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
-    basePath: ''
-    stage: ${self:custom.profileRetrievalStage}
-    endpointType: edge
-    createRoute53Record: true
-    certificateName: ${self:custom.profileRetrievalEnvironment.DOMAIN_NAME.${self:custom.profileRetrievalStage}}
 provider:
   name: aws
   runtime: python3.8
