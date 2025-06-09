@@ -5,6 +5,13 @@ on:
     branches:
       - master
       - main
+  release:
+    types:
+      - published
+
+env:
+  GITHUB_EVENT: ${{ toJson(github.event) }}
+  GITHUB_EVENT_NAME: ${{ github.event_name }}
 
 permissions:
   id-token: write
@@ -39,3 +46,6 @@ jobs:
       - name: Build the layer
         run: |
           ./ci/layer-build.sh
+      - name: Upload the layer
+        run: |
+          ./ci/layer-upload.sh

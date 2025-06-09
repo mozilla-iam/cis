@@ -53,4 +53,4 @@ CONTAINER_ID="$(docker create --platform "linux/$TARGET_ARCH" "$IMAGE_ID")"
 docker cp "$CONTAINER_ID:/home/build/.local/lib/python${TARGET_PYTHON_VERSION_SHORT}" "$TARGET_OUTPUT/python/lib"
 docker rm -f "$CONTAINER_ID"
 
-cd "$TARGET_OUTPUT" && zip -qr "../$TARGET_AWS_LAYER.zip" . && cd -
+cd "$TARGET_OUTPUT" && zip -qr "../$TARGET_NAME.zip" . && cd -
