@@ -98,3 +98,5 @@ docs/.DS_Store
 .vscode
 
 */*.db
+
+build/

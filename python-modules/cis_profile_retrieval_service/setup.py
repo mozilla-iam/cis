@@ -22,7 +22,6 @@ requirements = [
     "flask_restful",
     "flask-graphql",
     "requests",
-    "ipdb",
     "aniso8601",
     "aws-xray-sdk",
 ]

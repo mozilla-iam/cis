@@ -1,0 +1,34 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+TARGET_ARCH="${TARGET_ARCH:-x86_64}"
+TARGET_PYTHON_VERSION="${TARGET_PYTHON_VERSION:-3.9.23}"
+TARGET_PYTHON_VERSION_SHORT="$(echo "$TARGET_PYTHON_VERSION" | cut -d. -f1,2)"
+TARGET_PYTHON_VERSION_SHORT_CLEAN="${TARGET_PYTHON_VERSION_SHORT//./}"
+TARGET_PYTHON_PIP_VERSION="${TARGET_PYTHON_PIP_VERSION:-25.1.1}"
+TARGET_AWS_LAYER="cis-$TARGET_ARCH-py${TARGET_PYTHON_VERSION_SHORT_CLEAN}"
+TARGET_OUTPUT="./build/$TARGET_AWS_LAYER"
+
+case "$(uname -m)" in
+    # Linux
+    aarch64)
+        HOST_ARCH="arm64"
+        ;;
+    *)
+        HOST_ARCH="$(uname -m)"
+        ;;
+esac
+
+HOST_AWS_EFFECTIVE_ROLE="$(aws sts get-caller-identity --output json | jq -r .Arn)"
+HOST_DOCKER_SERVER_VERSION="$(docker version -f "{{.Server.Version}}")"
+
+export TARGET_ARCH
+export TARGET_PYTHON_VERSION
+export TARGET_PYTHON_VERSION_SHORT
+export TARGET_PYTHON_PIP_VERSION
+export TARGET_AWS_LAYER
+export TARGET_OUTPUT
+
+export HOST_ARCH
+export HOST_AWS_EFFECTIVE_ROLE
+export HOST_DOCKER_SERVER_VERSION
