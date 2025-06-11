@@ -13,8 +13,8 @@ RUN useradd -m build
 USER build
 WORKDIR /home/build
 
-RUN --mount=type=bind,source=ci/requirements.txt,destination=/home/build/requirements.txt \
-    pip install --no-warn-script-location -r requirements.txt
+RUN --mount=type=bind,source=requirements,destination=/home/build/requirements \
+    pip install --no-warn-script-location -r requirements/core.txt
 
 COPY --chown=build:build python-modules/ python-modules/
 RUN pip install --no-warn-script-location python-modules/cis_*
