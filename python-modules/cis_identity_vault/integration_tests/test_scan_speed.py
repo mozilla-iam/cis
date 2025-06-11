@@ -11,21 +11,18 @@ logging.basicConfig(level=logging.DEBUG)
 logging.getLogger('boto3').setLevel(logging.CRITICAL)
 logging.getLogger('botocore').setLevel(logging.CRITICAL)
 
-dynamodb_client = boto3.client("dynamodb")
-dynamodb_table = boto3.resource("dynamodb").Table("testing-identity-vault")
-
 
 def setup_environment():
     os.environ["CIS_ENVIRONMENT"] = "testing"
     os.environ["CIS_REGION_NAME"] = "us-west-2"
-    os.environ["DEFAULT_AWS_REGION"] = "us-west-2"
+    os.environ["AWS_DEFAULT_REGION"] = "us-west-2"
 
 
 def filtered_scan_wrapper():
     setup_environment()
     u = user.Profile(
-        dynamodb_table_resource=dynamodb_table,
-        dynamodb_client=dynamodb_client, transactions=True
+        dynamodb_table_resource=boto3.resource("dynamodb").Table("testing-identity-vault"),
+        dynamodb_client=boto3.client("dynamodb"), transactions=True
     )
     connection_methods = ["github", "ad", "email", "oauth2", "google-oauth2"]
     results = []
@@ -48,8 +45,8 @@ def filtered_scan_wrapper():
 def filtered_scan_wrapper_inactive():
     setup_environment()
     u = user.Profile(
-        dynamodb_table_resource=dynamodb_table,
-        dynamodb_client=dynamodb_client, transactions=True
+        dynamodb_table_resource=boto3.resource("dynamodb").Table("testing-identity-vault"),
+        dynamodb_client=boto3.client("dynamodb"), transactions=True
     )
 
     results = []

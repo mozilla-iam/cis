@@ -1,6 +1,7 @@
 import json
 import logging
 import os
+import pytest
 import mock
 import random
 import subprocess
@@ -20,7 +21,7 @@ logging.getLogger("botocore").setLevel(logging.CRITICAL)
 
 logger = logging.getLogger(__name__)
 
-
+@pytest.mark.skip(reason="Needs upkeep. (Java for Dynalite.)")
 class TestProfile(object):
     def setup(self):
         self.patcher_salt = mock.patch("cis_crypto.secret.AWSParameterstoreProvider.uuid_salt")
