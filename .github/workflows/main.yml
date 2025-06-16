@@ -1,0 +1,33 @@
+name: main
+
+on:
+  push:
+    branches:
+      - master
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-24.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.9'
+          cache: pip
+          cache-dependency-path: 'requirements/*.txt'
+      - name: Install system dependencies
+        run: |
+          sudo apt-get install libffi-dev libpq-dev
+      - name: Setup Python and dependencies
+        run: |
+          pip install --no-warn-script-location \
+            -r requirements/core.txt \
+            -r requirements/test.txt
+          pip install -e python-modules/cis_*
+      - name: Run the tests!
+        run: |
+          ./ci/test.sh
+      - name: Build the layer
+        run: |
+          ./ci/layer-build.sh
