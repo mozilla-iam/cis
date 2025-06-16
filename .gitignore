@@ -100,3 +100,4 @@ docs/.DS_Store
 */*.db
 
 build/
+!terraform/build
