@@ -1,6 +1,5 @@
+org: mozillaiamcis
 service: vault-curator
-plugins:
-  - serverless-plugin-tracing
 custom:
   curatorStage: ${opt:stage, self:provider.stage}
   curatorEnvironment:
@@ -10,9 +9,12 @@ custom:
       testing: testing
 provider:
   name: aws
-  runtime: python3.8
-  stage: ${opt:stage, 'dev'}
-  tracing: true # enable tracing
+  stage: ${opt:stage, 'development'}
+  region: us-west-2
+  runtime: python3.9
+  architecture: x86_64
+  tracing:
+    lambda: true
   environment:
     CIS_ENVIRONMENT: ${self:custom.curatorEnvironment.CIS_ENVIRONMENT.${self:custom.curatorStage}}
   iamRoleStatements:
@@ -46,5 +48,4 @@ functions:
     memorySize: 512
     timeout: 900
     layers:
-      -  ${ssm:/iam/cis/${self:custom.curatorStage}/lambda_layer_arn}
-
+      -  ${ssm:/iam/cis/${self:custom.curatorStage}/build/lambda_layer_arn}
