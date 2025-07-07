@@ -71,9 +71,9 @@ class TestSecretManager(object):
 
     @mock_ssm
     @pytest.mark.xfail
-    def test_ssm_provider_fail(self):
+    def test_ssm_provider_fail(self, mocker):
+        mocked_sleep = mocker.patch("time.sleep")
         from cis_crypto import secret
-
         manager = secret.Manager(provider_type="aws-ssm")
         key_material = manager.get_key("this-key-doesnt-exist")
         assert key_material is not None

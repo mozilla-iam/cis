@@ -1,0 +1,7 @@
+__pycache__/
+*.egg-info/
+*.pyc
+python-modules/*/.coverage
+python-modules/*/.tox
+python-modules/*/.benchmarks
+python-modules/*/build

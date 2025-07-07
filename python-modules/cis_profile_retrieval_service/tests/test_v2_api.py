@@ -2,6 +2,7 @@ import boto3
 import json
 import logging
 import os
+import pytest
 import random
 import subprocess
 from cis_identity_vault import vault
@@ -22,6 +23,7 @@ logger = logging.getLogger(__name__)
 indexed_fields = ["user_id", "uuid", "primary_email", "primary_username"]
 
 
+@pytest.mark.skip(reason="Needs upkeep. (Java for Dynalite.)")
 class TestAPI(object):
     def setup_class(self):
         os.environ["CIS_CONFIG_INI"] = "tests/mozilla-cis.ini"

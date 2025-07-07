@@ -1,6 +1,7 @@
 import boto3
 import logging
 import os
+import pytest
 import random
 import subprocess
 
@@ -16,6 +17,7 @@ logging.basicConfig(level=logging.DEBUG)
 logger = logging.getLogger(__name__)
 
 
+@pytest.mark.skip(reason="Needs upkeep. (No Kinesis.)")
 class TestConnect(object):
     def setup(self):
         self.dynalite_port = str(random.randint(32000, 32100))

@@ -63,7 +63,7 @@ class BaseDynamoStream(ProfileBase):
 
     def profiles(self, user_ids=None):
         aws = connect.AWS()
-        aws.session(region_name=getenv("DEFAULT_AWS_REGION", "us-west-2"))
+        aws.session(region_name=getenv("AWS_DEFAULT_REGION", "us-west-2"))
         identity_vault_discovery = aws.identity_vault_client()
         dynamodb_client = identity_vault_discovery["client"]
         dynamodb_table = identity_vault_discovery["table"]

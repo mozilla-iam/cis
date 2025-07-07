@@ -1,0 +1,10 @@
+[tools]
+python = "3.9"
+node = "18"
+"npm:serverless" = "4.17.1"
+
+[env]
+_.python.venv = { path = ".venv", create = true }
+_.source = "dev/mise-mac-helper.sh"
+AWS_PROFILE = "iam-admin"
+AWS_DEFAULT_REGION = "us-west-2"

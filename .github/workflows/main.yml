@@ -1,11 +1,20 @@
-name: make-test
+name: main
 
 on:
   push:
-    branches-ignore:
+    branches:
       - master
       - main
-  pull_request: {}
+  release:
+    types:
+      - published
+
+env:
+  GITHUB_EVENT: ${{ toJson(github.event) }}
+  GITHUB_EVENT_NAME: ${{ github.event_name }}
+
+permissions:
+  id-token: write
 
 jobs:
   build:
@@ -29,3 +38,14 @@ jobs:
       - name: Run the tests!
         run: |
           ./ci/test.sh
+      - name: Configure AWS
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::320464205386:role/GitHubCIS
+          aws-region: us-west-2
+      - name: Build the layer
+        run: |
+          ./ci/layer-build.sh
+      - name: Upload the layer
+        run: |
+          ./ci/layer-upload.sh

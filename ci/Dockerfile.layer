@@ -1,0 +1,20 @@
+# These should be updated whenever we change ci/build-layer.sh, or the
+# variables in CI.
+ARG PYTHON_VERSION=3.9.23
+
+FROM python:${PYTHON_VERSION}-slim-bookworm
+ARG PYTHON_PIP_VERSION=25.1.1
+
+RUN apt-get -qq update && \
+    apt-get -qq install build-essential libffi-dev && \
+    pip install -U pip==$PYTHON_PIP_VERSION
+
+RUN useradd -m build
+USER build
+WORKDIR /home/build
+
+RUN --mount=type=bind,source=requirements,destination=/home/build/requirements \
+    pip install --no-warn-script-location -r requirements/core.txt
+
+COPY --chown=build:build python-modules/ python-modules/
+RUN pip install --no-warn-script-location python-modules/cis_*

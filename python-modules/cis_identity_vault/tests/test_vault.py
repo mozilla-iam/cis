@@ -1,4 +1,5 @@
 import os
+import pytest
 import random
 import subprocess
 from moto import mock_dynamodb2
@@ -12,7 +13,7 @@ class TestVault(object):
         v = vault.IdentityVault()
         os.environ["CIS_ENVIRONMENT"] = "purple"
         os.environ["CIS_REGION_NAME"] = "us-east-1"
-        os.environ["DEFAULT_AWS_REGION"] = "us-east-1"
+        os.environ["AWS_DEFAULT_REGION"] = "us-east-1"
         v.connect()
         result = v.find_or_create()
         assert result is not None
@@ -20,6 +21,7 @@ class TestVault(object):
         assert result["ResponseMetadata"]["HTTPStatusCode"] == 200
 
 
+@pytest.mark.skip(reason="Needs upkeep. (Java for Dynalite.)")
 class TestVaultDynalite(object):
     def setup_class(self):
         self.dynalite_port = str(random.randint(32500, 32600))

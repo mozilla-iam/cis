@@ -1,6 +1,5 @@
+org: mozillaiamcis
 service: hris-publisher
-plugins:
-  - serverless-plugin-tracing
 custom:
   hrisPublisherStage: ${opt:stage, self:provider.stage}
   hrisPublisherEnvironment:
@@ -50,9 +49,12 @@ custom:
       development: 2
 provider:
   name: aws
-  runtime: python3.8
-  stage: ${opt:stage, 'dev'}
-  tracing: true # enable tracing
+  stage: ${opt:stage, 'development'}
+  region: us-west-2
+  runtime: python3.9
+  architecture: x86_64
+  tracing:
+    lambda: true
   environment:
     CIS_ENVIRONMENT: ${self:custom.hrisPublisherEnvironment.CIS_ENVIRONMENT.${self:custom.hrisPublisherStage}}
     CIS_API_IDENTIFIER: ${self:custom.hrisPublisherEnvironment.IDENTIFIER.${self:custom.hrisPublisherStage}}
@@ -114,4 +116,4 @@ functions:
     memorySize: 3008 # This is HUGE because cpu allocation is tied to memorySize.
     timeout: 900
     layers:
-      -  ${ssm:/iam/cis/${self:custom.hrisPublisherStage}/lambda_layer_arn}
+      -  ${ssm:/iam/cis/${self:custom.hrisPublisherStage}/build/lambda_layer_arn}
