@@ -7,4 +7,4 @@ phases:
       - timeout 15 sh -c "until docker info; do echo .; sleep 1; done"
   build:
     commands:
-      - bash deploy.sh
+      - echo bash deploy.sh
