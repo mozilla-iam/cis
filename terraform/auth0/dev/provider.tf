@@ -6,10 +6,14 @@ terraform {
     # Re-using the one from mozilla-iam/iam-infra, to save having multiple
     # places to audit.
     bucket = "eks-terraform-shared-state"
-    key    = "cis/terraform/build/terraform.tfstate"
+    key    = "cis/terraform/auth0/dev/terraform.tfstate"
     region = "us-west-2"
   }
   required_providers {
+    auth0 = {
+      source  = "auth0/auth0"
+      version = ">= 1.7.3"
+    }
     aws = {
       source  = "hashicorp/aws"
       version = "~> 6.0"
@@ -27,4 +31,8 @@ provider "aws" {
       Repository     = "github.com/mozilla-iam/cis"
     }
   }
+}
+
+provider "auth0" {
+  domain = "dev.mozilla-dev.auth0.com"
 }
