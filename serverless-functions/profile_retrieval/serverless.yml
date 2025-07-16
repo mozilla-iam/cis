@@ -1,6 +1,4 @@
 service: profile-retrieval
-plugins:
-  - serverless-plugin-tracing
 custom:
   profileRetrievalStage: ${opt:stage, self:provider.stage}
   profileRetrievalEnvironment:
@@ -38,8 +36,23 @@ custom:
       testing: https://auth.mozilla.com/.well-known/mozilla-iam
 provider:
   name: aws
-  runtime: python3.8
-  tracing: true # enable tracing
+  runtime: python3.9
+  architecture: x86_64
+  tracing:
+    lambda: true
+    apiGateway: true
+  logs:
+    restApi:
+      level: ERROR
+      accessLogging: false
+      executionLogging: true
+      fullExecutionData: false
+  apiGateway:
+    # 3 minutes (in milliseconds). Though, as we found out, anything above 30
+    # seconds will get cut off by an internal timeout from the API Gateway.
+    # This value is to preserve some manual changes we've had to make along the
+    # way.
+    timeoutInMillis: 180000
   environment:
     CIS_DYNAMODB_ARN: ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
     CIS_ENVIRONMENT: ${self:custom.profileRetrievalEnvironment.CIS_ENVIRONMENT.${self:custom.profileRetrievalStage}}
@@ -76,9 +89,14 @@ functions:
     handler: handler.handle
     description: serverless-wsgi based endpoint to retrieve profiles aka person-api.
     memorySize: 3000
-    timeout: 30
+    # 3 minutes (in seconds). Though, as we found out, anything above 30
+    # seconds will get cut off by an internal timeout from the API Gateway.
+    # This value is to preserve some manual changes we've had to make along the
+    # way.
+    timeout: 180
+    logRetentionInDays: 30
     events:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/lambda_layer_arn}
+      -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/build/lambda_layer_arn}
