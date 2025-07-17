@@ -1,6 +1,6 @@
 import boto3
 import botocore
-import json
+import orjson
 import logging
 import os
 import re
@@ -8,7 +8,6 @@ from botocore.stub import Stubber
 from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
 from everett.manager import ConfigOSEnv
-from json import dumps
 from cis_profile.fake_profile import batch_create_fake_profiles
 from cis_identity_vault.models import user
 from cis_identity_vault.vault import IdentityVault
@@ -96,7 +95,7 @@ def seed(number_of_fake_users=100):
                     "user_uuid": identity.get("uuid").get("value"),
                     "primary_username": identity.get("primary_username").get("value"),
                     "sequence_number": "1234567890",
-                    "profile": dumps(identity),
+                    "profile": orjson.dumps(identity),
                 }
 
                 user_profile.create(identity_vault_data_structure)
@@ -112,7 +111,7 @@ def seed(number_of_fake_users=100):
                     "user_uuid": identity.get("uuid").get("value"),
                     "primary_username": identity.get("primary_username").get("value"),
                     "sequence_number": "1234567890",
-                    "profile": dumps(identity),
+                    "profile": orjson.dumps(identity),
                 }
                 user_profile.create(identity_vault_data_structure)
             logger.info("Count: {} seed users created.".format(number_of_fake_users))
@@ -126,7 +125,7 @@ def load_dirty_json(dirty_json):
     ]
     for r, s in regex_replace:
         dirty_json = re.sub(r, s, dirty_json)
-    clean_json = json.loads(dirty_json)
+    clean_json = orjson.loads(dirty_json)
     return clean_json
 
 
