@@ -53,8 +53,8 @@ def scan(
     logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
-    pool_size = 16
-    max_segments = 16
+    pool_size = 24
+    max_segments = 24
 
     users = []
     last_evaluated_key = None
