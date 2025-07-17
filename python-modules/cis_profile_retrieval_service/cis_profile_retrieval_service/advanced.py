@@ -1,5 +1,5 @@
 """Support advanced search queries for inclusion in routes via DynamoDb."""
-import json
+import orjson
 import logging
 from flask_restful import Resource
 from flask_restful import reqparse
@@ -55,7 +55,7 @@ def filter_full_profiles(scopes, filter_display, vault_profiles):
     v2_profiles = []
     for profile in vault_profiles:
         if isinstance(profile.get("profile"), str):
-            vault_profile = json.loads(profile.get("profile"))
+            vault_profile = orjson.loads(profile.get("profile"))
         else:
             vault_profile = profile.get("profile")
 

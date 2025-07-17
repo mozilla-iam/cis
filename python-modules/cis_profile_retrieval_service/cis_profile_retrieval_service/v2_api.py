@@ -1,4 +1,4 @@
-import json
+import orjson
 
 from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
 from aws_xray_sdk.core import xray_recorder
@@ -98,7 +98,7 @@ class v2MetadataByPrimaryEmail(Resource):
         if len(result["Items"]) > 0:
             vault_profile = result["Items"][0]["profile"]
             exists_in_cis = True
-            exists_in_ldap = User(user_structure_json=json.loads(vault_profile)) \
+            exists_in_ldap = User(user_structure_json=orjson.loads(vault_profile)) \
                 .as_dict()["access_information"]["ldap"]["values"] is not None
 
         return jsonify({
@@ -236,7 +236,7 @@ def getUser(id, find_by):
 
     if len(result["Items"]) > 0:
         vault_profile = result["Items"][0]["profile"]
-        v2_profile = User(user_structure_json=json.loads(vault_profile))
+        v2_profile = User(user_structure_json=orjson.loads(vault_profile))
 
         if v2_profile.active.value == active or active is None:
             if "read:fullprofile" in scopes:
@@ -318,7 +318,7 @@ class v2Users(Resource):
             active = True  # Support returning only active users by default.
 
         for profile in result.get("Items"):
-            vault_profile = json.loads(profile.get("profile"))
+            vault_profile = orjson.loads(profile.get("profile"))
             v2_profile = User(user_structure_json=vault_profile)
 
             # This must be a pre filtering check because mutation is real.
