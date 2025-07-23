@@ -24,6 +24,8 @@ def get_segment(
     )
 
     if projection_expression:
+        scan_kwargs["ProjectionExpression"] = projection_expression
+    else:
         scan_kwargs["ProjectionExpression"] = "id, primary_email, user_uuid, active"
 
     if exclusive_start_key:
