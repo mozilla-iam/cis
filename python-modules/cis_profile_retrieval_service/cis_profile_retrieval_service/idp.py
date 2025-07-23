@@ -1,10 +1,9 @@
-import json
 import logging
+import requests
 
 from functools import wraps
 from flask import request
 from flask import _request_ctx_stack
-from six.moves.urllib.request import urlopen
 from jose import jwt
 
 from cis_profile_retrieval_service.common import get_config
@@ -44,10 +43,7 @@ def get_token_auth_header():
 
 
 def get_jwks():
-    # XXX TBD do this with request purely instead of six
-    jsonurl = urlopen("https://" + AUTH0_DOMAIN + "/.well-known/jwks.json")
-    jwks = json.loads(jsonurl.read())
-    return jwks
+    return requests.get(f"https://{AUTH0_DOMAIN}/.well-known/jwks.json").json()
 
 
 def requires_auth(f):
