@@ -3,6 +3,7 @@
 * `build`: AWS resources to facilitate building.
 * `auth0`: Auth0-related resources. CIS is the source of truth
   for these resources, so it's best (for locality) they live here.
+* `infra`: DynamoDB, DAX, etc. Anything required at "runtime".
 
 ## Disclaimer
 
