@@ -1,12 +1,12 @@
 # From the cis_production lambda layer.
 aniso8601==7.0.0
+antlr4-python3-runtime==4.7.2
 async_generator==1.10
 attrs==20.2.0
 auth0_python==3.13.0
 aws_xray_sdk==2.6.0
-boto==2.49.0
-boto3==1.15.7
-botocore==1.18.7
+boto3==1.17.112
+botocore==1.20.112
 certifi==2020.6.20
 cffi==1.14.3
 chardet==3.0.4
@@ -47,7 +47,7 @@ pytz==2020.1
 requests==2.32.4
 rsa==4.6
 Rx==1.6.1
-s3transfer==0.3.3
+s3transfer==0.4.2
 serverless_wsgi==1.7.5
 setuptools==50.3.0
 six==1.15.0
@@ -62,3 +62,4 @@ typing_extensions==4.14.0
 urllib3==1.25.10
 Werkzeug==1.0.1
 zipp==3.2.0
+amazon-dax-client==2.0.3

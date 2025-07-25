@@ -13,4 +13,4 @@ export LDFLAGS="${LDFLAGS:-} -L/opt/homebrew/opt/openssl@1.1/lib"
 
 # Assumes the user has run:
 # brew install libpq
-export PATH="$PATH:/opt/homebrew/opt/libpq/bin"
+export PATH="/opt/homebrew/opt/libpq/bin:$PATH"
