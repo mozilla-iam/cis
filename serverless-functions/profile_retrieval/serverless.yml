@@ -15,15 +15,17 @@ custom:
       development: api.dev.sso.allizom.org
       testing: api.test.sso.allizom.org
     CIS_DAX_ARN:
-      production: arn:aws:dax:us-west-2:320464205386:cache/production-id
       development: arn:aws:dax:us-west-2:320464205386:cache/development-id
       testing: arn:aws:dax:us-west-2:320464205386:cache/testing-id
+      production: arn:aws:dax:us-west-2:320464205386:cache/production-id
     CIS_DYNAMODB_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
     CIS_DAX_ENDPOINT_URL:
       development: daxs://development-id.fmov7e.dax-clusters.us-west-2.amazonaws.com
+      testing: daxs://testing-id.fmov7e.dax-clusters.us-west-2.amazonaws.com
+      production: daxs://testing-id.fmov7e.dax-clusters.us-west-2.amazonaws.com
     PERSON_API_AUTH0_DOMAIN:
       production: auth.mozilla.auth0.com
       development: auth.mozilla.auth0.com
