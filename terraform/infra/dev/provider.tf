@@ -26,6 +26,7 @@ provider "aws" {
       Owner          = "IAM"
       Repository     = "github.com/mozilla-iam/cis"
       Environment    = var.environment
+      ManagedBy      = "Terraform"
     }
   }
 }
