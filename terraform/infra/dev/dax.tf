@@ -24,12 +24,12 @@ data "aws_iam_policy_document" "cis_read_access" {
 }
 
 resource "aws_iam_policy" "dax_cis_read_access" {
-  name   = "AWSDaxCISReadAccess"
-  policy = data.aws_iam_policy_document.cis_read_access.json
+  name_prefix = "AWSDaxCISReadAccess"
+  policy      = data.aws_iam_policy_document.cis_read_access.json
 }
 
 resource "aws_iam_role" "dax_cis" {
-  name = "AWSDaxCIS"
+  name_prefix = "AWSDaxCIS"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
     Statement = [{
@@ -49,7 +49,7 @@ resource "aws_iam_role_policy_attachment" "dax_cis_read" {
 }
 
 resource "aws_dax_parameter_group" "cache" {
-  name        = "cis-cache"
+  name        = "${var.environment}-cis-cache"
   description = "DAX parameter group. Generally for caching Scan operations."
   # Cache query/scan results for 2 hours -- the same amount of time we keep our
   # S3 cache around for.
@@ -88,4 +88,12 @@ resource "aws_dax_cluster" "cache" {
   server_side_encryption {
     enabled = true
   }
+}
+
+output "dax_cluster_arn" {
+  value = aws_dax_cluster.cache.arn
+}
+
+output "dax_cluster_endpoint_url" {
+  value = "daxs://${aws_dax_cluster.cache.cluster_address}"
 }
