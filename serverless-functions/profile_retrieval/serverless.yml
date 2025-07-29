@@ -14,10 +14,16 @@ custom:
       production: api.sso.mozilla.com
       development: api.dev.sso.allizom.org
       testing: api.test.sso.allizom.org
+    CIS_DAX_ARN:
+      production: arn:aws:dax:us-west-2:320464205386:cache/production-id
+      development: arn:aws:dax:us-west-2:320464205386:cache/development-id
+      testing: arn:aws:dax:us-west-2:320464205386:cache/testing-id
     CIS_DYNAMODB_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
+    CIS_DAX_ENDPOINT_URL:
+      development: daxs://development-id.fmov7e.dax-clusters.us-west-2.amazonaws.com
     PERSON_API_AUTH0_DOMAIN:
       production: auth.mozilla.auth0.com
       development: auth.mozilla.auth0.com
@@ -54,6 +60,8 @@ provider:
     # way.
     timeoutInMillis: 180000
   environment:
+    CIS_DAX_ARN: ${self:custom.profileRetrievalEnvironment.CIS_DAX_ARN.${self:custom.profileRetrievalStage}}
+    CIS_DAX_ENDPOINT_URL: ${self:custom.profileRetrievalEnvironment.CIS_DAX_ENDPOINT_URL.${self:custom.profileRetrievalStage}}
     CIS_DYNAMODB_ARN: ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
     CIS_ENVIRONMENT: ${self:custom.profileRetrievalEnvironment.CIS_ENVIRONMENT.${self:custom.profileRetrievalStage}}
     CIS_ASSUME_ROLE_ARN: None
@@ -80,6 +88,15 @@ provider:
         - ${self:custom.profileRetrievalEnvironment.CIS_DYNAMODB_ARN.${self:custom.profileRetrievalStage}}
     - Effect: Allow
       Action:
+        - "dax:DescribeTable"
+        - "dax:Query"
+        - "dax:Scan"
+        - "dax:GetItem"
+      Resource:
+        - ${self:custom.profileRetrievalEnvironment.CIS_DAX_ARN.${self:custom.profileRetrievalStage}}/*
+        - ${self:custom.profileRetrievalEnvironment.CIS_DAX_ARN.${self:custom.profileRetrievalStage}}
+    - Effect: Allow
+      Action:
         - logs:CreateLogGroup
         - logs:CreateLogStream
         - logs:PutLogEvents
@@ -99,4 +116,7 @@ functions:
       - http: ANY /
       - http: ANY {proxy+}
     layers:
-      -  ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/build/lambda_layer_arn}
+      - ${ssm:/iam/cis/${self:custom.profileRetrievalStage}/build/lambda_layer_arn}
+    vpc:
+      securityGroupIds: ${file(./networking.${self:custom.profileRetrievalStage}.yml):security_groups}
+      subnetIds: ${file(./networking.${self:custom.profileRetrievalStage}.yml):subnets}

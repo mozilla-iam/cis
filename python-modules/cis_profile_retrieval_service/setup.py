@@ -23,6 +23,7 @@ requirements = [
     "flask-graphql",
     "requests",
     "aniso8601",
+    "amazon-dax-client",
     "aws-xray-sdk",
 ]
 

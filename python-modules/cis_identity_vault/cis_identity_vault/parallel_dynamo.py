@@ -24,6 +24,8 @@ def get_segment(
     )
 
     if projection_expression:
+        scan_kwargs["ProjectionExpression"] = projection_expression
+    else:
         scan_kwargs["ProjectionExpression"] = "id, primary_email, user_uuid, active"
 
     if exclusive_start_key:
@@ -88,10 +90,9 @@ def scan(
     while not result_queue.empty():
         logger.debug("Results queue is not empty.")
         result = result_queue.get()
-
-        if result is not None:
-            users.extend(result.get("users"))
-
+        # A consequence of using DAX is that sometimes we receive a `None`.
+        users_additional = result.get("users") or []
+        users.extend(users_additional)
         if result.get("segment") == max_segments - 1:
             logger.debug("This is the last segment.")
             last_evaluated_key = result.get("nextPage")
