@@ -4,7 +4,6 @@ import orjson
 import logging
 import os
 import re
-from amazondax import AmazonDaxClient
 from botocore.stub import Stubber
 from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
@@ -63,16 +62,6 @@ def get_dynamodb_client():
         session = boto3.session.Session(region_name=region)
         client = session.client("dynamodb", config=client_config)
 
-    return client
-
-
-def get_dax_client():
-    region = config("dynamodb_region", namespace="cis", default="us-west-2")
-    environment = config("environment", namespace="cis", default="local")
-    dax_endpoint_url = config("dax_endpoint_url", namespace="cis", default="deadbeef")
-    client_config = botocore.config.Config(max_pool_connections=50)
-    session = boto3.session.Session(region_name=region)
-    client = AmazonDaxClient(session._session, endpoint_url=dax_endpoint_url)
     return client
 
 

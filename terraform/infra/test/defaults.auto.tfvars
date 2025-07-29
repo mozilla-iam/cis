@@ -1,2 +1,1 @@
-environment  = "testing"
-dax_replicas = 1
+environment = "testing"

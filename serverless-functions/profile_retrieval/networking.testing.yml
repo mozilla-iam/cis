@@ -1,6 +1,0 @@
-security_groups:
-  - sg-0dd5249fb8c74af48
-subnets:
-  - subnet-0f24c11a4a4065a23
-  - subnet-083258579bc7fd906
-  - subnet-0280d64446a1c774b
