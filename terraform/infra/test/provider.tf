@@ -6,7 +6,7 @@ terraform {
     # Re-using the one from mozilla-iam/iam-infra, to save having multiple
     # places to audit.
     bucket = "eks-terraform-shared-state"
-    key    = "cis/terraform/infra/dev/terraform.tfstate"
+    key    = "cis/terraform/infra/test/terraform.tfstate"
     region = "us-west-2"
   }
   required_providers {
