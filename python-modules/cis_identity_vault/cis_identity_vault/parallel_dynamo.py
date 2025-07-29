@@ -36,13 +36,13 @@ def get_segment(
 
     logger.debug("Running parallel scan with kwargs: {}".format(scan_kwargs))
     response = dynamodb_client.scan(**scan_kwargs)
-    users = response.get("Items")
+    users = response.get("Items", [])
     last_evaluated_key = response.get("LastEvaluatedKey")
 
     while last_evaluated_key is not None:
         scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
         response = dynamodb_client.scan(**scan_kwargs)
-        users.extend(response.get("Items"))
+        users.extend(response.get("Items", []))
         last_evaluated_key = response.get("LastEvaluatedKey")
 
     logger.debug("Running thread_id: {}".format(thread_id))
@@ -90,8 +90,7 @@ def scan(
     while not result_queue.empty():
         logger.debug("Results queue is not empty.")
         result = result_queue.get()
-        # A consequence of using DAX is that sometimes we receive a `None`.
-        users_additional = result.get("users") or []
+        users_additional = result.get("users")
         users.extend(users_additional)
         if result.get("segment") == max_segments - 1:
             logger.debug("This is the last segment.")
