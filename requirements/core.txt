@@ -1,6 +1,5 @@
 # From the cis_production lambda layer.
 aniso8601==7.0.0
-antlr4-python3-runtime==4.7.2
 async_generator==1.10
 attrs==20.2.0
 auth0_python==3.13.0
