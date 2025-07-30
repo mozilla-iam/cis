@@ -19,7 +19,6 @@ from cis_profile.profile import User
 from cis_profile_retrieval_service.advanced import v2UsersByAttrContains
 from cis_profile_retrieval_service.common import get_config
 from cis_profile_retrieval_service.common import initialize_vault
-from cis_profile_retrieval_service.common import get_dax_client
 from cis_profile_retrieval_service.common import get_dynamodb_client
 from cis_profile_retrieval_service.common import get_table_resource
 from cis_profile_retrieval_service.common import load_dirty_json
@@ -72,9 +71,8 @@ if config("initialize_vault", namespace="person_api", default="false") == "true"
 
 authorization_middleware = AuthorizationMiddleware()
 dynamodb_table = get_table_resource()
-dax_client = get_dax_client()
 dynamodb_client = get_dynamodb_client()
-transactions = config("transactions", namespace="cis", default="false")
+transactions = config("transactions", namespace="cis", default="false") == "true"
 
 
 def graphql_view():
@@ -172,18 +170,7 @@ class v2UsersByAny(Resource):
         if next_page is not None:
             next_page = urllib.parse.unquote(next_page)
 
-        cached = args.get("cached", "false") == "true"
-        if cached:
-            db_client = dax_client
-        else:
-            db_client = dynamodb_client
-
-        if transactions == "false":
-            if cached:
-                logger.info("Using dax client")
-            identity_vault = user.Profile(dynamodb_table, db_client, transactions=False)
-        elif transactions == "true":
-            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=transactions)
 
         logger.debug("Getting all users for connection method: {}".format(args.get("connectionMethod")))
         if args.get("active") is not None and args.get("active").lower() == "false":
@@ -237,11 +224,7 @@ def getUser(id, find_by):
     else:
         active = True
 
-    if transactions == "false":
-        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
-
-    if transactions == "true":
-        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+    identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=transactions)
 
     result = find_by(identity_vault, id)
 
@@ -309,11 +292,7 @@ class v2Users(Resource):
         else:
             nextPage = None
 
-        if transactions == "false":
-            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=False)
-
-        if transactions == "true":
-            identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=True)
+        identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=transactions)
 
         next_page_token = None
         if primary_email is None:

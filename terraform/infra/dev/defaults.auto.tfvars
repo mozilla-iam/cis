@@ -1,2 +1,1 @@
-environment  = "development"
-dax_replicas = 1
+environment = "development"
