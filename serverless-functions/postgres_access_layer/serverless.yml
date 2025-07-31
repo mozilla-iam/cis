@@ -126,7 +126,7 @@ functions:
           - sg-015971fe39add456e
     handler: handler.handle
     events:
-      - stream: 
+      - stream:
           arn: ${self:custom.postgresqlAccessLayerEnvironment.CIS_DYNAMODB_STREAM_ARN.${self:custom.postgresqlAccessLayerStage}}
           batchSize: 1000
           startingPosition: LATEST
