@@ -1,5 +1,5 @@
 [tools]
-python = "3.9"
+python = "3.9.23"
 node = "18"
 "npm:serverless" = "4.17.1"
 skaffold = "2.16.1"
