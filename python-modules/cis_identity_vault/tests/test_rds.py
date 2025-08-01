@@ -1,11 +1,11 @@
 import os
 import pytest
-from moto import mock_ssm
+from moto import mock_aws
 from cis_profile import FakeUser
 
 
 @pytest.mark.skip(reason="Needs upkeep. (No Postgres?)")
-@mock_ssm
+@mock_aws
 class TestRDS(object):
     def setup(self, *args):
         os.environ["CIS_ENVIRONMENT"] = "testing"

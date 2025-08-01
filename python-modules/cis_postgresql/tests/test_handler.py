@@ -5,7 +5,7 @@ import pytest
 import sqlalchemy
 import uuid
 from copy import deepcopy
-from moto import mock_dynamodb2
+from moto import mock_aws
 
 from boto3.dynamodb.types import TypeDeserializer
 from cis_postgresql import exchange
@@ -65,7 +65,7 @@ class EventGenerator(object):
 
 
 @pytest.mark.skip(reason="Bit rot.")
-@mock_dynamodb2
+@mock_aws
 class TestEventHandler(object):
     def setup(self, *args):
         fh = open("tests/fixture/dynamodb-event.json")

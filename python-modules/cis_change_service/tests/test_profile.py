@@ -2,7 +2,6 @@ import json
 import logging
 import os
 import pytest
-import mock
 import random
 import subprocess
 from cis_profile import FakeUser
@@ -10,6 +9,7 @@ from cis_profile import User
 from cis_profile.fake_profile import FakeProfileConfig
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
+from unittest import mock
 
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")

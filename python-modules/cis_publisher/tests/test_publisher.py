@@ -1,7 +1,7 @@
 import cis_publisher
-import mock
 import cis_profile
 import os
+from unittest import mock
 
 
 class TestPublisher:

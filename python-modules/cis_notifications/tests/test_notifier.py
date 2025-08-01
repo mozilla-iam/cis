@@ -1,6 +1,6 @@
 import cis_notifications
 import json
-import mock
+from unittest import mock
 
 
 class TestNotifier(object):

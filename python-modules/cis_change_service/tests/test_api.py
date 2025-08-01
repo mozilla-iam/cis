@@ -1,6 +1,5 @@
 import json
 import logging
-import mock
 import os
 import pytest
 import random
@@ -15,6 +14,7 @@ from datetime import datetime
 from datetime import timedelta
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
+from unittest import mock
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 
