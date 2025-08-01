@@ -1,8 +1,8 @@
 from cis_profile import profile
 from cis_profile.common import MozillaDataClassification
 from cis_profile.common import DisplayLevel
+from unittest import mock
 
-import mock
 import copy
 import cis_profile.exceptions
 import pytest

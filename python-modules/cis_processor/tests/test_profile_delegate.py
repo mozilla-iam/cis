@@ -6,7 +6,7 @@ import pytest
 import random
 import uuid
 from botocore.stub import Stubber
-from moto import mock_dynamodb2
+from moto import mock_aws
 from cis_profile import fake_profile
 from cis_profile import User
 
@@ -36,7 +36,7 @@ def kinesis_event_generate(user_profile):
 
 
 @pytest.mark.skip(reason="Needs upkeep. (No Kinesis.)")
-@mock_dynamodb2
+@mock_aws
 class TestProfileDelegate(object):
     def setup(self, *args):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"

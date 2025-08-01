@@ -6,7 +6,7 @@ import pytest
 import random
 import subprocess
 from cis_identity_vault import vault
-from mock import patch
+from unittest.mock import patch
 from tests.fake_auth0 import FakeBearer
 from tests.fake_auth0 import json_form_of_pk
 

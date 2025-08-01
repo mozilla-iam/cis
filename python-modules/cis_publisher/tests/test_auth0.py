@@ -7,8 +7,8 @@ import json
 
 # import mock
 
-# from moto import mock_lambda
-# import boto3
+# from moto import mock_aws
+# from unittest import boto3
 
 logging.getLogger("cis_publisher").setLevel(logging.INFO)
 

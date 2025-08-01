@@ -2,10 +2,10 @@ import os
 import pytest
 import random
 import subprocess
-from moto import mock_dynamodb2
+from moto import mock_aws
 
 
-@mock_dynamodb2
+@mock_aws
 class TestVault(object):
     def test_crud_it_should_succeed(self):
         from cis_identity_vault import vault

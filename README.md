@@ -305,9 +305,16 @@ Audience:
 
 ### Development (dev)
 
-This is for local testing and development. This is also what is in the `master` branch of this repository.
-It uses a development set of keys for signing and verification. This environment contains fake data and is neither persistent neither guaranteed to be stable, though it should be almost always functional.
-Access to this environment may be granted temporarily to diagnose specific issues, features, etc. as they're being developed, but is not meant for general QA.
+This is for local testing and development. This is also what is in the `master`
+branch of this repository.
+
+It uses a development set of keys for signing and verification. This
+environment contains fake data and is neither persistent neither guaranteed to
+be stable, though it should be almost always functional.
+
+Access to this environment may be granted temporarily to diagnose specific
+issues, features, etc. as they're being developed, but is not meant for general
+QA.
 
 URLs:
 - https://change.api.dev.sso.allizom.org
@@ -316,3 +323,17 @@ URLs:
 
 Audience:
 - api.dev.sso.allizom.org
+
+### Local development
+
+We're moving towards having parts of this deployed to new infrastructure, to
+overcome some limitations with our current setup. Namely, this is around a 30
+second timeout, within the depths of our infra, that we're unable to change.
+
+Some rough notes:
+
+* `skaffold dev`, will build and test your container. You can access it by
+  hitting `http://localhost:8000`.
+* That's all! Currently working towards getting deployed into GKE.
+* Credentials and further configuration is left as an exercise for the
+  developer.

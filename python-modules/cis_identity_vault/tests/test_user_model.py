@@ -6,7 +6,7 @@ import pytest
 import uuid
 from cis_identity_vault import vault
 from cis_profile import FakeUser
-from moto import mock_dynamodb2
+from moto import mock_aws
 
 
 logger = logging.getLogger(__name__)
@@ -15,8 +15,8 @@ logger = logging.getLogger(__name__)
 FORMAT = "%(asctime)-15s %(clientip)s %(user)-8s %(message)s"
 logging.basicConfig(format=FORMAT)
 
-@pytest.mark.skip(reason="Bit rot.")
-@mock_dynamodb2
+@pytest.mark.skip(reason="Bit rot. These also take _forever_ to run.")
+@mock_aws
 class TestUsersDynalite(object):
     def setup(self, *args):
         os.environ["CIS_ENVIRONMENT"] = "purple"

@@ -1,6 +1,5 @@
 import boto3
-from moto import mock_ssm
-from moto import mock_secretsmanager
+from moto import mock_aws
 from os import environ
 
 
@@ -9,8 +8,7 @@ class TestAccessTokenExchange(object):
         pass
 
 
-@mock_ssm
-@mock_secretsmanager
+@mock_aws
 class TestSecret(object):
     def test_secret_manager(self):
         self.secret_name = "dinosecret"

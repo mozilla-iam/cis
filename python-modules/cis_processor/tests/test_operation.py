@@ -12,8 +12,8 @@ from cis_profile import fake_profile
 from everett.ext.inifile import ConfigIniEnv
 from everett.manager import ConfigManager
 from everett.manager import ConfigOSEnv
-from moto import mock_dynamodb2
-from mock import patch
+from moto import mock_aws
+from unittest.mock import patch
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +57,7 @@ def kinesis_event_generate(user_profile):
 
 
 @pytest.mark.skip(reason="Needs upkeep. (No Kinesis.)")
-@mock_dynamodb2
+@mock_aws
 class TestOperation(object):
     def setup(self, *args):
         os.environ["CIS_CONFIG_INI"] = "tests/fixture/mozilla-cis.ini"

@@ -1,6 +1,6 @@
 import cis_publisher
-import mock
 import os
+from unittest import mock
 
 
 class TestLDAP:

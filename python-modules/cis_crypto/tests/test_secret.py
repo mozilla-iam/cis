@@ -5,7 +5,7 @@ import pytest
 import logging
 
 from jose import jwk
-from moto import mock_ssm
+from moto import mock_aws
 
 logging.basicConfig(level=logging.INFO, format="%(asctime)s:%(levelname)s:%(name)s:%(message)s")
 logger = logging.getLogger(__name__)
@@ -20,7 +20,7 @@ class TestSecretManager(object):
         key_material = manager.get_key("fake-access-file-key.priv.pem")
         assert key_material is not None
 
-    @mock_ssm
+    @mock_aws
     def test_ssm_provider(self):
         from cis_crypto import secret
 
@@ -69,7 +69,7 @@ class TestSecretManager(object):
     #        salt = secret.AWSParameterstoreProvider().uuid_salt()
     #        assert salt is not None
 
-    @mock_ssm
+    @mock_aws
     @pytest.mark.xfail
     def test_ssm_provider_fail(self, mocker):
         mocked_sleep = mocker.patch("time.sleep")

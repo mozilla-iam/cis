@@ -1,8 +1,5 @@
 import orjson
 
-from aws_xray_sdk.ext.flask.middleware import XRayMiddleware
-from aws_xray_sdk.core import xray_recorder
-
 from flask import Flask
 from flask_cors import CORS
 from flask_graphql import GraphQLView
@@ -55,12 +52,6 @@ config = get_config()
 logger = getLogger(__name__)
 
 cis_environment = config("environment", namespace="cis")
-# Configure the X-Ray recorder to generate segments with our service name
-xray_recorder.configure(service="{}_profile_retrieval_serivce".format(cis_environment))
-
-# Instrument the Flask application
-XRayMiddleware(app, xray_recorder)
-
 
 if config("initialize_vault", namespace="person_api", default="false") == "true":
     logger.debug("Initializing vault and pre-seeding it, this will take some time...")
