@@ -1,0 +1,5 @@
+apiVersion: v2
+name: cis
+description: Change Integration Service!
+version: "0.0.1"
+appVersion: "2.40.0"

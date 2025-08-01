@@ -1,0 +1,50 @@
+{{- if (.Values.profile_retrieval_api).enabled | default false }}
+{{- with .Values.profile_retrieval_api }}
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: profile-retrieval-api
+  labels:
+    {{- include "cis.labels" $ | nindent 4 }}
+    {{- toYaml $.Values.podLabels | nindent 4 }}
+    {{- toYaml .podLabels | nindent 4 }}
+spec:
+  selector:
+    matchLabels:
+      {{- include "cis.labels" $ | nindent 6 }}
+      {{- toYaml $.Values.podLabels | nindent 6 }}
+      {{- toYaml .podLabels | nindent 6 }}
+  template:
+    metadata:
+      labels:
+        {{- include "cis.labels" $ | nindent 8 }}
+        {{- toYaml $.Values.podLabels | nindent 8 }}
+        {{- toYaml .podLabels | nindent 8 }}
+    spec:
+      terminationGracePeriodSeconds: 0
+      containers:
+        - name: {{ $.Chart.Name }}
+          image: {{ $.Values.image.repository }}:{{ $.Values.image.tag | default $.Chart.AppVersion }}
+          imagePullPolicy: {{ $.Values.image.pullPolicy }}
+          args: {{ append (.args | default list) "cis_profile_retrieval_service.v2_api:app" | toJson }}
+          env:
+            - name: CIS_ENVIRONMENT
+              value: {{ $.Values.environment | quote }}
+          ports:
+            - name: http
+              containerPort: 8000
+              protocol: TCP
+          resources:
+            {{- toYaml .resources | nindent 12 }}
+          securityContext:
+            allowPrivilegeEscalation: false
+            capabilities:
+              drop: ["ALL"]
+          startupProbe: &probe
+            httpGet:
+              path: "/v2/version"
+              port: http
+          livenessProbe: *probe
+          readinessProbe: *probe
+{{- end }}
+{{- end }}

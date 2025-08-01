@@ -1,0 +1,4 @@
+profile_retrieval_api:
+  enabled: true
+  args:
+    - --workers=4

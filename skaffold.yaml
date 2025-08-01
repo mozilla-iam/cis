@@ -1,0 +1,53 @@
+apiVersion: skaffold/v3
+kind: Config
+metadata:
+  name: cis
+profiles:
+  - name: dev
+    activation:
+      - kubeContext: docker-desktop
+      - command: dev
+build:
+  local:
+    useBuildkit: true
+    useDockerCLI: true
+  artifacts:
+    - image: cis
+      context: .
+      # FEAT(bhee): live code reloads with gunicorn.
+      # Partially working. The files do get synced into the running pods.
+      # But, reloading doesn't seem to work (even with gunicorn's --reload).
+      # I suspect it might have to do with how we've installed the modules.
+      # It would be neat if we got this to work eventually.
+      #sync:
+      #  manual:
+      #    - src: "python-modules/**"
+      #      dest: "/home/mozilla-iam/"
+      #  hooks:
+      #    after:
+      #      - container:
+      #          command: ["sh", "-c", "kill -HUP 1"]
+      custom:
+        buildCommand: docker buildx build --tag $IMAGE --platform linux/amd64,linux/arm64 $BUILD_CONTEXT
+        dependencies:
+          dockerfile:
+            path: Dockerfile
+      hooks:
+        # Build what we test. We could opt for test what we build as well.
+        before:
+          - command: ["./ci/test.sh"]
+            os: ["linux", "darwin"]
+deploy:
+  kubeContext: docker-desktop
+  helm:
+    releases:
+      - name: profile-retrieval-api
+        chartPath: helm/cis
+        valuesFiles:
+          - helm/cis/values.yaml
+          - helm/cis/values-local.yaml
+portForward:
+  - resourceType: Deployment
+    resourceName: profile-retrieval-api
+    port: 8000
+    localPort: 8000

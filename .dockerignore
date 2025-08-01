@@ -5,3 +5,6 @@ python-modules/*/.coverage
 python-modules/*/.tox
 python-modules/*/.benchmarks
 python-modules/*/build
+python-modules/*/*.egg-info
+python-modules/*/.pytest_cache
+python-modules/*/.eggs

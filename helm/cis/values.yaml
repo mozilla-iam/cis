@@ -1,0 +1,20 @@
+environment: local
+
+image:
+  repository: cis
+  pullPolicy: IfNotPresent
+  tag: ""
+
+podLabels:
+  iam.mozilla.com/system: cis
+
+profile_retrieval_api:
+  enabled: false
+  args: []
+  podLabels:
+    iam.mozilla.com/component: profile-retrieval-api
+  resources:
+    limits:
+      memory: 512Mi
+    requests:
+      memory: 512Mi

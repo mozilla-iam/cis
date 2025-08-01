@@ -2,6 +2,8 @@
 python = "3.9"
 node = "18"
 "npm:serverless" = "4.17.1"
+skaffold = "2.16.1"
+helm = "3.18.4"
 
 [env]
 _.python.venv = { path = ".venv", create = true }
