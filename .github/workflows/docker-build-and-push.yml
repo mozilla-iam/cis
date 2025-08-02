@@ -3,19 +3,19 @@ on:
     branches:
       - master
     tags:
-      - v20[0-9][0-9].[01][0-9].[0-3][0-9]  # e.g. v2023.12.04
-      - v20[0-9][0-9].[01][0-9].[0-3][0-9]-[0-9]  # e.g. v2023.12.04-2
+      - v20[0-9][0-9].[01][0-9].[0-3][0-9]
+      - v20[0-9][0-9].[01][0-9].[0-3][0-9]-[0-9]
 
 jobs:
   build:
     secrets: inherit
     permissions:
-     contents: read
-     id-token: write 
-     packages: write
-   uses: mozilla-it/deploy-actions/.github/workflows/build-and-push.yml@main
-   with:
-     image_name: cis
-     gar_name: iam-prod
-     project_id: moz-fx-iam-prod
-     should_tag_ghcr: true
+      contents: read
+      id-token: write
+      packages: write
+    uses: mozilla-it/deploy-actions/.github/workflows/build-and-push.yml@main
+    with:
+      image_name: cis
+      gar_name: iam-prod
+      project_id: moz-fx-iam-prod
+      should_tag_ghcr: true
