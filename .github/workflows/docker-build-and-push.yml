@@ -19,4 +19,4 @@ jobs:
       gar_name: iam-prod
       project_id: moz-fx-iam-prod
       should_tag_ghcr: true
-      workload_identity_pool_project_number: 983274391321
+      workload_identity_pool_project_number: 324168772199
