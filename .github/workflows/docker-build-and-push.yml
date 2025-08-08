@@ -19,3 +19,4 @@ jobs:
       gar_name: iam-prod
       project_id: moz-fx-iam-prod
       should_tag_ghcr: true
+      should_tag_latest: true
