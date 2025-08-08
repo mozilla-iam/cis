@@ -1,5 +1,5 @@
 environment      = "development"
 gcp_region       = "us-west1"
-gke_cluster_name = "webservices-high-public-nonprod-us-west1"
+gke_cluster_name = "webservices-high-private-nonprod-us-west1"
 gcp_project_id   = "moz-fx-webservices-high-nonpro"
 gke_namespace    = "iam-dev"
