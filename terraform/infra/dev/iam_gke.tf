@@ -32,6 +32,6 @@ module "cis_profile_retrieval_api" {
   gke_cluster_name    = var.gke_cluster_name
   gcp_project_id      = var.gcp_project_id
   gke_namespace       = var.gke_namespace
-  gke_service_account = "cis-profile-retrieval-api"
+  gke_service_account = "gha-cis-profile-retrieval-api"
   iam_policy_arns     = [aws_iam_policy.cis_dynamo_read.arn]
 }
