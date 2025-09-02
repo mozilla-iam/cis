@@ -55,8 +55,9 @@ def scan(
     logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
-    pool_size = 24
-    max_segments = 24
+    # The worker pool size should be equal to the max_segments. Ideally we want one segment per worker.
+    pool_size = 128
+    max_segments = 128
 
     users = []
     last_evaluated_key = None
