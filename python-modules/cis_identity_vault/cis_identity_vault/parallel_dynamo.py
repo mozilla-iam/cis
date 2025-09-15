@@ -78,7 +78,18 @@ def scan(
             max_segments,
         )
 
-        logger.debug(*thread_args)
+        logger.debug(
+            "thread starting scan",
+            extra={
+                "thread_id": thread_id,
+                "table_name": table_name,
+                "filter_expression": filter_expression,
+                "expression_attr": expression_attr,
+                "projection_expression": projection_expression,
+                "exclusive_start_key": exclusive_start_key,
+                "max_segments": max_segments,
+            }
+        )
         threads.append(threading.Thread(target=get_segment, args=thread_args))
         threads[-1].start()
 
