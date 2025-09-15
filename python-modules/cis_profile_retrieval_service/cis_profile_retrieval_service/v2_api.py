@@ -150,7 +150,6 @@ class v2UsersByAny(Resource):
         parser.add_argument("connectionMethod", type=str, location="args")
         parser.add_argument("active", type=str, location="args")
         parser.add_argument("nextPage", type=str, location="args")
-        parser.add_argument("cached", type=str, location="args")
 
         args = parser.parse_args()
 
