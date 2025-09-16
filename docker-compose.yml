@@ -2,6 +2,7 @@
 version: '3.7'
 services:
   db:
+    platform: linux/amd64
     image: postgres:11.1
     environment:
       POSTGRES_USER: cis_user
@@ -12,6 +13,7 @@ services:
     networks:
       - default
   tester:
+    platform: linux/amd64
     build:
       context: ci/
       dockerfile: Dockerfile

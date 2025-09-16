@@ -5,7 +5,7 @@ from setuptools import setup, find_packages
 
 requirements = ["jsonschema", "requests", "graphene", "Faker", "everett", "everett[ini]", "configobj", "click"]
 test_requirements = [
-    "mock",
+    "mock<=4.0.2",
     "pytest",
     "pytest-watch",
     "pytest-cov",
@@ -13,6 +13,7 @@ test_requirements = [
     "flask",
     "flask_graphql",
     "flask_restful",
+    "responses<0.12.1",
 ]
 setup_requirements = ["pytest-runner", "setuptools>=40.5.0"]
 

@@ -28,12 +28,14 @@ test_requirements = [
     "pytest-watch",
     "pytest-cov",
     "patch",
-    "mock",
-    "moto>=1.3.7",
+    "mock<=4.0.2",
+    "moto[dynamodb2,ssm]>=1.3.7,<2",
     "flake8",
     "pytest-benchmark",
     "psycopg2",
     "psycopg2-binary",
+    "botocore<1.23.24",
+    "responses<0.12.1",
 ]
 
 extras = {"test": test_requirements}
