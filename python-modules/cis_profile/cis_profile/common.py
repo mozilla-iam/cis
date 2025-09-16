@@ -121,11 +121,11 @@ class WellKnown(object):
     print(wk.get_schema())
     <Dict: schema>
     """
+    _well_known_json = None
 
     def __init__(self, discovery_url="https://auth.mozilla.com/.well-known/mozilla-iam", always_use_local_file=False):
         self._request_cache = "/tmp/cis_request_cache"  # XXX use `get_config` to configure that
         self._request_cache_ttl = 900
-        self._well_known_json = None
         self._schema_json = None
         self.discovery_url = discovery_url
         self.config = get_config()
@@ -135,16 +135,16 @@ class WellKnown(object):
         """
         Public wrapper for _load_rules
         """
-        self._well_known_json = self.get_well_known()
-        rules_url = self._well_known_json.get("publishers_rules_uri")
+        WellKnown._well_known_json = self.get_well_known()
+        rules_url = WellKnown._well_known_json.get("publishers_rules_uri")
         return self.__cache_file(self._load_publisher_rules(rules_url), name="publisher_rules")
 
     def get_schema(self):
         """
         Public wrapper for _load_well_known()
         """
-        self._well_known_json = self.get_well_known()
-        schema_url = self._well_known_json.get("api").get("data/profile_schema")
+        WellKnown._well_known_json = self.get_well_known()
+        schema_url = WellKnown._well_known_json.get("api").get("data/profile_schema")
         return self.__cache_file(self._load_schema(schema_url, stype="data/profile.schema"), name="schema")
 
     def get_core_schema(self):
@@ -213,27 +213,28 @@ class WellKnown(object):
         Return dict,None the well-known JSON data copy
         """
         # Memory cache
-        if self._well_known_json is not None:
-            return self._well_known_json
+        if WellKnown._well_known_json is not None:
+            return WellKnown._well_known_json
 
         if not self.always_use_local_file:
             try:
                 r = requests.get(self.discovery_url)
-                self._well_known_json = r.json()
+                WellKnown._well_known_json = r.json()
             except (json.JSONDecodeError, requests.exceptions.ConnectionError) as e:
                 logger.debug("Failed to fetch schema url from discovery {} ({})".format(self.discovery_url, e))
                 logger.debug("Using builtin copy")
 
-        if self._well_known_json is None or self.always_use_local_file:
+        if WellKnown._well_known_json is None or self.always_use_local_file:
             well_known_file = "data/well-known/mozilla-iam"  # Local fall-back
             if not os.path.isfile(well_known_file):
                 dirname = os.path.dirname(os.path.realpath(__file__))
                 path = dirname + "/" + well_known_file
             else:
                 path = well_known_file
-            self._well_known_json = json.load(open(path))
+            with open(path, "r") as handle:
+                WellKnown._well_known_json = json.load(handle)
 
-        return self._well_known_json
+        return WellKnown._well_known_json
 
     def _load_schema(self, schema_url, stype="data/profile.schema"):
         """
