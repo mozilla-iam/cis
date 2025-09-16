@@ -1,6 +1,7 @@
 """
-A simplification of the existing v2_api tests. We reuse Dynamo and the users we
-create across each test, since otherwise it'll take a while.
+A simplification of the existing v2_api tests. There's care to reuse Dynamo and
+the users we create across each test, since otherwise it'll take a while when
+adding additional tests.
 
 See `DEBT` notes for where I ran into weirdness.
 
@@ -63,9 +64,9 @@ def identity_vault(environment):
     vault_client.find_or_create()
     # DEBT: requires side-effects.
     from cis_profile_retrieval_service.common import seed
-    # DEBT?: doesn't seemingly generate only `number_of_fake_users` users.
+
     # DEBT: doesn't generate `ad|Mozilla-LDAP` users.
-    seed(number_of_fake_users=128)
+    seed(number_of_fake_users=256)
     return (boto3.client("dynamodb"), boto3.resource("dynamodb"))
 
 
@@ -73,21 +74,46 @@ def identity_vault(environment):
 def app(environment, monkeypatch):
     bearer = FakeBearer()
     token = bearer.generate_bearer_with_scope("display:all search:all")
-    headers = {
-        "Authorization": f"Bearer {token}"
-    }
+    headers = {"Authorization": f"Bearer {token}"}
     monkeypatch.setattr("cis_profile_retrieval_service.idp.get_jwks", lambda: json_form_of_pk)
     # DEBT: requires side-effects.
     from cis_profile_retrieval_service import v2_api
+
     v2_api.app.testing = True
     return (headers, v2_api.app.test_client())
 
 
 def test_existing(identity_vault, app):
+    """
+    As it turns out, our pagination was broken.
+
+    The `v2/users/id/all` endpoint, as written, did the right thing: paginate
+    through pages, skipping empty pages.
+
+    The scan logic [0] has a slight bug in it, where it would continue
+    paginating. Since it was doing this pagination for us, at a lower level, we
+    simply weren't propagating any `nextPage` tokens forward.
+
+    Pagination mystery: solved.
+
+    [0]: python-modules/cis_identity_vault/cis_identity_vault/parallel_dynamo.py
+    """
     headers, client = app
     # DEBT: see note above, about not generating `ad|Mozilla-LDAP` users.
     results = client.get(
         "/v2/users/id/all?connectionMethod=github&active=True",
         headers=headers,
         follow_redirects=True,
-    )
+    ).json
+    next_page = results.get("nextPage")
+    pages = 1
+    # Pagination, as implemented elsewhere.
+    while next_page:
+        results = client.get(
+            f"/v2/users/id/all?connectionMethod=github&active=True&nextPage={next_page}",
+            headers=headers,
+            follow_redirects=True,
+        ).json
+        next_page = results.get("nextPage")
+        pages += 1
+    assert pages >= 2, "Did not paginate!"

@@ -36,35 +36,55 @@ def get_segment(
 
     logger.debug("Running parallel scan with kwargs: {}".format(scan_kwargs))
     response = dynamodb_client.scan(**scan_kwargs)
-    users = response.get("Items", [])
+    # Return a dictionary of users, since sets can only contain hashable types
+    # (and lists and dicts are not).
+    users = {
+        user["id"]["S"]: user
+        for user in response.get("Items", [])
+    }
     last_evaluated_key = response.get("LastEvaluatedKey")
 
-    while last_evaluated_key is not None:
-        scan_kwargs["ExclusiveStartKey"] = last_evaluated_key
-        response = dynamodb_client.scan(**scan_kwargs)
-        users.extend(response.get("Items", []))
-        last_evaluated_key = response.get("LastEvaluatedKey")
-
-    logger.debug("Running thread_id: {}".format(thread_id))
+    logger.debug("Finished thread_id: {}, with nextPage: {}".format(thread_id, last_evaluated_key))
     return result_queue.put(dict(users=users, nextPage=last_evaluated_key, segment=thread_id))
 
 
 def scan(
-    dynamodb_client, table_name, filter_expression, expression_attr, projection_expression, exclusive_start_key=None
+    dynamodb_client, table_name, filter_expression, expression_attr, projection_expression, exclusive_start_keys=None
 ):
     logger.debug("Creating new threads and queue.")
     result_queue = queue.Queue()
 
-    # The worker pool size should be equal to the max_segments. Ideally we want one segment per worker.
-    pool_size = 128
-    max_segments = 128
+    # We use one worker per segment.
+    max_segments = 48
 
-    users = []
-    last_evaluated_key = None
+    users = dict()
+    last_evaluated_keys = [None] * max_segments
     threads = []
 
-    for thread_id in range(0, pool_size):
+    # If this is the first request, then we'll receive a None from our
+    # caller.
+    if exclusive_start_keys is None:
+        exclusive_start_keys = [None] * max_segments
+
+    # When we're continuing, we signal that a segment has no more work to
+    # complete if it's ESK is "done". If _all_ of the segments have that, then
+    # we're at the end of our result set.
+    elif all(map(lambda esk: esk == "done", exclusive_start_keys)):
+        return dict(users=[], nextPage=None)
+
+    for thread_id in range(0, max_segments):
         # What are we passing to each threaded function.
+        try:
+            exclusive_start_key = exclusive_start_keys[thread_id]
+        except IndexError:
+            logger.critical("Someone may be DOSing us or not doing pagination properly.")
+            raise
+
+        # If we explicitly read a "done", then this is a signal that the
+        # segment has no more records.
+        if exclusive_start_key == "done":
+            logger.debug(f"skipping thread {thread_id}")
+            continue
 
         thread_args = (
             result_queue,
@@ -102,13 +122,10 @@ def scan(
     while not result_queue.empty():
         logger.debug("Results queue is not empty.")
         result = result_queue.get()
-        users_additional = result.get("users")
-        users.extend(users_additional)
-        if result.get("segment") == max_segments - 1:
-            logger.debug("This is the last segment.")
-            last_evaluated_key = result.get("nextPage")
-            logger.debug("Last evaluated key in page was: {}".format(last_evaluated_key))
+        users.update(result.get("users", {}))
+        segment = result.get("segment")
+        last_evaluated_keys[segment] = result.get("nextPage")
         result_queue.task_done()
 
     logger.debug("Results queue is empty.")
-    return dict(users=users, nextPage=last_evaluated_key)
+    return dict(users=users.values(), nextPage=last_evaluated_keys)
