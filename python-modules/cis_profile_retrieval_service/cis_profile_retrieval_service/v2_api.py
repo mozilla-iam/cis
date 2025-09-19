@@ -1,3 +1,4 @@
+import os
 import orjson
 
 from flask import Flask
@@ -150,7 +151,6 @@ class v2UsersByAny(Resource):
         parser.add_argument("connectionMethod", type=str, location="args")
         parser.add_argument("active", type=str, location="args")
         parser.add_argument("nextPage", type=str, location="args")
-        parser.add_argument("cached", type=str, location="args")
 
         args = parser.parse_args()
 
@@ -371,7 +371,11 @@ def version():
 
 
 def main():
-    app.run(host="0.0.0.0", debug=True)
+    # DEBT: I think this has been fixed in a later version of Flask.
+    # We don't call this in production, but instead lean on Serverless' WSGI handler.
+    host, _, port = os.environ.get("SERVER_NAME", "127.0.0.1:5000").partition(":")
+    port = int(port)
+    app.run(host=host, port=port, debug=True)
 
 
 if __name__ == "__main__":

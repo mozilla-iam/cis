@@ -1,4 +1,4 @@
 moto==5.0.14
-pytest==6.1.1
+pytest==6.2.5
 pytest-benchmark==3.2.3
 docker==5.0.3
