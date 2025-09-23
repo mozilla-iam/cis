@@ -60,16 +60,17 @@ def scan(
     users = dict()
     last_evaluated_keys = [None] * max_segments
     threads = []
+    start = False
 
-    # If this is the first request, then we'll receive a None from our
-    # caller.
+    # If this is the first request, then we'll receive a None from our caller.
     if exclusive_start_keys is None:
+        start = True
         exclusive_start_keys = [None] * max_segments
 
     # When we're continuing, we signal that a segment has no more work to
-    # complete if it's ESK is "done". If _all_ of the segments have that, then
+    # complete if it's ESK is `None`. If _all_ of the segments have that, then
     # we're at the end of our result set.
-    elif all(map(lambda esk: esk == "done", exclusive_start_keys)):
+    if not start and all(map(lambda esk: esk is None, exclusive_start_keys)):
         return dict(users=[], nextPage=None)
 
     for thread_id in range(0, max_segments):
@@ -80,9 +81,9 @@ def scan(
             logger.critical("Someone may be DOSing us or not doing pagination properly.")
             raise
 
-        # If we explicitly read a "done", then this is a signal that the
-        # segment has no more records.
-        if exclusive_start_key == "done":
+        # If we started already and read a `None`, then this is a signal that
+        # the segment has no more records.
+        if not start and exclusive_start_key is None:
             logger.debug(f"skipping thread {thread_id}")
             continue
 

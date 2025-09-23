@@ -318,68 +318,6 @@ class Profile(object):
             users.extend(response["Items"])
         return users
 
-    def _last_evaluated_to_friendly(self, last_evaluated_keys):
-        """
-        Received from Dynamo, and serialized into something our clients can
-        understand (or rather, use: this _should_ be an opaque token to
-        clients).
-
-        When we're paginating through Dynamo, each segment returns a
-        `LastEvaluatedKey`, which we need to specify as `ExclusiveStartKey` in
-        subsequent requests. These `ExclusiveStartKey` is segment-specific,
-        hence the care here to serialize these in the order returned.
-
-        * `None`, indicating that we've completely finished, there are no more
-          results any segment can return;
-        * `list[Optional[Any]]`, indicating that _some_ segments have results
-          left.
-
-        Our clients' pagination logic (at least as seen by various publishers),
-        will consider the query over once we return `None`.
-        """
-        if not last_evaluated_keys:
-            return None
-        next_page = []
-        for last_evaluated_key in last_evaluated_keys:
-            # A signal that the segment is done scanning.
-            if last_evaluated_key is None:
-                id = ""
-            else:
-                id = last_evaluated_key["id"]["S"]
-            next_page.append(id)
-        # If there are at all any segments left with work, then continue.
-        if any(next_page):
-            next_page_raw = ",".join(next_page)
-            return urllib.parse.quote(next_page_raw)
-        else:
-            return None
-
-    def _next_page_to_dynamodb(self, next_page_raw):
-        """
-        Received from _clients_, and deserialized into something our parallel
-        Dynamo code understands.
-
-        A complication here is that we can't reuse `None`, since that would
-        cause a segment to start from the beginning. So, we use a sentinel
-        value of `"done"` to signal to the parallel Dynamo code that we should
-        skip this segment.
-
-        When Dynamo returns `None`, that means _all_ segments are done. If it
-        returns a `list[Optional[Any]]`, that means that we can still make
-        progress on some segments.
-        """
-        if not next_page_raw:
-            return None
-        next_page = urllib.parse.unquote(next_page_raw)
-        exclusive_start_keys = []
-        for last_evaluated_key in next_page.split(","):
-            if last_evaluated_key == "":
-                id = "done"
-            else:
-                id = {"id": {"S": last_evaluated_key}}
-            exclusive_start_keys.append(id)
-        return exclusive_start_keys
-
     def all_filtered(self, connection_method=None, active=None, next_page=None):
         """
         @query_filter str login_method
@@ -387,7 +325,7 @@ class Profile(object):
         """
 
         projection_expression = "id, primary_email, user_uuid, active"
-        next_page = self._next_page_to_dynamodb(next_page)
+        next_page = next_page_to_dynamodb(next_page)
 
         if connection_method:
             logger.debug("No active filter passed.  Assuming we need all users.")
@@ -407,7 +345,7 @@ class Profile(object):
             projection_expression=projection_expression,
             exclusive_start_keys=next_page,
         )
-        return dict(users=response["users"], nextPage=self._last_evaluated_to_friendly(response.get("nextPage")))
+        return dict(users=response["users"], nextPage=last_evaluated_to_friendly(response.get("nextPage")))
 
     def find_or_create(self, user_profile):
         profilev2 = json.loads(user_profile["profile"])
@@ -684,3 +622,67 @@ class ProfileRDS(object):
         else:
             result = self.create(user_profile).user_id
         return result
+
+
+def last_evaluated_to_friendly(last_evaluated_keys):
+    """
+    Received from Dynamo, and serialized into something our clients can
+    understand (or rather, use: this _should_ be an opaque token to
+    clients).
+
+    When we're paginating through Dynamo, each segment returns a
+    `LastEvaluatedKey`, which we need to specify as `ExclusiveStartKey` in
+    subsequent requests. These `ExclusiveStartKey` is segment-specific,
+    hence the care here to serialize these in the order returned.
+
+    * `None`, indicating that we've completely finished, there are no more
+      results any segment can return;
+    * `list[Optional[Any]]`, indicating that _some_ segments have results
+      left.
+
+    Our clients' pagination logic (at least as seen by various publishers),
+    will consider the query over once we return `None`.
+    """
+    if not last_evaluated_keys:
+        return None
+    next_page = []
+    for last_evaluated_key in last_evaluated_keys:
+        # A signal that the segment is done scanning.
+        if last_evaluated_key is None:
+            id = ""
+        else:
+            id = last_evaluated_key["id"]["S"]
+        next_page.append(id)
+    # If there are at all any segments left with work, then continue.
+    if any(next_page):
+        next_page_raw = ",".join(next_page)
+        return urllib.parse.quote(next_page_raw)
+    else:
+        return None
+
+
+def next_page_to_dynamodb(next_page):
+    """
+    Received from _clients_, and deserialized into something our parallel
+    Dynamo code understands.
+
+    A complication here is that we can't reuse `None`, since that would
+    cause a segment to start from the beginning. So, we use a sentinel
+    value of `""` to signal to the parallel Dynamo code that we should
+    skip this segment.
+
+    When Dynamo returns `None`, that means _all_ segments are done. If it
+    returns a `list[Optional[Any]]`, that means that we can still make
+    progress on some segments.
+    """
+    if not next_page:
+        return None
+    next_page_unquoted = urllib.parse.unquote(next_page)
+    exclusive_start_keys = []
+    for last_evaluated_key in next_page_unquoted.split(","):
+        if last_evaluated_key == "":
+            id = None
+        else:
+            id = {"id": {"S": last_evaluated_key}}
+        exclusive_start_keys.append(id)
+    return exclusive_start_keys
