@@ -12,6 +12,7 @@ user_profile must be passed to this in the form required by dynamodb
 import json
 import logging
 import uuid
+import urllib.parse
 from boto3.dynamodb.conditions import Attr
 from boto3.dynamodb.conditions import Key
 from boto3.dynamodb.types import TypeDeserializer
@@ -348,11 +349,12 @@ class Profile(object):
             next_page.append(id)
         # If there are at all any segments left with work, then continue.
         if any(next_page):
-            return ",".join(next_page)
+            next_page_raw = ",".join(next_page)
+            return urllib.parse.quote(next_page_raw)
         else:
             return None
 
-    def _next_page_to_dynamodb(self, next_page):
+    def _next_page_to_dynamodb(self, next_page_raw):
         """
         Received from _clients_, and deserialized into something our parallel
         Dynamo code understands.
@@ -366,8 +368,9 @@ class Profile(object):
         returns a `list[Optional[Any]]`, that means that we can still make
         progress on some segments.
         """
-        if not next_page:
+        if not next_page_raw:
             return None
+        next_page = urllib.parse.unquote(next_page_raw)
         exclusive_start_keys = []
         for last_evaluated_key in next_page.split(","):
             if last_evaluated_key == "":

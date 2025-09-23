@@ -158,8 +158,6 @@ class v2UsersByAny(Resource):
 
         logger.info("Attempting to get all users for connection method: {}".format(args.get("connectionMethod")))
         next_page = args.get("nextPage")
-        if next_page is not None:
-            next_page = urllib.parse.unquote(next_page)
 
         identity_vault = user.Profile(dynamodb_table, dynamodb_client, transactions=transactions)
 
