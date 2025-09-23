@@ -34,12 +34,10 @@ class TestPublisher:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_get.return_value = FakeResponse(fake=self.mu)
 
@@ -59,12 +57,10 @@ class TestPublisher:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_get.return_value = FakeResponse(fake=self.mu2)
 
@@ -88,8 +84,8 @@ class TestPublisher:
         mock_secrets.return_value = "is_pretty_cool"
 
         class FakeResponse:
-            def ok(self):
-                return True
+            def __init__(self):
+                self.ok = True
 
         mock_request_post.return_value = FakeResponse()
         profiles = [cis_profile.User()]
@@ -110,12 +106,10 @@ class TestPublisher:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_post.return_value = FakeResponse()
         mock_request_get.return_value = FakeResponse(fake=self.mu)
@@ -144,12 +138,11 @@ class TestPublisher:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
+                self.status_code = 200
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_post.return_value = FakeResponse()
         mock_request_get.return_value = FakeResponse(fake=self.mu)
@@ -170,12 +163,10 @@ class TestPublisher:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_post.return_value = FakeResponse()
         mock_request_get.return_value = FakeResponse(fake=self.mu)

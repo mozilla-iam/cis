@@ -25,12 +25,11 @@ class TestLDAP:
             def __init__(self, fake={}):
                 self.fake = fake
                 self.text = str(fake)
+                self.ok = True
+                self.status_code = 200
 
             def json(self):
                 return self.fake
-
-            def ok(self):
-                return True
 
         mock_request_post.return_value = FakeResponse()
         mock_request_get.return_value = FakeResponse(self.mu)
