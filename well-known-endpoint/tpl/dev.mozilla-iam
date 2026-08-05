@@ -1,5 +1,5 @@
 {
-  "oidc_discovery_uri": "https://auth.${DOMAIN}/.well-known/openid-configuration",
+  "oidc_discovery_uri": "https://idp.iam.mozilla.com/.well-known/openid-configuration",
   "access_file": {
     "endpoint": "https://cdn.sso.${DOMAIN}/apps.yml",
     "aai_mapping": {
