@@ -21,9 +21,15 @@ custom:
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
     WEBHOOK_NOTIFICATION_AUTH0_DOMAIN:
+      # This is an ecosystem breaking change, since we don't support multiple
+      # issuers.
+      #
+      # Staging is bork'd anyways, so w/e.
+      #
+      # TODO: maybe support multiple issuers?
       production: auth.mozilla.auth0.com
-      development: auth.mozilla.auth0.com
-      testing: auth.mozilla.auth0.com
+      development: idp.iam.mozilla.com
+      testing: idp.iam.mozilla.com
     CIS_DYNAMODB_STREAM_ARN:
       production: arn:aws:dynamodb:us-west-2:320464205386:table/production-identity-vault/stream/2019-03-12T15:52:29.265
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault/stream/2020-04-08T20:18:21.062
@@ -34,12 +40,12 @@ custom:
       testing: /iam/cis/testing/webhook_notifier
     CIS_SUBSCRIPTIONS:
       production: https://people.mozilla.org/beta/
-      development: https://dinopark.dev.k8s.sso.allizom.org/beta/
-      testing: https://dinopark.test.k8s.sso.allizom.org/beta/
+      development: https://dev.people.allizom.org/beta/
+      testing: https://people.allizom.org/beta/
     CIS_RP_URLS:
       production: https://people.mozilla.org/events/update,https://discourse-staging.itsre-apps.mozit.cloud/mozilla_iam/notification,https://discourse.mozilla.org/mozilla_iam/notification,https://auth0-cis-webhook-consumer.sso.mozilla.com/post,https://bugzilla.mozilla.org/mozillaiam/user/update,https://bugzilla-dev.allizom.org/mozillaiam/user/update
-      development: https://dinopark.k8s.dev.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.dev.sso.allizom.org/post
-      testing: https://dinopark.k8s.test.sso.allizom.org/events/update,https://auth0-cis-webhook-consumer.test.sso.allizom.org/post
+      development: https://dev.people.allizom.org/events/update,https://auth0-cis-webhook-consumer.dev.sso.allizom.org/post
+      testing: https://people.allizom.org/events/update,https://auth0-cis-webhook-consumer.test.sso.allizom.org/post
 provider:
   name: aws
   runtime: python3.8

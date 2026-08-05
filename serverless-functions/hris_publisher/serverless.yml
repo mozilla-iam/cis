@@ -25,8 +25,8 @@ custom:
       testing: change.api.test.sso.allizom.org
     CIS_AUTHZERO_DOMAIN:
       production: auth.mozilla.auth0.com
-      development: auth.mozilla.auth0.com
-      testing: auth.mozilla.auth0.com
+      development: idp.iam.mozilla.com
+      testing: idp.iam.mozilla.com
     CIS_SECRET_MANAGER_SSM_PATH:
       production: /iam/cis/production/hris_publisher
       development: /iam/cis/development/hris_publisher

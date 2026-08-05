@@ -19,9 +19,15 @@ custom:
       development: arn:aws:dynamodb:us-west-2:320464205386:table/development-identity-vault
       testing: arn:aws:dynamodb:us-west-2:320464205386:table/testing-identity-vault
     PERSON_API_AUTH0_DOMAIN:
+      # This is an ecosystem breaking change, since we don't support multiple
+      # issuers.
+      #
+      # Staging is bork'd anyways, so w/e.
+      #
+      # TODO: maybe support multiple issuers?
       production: auth.mozilla.auth0.com
-      development: auth.mozilla.auth0.com
-      testing: auth.mozilla.auth0.com
+      development: idp.iam.mozilla.com
+      testing: idp.iam.mozilla.com
     CIS_JWT_VALIDATION:
       production: true
       development: true
