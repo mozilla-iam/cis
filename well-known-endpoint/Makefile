@@ -20,6 +20,13 @@ STAGE		:= dev.
 INFOSEC_FP	:= 85D77543B3D624B63CEA9E6DBC17301B491B3F21
 DISTRIBUTION_ID:= E3565MF6FETN3E
 
+# See: https://stackoverflow.com/a/2420579
+ifeq ($(shell uname -s),Darwin)
+	SED_INPLACE:=-i ''
+else
+	SED_INPLACE:=-i''
+endif
+
 .PHONY:all
 all:
 	@echo 'Available make targets:'
@@ -48,11 +55,11 @@ templatize:
 	cp tpl/* s3/.well-known
 	mv s3/.well-known/$(STAGE_FN)mozilla-iam  s3/.well-known/mozilla-iam
 	rm s3/.well-known/*.mozilla-iam
-	sed -i 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
+	sed $(SED_INPLACE) 's/$${DOMAIN}/$(DOMAIN)/g' s3/.well-known/*
 ifneq ($(STAGE),prod)
-	sed -i 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
+	sed $(SED_INPLACE) 's/$${STAGE}/$(STAGE)/g' s3/.well-known/*
 else
-	sed -i 's/$${STAGE}//g' s3/.well-known/*
+	sed $(SED_INPLACE) 's/$${STAGE}//g' s3/.well-known/*
 endif
 
 .PHONY: cloudformation
