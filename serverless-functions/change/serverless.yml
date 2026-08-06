@@ -1,6 +1,4 @@
 service: change-service
-plugins:
-  - serverless-plugin-tracing
 custom:
   changeStage: ${opt:stage, self:provider.stage}
   changeEnvironment:
@@ -74,7 +72,15 @@ provider:
   name: aws
   runtime: python3.8
   stage: ${opt:stage, 'dev'}
-  tracing: true # enable tracing
+  tracing:
+    lambda: true
+    apiGateway: true
+  logs:
+    restApi:
+      level: ERROR
+      accessLogging: false
+      executionLogging: true
+      fullExecutionData: false
   environment:
     CIS_KINESIS_ARN: ${self:custom.changeEnvironment.CIS_KINESIS_ARN.${self:custom.changeStage}}
     CIS_DYNAMODB_ARN: ${self:custom.changeEnvironment.CIS_DYNAMODB_ARN.${self:custom.changeStage}}
