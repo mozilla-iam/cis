@@ -1,6 +1,4 @@
 service: auth0-publisher
-plugins:
-  - serverless-plugin-tracing
 custom:
   auth0PublisherStage: ${opt:stage, self:provider.stage}
   auth0PublisherEnvironment:
@@ -26,12 +24,12 @@ custom:
       testing: change.api.test.sso.allizom.org
     CIS_AUTHZERO_API_DOMAIN:
       production: auth.mozilla.auth0.com
-      development: auth-dev.mozilla.auth0.com
-      testing: auth.mozilla.auth0.com
+      development: idp-dev.iam.mozilla.com
+      testing: idp.iam.mozilla.com
     CIS_AUTHZERO_DOMAIN:
       production: auth.mozilla.auth0.com
-      development: auth.mozilla.auth0.com
-      testing: auth.mozilla.auth0.com
+      development: idp.iam.mozilla.com
+      testing: idp.iam.mozilla.com
     CIS_SECRET_MANAGER_SSM_PATH:
       production: /iam/cis/production/auth0_publisher
       development: /iam/cis/development/auth0_publisher
@@ -61,7 +59,15 @@ provider:
   name: aws
   runtime: python3.8
   stage: ${opt:stage, 'dev'}
-  tracing: true # enable tracing
+  tracing:
+    lambda: true
+    apiGateway: true
+  logs:
+    restApi:
+      level: ERROR
+      accessLogging: false
+      executionLogging: true
+      fullExecutionData: false
   environment:
     CIS_ENVIRONMENT: ${self:custom.auth0PublisherEnvironment.CIS_ENVIRONMENT.${self:custom.auth0PublisherStage}}
     CIS_API_IDENTIFIER: ${self:custom.auth0PublisherEnvironment.IDENTIFIER.${self:custom.auth0PublisherStage}}
