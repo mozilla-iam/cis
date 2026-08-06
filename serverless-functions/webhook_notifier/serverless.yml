@@ -1,6 +1,4 @@
 service: webhook-notifications
-plugins:
-  - serverless-plugin-tracing
 custom:
   webhookStage: ${opt:stage, self:provider.stage}
   webhookEnvironment:
@@ -50,7 +48,15 @@ provider:
   name: aws
   runtime: python3.8
   stage: ${opt:stage, 'dev'}
-  tracing: true # enable tracing
+  tracing:
+    lambda: true
+    apiGateway: true
+  logs:
+    restApi:
+      level: ERROR
+      accessLogging: false
+      executionLogging: true
+      fullExecutionData: false
   environment:
     CIS_DYNAMODB_ARN: ${self:custom.webhookEnvironment.CIS_DYNAMODB_ARN.${self:custom.webhookStage}}
     CIS_ENVIRONMENT: ${self:custom.webhookEnvironment.CIS_ENVIRONMENT.${self:custom.webhookStage}}
